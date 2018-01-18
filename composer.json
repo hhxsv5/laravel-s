@@ -1,0 +1,27 @@
+{
+  "name": "hhxsv5/laravel-s",
+  "type": "library",
+  "license": "MIT",
+  "description": "Speed up laravel with swoole.",
+  "keywords": [
+    "speed-laravel",
+    "high performance",
+    "swoole",
+    "coroutine"
+  ],
+  "homepage": "https://github.com/hhxsv5/laravel-s",
+  "authors": [
+    {
+      "name": "Xie Biao",
+      "email": "hhxsv5@sina.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.9"
+  },
+  "autoload": {
+    "psr-4": {
+      "Hhxsv5\\LaravelS\\": "src"
+    }
+  }
+}
