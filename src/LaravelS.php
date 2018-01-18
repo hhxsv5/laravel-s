@@ -52,10 +52,10 @@ class LaravelS
 
     }
 
-    public static function getInstance($ip, $port)
+    public static function getInstance(array $svrConf, array $laravelConf)
     {
         if (self::$s === null) {
-            self::$s = new self($ip, $port);
+            self::$s = new self($svrConf, $laravelConf);
         }
         return self::$s;
     }
