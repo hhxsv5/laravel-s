@@ -9,6 +9,12 @@ use Illuminate\Http\Request;
 
 class Laravel
 {
+    public function __construct(array $laravelConf = [])
+    {
+
+    }
+
+
     protected function bootstrap()
     {
         define('LARAVEL_START', microtime(true));

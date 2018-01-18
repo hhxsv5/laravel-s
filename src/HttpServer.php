@@ -6,8 +6,10 @@ class HttpServer
 {
     protected $sw;
 
-    public function __construct($ip = '0.0.0.0', $port = 8841)
+    public function __construct(array $svrConf = [])
     {
+        $ip = isset($svrConf['ip']) ? $svrConf['ip'] : '0.0.0.0';
+        $port = isset($svrConf['port']) ? $svrConf['port'] : 8841;
 
         $this->sw = new \swoole_http_server($ip, $port);
     }

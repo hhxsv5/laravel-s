@@ -10,13 +10,29 @@ namespace Hhxsv5\LaravelS;
  */
 class LaravelS
 {
+    protected static $s;
+
     protected $laravel;
     protected $server;
 
-    public function __construct()
+    private function __construct(array $svrConf, array $laravelConf)
     {
-        $this->server = new HttpServer();
-        $this->laravel = new Laravel\Laravel();
+        $this->server = new HttpServer($svrConf);
+        $this->laravel = new Laravel\Laravel($laravelConf);
+    }
+
+    private function __clone()
+    {
+    }
+
+    private function __sleep()
+    {
+        return [];
+    }
+
+    public function __wakeup()
+    {
+        self::$s = $this;
     }
 
     public function run()
@@ -24,5 +40,23 @@ class LaravelS
         $this->server->run($this);
 
         $this->laravel->run($this);
+    }
+
+    public function reload()
+    {
+
+    }
+
+    public function __destruct()
+    {
+
+    }
+
+    public static function getInstance($ip, $port)
+    {
+        if (self::$s === null) {
+            self::$s = new self($ip, $port);
+        }
+        return self::$s;
     }
 }
