@@ -52,7 +52,7 @@ class LaravelS
 
     }
 
-    public static function getInstance(array $svrConf, array $laravelConf)
+    public static function getInstance(array $svrConf = [], array $laravelConf = [])
     {
         if (self::$s === null) {
             self::$s = new self($svrConf, $laravelConf);
