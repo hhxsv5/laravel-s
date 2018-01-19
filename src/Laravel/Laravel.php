@@ -98,19 +98,18 @@ class Laravel
 
     protected function clean(Request $request)
     {
+        // Clean laravel session
         if ($request->hasSession()) {
             $request->getSession()->clear();
         }
 
         // Clean laravel cookie queue
+        /**
+         * @var CookieJar $cookies
+         */
         $cookies = $this->app->make(CookieJar::class);
         foreach ($cookies->getQueuedCookies() as $name => $cookie) {
             $cookies->unqueue($name);
-        }
-
-        if ($this->app->isProviderLoaded(\Illuminate\Auth\AuthServiceProvider::class)) {
-            $this->app->register(\Illuminate\Auth\AuthServiceProvider::class, [], true);
-            Facade::clearResolvedInstance('auth');
         }
 
         //...
