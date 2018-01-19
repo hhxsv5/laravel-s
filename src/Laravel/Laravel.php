@@ -12,7 +12,16 @@ use Illuminate\Support\Facades\Facade;
 
 class Laravel
 {
+    /**
+     * @var Application $app
+     */
     protected $app;
+
+    /**
+     * @var Kernel $kernel
+     */
+    protected $kernel;
+
     protected $conf = [];
 
     public function __construct(array $conf = [])
@@ -20,6 +29,7 @@ class Laravel
         $this->conf = $conf;
         $this->bootstrap();
         $this->createApp();
+        $this->createKernel();
     }
 
     protected function bootstrap()
@@ -48,28 +58,32 @@ class Laravel
             "\\{$rootNamespace}\\Exceptions\\Handler"
         );
 
-        $this->app->bootstrapWith([
-            'Illuminate\Foundation\Bootstrap\DetectEnvironment',
-            'Illuminate\Foundation\Bootstrap\LoadConfiguration',
-            'Illuminate\Foundation\Bootstrap\ConfigureLogging',
-            'Illuminate\Foundation\Bootstrap\HandleExceptions',
-            'Illuminate\Foundation\Bootstrap\RegisterFacades',
-            'Illuminate\Foundation\Bootstrap\SetRequestForConsole',
-            'Illuminate\Foundation\Bootstrap\RegisterProviders',
-            'Illuminate\Foundation\Bootstrap\BootProviders',
-        ]);
+//        $this->app->bootstrapWith([
+//            'Illuminate\Foundation\Bootstrap\DetectEnvironment',
+//            'Illuminate\Foundation\Bootstrap\LoadConfiguration',
+//            'Illuminate\Foundation\Bootstrap\ConfigureLogging',
+//            'Illuminate\Foundation\Bootstrap\HandleExceptions',
+//            'Illuminate\Foundation\Bootstrap\RegisterFacades',
+//            'Illuminate\Foundation\Bootstrap\SetRequestForConsole',
+//            'Illuminate\Foundation\Bootstrap\RegisterProviders',
+//            'Illuminate\Foundation\Bootstrap\BootProviders',
+//        ]);
+    }
+
+    protected function createKernel()
+    {
+        $this->kernel = $this->app->make(Kernel::class);
     }
 
     /**
      * Laravel handles request and return response
      * @param Request $request
-     * @return Response
+     * @return Response|\Symfony\Component\HttpFoundation\Response
      */
     public function &handle(Request $request)
     {
-        $kernel = $this->app->make(Kernel::class);
-        $response = $kernel->handle($request);
-        $kernel->terminate($request, $response);
+        $response = $this->kernel->handle($request);
+        $this->kernel->terminate($request, $response);
         return $response;
     }
 
