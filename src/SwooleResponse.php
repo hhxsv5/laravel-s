@@ -2,7 +2,8 @@
 
 namespace Hhxsv5\LaravelS;
 
-use Illuminate\Http\Response as LaravelResponse;
+
+use Symfony\Component\HttpFoundation\Response as LaravelResponse;
 
 class SwooleResponse
 {
