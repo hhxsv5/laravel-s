@@ -25,8 +25,11 @@ class SwooleRequest
 
         $content = $this->swooleRequest->rawContent() ?: null;
 
+        $server = array_change_key_case($server, CASE_UPPER);
+
         $laravelRequest = new Request($get, $post, [], $cookie, $files, $server, $content);
         $laravelRequest->headers = new HeaderBag($headers);
+
         return $laravelRequest;
     }
 
