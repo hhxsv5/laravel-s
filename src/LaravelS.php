@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS;
 
-use Hhxsv5\LaravelS\Laravel\Laravel;
+use Hhxsv5\LaravelS\Illuminate\Laravel;
 use Hhxsv5\LaravelS\Swoole\Server;
 
 

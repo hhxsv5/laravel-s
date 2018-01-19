@@ -1,6 +1,6 @@
 <?php
 
-namespace Hhxsv5\LaravelS\Laravel;
+namespace Hhxsv5\LaravelS\Illuminate;
 
 
 use Illuminate\Contracts\Http\Kernel;
