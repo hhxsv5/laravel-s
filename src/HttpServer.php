@@ -2,6 +2,8 @@
 
 namespace Hhxsv5\LaravelS;
 
+use Hhxsv5\LaravelS\Laravel\Laravel;
+
 class HttpServer
 {
     protected $sw;
@@ -14,11 +16,13 @@ class HttpServer
         $this->sw = new \swoole_http_server($ip, $port);
     }
 
-    public function run(LaravelS $s)
+    public function run(Laravel &$laravel)
     {
-        $this->sw->on('request', function ($request, $response) {
-            $response->header('Content-Type', 'text/plain');
-            $response->end('abc');
+        $this->sw->on('request', function (\swoole_http_request $request, \swoole_http_response $response) use ($laravel) {
+            $swooleRequest = new SwooleRequest($request);
+            $laravelResponse = $laravel->handle($swooleRequest->toLaravelRequest());
+            $swooleResponse = new SwooleResponse($response, $laravelResponse);
+            $swooleResponse->send();
         });
 
         $this->sw->start();

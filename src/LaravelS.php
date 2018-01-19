@@ -12,6 +12,9 @@ class LaravelS
 {
     protected static $s;
 
+    /**
+     * @var Laravel\Laravel
+     */
     protected $laravel;
     protected $server;
 
@@ -37,9 +40,7 @@ class LaravelS
 
     public function run()
     {
-        $this->server->run($this);
-
-        $this->laravel->run($this);
+        $this->server->run($this->laravel);
     }
 
     public function reload()
@@ -50,6 +51,16 @@ class LaravelS
     public function __destruct()
     {
 
+    }
+
+    public function &getLaravel()
+    {
+        return $this->laravel;
+    }
+
+    public function &getServer()
+    {
+        return $this->server;
     }
 
     public static function getInstance(array $svrConf = [], array $laravelConf = [])
