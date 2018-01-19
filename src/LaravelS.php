@@ -12,20 +12,17 @@ class LaravelS
 {
     protected static $s;
 
-    /**
-     * @var Laravel\Laravel
-     */
-    protected $laravel;
     protected $server;
 
     private function __construct(array $svrConf, array $laravelConf)
     {
-        $this->server = new HttpServer($svrConf);
-        $this->laravel = new Laravel\Laravel($laravelConf);
+        $laravel = new Laravel\Laravel($laravelConf);
+        $this->server = new HttpServer($svrConf, $laravel);
     }
 
     private function __clone()
     {
+
     }
 
     private function __sleep()
@@ -40,7 +37,7 @@ class LaravelS
 
     public function run()
     {
-        $this->server->run($this->laravel);
+        $this->server->run();
     }
 
     public function reload()
@@ -51,16 +48,6 @@ class LaravelS
     public function __destruct()
     {
 
-    }
-
-    public function &getLaravel()
-    {
-        return $this->laravel;
-    }
-
-    public function &getServer()
-    {
-        return $this->server;
     }
 
     public static function getInstance(array $svrConf = [], array $laravelConf = [])

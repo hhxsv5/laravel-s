@@ -27,6 +27,10 @@ class Laravel
     public function __construct(array $conf = [])
     {
         $this->conf = $conf;
+    }
+
+    public function prepareLaravel()
+    {
         $this->bootstrap();
         $this->createApp();
         $this->createKernel();
