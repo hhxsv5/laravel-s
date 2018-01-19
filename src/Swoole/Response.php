@@ -3,14 +3,14 @@
 namespace Hhxsv5\LaravelS\Swoole;
 
 
-use Symfony\Component\HttpFoundation\Response as LaravelResponse;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Response
 {
     protected $swooleResponse;
     protected $laravelResponse;
 
-    public function __construct(\swoole_http_response $swooleResponse, LaravelResponse $laravelResponse)
+    public function __construct(\swoole_http_response $swooleResponse, SymfonyResponse $laravelResponse)
     {
         $this->swooleResponse = $swooleResponse;
         $this->laravelResponse = $laravelResponse;

@@ -71,7 +71,7 @@ class Server
     public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
     {
         $swooleRequest = new Request($request);
-        $laravelResponse = $this->laravel->handle($swooleRequest->toLaravelRequest());
+        $laravelResponse = $this->laravel->handle($swooleRequest->toIlluminateRequest());
         $swooleResponse = new Response($response, $laravelResponse);
         $swooleResponse->send();
     }

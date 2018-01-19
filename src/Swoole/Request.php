@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
-use Illuminate\Http\Request as LaravelRequest;
+use Illuminate\Http\Request as IlluminateRequest;
 use Symfony\Component\HttpFoundation\HeaderBag;
 
 class Request
@@ -14,7 +14,7 @@ class Request
         $this->swooleRequest = $request;
     }
 
-    public function &toLaravelRequest()
+    public function &toIlluminateRequest()
     {
         $get = isset($this->swooleRequest->get) ? $this->swooleRequest->get : [];
         $post = isset($this->swooleRequest->post) ? $this->swooleRequest->post : [];
@@ -29,7 +29,7 @@ class Request
         $server = array_change_key_case($server, CASE_UPPER);
 
         $content = $this->swooleRequest->rawContent() ?: null;
-        $laravelRequest = new LaravelRequest($get, $post, [], $cookies, $files, $server, $content);
+        $laravelRequest = new IlluminateRequest($get, $post, [], $cookies, $files, $server, $content);
         $laravelRequest->headers = new HeaderBag($headers);
 
         return $laravelRequest;
