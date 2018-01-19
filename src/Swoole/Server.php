@@ -1,10 +1,10 @@
 <?php
 
-namespace Hhxsv5\LaravelS;
+namespace Hhxsv5\LaravelS\Swoole;
 
 use Hhxsv5\LaravelS\Laravel\Laravel;
 
-class HttpServer
+class Server
 {
     protected $sw;
     protected $laravel;
@@ -63,9 +63,9 @@ class HttpServer
 
     public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
     {
-        $swooleRequest = new SwooleRequest($request);
+        $swooleRequest = new Request($request);
         $laravelResponse = $this->laravel->handle($swooleRequest->toLaravelRequest());
-        $swooleResponse = new SwooleResponse($response, $laravelResponse);
+        $swooleResponse = new Response($response, $laravelResponse);
         $swooleResponse->send();
     }
 

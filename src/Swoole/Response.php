@@ -1,11 +1,11 @@
 <?php
 
-namespace Hhxsv5\LaravelS;
+namespace Hhxsv5\LaravelS\Swoole;
 
 
 use Symfony\Component\HttpFoundation\Response as LaravelResponse;
 
-class SwooleResponse
+class Response
 {
     protected $swooleResponse;
     protected $laravelResponse;

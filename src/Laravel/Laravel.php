@@ -8,7 +8,6 @@ use Illuminate\Cookie\CookieJar;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Facade;
 
 class Laravel
 {

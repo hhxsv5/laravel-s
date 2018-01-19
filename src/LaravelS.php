@@ -2,6 +2,9 @@
 
 namespace Hhxsv5\LaravelS;
 
+use Hhxsv5\LaravelS\Laravel\Laravel;
+use Hhxsv5\LaravelS\Swoole\Server;
+
 
 /**
  * Swoole Request => Laravel Request
@@ -16,8 +19,8 @@ class LaravelS
 
     private function __construct(array $svrConf, array $laravelConf)
     {
-        $laravel = new Laravel\Laravel($laravelConf);
-        $this->server = new HttpServer($svrConf, $laravel);
+        $laravel = new Laravel($laravelConf);
+        $this->server = new Server($svrConf, $laravel);
     }
 
     private function __clone()
