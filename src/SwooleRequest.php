@@ -24,10 +24,8 @@ class SwooleRequest
         $files = isset($this->swooleRequest->files) ? $this->swooleRequest->files : [];
 
         foreach ($headers as $key => $value) {
-            $headers['http_' . $key] = $value;
-            unset($headers[$key]);
+            $server['http_' . $key] = $value;
         }
-        $server = array_merge($server, $headers);
         $server = array_change_key_case($server, CASE_UPPER);
 
         $content = $this->swooleRequest->rawContent() ?: null;
