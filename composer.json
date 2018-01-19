@@ -5,9 +5,11 @@
   "description": "Speed up laravel with swoole, \"S\" means Swoole, Speed, High performance.",
   "keywords": [
     "speed-laravel",
-    "high performance",
     "swoole",
-    "coroutine"
+    "laravel-swoole",
+    "http-server",
+    "coroutine",
+    "high-performance"
   ],
   "homepage": "https://github.com/hhxsv5/laravel-s",
   "authors": [
