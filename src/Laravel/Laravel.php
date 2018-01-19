@@ -34,6 +34,7 @@ class Laravel
         $this->bootstrap();
         $this->createApp();
         $this->createKernel();
+        $this->setLaravel();
     }
 
     protected function bootstrap()
@@ -43,40 +44,18 @@ class Laravel
 
     protected function createApp()
     {
-        $this->app = new Application($this->conf['rootPath']);
-        $rootNamespace = $this->app->getNamespace();
-        $rootNamespace = trim($rootNamespace, '\\');
-
-        $this->app->singleton(
-            \Illuminate\Contracts\Http\Kernel::class,
-            "\\{$rootNamespace}\\Http\\Kernel"
-        );
-
-        $this->app->singleton(
-            \Illuminate\Contracts\Console\Kernel::class,
-            "\\{$rootNamespace}\\Console\\Kernel"
-        );
-
-        $this->app->singleton(
-            \Illuminate\Contracts\Debug\ExceptionHandler::class,
-            "\\{$rootNamespace}\\Exceptions\\Handler"
-        );
-
-//        $this->app->bootstrapWith([
-//            'Illuminate\Foundation\Bootstrap\DetectEnvironment',
-//            'Illuminate\Foundation\Bootstrap\LoadConfiguration',
-//            'Illuminate\Foundation\Bootstrap\ConfigureLogging',
-//            'Illuminate\Foundation\Bootstrap\HandleExceptions',
-//            'Illuminate\Foundation\Bootstrap\RegisterFacades',
-//            'Illuminate\Foundation\Bootstrap\SetRequestForConsole',
-//            'Illuminate\Foundation\Bootstrap\RegisterProviders',
-//            'Illuminate\Foundation\Bootstrap\BootProviders',
-//        ]);
+        $this->app = require $this->conf['rootPath'] . '/bootstrap/app.php';
     }
 
     protected function createKernel()
     {
         $this->kernel = $this->app->make(Kernel::class);
+    }
+
+    protected function setLaravel()
+    {
+        //Enables support for the _method request parameter to determine the intended HTTP method.
+        Request::enableHttpMethodParameterOverride();
     }
 
     /**
