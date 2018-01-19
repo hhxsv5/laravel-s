@@ -9,6 +9,12 @@ Speed up laravel with swoole, "S" means Swoole, Speed, High performance.
 
 - Laravel >= 5.1
 
+## Install
+
+```Bash
+composer require "hhxsv5/laravel-s:~1.0.0" -vvv
+```
+
 ## Run Demo
 
 ```PHP
