@@ -22,7 +22,7 @@ class Laravel
 
     protected function bootstrap()
     {
-        require __DIR__ . '/../../bootstrap/autoload.php';
+        require $this->conf['rootPath'] . '/bootstrap/autoload.php';
     }
 
     protected function createApp()
