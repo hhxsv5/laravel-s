@@ -18,16 +18,20 @@ class SwooleRequest
     {
         $get = isset($this->swooleRequest->get) ? $this->swooleRequest->get : [];
         $post = isset($this->swooleRequest->post) ? $this->swooleRequest->post : [];
-        $cookie = isset($this->swooleRequest->cookie) ? $this->swooleRequest->cookie : [];
+        $cookies = isset($this->swooleRequest->cookie) ? $this->swooleRequest->cookie : [];
         $server = isset($this->swooleRequest->server) ? $this->swooleRequest->server : [];
         $headers = isset($this->swooleRequest->header) ? $this->swooleRequest->header : [];
         $files = isset($this->swooleRequest->files) ? $this->swooleRequest->files : [];
 
-        $content = $this->swooleRequest->rawContent() ?: null;
-
+        foreach ($headers as $key => $value) {
+            $headers['http_' . $key] = $value;
+            unset($headers[$key]);
+        }
+        $server = array_merge($server, $headers);
         $server = array_change_key_case($server, CASE_UPPER);
 
-        $laravelRequest = new Request($get, $post, [], $cookie, $files, $server, $content);
+        $content = $this->swooleRequest->rawContent() ?: null;
+        $laravelRequest = new Request($get, $post, [], $cookies, $files, $server, $content);
         $laravelRequest->headers = new HeaderBag($headers);
 
         return $laravelRequest;
