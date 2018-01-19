@@ -47,6 +47,17 @@ class Laravel
             \Illuminate\Contracts\Debug\ExceptionHandler::class,
             "\\{$rootNamespace}\\Exceptions\\Handler"
         );
+
+        $this->app->bootstrapWith([
+            'Illuminate\Foundation\Bootstrap\DetectEnvironment',
+            'Illuminate\Foundation\Bootstrap\LoadConfiguration',
+            'Illuminate\Foundation\Bootstrap\ConfigureLogging',
+            'Illuminate\Foundation\Bootstrap\HandleExceptions',
+            'Illuminate\Foundation\Bootstrap\RegisterFacades',
+            'Illuminate\Foundation\Bootstrap\SetRequestForConsole',
+            'Illuminate\Foundation\Bootstrap\RegisterProviders',
+            'Illuminate\Foundation\Bootstrap\BootProviders',
+        ]);
     }
 
     /**
