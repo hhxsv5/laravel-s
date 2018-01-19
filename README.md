@@ -1,5 +1,5 @@
 # laravel-s
-Speed up laravel with swoole.
+Speed up laravel with swoole, "S" means Swoole, High performance.
 
 ## Requirements
 
