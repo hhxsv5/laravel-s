@@ -82,7 +82,16 @@ class Laravel
      */
     public function &handle(Request $request)
     {
+        ob_start();
+
         $response = $this->kernel->handle($request);
+        $content = $response->getContent();
+        if (strlen($content) === 0 && ob_get_length() > 0) {
+            $response->setContent(ob_get_contents());
+        }
+
+        ob_end_clean();
+
         $this->kernel->terminate($request, $response);
         return $response;
     }
