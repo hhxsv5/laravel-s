@@ -4,30 +4,53 @@ namespace Hhxsv5\LaravelS\Laravel;
 
 
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class Laravel
 {
     protected $app;
+    protected $conf = [];
 
-    public function __construct(array $laravelConf = [])
+    public function __construct(array $conf = [])
     {
+        $this->conf = $conf;
         $this->bootstrap();
+        $this->createApp();
     }
 
     protected function bootstrap()
     {
-        define('LARAVEL_START', microtime(true));
-        require __DIR__ . '/../vendor/autoload.php';
+        require __DIR__ . '/../../vendor/autoload.php';
 
         $compiledPath = __DIR__ . '/cache/compiled.php';
 
         if (file_exists($compiledPath)) {
             require $compiledPath;
         }
+    }
 
-        $this->app = require_once __DIR__ . '/../bootstrap/app.php';
+    protected function createApp()
+    {
+        $this->app = new Application($this->conf['rootPath']);
+        $rootNamespace = $this->app->getNamespace();
+        $rootNamespace = trim($rootNamespace, '\\');
+
+        $this->app->singleton(
+            \Illuminate\Contracts\Http\Kernel::class,
+            "\\{$rootNamespace}\\Http\\Kernel"
+        );
+
+        $this->app->singleton(
+            \Illuminate\Contracts\Console\Kernel::class,
+            "\\{$rootNamespace}\\Console\\Kernel"
+        );
+
+        $this->app->singleton(
+            \Illuminate\Contracts\Debug\ExceptionHandler::class,
+            "\\{$rootNamespace}\\Exceptions\\Handler"
+        );
     }
 
     /**
