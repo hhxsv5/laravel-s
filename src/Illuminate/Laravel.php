@@ -38,7 +38,11 @@ class Laravel
 
     protected function bootstrap()
     {
-        require_once $this->conf['rootPath'] . '/bootstrap/autoload.php';
+        $autoload = $this->conf['rootPath'] . '/bootstrap/autoload.php';
+        // Lumen hasn't this autoload file
+        if (file_exists($autoload)) {
+            require_once $autoload;
+        }
     }
 
     protected function createApp()
