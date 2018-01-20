@@ -2,7 +2,7 @@
   "name": "hhxsv5/laravel-s",
   "type": "library",
   "license": "MIT",
-  "description": "Speed up Laravel/Lumen with swoole, 'S' means Swoole, Speed, High performance.",
+  "description": "Speed up Laravel/Lumen with Swoole, 'S' means Swoole, Speed, High performance.",
   "keywords": [
     "speed-laravel",
     "speed-lumen",
