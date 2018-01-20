@@ -90,6 +90,7 @@ class Laravel
             $this->laravelKernel->terminate($request, $response);
         }
 
+        // prefer content in response, secondly ob
         if (strlen($content) === 0 && ob_get_length() > 0) {
             $response->setContent(ob_get_contents());
         }
