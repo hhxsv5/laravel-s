@@ -19,7 +19,7 @@ composer require "hhxsv5/laravel-s:~1.0" -vvv
 
 ```PHP
 //run in console!
-$svrConf = ['ip' => '0.0.0.0', 'port' => 8011];
+$svrConf = ['ip' => '0.0.0.0', 'port' => 8011, 'settings' => [/*swoole settings*/]];
 $laravelConf = ['rootPath' => base_path()];
 $s = \Hhxsv5\LaravelS\LaravelS::getInstance($svrConf, $laravelConf);
 $s->run();

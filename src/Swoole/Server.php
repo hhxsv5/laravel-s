@@ -14,13 +14,14 @@ class Server
         $ip = isset($svrConf['ip']) ? $svrConf['ip'] : '0.0.0.0';
         $port = isset($svrConf['port']) ? $svrConf['port'] : 8841;
 
-        if (isset($svrConf['ssl_cert_file'], $svrConf['ssl_key_file'])) {
+        $settings = isset($svrConf['settings']) ? $svrConf['settings'] : [];
+
+        if (isset($settings['ssl_cert_file'], $settings['ssl_key_file'])) {
             $this->sw = new \swoole_http_server($ip, $port, SWOOLE_PROCESS, SWOOLE_SOCK_TCP | SWOOLE_SSL);
         } else {
             $this->sw = new \swoole_http_server($ip, $port, SWOOLE_PROCESS);
         }
 
-        $settings = isset($svrConf['settings']) ? $svrConf['settings'] : [];
         $this->sw->set($settings);
 
         $this->laravel = $laravel;
