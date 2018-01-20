@@ -12,7 +12,7 @@ Speed up Laravel/Lumen with Swoole, 'S' means Swoole, Speed, High performance.
 ## Install
 
 ```Bash
-composer require "hhxsv5/laravel-s:~1.0.0" -vvv
+composer require "hhxsv5/laravel-s:~1.0" -vvv
 ```
 
 ## Run Demo
