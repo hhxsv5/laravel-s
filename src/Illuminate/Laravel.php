@@ -5,23 +5,22 @@ namespace Hhxsv5\LaravelS\Illuminate;
 
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Cookie\CookieJar;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Laravel
 {
-    /**
-     * @var Application $app
-     */
     protected $app;
 
     /**
-     * @var Kernel $kernel
+     * @var Kernel $laravelKernel
      */
-    protected $kernel;
+    protected $laravelKernel;
 
     protected $conf = [];
+
+    protected $isLumen = false;
 
     public function __construct(array $conf = [])
     {
@@ -42,6 +41,9 @@ class Laravel
         // Lumen hasn't this autoload file
         if (file_exists($autoload)) {
             require_once $autoload;
+            $this->isLumen = false;
+        } else {
+            $this->isLumen = true;
         }
     }
 
@@ -52,7 +54,9 @@ class Laravel
 
     protected function createKernel()
     {
-        $this->kernel = $this->app->make(Kernel::class);
+        if (!$this->isLumen) {
+            $this->laravelKernel = $this->app->make(Kernel::class);
+        }
     }
 
     protected function setLaravel()
@@ -64,21 +68,33 @@ class Laravel
     /**
      * Laravel handles request and return response
      * @param Request $request
-     * @return Response|\Symfony\Component\HttpFoundation\Response
+     * @return Response|SymfonyResponse
      */
     public function &handle(Request $request)
     {
         ob_start();
 
-        $response = $this->kernel->handle($request);
-        $content = $response->getContent();
+        if ($this->isLumen) {
+            $response = $this->app->dispatch($request);
+            if ($response instanceof SymfonyResponse) {
+                $content = $response->getContent();
+            } else {
+                $content = (string)$response;
+            }
+            if (!empty($this->app->middleware)) {
+                $this->app->callTerminableMiddleware($response);
+            }
+        } else {
+            $response = $this->laravelKernel->handle($request);
+            $content = $response->getContent();
+            $this->laravelKernel->terminate($request, $response);
+        }
+
         if (strlen($content) === 0 && ob_get_length() > 0) {
             $response->setContent(ob_get_contents());
         }
 
         ob_end_clean();
-
-        $this->kernel->terminate($request, $response);
         return $response;
     }
 
