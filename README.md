@@ -12,12 +12,11 @@ LaravelS: Speed up Laravel/Lumen with Swoole, 'S' means Swoole, Speed, High perf
 ## Install
 
 ```Bash
-//require package
+#require package
 composer require "hhxsv5/laravel-s:~1.0" -vvv
-//publish config
+#publish config
 php artisan vendor:publish --provider="Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider"
-//change config/laravels.php
-//listen_ip, lisent_port ...
+#change config/laravels.php: listen_ip, lisent_port ...
 ```
 
 ## Run Demo
