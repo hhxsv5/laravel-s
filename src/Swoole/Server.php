@@ -36,13 +36,15 @@ class Server
         $this->sw->on('WorkerStop', [$this, 'onWorkerStop']);
         $this->sw->on('WorkerExit', [$this, 'onWorkerExit']);
         $this->sw->on('WorkerError', [$this, 'onWorkerError']);
-        $this->sw->on('request', [$this, 'onRequest']);
+        $this->sw->on('Request', [$this, 'onRequest']);
     }
 
     public function onStart(\swoole_http_server $server)
     {
+        global $argv;
+        $title = sprintf('laravels: php-%s-master-process', implode('-', $argv));
+        $this->setProcessTitle($title);
         //save master pid
-        swoole_set_process_name('laravels-master-process');
     }
 
     public function onShutdown(\swoole_http_server $server)
@@ -52,12 +54,16 @@ class Server
 
     public function onManagerStart(\swoole_http_server $server)
     {
-        swoole_set_process_name('laravels-manager-process');
+        global $argv;
+        $title = sprintf('laravels: php-%s-manager-process', implode('-', $argv));
+        $this->setProcessTitle($title);
     }
 
     public function onWorkerStart(\swoole_http_server $server, $workerId)
     {
-        swoole_set_process_name('laravels-worker-process-' . $workerId);
+        global $argv;
+        $title = sprintf('laravels: php-%s-worker-process', implode('-', $argv));
+        $this->setProcessTitle($title);
 
         //todo: reload
         $this->laravel->prepareLaravel();
@@ -90,6 +96,15 @@ class Server
     {
         $this->bind();
         $this->sw->start();
+    }
+
+    protected function setProcessTitle($title)
+    {
+        if (function_exists('cli_set_process_title')) {
+            cli_set_process_title($title);
+        } elseif (function_exists('swoole_set_process_name')) {
+            swoole_set_process_name($title);
+        }
     }
 
 }
