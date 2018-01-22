@@ -30,7 +30,6 @@ class LaravelSCommand extends Command
                 $svrConf = config('laravels');
                 $s = LaravelS::getInstance($laravelConf, $svrConf);
                 $s->run();
-                $this->info('LaravelS is running...');
                 break;
             case 'stop':
                 $this->info('stopped');

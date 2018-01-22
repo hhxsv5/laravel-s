@@ -24,6 +24,7 @@ class Request
         $files = isset($this->swooleRequest->files) ? $this->swooleRequest->files : [];
 
         foreach ($headers as $key => $value) {
+            $key = str_replace('-', '_', $key);
             $server['http_' . $key] = $value;
         }
         $server = array_change_key_case($server, CASE_UPPER);
