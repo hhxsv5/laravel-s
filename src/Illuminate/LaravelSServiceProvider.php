@@ -11,7 +11,7 @@ class LaravelSServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__ . '/../Config/laravels.php' => config_path('laravels.php'),
-        ]);
+        ], 'config');
 
     }
 
