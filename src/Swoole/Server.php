@@ -11,10 +11,10 @@ class Server
 
     public function __construct(array $svrConf = [], Laravel $laravel)
     {
-        $ip = isset($svrConf['ip']) ? $svrConf['ip'] : '0.0.0.0';
-        $port = isset($svrConf['port']) ? $svrConf['port'] : 8841;
+        $ip = isset($svrConf['listen_ip']) ? $svrConf['listen_ip'] : '0.0.0.0';
+        $port = isset($svrConf['listen_port']) ? $svrConf['listen_port'] : 8841;
 
-        $settings = isset($svrConf['settings']) ? $svrConf['settings'] : [];
+        $settings = isset($svrConf['swoole']) ? $svrConf['swoole'] : [];
 
         if (isset($settings['ssl_cert_file'], $settings['ssl_key_file'])) {
             $this->sw = new \swoole_http_server($ip, $port, SWOOLE_PROCESS, SWOOLE_SOCK_TCP | SWOOLE_SSL);

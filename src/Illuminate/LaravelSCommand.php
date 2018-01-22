@@ -26,9 +26,9 @@ class LaravelSCommand extends Command
         $action = $this->argument('action');
         switch ($action) {
             case 'start':
-                $svrConf = ['ip' => '0.0.0.0', 'port' => 8011, 'settings' => [/*swoole settings*/]];
                 $laravelConf = ['rootPath' => base_path()];
-                $s = LaravelS::getInstance($svrConf, $laravelConf);
+                $svrConf = config('laravels');
+                $s = LaravelS::getInstance($laravelConf, $svrConf);
                 $s->run();
                 $this->info('LaravelS is running...');
                 break;

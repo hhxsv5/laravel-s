@@ -17,7 +17,7 @@ class LaravelS
 
     protected $server;
 
-    private function __construct(array $svrConf, array $laravelConf)
+    private function __construct(array $laravelConf, array $svrConf)
     {
         $laravel = new Laravel($laravelConf);
         $this->server = new Server($svrConf, $laravel);
@@ -53,10 +53,10 @@ class LaravelS
 
     }
 
-    public static function getInstance(array $svrConf = [], array $laravelConf = [])
+    public static function getInstance(array $laravelConf = [], array $svrConf = [])
     {
         if (self::$s === null) {
-            self::$s = new self($svrConf, $laravelConf);
+            self::$s = new static($svrConf, $laravelConf);
         }
         return self::$s;
     }
