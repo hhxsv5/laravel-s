@@ -29,7 +29,7 @@ composer require "hhxsv5/laravel-s:~1.0" -vvv
 php artisan vendor:publish --provider="Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider"
 ```
 
-4. Change config/laravels.php: listen_ip, lisent_port ...
+4. Change config/laravels.php: listen_ip, listen_port ...
 
 ## Run Demo
 
