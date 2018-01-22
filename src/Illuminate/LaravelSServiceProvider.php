@@ -7,15 +7,20 @@ use Illuminate\Support\ServiceProvider;
 class LaravelSServiceProvider extends ServiceProvider
 {
 
-    protected $defer = true;
-
     public function boot()
     {
-        //
+        $this->publishes([
+            __DIR__ . '/../Config/laravels.php' => config_path('laravels.php'),
+        ]);
+
     }
 
     public function register()
     {
+        $this->mergeConfigFrom(
+            __DIR__ . '/../Config/laravels.php', 'laravels'
+        );
+
         $this->commands(LaravelSCommand::class);
     }
 
