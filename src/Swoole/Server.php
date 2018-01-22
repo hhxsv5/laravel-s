@@ -31,6 +31,7 @@ class Server
     {
         $this->sw->on('Start', [$this, 'onStart']);
         $this->sw->on('Shutdown', [$this, 'onShutdown']);
+        $this->sw->on('ManagerStart', [$this, 'onManagerStart']);
         $this->sw->on('WorkerStart', [$this, 'onWorkerStart']);
         $this->sw->on('WorkerStop', [$this, 'onWorkerStop']);
         $this->sw->on('WorkerExit', [$this, 'onWorkerExit']);
@@ -41,6 +42,7 @@ class Server
     public function onStart(\swoole_http_server $server)
     {
         //save master pid
+        swoole_set_process_name('laravels-master-process');
     }
 
     public function onShutdown(\swoole_http_server $server)
@@ -48,8 +50,15 @@ class Server
         //remove master pid
     }
 
+    public function onManagerStart(\swoole_http_server $server)
+    {
+        swoole_set_process_name('laravels-manager-process');
+    }
+
     public function onWorkerStart(\swoole_http_server $server, $workerId)
     {
+        swoole_set_process_name('laravels-worker-process-' . $workerId);
+
         //todo: reload
         $this->laravel->prepareLaravel();
     }
