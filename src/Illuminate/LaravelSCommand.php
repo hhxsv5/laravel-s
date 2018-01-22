@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 
 class LaravelSCommand extends Command
 {
-    protected $signature = 'laravels {action:start|stop|reload}';
+    protected $signature = 'laravels {action : start|stop|reload}';
 
     protected $description = 'LaravelS Console Tool';
 
