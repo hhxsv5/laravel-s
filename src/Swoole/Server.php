@@ -2,19 +2,17 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
-use Hhxsv5\LaravelS\Illuminate\Laravel;
-
 class Server
 {
     protected $svrConf;
     protected $sw;
-    protected $laravel;
 
-    public function __construct(array $svrConf = [], Laravel $laravel)
+    protected function __construct(array $svrConf = [])
     {
+        $this->svrConf = $svrConf;
+
         $ip = isset($svrConf['listen_ip']) ? $svrConf['listen_ip'] : '0.0.0.0';
         $port = isset($svrConf['listen_port']) ? $svrConf['listen_port'] : 8841;
-
         $settings = isset($svrConf['swoole']) ? $svrConf['swoole'] : [];
 
         if (isset($settings['ssl_cert_file'], $settings['ssl_key_file'])) {
@@ -22,10 +20,8 @@ class Server
         } else {
             $this->sw = new \swoole_http_server($ip, $port, SWOOLE_PROCESS);
         }
-        $this->sw->set($settings);
 
-        $this->laravel = $laravel;
-        $this->svrConf = $svrConf;
+        $this->sw->set($settings);
     }
 
     protected function bind()
@@ -68,8 +64,6 @@ class Server
         global $argv;
         $title = sprintf('laravels: php-%s-worker-process', implode('-', $argv));
         $this->setProcessTitle($title);
-
-        $this->laravel->prepareLaravel();
     }
 
     public function onWorkerStop(\swoole_http_server $server, $workerId)
@@ -89,10 +83,7 @@ class Server
 
     public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
     {
-        $swooleRequest = new Request($request);
-        $laravelResponse = $this->laravel->handle($swooleRequest->toIlluminateRequest());
-        $swooleResponse = new Response($response, $laravelResponse);
-        $swooleResponse->send();
+
     }
 
     public function run()

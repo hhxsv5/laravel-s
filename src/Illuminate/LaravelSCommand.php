@@ -49,7 +49,7 @@ class LaravelSCommand extends Command
             }
         }
 
-        $s = LaravelS::getInstance($laravelConf, $svrConf);
+        $s = LaravelS::getInstance($svrConf, $laravelConf);
         $s->run();
     }
 

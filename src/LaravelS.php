@@ -3,6 +3,8 @@
 namespace Hhxsv5\LaravelS;
 
 use Hhxsv5\LaravelS\Illuminate\Laravel;
+use Hhxsv5\LaravelS\Swoole\Request;
+use Hhxsv5\LaravelS\Swoole\Response;
 use Hhxsv5\LaravelS\Swoole\Server;
 
 
@@ -11,16 +13,36 @@ use Hhxsv5\LaravelS\Swoole\Server;
  * Laravel Request => Laravel handle => Laravel Response
  * Laravel Response => Swoole Request
  */
-class LaravelS
+class LaravelS extends Server
 {
     protected static $s;
 
-    protected $server;
+    protected $laravelConf;
+    protected $laravel;
 
-    private function __construct(array $laravelConf, array $svrConf)
+    protected function __construct(array $svrConf = [], array $laravelConf)
     {
-        $laravel = new Laravel($laravelConf);
-        $this->server = new Server($svrConf, $laravel);
+        parent::__construct($svrConf);
+        $this->laravelConf = $laravelConf;
+    }
+
+    public function onWorkerStart(\swoole_http_server $server, $workerId)
+    {
+        parent::onWorkerStart($server, $workerId);
+
+        //Delay to create Laravel Object to implements gracefully reload
+        $this->laravel = new Laravel($this->laravelConf);
+        $this->laravel->prepareLaravel();
+    }
+
+    public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
+    {
+        parent::onRequest($request, $response);
+
+        $swooleRequest = new Request($request);
+        $laravelResponse = $this->laravel->handle($swooleRequest->toIlluminateRequest());
+        $swooleResponse = new Response($response, $laravelResponse);
+        $swooleResponse->send();
     }
 
     private function __clone()
@@ -38,11 +60,6 @@ class LaravelS
         self::$s = $this;
     }
 
-    public function run()
-    {
-        $this->server->run();
-    }
-
     public function reload()
     {
 
@@ -53,10 +70,10 @@ class LaravelS
 
     }
 
-    public static function getInstance(array $laravelConf = [], array $svrConf = [])
+    public static function getInstance(array $svrConf = [], array $laravelConf = [])
     {
         if (self::$s === null) {
-            self::$s = new static($laravelConf, $svrConf);
+            self::$s = new static($svrConf, $laravelConf);
         }
         return self::$s;
     }
