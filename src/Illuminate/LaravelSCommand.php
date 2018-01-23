@@ -49,7 +49,7 @@ class LaravelSCommand extends Command
     {
         $svrConf = config('laravels');
         if (!file_exists($svrConf['pid_file'])) {
-            $this->info('LaravelS: stopped.');
+            $this->info('LaravelS: already stopped.');
             return;
         }
 
