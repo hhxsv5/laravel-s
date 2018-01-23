@@ -1,5 +1,5 @@
 # laravel-s
-LaravelS: Speed up Laravel/Lumen with Swoole, 'S' means Swoole, Speed, High performance.
+LaravelS: Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.
 
 ## Requirements
 
@@ -29,7 +29,7 @@ composer require "hhxsv5/laravel-s:~1.0" -vvv
 php artisan vendor:publish --provider="Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider"
 ```
 
-4. Change config/laravels.php: listen_ip, listen_port ...
+4. Change config/laravels.php: listen_ip, listen_port, [swoole's settings](https://wiki.swoole.com/wiki/page/274.html) ...
 
 ## Run Demo
 
