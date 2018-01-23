@@ -59,11 +59,19 @@ class Server
 
     public function onWorkerStart(\swoole_http_server $server, $workerId)
     {
-        \Log::info('Laravels:onWorkerStart: already included files(cannot work by reload)', get_included_files());
+        //\Log::info('Laravels:onWorkerStart: already included files(cannot work by reload)', get_included_files());
 
         global $argv;
         $title = sprintf('php %s worker process %d', implode(' ', $argv), $workerId);
         $this->setProcessTitle($title);
+
+        //clear opcode cache
+        if (function_exists('opcache_reset')) {
+            opcache_reset();
+        }
+        if (function_exists('apc_clear_cache')) {
+            apc_clear_cache();
+        }
     }
 
     public function onWorkerStop(\swoole_http_server $server, $workerId)
