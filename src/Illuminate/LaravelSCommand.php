@@ -26,17 +26,56 @@ class LaravelSCommand extends Command
         $action = $this->argument('action');
         switch ($action) {
             case 'start':
-                $laravelConf = ['rootPath' => base_path()];
-                $svrConf = config('laravels');
-                $s = LaravelS::getInstance($laravelConf, $svrConf);
-                $s->run();
+                $this->start();
                 break;
             case 'stop':
-                $this->info('stopped');
+                $this->stop();
                 break;
             case 'reload':
-                $this->info('reloaded');
+                $this->reload();
                 break;
         }
+    }
+
+    protected function start()
+    {
+        $laravelConf = ['rootPath' => base_path()];
+        $svrConf = config('laravels');
+        $s = LaravelS::getInstance($laravelConf, $svrConf);
+        $s->run();
+    }
+
+    protected function stop()
+    {
+        $svrConf = config('laravels');
+        if (!file_exists($svrConf['pid_file'])) {
+            $this->info('LaravelS: stopped.');
+            return;
+        }
+
+        $pid = file_get_contents($svrConf['pid_file']);
+        if (!posix_kill($pid, SIG_DFL)) {
+            $this->info('LaravelS: stopped.');
+            return;
+        }
+
+        posix_kill($pid, SIGTERM);
+    }
+
+    protected function reload()
+    {
+        $svrConf = config('laravels');
+        if (!file_exists($svrConf['pid_file'])) {
+            $this->error('LaravelS: cannot find pid file.');
+            return;
+        }
+
+        $pid = file_get_contents($svrConf['pid_file']);
+        if (!posix_kill($pid, SIG_DFL)) {
+            $this->error("LaravelS: pid[{$pid}] does not exist, or permission denied.");
+            return;
+        }
+
+        posix_kill($pid, SIGUSR1);
     }
 }

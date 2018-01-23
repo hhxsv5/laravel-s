@@ -6,6 +6,7 @@ use Hhxsv5\LaravelS\Illuminate\Laravel;
 
 class Server
 {
+    protected $svrConf;
     protected $sw;
     protected $laravel;
 
@@ -45,11 +46,14 @@ class Server
         $title = sprintf('laravels: php-%s-master-process', implode('-', $argv));
         $this->setProcessTitle($title);
         //save master pid
+
+        file_put_contents($this->svrConf['pid_file'], $server->manager_pid);
     }
 
     public function onShutdown(\swoole_http_server $server)
     {
         //remove master pid
+        @unlink($this->svrConf['pid_file']);
     }
 
     public function onManagerStart(\swoole_http_server $server)
