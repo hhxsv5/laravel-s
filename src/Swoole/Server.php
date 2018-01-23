@@ -63,6 +63,7 @@ class Server
 
     public function onWorkerStart(\swoole_http_server $server, $workerId)
     {
+        file_put_contents(storage_path('test.log'), json_encode(get_included_files()));
         \Log::info('Laravels:onWorkerStart: cannot reload file list', get_included_files());
 
         global $argv;
