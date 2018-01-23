@@ -59,7 +59,11 @@ class LaravelSCommand extends Command
             return;
         }
 
-        posix_kill($pid, SIGTERM);
+        if (posix_kill($pid, SIGTERM)) {
+            $this->info('LaravelS: stopped.');
+        } else {
+            $this->error('LaravelS: stop failed.');
+        }
     }
 
     protected function reload()
@@ -76,6 +80,10 @@ class LaravelSCommand extends Command
             return;
         }
 
-        posix_kill($pid, SIGUSR1);
+        if (posix_kill($pid, SIGUSR1)) {
+            $this->info('LaravelS: reloaded.');
+        } else {
+            $this->error('LaravelS: reload failed.');
+        }
     }
 }
