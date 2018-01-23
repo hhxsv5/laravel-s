@@ -3,11 +3,11 @@ LaravelS: Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High perfor
 
 ## Requirements
 
-- PHP >= 5.5.9
-
-- Swoole >= 1.7.7
-
-- Laravel/Lumen >= 5.1
+| Dependency | Requirement |
+| -------- | -------- |
+| [PHP](https://secure.php.net/manual/en/install.php) | `>= 5.5.9` |
+| [Swoole](https://www.swoole.com/) | `>= 1.7.7` |
+| [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
 
 ## Install
 
