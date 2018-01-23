@@ -41,8 +41,8 @@ class LaravelSCommand extends Command
     {
         $laravelConf = ['rootPath' => base_path()];
         $svrConf = config('laravels');
-        if (file_exists($svrConf['pid_file'])) {
-            $pid = file_get_contents($svrConf['pid_file']);
+        if (file_exists($svrConf['swoole']['pid_file'])) {
+            $pid = file_get_contents($svrConf['swoole']['pid_file']);
             if (posix_kill($pid, 0)) {
                 $this->warn("LaravelS: PID[{$pid}] already running.");
                 return;
@@ -55,13 +55,13 @@ class LaravelSCommand extends Command
 
     protected function stop()
     {
-        $svrConf = config('laravels');
-        if (!file_exists($svrConf['pid_file'])) {
+        $pidFile = config('laravels.swoole.pid_file');
+        if (!file_exists($pidFile)) {
             $this->info('LaravelS: already stopped.');
             return;
         }
 
-        $pid = file_get_contents($svrConf['pid_file']);
+        $pid = file_get_contents($pidFile);
         if (!posix_kill($pid, 0)) {
             $this->warn("LaravelS: PID[{$pid}] does not exist, or permission denied.");
             return;
@@ -76,13 +76,13 @@ class LaravelSCommand extends Command
 
     protected function reload()
     {
-        $svrConf = config('laravels');
-        if (!file_exists($svrConf['pid_file'])) {
+        $pidFile = config('laravels.swoole.pid_file');
+        if (!file_exists($pidFile)) {
             $this->error('LaravelS: it seems that LaravelS is not running.');
             return;
         }
 
-        $pid = file_get_contents($svrConf['pid_file']);
+        $pid = file_get_contents($pidFile);
         if (!posix_kill($pid, 0)) {
             $this->error("LaravelS: PID[{$pid}] does not exist, or permission denied.");
             return;

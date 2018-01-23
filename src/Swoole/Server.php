@@ -21,7 +21,13 @@ class Server
             $this->sw = new \swoole_http_server($ip, $port, SWOOLE_PROCESS);
         }
 
-        $this->sw->set($settings);
+        $default = [
+            'reload_async'      => true,
+            'max_wait_time'     => 60,
+            'enable_reuse_port' => true,
+        ];
+
+        $this->sw->set($settings + $default);
     }
 
     protected function bind()
@@ -41,13 +47,11 @@ class Server
         global $argv;
         $title = sprintf('php %s master process', implode(' ', $argv));
         $this->setProcessTitle($title);
-
-        file_put_contents($this->conf['pid_file'], $server->master_pid);
     }
 
     public function onShutdown(\swoole_http_server $server)
     {
-        @unlink($this->conf['pid_file']);
+
     }
 
     public function onManagerStart(\swoole_http_server $server)
@@ -84,7 +88,7 @@ class Server
 
     }
 
-    public function onWorkerError(\swoole_http_server $server, $workerId, $workerPid, $exitCode, $signal)
+    public function onWorkerError(\swoole_http_server $server, $workerId, $workerPId, $exitCode, $signal)
     {
 
     }
