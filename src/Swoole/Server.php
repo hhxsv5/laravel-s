@@ -23,7 +23,7 @@ class Server
             $this->sw = new \swoole_http_server($ip, $port, SWOOLE_PROCESS);
         }
         $this->sw->set($settings);
-        
+
         $this->laravel = $laravel;
         $this->svrConf = $svrConf;
     }
@@ -46,7 +46,7 @@ class Server
         $title = sprintf('laravels: php-%s-master-process', implode('-', $argv));
         $this->setProcessTitle($title);
 
-        file_put_contents($this->svrConf['pid_file'], $server->manager_pid);
+        file_put_contents($this->svrConf['pid_file'], $server->master_pid);
     }
 
     public function onShutdown(\swoole_http_server $server)
