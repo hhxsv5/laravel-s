@@ -45,14 +45,12 @@ class Server
         global $argv;
         $title = sprintf('laravels: php-%s-master-process', implode('-', $argv));
         $this->setProcessTitle($title);
-        //save master pid
 
         file_put_contents($this->svrConf['pid_file'], $server->manager_pid);
     }
 
     public function onShutdown(\swoole_http_server $server)
     {
-        //remove master pid
         @unlink($this->svrConf['pid_file']);
     }
 
@@ -65,11 +63,12 @@ class Server
 
     public function onWorkerStart(\swoole_http_server $server, $workerId)
     {
+        \Log::info('Laravels:onWorkerStart: cannot reload file list', get_included_files());
+
         global $argv;
         $title = sprintf('laravels: php-%s-worker-process', implode('-', $argv));
         $this->setProcessTitle($title);
 
-        //todo: reload
         $this->laravel->prepareLaravel();
     }
 
