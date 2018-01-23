@@ -22,10 +22,10 @@ class Server
         } else {
             $this->sw = new \swoole_http_server($ip, $port, SWOOLE_PROCESS);
         }
-
         $this->sw->set($settings);
-
+        
         $this->laravel = $laravel;
+        $this->svrConf = $svrConf;
     }
 
     protected function bind()
