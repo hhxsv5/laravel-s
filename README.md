@@ -35,7 +35,6 @@ php artisan vendor:publish --provider="Hhxsv5\LaravelS\Illuminate\LaravelSServic
 
 ```Bash
 php artisan laravels {action : start|stop|reload}
-#todo stop|reload
 ```
 
 ## License
