@@ -41,6 +41,17 @@ class LaravelSCommand extends Command
     {
         $laravelConf = ['rootPath' => base_path()];
         $svrConf = config('laravels');
+        if (file_exists($svrConf['pid_file'])) {
+            $this->warn('LaravelS: pid file already exists. already running?');
+            return;
+        }
+
+        $pid = file_get_contents($svrConf['pid_file']);
+        if (posix_kill($pid, 0)) {
+            $this->error("LaravelS: pid[{$pid}] already running.");
+            return;
+        }
+
         $s = LaravelS::getInstance($laravelConf, $svrConf);
         $s->run();
     }
