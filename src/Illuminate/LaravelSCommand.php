@@ -55,14 +55,14 @@ class LaravelSCommand extends Command
 
         $pid = file_get_contents($svrConf['pid_file']);
         if (!posix_kill($pid, 0)) {
-            $this->info('LaravelS: stopped.');
+            $this->info("LaravelS: pid[{$pid}] does not exist, or permission denied.");
             return;
         }
 
         if (posix_kill($pid, SIGTERM)) {
-            $this->info('LaravelS: stopped.');
+            $this->info("LaravelS: pid[{$pid}] stopped.");
         } else {
-            $this->error('LaravelS: stop failed.');
+            $this->error("LaravelS: pid[{$pid}] stop failed.");
         }
     }
 
@@ -81,9 +81,9 @@ class LaravelSCommand extends Command
         }
 
         if (posix_kill($pid, SIGUSR1)) {
-            $this->info('LaravelS: reloaded.');
+            $this->info("LaravelS: pid[{$pid}] reloaded.");
         } else {
-            $this->error('LaravelS: reload failed.');
+            $this->error("LaravelS: pid[{$pid}] reload failed.");
         }
     }
 }
