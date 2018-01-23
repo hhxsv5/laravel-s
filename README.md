@@ -37,6 +37,12 @@ php artisan vendor:publish --provider="Hhxsv5\LaravelS\Illuminate\LaravelSServic
 php artisan laravels {action : start|stop|reload}
 ```
 
+## TODO
+
+- gzip
+
+- static resource
+
 ## License
 
 [MIT](https://github.com/hhxsv5/laravel-s/blob/master/LICENSE)
