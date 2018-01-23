@@ -54,7 +54,7 @@ class LaravelSCommand extends Command
         }
 
         $pid = file_get_contents($svrConf['pid_file']);
-        if (!posix_kill($pid, SIG_DFL)) {
+        if (!posix_kill($pid, 0)) {
             $this->info('LaravelS: stopped.');
             return;
         }
@@ -71,7 +71,7 @@ class LaravelSCommand extends Command
         }
 
         $pid = file_get_contents($svrConf['pid_file']);
-        if (!posix_kill($pid, SIG_DFL)) {
+        if (!posix_kill($pid, 0)) {
             $this->error("LaravelS: pid[{$pid}] does not exist, or permission denied.");
             return;
         }
