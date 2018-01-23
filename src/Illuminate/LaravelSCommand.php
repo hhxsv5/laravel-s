@@ -78,7 +78,7 @@ class LaravelSCommand extends Command
     {
         $svrConf = config('laravels');
         if (!file_exists($svrConf['pid_file'])) {
-            $this->error('LaravelS: cannot find pid file.');
+            $this->error('LaravelS: it seems that LaravelS is not running.');
             return;
         }
 
