@@ -4,16 +4,16 @@ namespace Hhxsv5\LaravelS\Swoole;
 
 class Server
 {
-    protected $svrConf;
+    protected $conf;
     protected $sw;
 
-    protected function __construct(array $svrConf = [])
+    protected function __construct(array $conf = [])
     {
-        $this->svrConf = $svrConf;
+        $this->conf = $conf;
 
-        $ip = isset($svrConf['listen_ip']) ? $svrConf['listen_ip'] : '0.0.0.0';
-        $port = isset($svrConf['listen_port']) ? $svrConf['listen_port'] : 8841;
-        $settings = isset($svrConf['swoole']) ? $svrConf['swoole'] : [];
+        $ip = isset($conf['listen_ip']) ? $conf['listen_ip'] : '0.0.0.0';
+        $port = isset($conf['listen_port']) ? $conf['listen_port'] : 8841;
+        $settings = isset($conf['swoole']) ? $conf['swoole'] : [];
 
         if (isset($settings['ssl_cert_file'], $settings['ssl_key_file'])) {
             $this->sw = new \swoole_http_server($ip, $port, SWOOLE_PROCESS, SWOOLE_SOCK_TCP | SWOOLE_SSL);
@@ -42,12 +42,12 @@ class Server
         $title = sprintf('php %s master process', implode(' ', $argv));
         $this->setProcessTitle($title);
 
-        file_put_contents($this->svrConf['pid_file'], $server->master_pid);
+        file_put_contents($this->conf['pid_file'], $server->master_pid);
     }
 
     public function onShutdown(\swoole_http_server $server)
     {
-        @unlink($this->svrConf['pid_file']);
+        @unlink($this->conf['pid_file']);
     }
 
     public function onManagerStart(\swoole_http_server $server)
