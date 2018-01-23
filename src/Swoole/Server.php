@@ -63,7 +63,7 @@ class Server
 
     public function onWorkerStart(\swoole_http_server $server, $workerId)
     {
-        \Log::info('Laravels:onWorkerStart: included files', json_decode(json_encode(get_included_files()), true));
+        \Log::info('Laravels:onWorkerStart: already included files', json_decode(json_encode(get_included_files()), true));
 
         global $argv;
         $title = sprintf('laravels: php-%s-worker-process', implode('-', $argv));
