@@ -44,7 +44,7 @@ class LaravelSCommand extends Command
         if (file_exists($svrConf['pid_file'])) {
             $pid = file_get_contents($svrConf['pid_file']);
             if (posix_kill($pid, 0)) {
-                $this->warn("LaravelS: pid[{$pid}] already running.");
+                $this->warn("LaravelS: PID[{$pid}] already running.");
                 return;
             }
         }
@@ -63,14 +63,14 @@ class LaravelSCommand extends Command
 
         $pid = file_get_contents($svrConf['pid_file']);
         if (!posix_kill($pid, 0)) {
-            $this->info("LaravelS: pid[{$pid}] does not exist, or permission denied.");
+            $this->warn("LaravelS: PID[{$pid}] does not exist, or permission denied.");
             return;
         }
 
         if (posix_kill($pid, SIGTERM)) {
-            $this->info("LaravelS: pid[{$pid}] stopped.");
+            $this->info("LaravelS: PID[{$pid}] has been stopped successfully.");
         } else {
-            $this->error("LaravelS: pid[{$pid}] stop failed.");
+            $this->error("LaravelS: PID[{$pid}] has been stopped failed.");
         }
     }
 
@@ -84,14 +84,14 @@ class LaravelSCommand extends Command
 
         $pid = file_get_contents($svrConf['pid_file']);
         if (!posix_kill($pid, 0)) {
-            $this->error("LaravelS: pid[{$pid}] does not exist, or permission denied.");
+            $this->error("LaravelS: PID[{$pid}] does not exist, or permission denied.");
             return;
         }
 
         if (posix_kill($pid, SIGUSR1)) {
-            $this->info("LaravelS: pid[{$pid}] reloaded.");
+            $this->info("LaravelS: PID[{$pid}] has been reloaded successfully.");
         } else {
-            $this->error("LaravelS: pid[{$pid}] reload failed.");
+            $this->error("LaravelS: PID[{$pid}] has been reloaded failed.");
         }
     }
 }
