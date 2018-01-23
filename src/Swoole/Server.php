@@ -39,7 +39,7 @@ class Server
     public function onStart(\swoole_http_server $server)
     {
         global $argv;
-        $title = sprintf('laravels: php-%s-master-process', implode('-', $argv));
+        $title = sprintf('php %s master process', implode(' ', $argv));
         $this->setProcessTitle($title);
 
         file_put_contents($this->svrConf['pid_file'], $server->master_pid);
@@ -53,7 +53,7 @@ class Server
     public function onManagerStart(\swoole_http_server $server)
     {
         global $argv;
-        $title = sprintf('laravels: php-%s-manager-process', implode('-', $argv));
+        $title = sprintf('php %s manager process', implode(' ', $argv));
         $this->setProcessTitle($title);
     }
 
@@ -62,7 +62,7 @@ class Server
         \Log::info('Laravels:onWorkerStart: already included files(cannot work by reload)', get_included_files());
 
         global $argv;
-        $title = sprintf('laravels: php-%s-worker-process', implode('-', $argv));
+        $title = sprintf('php %s worker process %d', implode(' ', $argv), $workerId);
         $this->setProcessTitle($title);
     }
 
