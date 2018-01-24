@@ -24,9 +24,9 @@ class Laravel
     protected $publicPath;
 
     protected static $staticBlackList = [
-        'index.php'  => 1,
-        '.htaccess'  => 1,
-        'web.config' => 1,
+        '/index.php'  => 1,
+        '/.htaccess'  => 1,
+        '/web.config' => 1,
     ];
 
     public function __construct(array $conf = [])
