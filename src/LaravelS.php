@@ -7,6 +7,7 @@ use Hhxsv5\LaravelS\Swoole\DynamicResponse;
 use Hhxsv5\LaravelS\Swoole\Request;
 use Hhxsv5\LaravelS\Swoole\Server;
 use Hhxsv5\LaravelS\Swoole\StaticResponse;
+use Illuminate\Http\Request as IlluminateRequest;
 
 
 /**
@@ -43,31 +44,30 @@ class LaravelS extends Server
     {
         parent::onRequest($request, $response);
 
-        $success = $this->handleStaticResource($request, $response);
+        $laravelRequest = (new Request($request))->toIlluminateRequest();
+        $success = $this->handleStaticResource($laravelRequest, $response);
         if (!$success) {
-            $this->handleDynamicResource($request, $response);
+            $this->handleDynamicResource($laravelRequest, $response);
         }
 
     }
 
-    protected function handleStaticResource(\swoole_http_request $request, \swoole_http_response $response)
+    protected function handleStaticResource(IlluminateRequest $laravelRequest, \swoole_http_response $swooleResponse)
     {
         if (!empty($this->conf['handle_static'])) {
-            $laravelRequest = (new Request($request))->toIlluminateRequest();
             $laravelResponse = $this->laravel->handleStatic($laravelRequest);
             if ($laravelResponse) {
-                (new StaticResponse($response, $laravelResponse))->send();
+                (new StaticResponse($swooleResponse, $laravelResponse))->send();
                 return true;
             }
         }
         return false;
     }
 
-    protected function handleDynamicResource(\swoole_http_request $request, \swoole_http_response $response)
+    protected function handleDynamicResource(IlluminateRequest $laravelRequest, \swoole_http_response $swooleResponse)
     {
-        $laravelRequest = (new Request($request))->toIlluminateRequest();
         $laravelResponse = $this->laravel->handleDynamic($laravelRequest);
-        (new DynamicResponse($response, $laravelResponse))->send();
+        (new DynamicResponse($swooleResponse, $laravelResponse))->send();
         return true;
     }
 

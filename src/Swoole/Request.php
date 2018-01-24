@@ -14,7 +14,7 @@ class Request
         $this->swooleRequest = $request;
     }
 
-    public function &toIlluminateRequest()
+    public function toIlluminateRequest()
     {
         $get = isset($this->swooleRequest->get) ? $this->swooleRequest->get : [];
         $post = isset($this->swooleRequest->post) ? $this->swooleRequest->post : [];
