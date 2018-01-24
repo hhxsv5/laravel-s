@@ -57,6 +57,7 @@ class LaravelS extends Server
             $laravelResponse = $this->laravel->handleStatic($laravelRequest);
             if ($laravelResponse) {
                 (new StaticResponse($response, $laravelResponse))->send();
+                return true;
             }
         }
         return false;

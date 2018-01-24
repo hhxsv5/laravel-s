@@ -101,8 +101,7 @@ class Laravel
         $uri = $request->getRequestUri();
         $file = $this->publicPath . $uri;
         if (is_file($file)) {
-            $response = new BinaryFileResponse($file, 200, [], true, 'attachment');
-            return $response;
+            return new BinaryFileResponse($file, 200, [], true, 'attachment');
         }
         return false;
     }
