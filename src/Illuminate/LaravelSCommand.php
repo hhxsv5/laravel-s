@@ -34,6 +34,8 @@ class LaravelSCommand extends Command
             case 'reload':
                 $this->reload();
                 break;
+            default:
+                $this->info('laravels {action : start|stop|reload}');
         }
     }
 
