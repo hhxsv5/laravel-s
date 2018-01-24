@@ -3,21 +3,25 @@
 namespace Hhxsv5\LaravelS;
 
 use Hhxsv5\LaravelS\Illuminate\Laravel;
+use Hhxsv5\LaravelS\Swoole\DynamicResponse;
 use Hhxsv5\LaravelS\Swoole\Request;
-use Hhxsv5\LaravelS\Swoole\Response;
 use Hhxsv5\LaravelS\Swoole\Server;
+use Hhxsv5\LaravelS\Swoole\StaticResponse;
 
 
 /**
  * Swoole Request => Laravel Request
- * Laravel Request => Laravel handle => Laravel Response
- * Laravel Response => Swoole Request
+ * Laravel Request => Laravel handle => Laravel ResponseInterface
+ * Laravel ResponseInterface => Swoole Request
  */
 class LaravelS extends Server
 {
     protected static $s;
 
     protected $laravelConf;
+    /**
+     * @var Laravel $laravel
+     */
     protected $laravel;
 
     protected function __construct(array $svrConf = [], array $laravelConf)
@@ -39,10 +43,31 @@ class LaravelS extends Server
     {
         parent::onRequest($request, $response);
 
-        $swooleRequest = new Request($request);
-        $laravelResponse = $this->laravel->handle($swooleRequest->toIlluminateRequest());
-        $swooleResponse = new Response($response, $laravelResponse);
-        $swooleResponse->send();
+        $success = $this->handleStaticResource($request, $response);
+        if (!$success) {
+            $this->handleDynamicResource($request, $response);
+        }
+
+    }
+
+    protected function handleStaticResource(\swoole_http_request $request, \swoole_http_response $response)
+    {
+        if (!empty($this->conf['handle_static'])) {
+            $laravelRequest = (new Request($request))->toIlluminateRequest();
+            $laravelResponse = $this->laravel->handleStatic($laravelRequest);
+            if ($laravelResponse) {
+                (new StaticResponse($response, $laravelResponse))->send();
+            }
+        }
+        return false;
+    }
+
+    protected function handleDynamicResource(\swoole_http_request $request, \swoole_http_response $response)
+    {
+        $laravelRequest = (new Request($request))->toIlluminateRequest();
+        $laravelResponse = $this->laravel->handleDynamic($laravelRequest);
+        (new DynamicResponse($response, $laravelResponse))->send();
+        return true;
     }
 
     private function __clone()

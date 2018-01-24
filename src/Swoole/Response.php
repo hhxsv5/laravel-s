@@ -1,11 +1,11 @@
 <?php
 
-namespace Hhxsv5\LaravelS\Swoole;
 
+namespace Hhxsv5\LaravelS\Swoole;
 
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class Response
+abstract class Response implements ResponseInterface
 {
     protected $swooleResponse;
     protected $laravelResponse;
@@ -16,20 +16,23 @@ class Response
         $this->laravelResponse = $laravelResponse;
     }
 
-    public function send($acceptGzip = true)
+    public function sendStatusCode()
     {
-        // status
         $this->swooleResponse->status($this->laravelResponse->getStatusCode());
+    }
 
-        // headers
+    public function sendHeaders()
+    {
         $this->swooleResponse->header('Server', 'LaravelS');
         foreach ($this->laravelResponse->headers->allPreserveCase() as $name => $values) {
             foreach ($values as $value) {
                 $this->swooleResponse->header($name, $value);
             }
         }
+    }
 
-        // cookies
+    public function sendCookies()
+    {
         foreach ($this->laravelResponse->headers->getCookies() as $cookie) {
             $this->swooleResponse->cookie(
                 $cookie->getName(),
@@ -41,14 +44,19 @@ class Response
                 $cookie->isHttpOnly()
             );
         }
+    }
 
-        // check gzip
-        if ($acceptGzip) {
-            //TODO
-        }
+    public function gzip()
+    {
+        //TODO
+    }
 
-        // content
-        $content = $this->laravelResponse->getContent();
-        $this->swooleResponse->end($content);
+    public function send($acceptGzip = true)
+    {
+        $this->sendStatusCode();
+        $this->sendHeaders();
+        $this->sendCookies();
+        $this->gzip();
+        $this->sendContent();
     }
 }

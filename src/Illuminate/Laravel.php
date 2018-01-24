@@ -6,7 +6,7 @@ namespace Hhxsv5\LaravelS\Illuminate;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Cookie\CookieJar;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Laravel
@@ -21,10 +21,12 @@ class Laravel
     protected $conf = [];
 
     protected $isLumen = false;
+    protected $publicPath;
 
     public function __construct(array $conf = [])
     {
         $this->conf = $conf;
+        $this->publicPath = $this->app->make('path.public');
     }
 
     public function prepareLaravel()
@@ -65,12 +67,7 @@ class Laravel
         Request::enableHttpMethodParameterOverride();
     }
 
-    /**
-     * Laravel handles request and return response
-     * @param Request $request
-     * @return Response|SymfonyResponse
-     */
-    public function &handle(Request $request)
+    public function handleDynamic(Request $request)
     {
         ob_start();
 
@@ -97,6 +94,17 @@ class Laravel
 
         ob_end_clean();
         return $response;
+    }
+
+    public function handleStatic(Request $request)
+    {
+        $uri = $request->getRequestUri();
+        $file = $this->publicPath . $uri;
+        if (is_file($file)) {
+            $response = new BinaryFileResponse($file, 200, [], true, 'attachment');
+            return $response;
+        }
+        return false;
     }
 
     protected function clean(Request $request)

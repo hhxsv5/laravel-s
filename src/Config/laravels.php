@@ -1,10 +1,11 @@
 <?php
 return [
-    'listen_ip'   => env('LARAVELS_LISTEN_IP', '0.0.0.0'),
-    'listen_port' => env('LARAVELS_LISTEN_PORT', 8841),
-    'enable_gzip' => extension_loaded('zlib') && env('LARAVELS_ENABLE_GZIP', 1),
-    'server'      => env('LARAVELS_SERVER', 'LaravelS'),
-    'swoole'      => [
+    'listen_ip'     => env('LARAVELS_LISTEN_IP', '0.0.0.0'),
+    'listen_port'   => env('LARAVELS_LISTEN_PORT', 8841),
+    'enable_gzip'   => extension_loaded('zlib') && env('LARAVELS_ENABLE_GZIP', 1),
+    'server'        => env('LARAVELS_SERVER', 'LaravelS'),
+    'handle_static' => env('LARAVELS_HANDLE_STATIC', 1),
+    'swoole'        => [
         'dispatch_mode' => 2,
         'max_request'   => 3000,
         'daemonize'     => 1,
