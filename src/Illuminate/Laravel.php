@@ -26,7 +26,6 @@ class Laravel
     public function __construct(array $conf = [])
     {
         $this->conf = $conf;
-        $this->publicPath = $this->app->make('path.public');
     }
 
     public function prepareLaravel()
@@ -35,6 +34,7 @@ class Laravel
         $this->createApp();
         $this->createKernel();
         $this->setLaravel();
+        $this->publicPath = $this->app->make('path.public');
     }
 
     protected function bootstrap()
