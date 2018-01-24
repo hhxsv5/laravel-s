@@ -1,6 +1,18 @@
 # laravel-s
 LaravelS: Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.
 
+## Features
+
+- High performance Swoole
+
+- Built-in Http Server
+
+- Memory resident
+
+- Gracefully reload
+
+- Simple & Out of the box
+
 ## Requirements
 
 | Dependency | Requirement |
@@ -40,8 +52,6 @@ php artisan laravels {action : start|stop|reload}
 ## TODO
 
 - gzip
-
-- static resource
 
 ## License
 
