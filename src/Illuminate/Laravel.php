@@ -23,6 +23,12 @@ class Laravel
     protected $isLumen = false;
     protected $publicPath;
 
+    protected static $staticBlackList = [
+        'index.php'  => 1,
+        '.htaccess'  => 1,
+        'web.config' => 1,
+    ];
+
     public function __construct(array $conf = [])
     {
         $this->conf = $conf;
@@ -99,6 +105,10 @@ class Laravel
     public function handleStatic(Request $request)
     {
         $uri = $request->getRequestUri();
+        if (isset(self::$staticBlackList[$uri])) {
+            return false;
+        }
+
         $file = $this->publicPath . $uri;
         if (is_file($file)) {
             return new BinaryFileResponse($file, 200);
