@@ -49,6 +49,29 @@ php artisan vendor:publish --provider="Hhxsv5\LaravelS\Illuminate\LaravelSServic
 php artisan laravels {start|stop|restart|reload}
 ```
 
+## Important Notices
+
+- `global`, `static` variables which you declared are need to destroy(reset) manually.
+
+- Never use `superglobal` variables, like $GLOBALS, $_SERVER, $_GET, $_POST, $_FILES, $_COOKIE, $_SESSION, $_REQUEST, $_ENV
+
+- Infinitely appending element into `static`/`global` variable will lead to memory leak.
+```PHP
+// Some class
+class Test
+{
+    public static $array = [];
+    public static $string = '';
+}
+// In Controller
+public function test(Request $req)
+{
+    // Memory leak
+    Test::$array[] = $req->input('param1');
+    Test::$string .= $req->input('param2');
+}
+```
+
 ## TODO
 
 - gzip
