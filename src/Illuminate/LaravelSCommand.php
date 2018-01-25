@@ -30,11 +30,14 @@ class LaravelSCommand extends Command
             case 'stop':
                 $this->stop();
                 break;
+            case 'restart':
+                $this->restart();
+                break;
             case 'reload':
                 $this->reload();
                 break;
             default:
-                $this->info('laravels {action : start|stop|reload}');
+                $this->info('laravels {action : start|stop|restart|reload}');
         }
     }
 
@@ -45,7 +48,7 @@ class LaravelSCommand extends Command
         if (file_exists($svrConf['swoole']['pid_file'])) {
             $pid = file_get_contents($svrConf['swoole']['pid_file']);
             if (posix_kill($pid, 0)) {
-                $this->warn("LaravelS: PID[{$pid}] already running.");
+                $this->warn("LaravelS: PID[{$pid}] is running.");
                 return;
             }
         }
@@ -55,28 +58,42 @@ class LaravelSCommand extends Command
         $fp = popen($cmd, 'w');
         fwrite($fp, json_encode(compact('svrConf', 'laravelConf')));
         fclose($fp);
-        $this->info('LaravelS: running.');
+        $pidFile = config('laravels.swoole.pid_file');
+        $this->info(sprintf('LaravelS: PID[%s] is running.', file_get_contents($pidFile)));
     }
 
-    protected function stop()
+    protected function stop($ignoreErr = false)
     {
         $pidFile = config('laravels.swoole.pid_file');
-        if (!file_exists($pidFile)) {
-            $this->info('LaravelS: already stopped.');
-            return;
-        }
-
-        $pid = file_get_contents($pidFile);
-        if (!posix_kill($pid, 0)) {
-            $this->warn("LaravelS: PID[{$pid}] does not exist, or permission denied.");
-            return;
-        }
-
-        if (posix_kill($pid, SIGTERM)) {
-            $this->info("LaravelS: PID[{$pid}] has been stopped successfully.");
+        if (file_exists($pidFile)) {
+            $pid = file_get_contents($pidFile);
+            if (posix_kill($pid, 0)) {
+                if (posix_kill($pid, SIGTERM)) {
+                    $this->info("LaravelS: PID[{$pid}] is stopped.");
+                } else {
+                    $this->error("LaravelS: PID[{$pid}] is stopped failed.");
+                }
+                // Make sure that master prod quit
+                $time = 0;
+                while (posix_getpgid($pid) && $time <= 10) {
+                    usleep(10000);
+                    $time++;
+                }
+            } else {
+                $this->warn("LaravelS: PID[{$pid}] does not exist, or permission denied.");
+                if (!$ignoreErr) {
+                    return;
+                }
+            }
         } else {
-            $this->error("LaravelS: PID[{$pid}] has been stopped failed.");
+            $this->info('LaravelS: already stopped.');
         }
+    }
+
+    protected function restart()
+    {
+        $this->stop(true);
+        $this->start();
     }
 
     protected function reload()
@@ -94,9 +111,9 @@ class LaravelSCommand extends Command
         }
 
         if (posix_kill($pid, SIGUSR1)) {
-            $this->info("LaravelS: PID[{$pid}] has been reloaded successfully.");
+            $this->info("LaravelS: PID[{$pid}] is reloaded.");
         } else {
-            $this->error("LaravelS: PID[{$pid}] has been reloaded failed.");
+            $this->error("LaravelS: PID[{$pid}] is reloaded failed.");
         }
     }
 }
