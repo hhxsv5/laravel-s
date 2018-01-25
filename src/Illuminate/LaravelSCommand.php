@@ -48,7 +48,7 @@ class LaravelSCommand extends Command
         if (file_exists($svrConf['swoole']['pid_file'])) {
             $pid = file_get_contents($svrConf['swoole']['pid_file']);
             if (posix_kill($pid, 0)) {
-                $this->warn("LaravelS: PID[{$pid}] is running.");
+                $this->warn("LaravelS: PID[{$pid}] is already running.");
                 return;
             }
         }
@@ -69,15 +69,15 @@ class LaravelSCommand extends Command
             $pid = file_get_contents($pidFile);
             if (posix_kill($pid, 0)) {
                 if (posix_kill($pid, SIGTERM)) {
+                    // Make sure that master process quit
+                    $time = 0;
+                    while (posix_getpgid($pid) && $time <= 20) {
+                        usleep(100000);
+                        $time++;
+                    }
                     $this->info("LaravelS: PID[{$pid}] is stopped.");
                 } else {
                     $this->error("LaravelS: PID[{$pid}] is stopped failed.");
-                }
-                // Make sure that master prod quit
-                $time = 0;
-                while (posix_getpgid($pid) && $time <= 10) {
-                    usleep(10000);
-                    $time++;
                 }
             } else {
                 $this->warn("LaravelS: PID[{$pid}] does not exist, or permission denied.");
