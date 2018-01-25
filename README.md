@@ -53,8 +53,6 @@ php artisan laravels {action : start|stop|reload}
 
 - gzip
 
-- reload routes
-
 ## License
 
 [MIT](https://github.com/hhxsv5/laravel-s/blob/master/LICENSE)
