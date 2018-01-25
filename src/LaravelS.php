@@ -39,8 +39,8 @@ class LaravelS extends Server
         // file_put_contents('laravels.log', 'Laravels:onWorkerStart:start already included files ' . json_encode(get_included_files(), JSON_UNESCAPED_SLASHES) . PHP_EOL, FILE_APPEND);
 
         // To implement gracefully reload
-        // Delay to create Laravel Object
-        // Delay to include laravel's autoload.php
+        // Delay to create Laravel
+        // Delay to include Laravel's autoload.php
         $this->laravel = new Laravel($this->laravelConf);
         $this->laravel->prepareLaravel();
 
