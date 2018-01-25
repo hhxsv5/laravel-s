@@ -54,6 +54,7 @@ class LaravelS extends Server
         $laravelRequest = (new Request($request))->toIlluminateRequest();
         $success = $this->handleStaticResource($laravelRequest, $response);
         if (!$success) {
+            $this->laravel->fireEvent('laravels.request', [$laravelRequest]);
             $this->handleDynamicResource($laravelRequest, $response);
         }
 
@@ -74,6 +75,7 @@ class LaravelS extends Server
     protected function handleDynamicResource(IlluminateRequest $laravelRequest, \swoole_http_response $swooleResponse)
     {
         $laravelResponse = $this->laravel->handleDynamic($laravelRequest);
+        $this->laravel->fireEvent('laravels.response', [$laravelResponse]);
         (new DynamicResponse($swooleResponse, $laravelResponse))->send();
         return true;
     }

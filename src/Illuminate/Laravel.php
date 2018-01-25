@@ -134,4 +134,9 @@ class Laravel
 
         //...
     }
+
+    public function fireEvent($name, array $params = [])
+    {
+        $this->app->events->fire($name, $params);
+    }
 }
