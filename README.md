@@ -1,5 +1,5 @@
-# laravel-s
-LaravelS: Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.
+# LaravelS
+Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.
 
 ## Features
 
