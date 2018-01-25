@@ -44,9 +44,7 @@ class Server
 
     public function onStart(\swoole_http_server $server)
     {
-        global $argv;
-        $title = sprintf('php %s master process', implode(' ', $argv));
-        $this->setProcessTitle($title);
+        $this->setProcessTitle('php laravels master process');
     }
 
     public function onShutdown(\swoole_http_server $server)
@@ -56,16 +54,12 @@ class Server
 
     public function onManagerStart(\swoole_http_server $server)
     {
-        global $argv;
-        $title = sprintf('php %s manager process', implode(' ', $argv));
-        $this->setProcessTitle($title);
+        $this->setProcessTitle('php laravels manager process');
     }
 
     public function onWorkerStart(\swoole_http_server $server, $workerId)
     {
-        global $argv;
-        $title = sprintf('php %s worker process %d', implode(' ', $argv), $workerId);
-        $this->setProcessTitle($title);
+        $this->setProcessTitle('php laravels worker process ' . $workerId);
 
         // Clear opcode cache
         if (function_exists('opcache_reset')) {
