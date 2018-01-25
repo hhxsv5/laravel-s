@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 
 class LaravelSCommand extends Command
 {
-    protected $signature = 'laravels {action : start|stop|reload}';
+    protected $signature = 'laravels {action?}';
 
     protected $description = 'LaravelS Console Tool';
 
@@ -37,7 +37,7 @@ class LaravelSCommand extends Command
                 $this->reload();
                 break;
             default:
-                $this->info('laravels {action : start|stop|restart|reload}');
+                $this->info('php laravels {start|stop|restart|reload}');
         }
     }
 

@@ -46,7 +46,7 @@ php artisan vendor:publish --provider="Hhxsv5\LaravelS\Illuminate\LaravelSServic
 ## Run Demo
 
 ```Bash
-php artisan laravels {action : start|stop|reload}
+php artisan laravels {start|stop|restart|reload}
 ```
 
 ## TODO
