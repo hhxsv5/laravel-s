@@ -12,14 +12,15 @@ use Illuminate\Http\Request as IlluminateRequest;
 
 /**
  * Swoole Request => Laravel Request
- * Laravel Request => Laravel handle => Laravel ResponseInterface
- * Laravel ResponseInterface => Swoole Request
+ * Laravel Request => Laravel handle => Laravel Response
+ * Laravel Response => Swoole Response
  */
 class LaravelS extends Server
 {
     protected static $s;
 
     protected $laravelConf;
+
     /**
      * @var Laravel $laravel
      */
@@ -35,9 +36,15 @@ class LaravelS extends Server
     {
         parent::onWorkerStart($server, $workerId);
 
-        //Delay to create Laravel Object to implements gracefully reload
+        // file_put_contents('laravels.log', 'Laravels:onWorkerStart:start already included files ' . json_encode(get_included_files(), JSON_UNESCAPED_SLASHES) . PHP_EOL, FILE_APPEND);
+
+        // To implement gracefully reload
+        // Delay to create Laravel Object
+        // Delay to include laravel's autoload.php
         $this->laravel = new Laravel($this->laravelConf);
         $this->laravel->prepareLaravel();
+
+        // file_put_contents('laravels.log', 'Laravels:onWorkerStart:end already included files ' . json_encode(get_included_files(), JSON_UNESCAPED_SLASHES) . PHP_EOL, FILE_APPEND);
     }
 
     public function onRequest(\swoole_http_request $request, \swoole_http_response $response)

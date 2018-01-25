@@ -2,7 +2,6 @@
 
 namespace Hhxsv5\LaravelS\Illuminate;
 
-use Hhxsv5\LaravelS\LaravelS;
 use Illuminate\Console\Command;
 
 class LaravelSCommand extends Command
@@ -51,8 +50,11 @@ class LaravelSCommand extends Command
             }
         }
 
-        $s = LaravelS::getInstance($svrConf, $laravelConf);
-        $s->run();
+        // Implements gracefully reload, avoid including laravel's files before worker start
+        $cmd = sprintf('%s %s/../GoLaravelS.php', PHP_BINARY, __DIR__);
+        $fp = popen($cmd, 'w');
+        fwrite($fp, json_encode(compact('svrConf', 'laravelConf')));
+        fclose($fp);
     }
 
     protected function stop()
