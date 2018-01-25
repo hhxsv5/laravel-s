@@ -55,6 +55,7 @@ class LaravelSCommand extends Command
         $fp = popen($cmd, 'w');
         fwrite($fp, json_encode(compact('svrConf', 'laravelConf')));
         fclose($fp);
+        $this->info('LaravelS: running.');
     }
 
     protected function stop()
