@@ -16,9 +16,9 @@ class Server
         $settings = isset($conf['swoole']) ? $conf['swoole'] : [];
 
         if (isset($settings['ssl_cert_file'], $settings['ssl_key_file'])) {
-            $this->sw = new \swoole_http_server($ip, $port, SWOOLE_PROCESS, SWOOLE_SOCK_TCP | SWOOLE_SSL);
+            $this->sw = new \swoole_http_server($ip, $port, \SWOOLE_PROCESS, \SWOOLE_SOCK_TCP | \SWOOLE_SSL);
         } else {
-            $this->sw = new \swoole_http_server($ip, $port, SWOOLE_PROCESS);
+            $this->sw = new \swoole_http_server($ip, $port, \SWOOLE_PROCESS);
         }
 
         $default = [
