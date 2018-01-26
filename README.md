@@ -23,7 +23,7 @@ Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.
 
 ## Install
 
-1.Require package 
+1.Require package via Composer([packagist](https://packagist.org/packages/hhxsv5/laravel-s))
 ```Bash
 composer require "hhxsv5/laravel-s:~1.0" -vvv
 ```
@@ -47,6 +47,25 @@ php artisan vendor:publish --provider="Hhxsv5\LaravelS\Illuminate\LaravelSServic
 
 ```Bash
 php artisan laravels {start|stop|restart|reload}
+```
+
+## Listen Events
+
+- `laravels.received_request` After LaravelS parsed `swoole_http_request` to `Illuminate\Http\Request`, before Laravel's Kernel handles this request.
+
+```PHP
+// Edit file `app/Providers/EventServiceProvider.php`, add the following code into method `boot`
+\Event::listen('laravels.received_request', function (\Illuminate\Http\Request $req) {
+    \Log::info('Received Request', [$req->getRequestUri(), $req->all()]);
+});
+```
+
+- `laravels.generated_response` After Laravel's Kernel handled the request, before LaravelS parses `Illuminate\Http\Response` to `swoole_http_response`.
+
+```PHP
+\Event::listen('laravels.generated_response', function (\Illuminate\Http\Response $rsp) {
+    \Log::info('Generated Response', [$rsp->getContent()]);
+});
 ```
 
 ## Important Notices
