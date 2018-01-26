@@ -1,11 +1,12 @@
 # LaravelS
 Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.
 
-[![stable](https://poser.pugx.org/hhxsv5/laravel-s/v/stable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
-[![downloads](https://poser.pugx.org/hhxsv5/laravel-s/downloads.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
-[![unstable](https://poser.pugx.org/hhxsv5/laravel-s/v/unstable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
-[![license](https://poser.pugx.org/hhxsv5/laravel-s/license.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
-[![build](https://travis-ci.org/hhxsv5/laravel-s.svg?branch=master)](https://travis-ci.org/hhxsv5/laravel-s)
+[![Latest Stable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/stable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
+[![Total Downloads](https://poser.pugx.org/hhxsv5/laravel-s/downloads.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
+[![Latest Unstable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/unstable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
+[![License](https://poser.pugx.org/hhxsv5/laravel-s/license.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
+[![Build Status](https://travis-ci.org/hhxsv5/laravel-s.svg?branch=master)](https://travis-ci.org/hhxsv5/laravel-s)
+[![Code Coverage](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/?branch=master)
 
 ## Features
 
