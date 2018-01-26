@@ -57,14 +57,15 @@ $app->configure('laravels');
 4.Change `config/laravels.php`: listen_ip, listen_port, [swoole's settings](https://wiki.swoole.com/wiki/page/274.html) ...
 
 ## Run Demo
+> `php artisan laravels {start|stop|restart|reload|publish}`
 
 | Command | Description |
-| ---------------------------- |  ---------------------------- |
-| `php artisan laravels start` | Start LaravelS |
-| `php artisan laravels stop` | Stop LaravelS |
-| `php artisan laravels restart` | Restart LaravelS |
-| `php artisan laravels reload` | Reload all worker process(Contain your business & Laravel/Lumen codes), exclude master/manger process |
-| `php artisan laravels publish` | Publish configuration file `laravels.php` of LaravelS into folder `config` |
+| --------- | --------- |
+| `start` | Start LaravelS |
+| `stop` | Stop LaravelS |
+| `restart` | Restart LaravelS |
+| `reload` | Reload all worker process(Contain your business & Laravel/Lumen codes), exclude master/manger process |
+| `publish` | Publish configuration file `laravels.php` of LaravelS into folder `config` |
 
 ```
 
