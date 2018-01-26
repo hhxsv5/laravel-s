@@ -44,17 +44,17 @@ composer require "hhxsv5/laravel-s:~1.0" -vvv
 $app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
 ```
 
-3.Publish
+3.Publish Configuration
 ```Bash
 php artisan laravels:publish
 ```
 
-`Special for Lumen` add the configure code into `bootstrap/app.php`
+`Special for Lumen`: you need to load this configuration manually in `bootstrap/app.php` file.
 ```PHP
 $app->configure('laravels');
 ```
 
-4.Change config/laravels.php: listen_ip, listen_port, [swoole's settings](https://wiki.swoole.com/wiki/page/274.html) ...
+4.Change `config/laravels.php`: listen_ip, listen_port, [swoole's settings](https://wiki.swoole.com/wiki/page/274.html) ...
 
 ## Run Demo
 
