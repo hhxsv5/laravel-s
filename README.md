@@ -24,11 +24,14 @@ Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.
 ## Install
 
 1.Require package via Composer([packagist](https://packagist.org/packages/hhxsv5/laravel-s))
+
 ```Bash
 composer require "hhxsv5/laravel-s:~1.0" -vvv
 ```
 
-2.Add service provider in `config/app.php` file
+2.Add service provider
+
+- `Laravel`: in `config/app.php` file
 ```PHP
 'providers' => [
     //...
@@ -36,17 +39,33 @@ composer require "hhxsv5/laravel-s:~1.0" -vvv
 ],
 ```
 
-3.Publish
+- `Lumen`: in `bootstrap/app.php` file
 ```PHP
-php artisan vendor:publish --provider="Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider"
+$app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
+```
+
+3.Publish
+```Bash
+php artisan laravels:publish
+```
+
+`Special for Lumen` add the configure code into `bootstrap/app.php`
+```PHP
+$app->configure('laravels');
 ```
 
 4.Change config/laravels.php: listen_ip, listen_port, [swoole's settings](https://wiki.swoole.com/wiki/page/274.html) ...
 
 ## Run Demo
 
-```Bash
-php artisan laravels {start|stop|restart|reload}
+| Command | Description |
+| ---------------------------- |  ---------------------------- |
+| `php artisan laravels start` | Start LaravelS |
+| `php artisan laravels stop` | Stop LaravelS |
+| `php artisan laravels restart` | Restart LaravelS |
+| `php artisan laravels reload` | Reload all worker process, exclude master/manger process |
+| `php artisan laravels publish` | Publish configuration file `laravels.php` of LaravelS into folder `config` |
+
 ```
 
 ## Listen Events
