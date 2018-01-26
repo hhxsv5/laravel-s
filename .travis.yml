@@ -12,4 +12,4 @@ before_script:
   - pecl install swoole-1.9.23
   - composer install
 
-script: vendor/bin/phpunit -v
+script: composer info
