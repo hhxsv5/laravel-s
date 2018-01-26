@@ -48,7 +48,7 @@ class LaravelSCommand extends Command
         $laravelConf = ['rootPath' => base_path(), 'isLumen' => $this->isLumen];
         $svrConf = config('laravels');
         if (file_exists($svrConf['swoole']['pid_file'])) {
-            $pid = file_get_contents($svrConf['swoole']['pid_file']);
+            $pid = (int)file_get_contents($svrConf['swoole']['pid_file']);
             if (posix_kill($pid, 0)) {
                 $this->warn("LaravelS: PID[{$pid}] is already running.");
                 return;
@@ -68,7 +68,7 @@ class LaravelSCommand extends Command
     {
         $pidFile = config('laravels.swoole.pid_file');
         if (file_exists($pidFile)) {
-            $pid = file_get_contents($pidFile);
+            $pid = (int)file_get_contents($pidFile);
             if (posix_kill($pid, 0)) {
                 if (posix_kill($pid, SIGTERM)) {
                     // Make sure that master process quit
@@ -106,7 +106,7 @@ class LaravelSCommand extends Command
             return;
         }
 
-        $pid = file_get_contents($pidFile);
+        $pid = (int)file_get_contents($pidFile);
         if (!posix_kill($pid, 0)) {
             $this->error("LaravelS: PID[{$pid}] does not exist, or permission denied.");
             return;
