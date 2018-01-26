@@ -14,5 +14,3 @@ build:
             analysis:
                 project_setup:
                     override: true
-                resources:
-                    cpus: 2
