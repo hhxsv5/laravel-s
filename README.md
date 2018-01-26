@@ -56,6 +56,7 @@ php artisan laravels {start|stop|restart|reload}
 ```PHP
 // Edit file `app/Providers/EventServiceProvider.php`, add the following code into method `boot`
 \Event::listen('laravels.received_request', function (\Illuminate\Http\Request $req) {
+    //$req->offsetSet('name', 'hhxsv5');// Change request
     \Log::info('Received Request', [$req->getRequestUri(), $req->all()]);
 });
 ```
@@ -63,8 +64,9 @@ php artisan laravels {start|stop|restart|reload}
 - `laravels.generated_response` After Laravel's Kernel handled the request, before LaravelS parses `Illuminate\Http\Response` to `swoole_http_response`.
 
 ```PHP
-\Event::listen('laravels.generated_response', function (\Illuminate\Http\Response $rsp) {
-    \Log::info('Generated Response', [$rsp->getContent()]);
+\Event::listen('laravels.generated_response', function (\Illuminate\Http\Request $req, \Illuminate\Http\Response $rsp) {
+    $rsp->header('name', 'hhxsv5');// Change response
+    \Log::info('Generated Response', [$req->getRequestUri(), $rsp->getContent()]);
 });
 ```
 

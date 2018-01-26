@@ -75,7 +75,7 @@ class LaravelS extends Server
     protected function handleDynamicResource(IlluminateRequest $laravelRequest, \swoole_http_response $swooleResponse)
     {
         $laravelResponse = $this->laravel->handleDynamic($laravelRequest);
-        $this->laravel->fireEvent('laravels.generated_response', [$laravelResponse]);
+        $this->laravel->fireEvent('laravels.generated_response', [$laravelRequest, $laravelResponse]);
         (new DynamicResponse($swooleResponse, $laravelResponse))->send();
         return true;
     }
