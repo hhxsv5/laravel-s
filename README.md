@@ -63,7 +63,7 @@ $app->configure('laravels');
 | `php artisan laravels start` | Start LaravelS |
 | `php artisan laravels stop` | Stop LaravelS |
 | `php artisan laravels restart` | Restart LaravelS |
-| `php artisan laravels reload` | Reload all worker process, exclude master/manger process |
+| `php artisan laravels reload` | Reload all worker process(Your Laravel/Lumen codes), exclude master/manger process |
 | `php artisan laravels publish` | Publish configuration file `laravels.php` of LaravelS into folder `config` |
 
 ```
