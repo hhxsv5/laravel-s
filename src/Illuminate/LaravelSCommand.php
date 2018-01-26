@@ -58,6 +58,10 @@ class LaravelSCommand extends Command
         // Implements gracefully reload, avoid including laravel's files before worker start
         $cmd = sprintf('%s %s/../GoLaravelS.php', PHP_BINARY, __DIR__);
         $fp = popen($cmd, 'w');
+        if (!$fp) {
+            $this->error('LaravelS: popen ' . $cmd . ' failed');
+            return;
+        }
         fwrite($fp, json_encode(compact('svrConf', 'laravelConf')));
         fclose($fp);
         $pidFile = config('laravels.swoole.pid_file');
