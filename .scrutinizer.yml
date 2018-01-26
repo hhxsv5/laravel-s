@@ -15,4 +15,4 @@ build:
                 tests:
                     override: [php-scrutinizer-run --enable-security-analysis]
                 resources:
-                    cpus: 4
+                    cpus: 2
