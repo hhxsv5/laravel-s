@@ -6,9 +6,10 @@ php:
   - 7.0.27
   - 7.1.13
   - 7.2.1
+  - nightly
 
 before_script:
   - pecl install swoole-1.9.23
   - composer install
 
-script: phpunit -v
+script: vendor/bin/phpunit -v
