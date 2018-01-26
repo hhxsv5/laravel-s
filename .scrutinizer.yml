@@ -1,0 +1,10 @@
+checks:
+    php: true
+build:
+    environment:
+        php:
+            version: 5.6.33
+    dependencies:
+            before:
+                - pecl install swoole-1.9.23
+                - composer install
