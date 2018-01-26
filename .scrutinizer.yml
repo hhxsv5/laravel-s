@@ -10,6 +10,7 @@ build:
             before:
                 - pecl install swoole-1.9.23
                 - composer install
+                - composer require laravel/laravel:~5.1.0
     nodes:
             analysis:
                 project_setup:
