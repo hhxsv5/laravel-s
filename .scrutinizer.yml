@@ -4,6 +4,8 @@ build:
     environment:
         php:
             version: 5.6.33
+            ini:
+                'date.timezone': 'Asia/Shanghai'
     dependencies:
             before:
                 - pecl install swoole-1.9.23
@@ -12,7 +14,5 @@ build:
             analysis:
                 project_setup:
                     override: true
-                tests:
-                    override: [php-scrutinizer-run --enable-security-analysis]
                 resources:
                     cpus: 2
