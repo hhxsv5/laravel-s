@@ -67,8 +67,6 @@ $app->configure('laravels');
 | `reload` | Reload all worker process(Contain your business & Laravel/Lumen codes), exclude master/manger process |
 | `publish` | Publish configuration file `laravels.php` of LaravelS into folder `config` |
 
-```
-
 ## Listen Events
 
 - `laravels.received_request` After LaravelS parsed `swoole_http_request` to `Illuminate\Http\Request`, before Laravel's Kernel handles this request.
