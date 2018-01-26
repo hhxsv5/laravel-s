@@ -10,3 +10,5 @@ php:
 before_script:
   - pecl install swoole-1.7.7
   - composer install
+
+script: composer info
