@@ -13,6 +13,13 @@ Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.
 
 - Simple & Out of the box
 
+[![Latest Stable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/stable)](https://packagist.org/packages/hhxsv5/laravel-s)
+[![Total Downloads](https://poser.pugx.org/hhxsv5/laravel-s/downloads)](https://packagist.org/packages/hhxsv5/laravel-s)
+[![Latest Unstable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/unstable)](https://packagist.org/packages/hhxsv5/laravel-s)
+[![License](https://poser.pugx.org/hhxsv5/laravel-s/license)](https://packagist.org/packages/hhxsv5/laravel-s)
+[![Build Status](https://travis-ci.org/hhxsv5/laravel-s.svg?branch=master)](https://travis-ci.org/hhxsv5/laravel-s)
+[![Code Coverage](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/?branch=master)
+
 ## Requirements
 
 | Dependency | Requirement |
