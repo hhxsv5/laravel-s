@@ -154,4 +154,9 @@ class LaravelSCommand extends Command
 
         $this->line('<info>Copied File</info> <comment>[' . $from . ']</comment> <info>To</info> <comment>[' . $to . ']</comment>');
     }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
 }
