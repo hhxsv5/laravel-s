@@ -20,9 +20,6 @@ class Laravel
 
     protected $conf = [];
 
-    protected $isLumen = false;
-    protected $publicPath;
-
     protected static $staticBlackList = [
         '/index.php'  => 1,
         '/.htaccess'  => 1,
@@ -40,7 +37,6 @@ class Laravel
         $this->createApp();
         $this->createKernel();
         $this->setLaravel();
-        $this->publicPath = $this->app->make('path.public');
     }
 
     protected function bootstrap()
@@ -49,9 +45,6 @@ class Laravel
         // Lumen hasn't this autoload file
         if (file_exists($autoload)) {
             require_once $autoload;
-            $this->isLumen = false;
-        } else {
-            $this->isLumen = true;
         }
     }
 
@@ -62,7 +55,7 @@ class Laravel
 
     protected function createKernel()
     {
-        if (!$this->isLumen) {
+        if (!$this->conf['isLumen']) {
             $this->laravelKernel = $this->app->make(Kernel::class);
         }
     }
@@ -77,7 +70,7 @@ class Laravel
     {
         ob_start();
 
-        if ($this->isLumen) {
+        if ($this->conf['isLumen']) {
             $response = $this->app->dispatch($request);
             if ($response instanceof SymfonyResponse) {
                 $content = $response->getContent();
@@ -109,7 +102,7 @@ class Laravel
             return false;
         }
 
-        $file = $this->publicPath . $uri;
+        $file = $this->conf['rootPath'] . '/public' . $uri;
         if (is_file($file)) {
             return new BinaryFileResponse($file, 200);
         }

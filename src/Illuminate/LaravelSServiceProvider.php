@@ -10,8 +10,8 @@ class LaravelSServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../Config/laravels.php' => config_path('laravels.php'),
-        ], 'config');
+            __DIR__ . '/../Config/laravels.php' => base_path('config/laravels.php'),
+        ]);
 
     }
 

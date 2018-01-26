@@ -3,6 +3,7 @@
 namespace Hhxsv5\LaravelS\Illuminate;
 
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
 
 class LaravelSCommand extends Command
 {
@@ -10,9 +11,19 @@ class LaravelSCommand extends Command
 
     protected $description = 'LaravelS Console Tool';
 
-    public function __construct()
+    protected $actions;
+
+    protected $isLumen = false;
+
+    protected $files;
+
+    public function __construct(Filesystem $files)
     {
         parent::__construct();
+
+        $this->actions = ['start', 'stop', 'restart', 'reload', 'publish'];
+        $this->description .= ': ' . implode('|', $this->actions);
+        $this->files = $files;
     }
 
     public function fire()
@@ -23,27 +34,18 @@ class LaravelSCommand extends Command
     public function handle()
     {
         $action = $this->argument('action');
-        switch ($action) {
-            case 'start':
-                $this->start();
-                break;
-            case 'stop':
-                $this->stop();
-                break;
-            case 'restart':
-                $this->restart();
-                break;
-            case 'reload':
-                $this->reload();
-                break;
-            default:
-                $this->info('php laravels {start|stop|restart|reload}');
+        if (!in_array($action, $this->actions, true)) {
+            $this->info('php laravels {' . implode('|', $this->actions) . '}');
+            return;
         }
+        $this->info('LaravelS for ' . $this->getApplication()->getLongVersion());
+        $this->isLumen = stripos($this->getApplication()->getVersion(), 'Lumen') !== false;
+        $this->{$action}();
     }
 
     protected function start()
     {
-        $laravelConf = ['rootPath' => base_path()];
+        $laravelConf = ['rootPath' => base_path(), 'isLumen' => $this->isLumen];
         $svrConf = config('laravels');
         if (file_exists($svrConf['swoole']['pid_file'])) {
             $pid = file_get_contents($svrConf['swoole']['pid_file']);
@@ -115,5 +117,33 @@ class LaravelSCommand extends Command
         } else {
             $this->error("LaravelS: PID[{$pid}] is reloaded failed.");
         }
+    }
+
+    protected function publish()
+    {
+        try {
+            $this->call('vendor:publish', ['--provider' => LaravelSServiceProvider::class]);
+            return;
+        } catch (\Exception $e) {
+            if (!($e instanceof \InvalidArgumentException)) {
+                throw $e;
+            }
+        }
+        $from = __DIR__ . '/../Config/laravels.php';
+        $to = base_path('config/laravels.php');
+
+        $toDir = dirname($to);
+
+        if (!$this->files->isDirectory($toDir)) {
+            $this->files->makeDirectory($toDir, 0755, true);
+        }
+
+        $this->files->copy($from, $to);
+
+        $from = str_replace(base_path(), '', realpath($from));
+
+        $to = str_replace(base_path(), '', realpath($to));
+
+        $this->line('<info>Copied File</info> <comment>[' . $from . ']</comment> <info>To</info> <comment>[' . $to . ']</comment>');
     }
 }
