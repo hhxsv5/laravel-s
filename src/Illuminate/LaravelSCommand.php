@@ -121,8 +121,17 @@ class LaravelSCommand extends Command
 
     protected function publish()
     {
+        $to = base_path('config/laravels.php');
+        if (file_exists($to)) {
+            $choice = $this->anticipate($to . ' already exists, do you want to override it ? Y/N', ['Y', 'N'], 'N');
+            if (!$choice || strtoupper($choice) === 'N') {
+                $this->info('Publishing complete.');
+                return;
+            }
+        }
+
         try {
-            $this->call('vendor:publish', ['--provider' => LaravelSServiceProvider::class]);
+            $this->call('vendor:publish', ['--provider' => LaravelSServiceProvider::class, '--force' => true]);
             return;
         } catch (\Exception $e) {
             if (!($e instanceof \InvalidArgumentException)) {
@@ -130,7 +139,6 @@ class LaravelSCommand extends Command
             }
         }
         $from = __DIR__ . '/../Config/laravels.php';
-        $to = base_path('config/laravels.php');
 
         $toDir = dirname($to);
 
