@@ -92,6 +92,9 @@ class Laravel
         }
 
         ob_end_clean();
+
+        $this->clean($request);
+
         return $response;
     }
 
