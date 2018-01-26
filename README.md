@@ -1,19 +1,11 @@
 # LaravelS
 Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.
 
-[![Latest Stable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/stable)](https://packagist.org/packages/hhxsv5/laravel-s)
-[![Total Downloads](https://poser.pugx.org/hhxsv5/laravel-s/downloads)](https://packagist.org/packages/hhxsv5/laravel-s)
-[![Latest Unstable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/unstable)](https://packagist.org/packages/hhxsv5/laravel-s)
-[![License](https://poser.pugx.org/hhxsv5/laravel-s/license)](https://packagist.org/packages/hhxsv5/laravel-s)
-[![Build Status](https://travis-ci.org/hhxsv5/laravel-s.svg?branch=master)](https://travis-ci.org/hhxsv5/laravel-s)
-[![Code Coverage](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/?branch=master)
-
-<p align="center">
-<a href="https://travis-ci.org/hhxsv5/laravel-s"><img src="https://travis-ci.org/hhxsv5/laravel-s.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/hhxsv5/laravel-s"><img src="https://poser.pugx.org/hhxsv5/laravel-s/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/hhxsv5/laravel-s"><img src="https://poser.pugx.org/hhxsv5/laravel-s/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/hhxsv5/laravel-s"><img src="https://poser.pugx.org/hhxsv5/laravel-s/license.svg" alt="License"></a>
-</p>
+[![stable](https://poser.pugx.org/hhxsv5/laravel-s/v/stable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
+[![downloads](https://poser.pugx.org/hhxsv5/laravel-s/downloads.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
+[![unstable](https://poser.pugx.org/hhxsv5/laravel-s/v/unstable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
+[![license](https://poser.pugx.org/hhxsv5/laravel-s/license.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
+[![build](https://travis-ci.org/hhxsv5/laravel-s.svg?branch=master)](https://travis-ci.org/hhxsv5/laravel-s)
 
 ## Features
 
