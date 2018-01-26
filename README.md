@@ -55,17 +55,18 @@ php artisan laravels {start|stop|restart|reload}
 
 ```PHP
 // Edit file `app/Providers/EventServiceProvider.php`, add the following code into method `boot`
-\Event::listen('laravels.received_request', function (\Illuminate\Http\Request $req) {
-    //$req->offsetSet('name', 'hhxsv5');// Change request
-    \Log::info('Received Request', [$req->getRequestUri(), $req->all()]);
+$events->listen('laravels.received_request', function (\Illuminate\Http\Request $req) {
+    $req->query->set('get_key', 'hhxsv5');// Change query of request
+    $req->request->set('post_key', 'hhxsv5'); // Change post of request
+    \Log::info('Received Request', [$req->getRequestUri(), $req->query->all(), $req->request->all()]);
 });
 ```
 
 - `laravels.generated_response` After Laravel's Kernel handled the request, before LaravelS parses `Illuminate\Http\Response` to `swoole_http_response`.
 
 ```PHP
-\Event::listen('laravels.generated_response', function (\Illuminate\Http\Request $req, \Illuminate\Http\Response $rsp) {
-    $rsp->header('name', 'hhxsv5');// Change response
+$events->listen('laravels.generated_response', function (\Illuminate\Http\Request $req, \Symfony\Component\HttpFoundation\Response $rsp) {
+    $rsp->header('header-key', 'hhxsv5');// Change header of response
     \Log::info('Generated Response', [$req->getRequestUri(), $rsp->getContent()]);
 });
 ```
