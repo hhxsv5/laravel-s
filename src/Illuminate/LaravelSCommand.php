@@ -65,7 +65,18 @@ class LaravelSCommand extends Command
         fwrite($fp, json_encode(compact('svrConf', 'laravelConf')));
         fclose($fp);
         $pidFile = config('laravels.swoole.pid_file');
-        $this->info(sprintf('LaravelS: PID[%s] is running.', file_get_contents($pidFile)));
+
+        // Make sure that master process started
+        $time = 0;
+        while (!file_exists($pidFile) && $time <= 20) {
+            usleep(100000);
+            $time++;
+        }
+        if (file_exists($pidFile)) {
+            $this->info(sprintf('LaravelS: PID[%s] is running.', file_get_contents($pidFile)));
+        } else {
+            $this->error(sprintf('LaravelS: PID file[%s] does not exist.', $pidFile));
+        }
     }
 
     protected function stop($ignoreErr = false)
