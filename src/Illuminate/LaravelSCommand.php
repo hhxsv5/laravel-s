@@ -40,6 +40,7 @@ class LaravelSCommand extends Command
         }
         $this->info('LaravelS for ' . $this->getApplication()->getLongVersion());
         $this->isLumen = stripos($this->getApplication()->getVersion(), 'Lumen') !== false;
+        $this->loadConfigManually();
         $this->{$action}();
     }
 
@@ -53,7 +54,6 @@ class LaravelSCommand extends Command
 
     protected function start()
     {
-        $this->loadConfigManually();
         $laravelConf = ['rootPath' => base_path(), 'isLumen' => $this->isLumen];
         $svrConf = config('laravels');
         if (file_exists($svrConf['swoole']['pid_file'])) {
