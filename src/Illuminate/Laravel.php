@@ -4,9 +4,9 @@ namespace Hhxsv5\LaravelS\Illuminate;
 
 
 use Illuminate\Contracts\Http\Kernel;
-use Illuminate\Cookie\CookieJar;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Laravel
@@ -150,12 +150,14 @@ class Laravel
         }
 
         // Clean laravel cookie queue
-        /**
-         * @var CookieJar $cookies
-         */
-        $cookies = $this->app->make(CookieJar::class);
-        foreach ($cookies->getQueuedCookies() as $name => $cookie) {
-            $cookies->unqueue($name);
+        if (class_exists('\Illuminate\Cookie\CookieJar', false)) {
+            /**
+             * @var \Illuminate\Cookie\CookieJar $cookies
+             */
+            $cookies = $this->app->make(\Illuminate\Cookie\CookieJar::class);
+            foreach ($cookies->getQueuedCookies() as $name => $cookie) {
+                $cookies->unqueue($name);
+            }
         }
 
         //...
