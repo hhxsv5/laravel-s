@@ -139,7 +139,14 @@ class Laravel
     {
         // Clean laravel session
         if ($request->hasSession()) {
-            $request->getSession()->clear();
+            $session = $request->getSession();
+            if (method_exists($session, 'clear')) {
+                $session->clear();
+            } elseif (method_exists($session, 'flush')) {
+                $session->flush();
+            } else {
+                // TODO: clear session for other versions
+            }
         }
 
         // Clean laravel cookie queue
