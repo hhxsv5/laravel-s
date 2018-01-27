@@ -23,7 +23,6 @@ abstract class Response implements ResponseInterface
 
     public function sendHeaders()
     {
-        $this->swooleResponse->header('Server', 'LaravelS');
         foreach ($this->laravelResponse->headers->allPreserveCase() as $name => $values) {
             foreach ($values as $value) {
                 $this->swooleResponse->header($name, $value);
