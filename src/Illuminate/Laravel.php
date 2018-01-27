@@ -144,9 +144,8 @@ class Laravel
                 $session->clear();
             } elseif (method_exists($session, 'flush')) {
                 $session->flush();
-            } else {
-                // TODO: clear session for other versions
             }
+            // TODO: clear session for other versions
         }
 
         // Clean laravel cookie queue
