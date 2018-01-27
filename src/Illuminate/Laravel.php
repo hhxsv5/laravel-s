@@ -106,10 +106,28 @@ class Laravel
         }
 
         $file = $this->conf['rootPath'] . '/public' . $uri;
-        if (is_file($file)) {
-            return new BinaryFileResponse($file, 200);
+        if (!is_readable($file)) {
+            return false;
         }
-        return false;
+
+        $mtime = filemtime($file);
+        $modifiedSince = $request->header('if-modified-since');
+        if ($modifiedSince !== null) {
+            $modifiedSince = strtotime($modifiedSince);
+            if ($modifiedSince !== false && $modifiedSince !== -1 && $mtime <= $modifiedSince) {
+                return new BinaryFileResponse($file, 304);
+            }
+        } else {
+            $expireTime = 24 * 3600;
+            $headers = [
+                'Cache-Control' => 'max-age=' . $expireTime,
+                'Pragma'        => 'max-age=' . $expireTime,
+                'Expires'       => 'max-age=' . $expireTime,
+                'Last-Modified' => gmdate('D, d M Y H:i:s', $mtime) . ' GMT',
+            ];
+            return new BinaryFileResponse($file, 200, $headers);
+        }
+
     }
 
     protected function clean(Request $request)
