@@ -58,8 +58,9 @@ $app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
 php artisan laravels:publish
 ```
 
-`Special for Lumen`: you need to load this configuration manually in `bootstrap/app.php` file.
+`Special for Lumen`: you `DO NOT` need to load this configuration manually in `bootstrap/app.php` file. LaravelS will load it automatically.
 ```PHP
+// Unnecessary to call configure()
 $app->configure('laravels');
 ```
 

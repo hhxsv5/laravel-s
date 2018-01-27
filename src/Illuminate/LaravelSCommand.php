@@ -43,8 +43,17 @@ class LaravelSCommand extends Command
         $this->{$action}();
     }
 
+    protected function loadConfigManually()
+    {
+        // Load configuration laravel.php manually for Lumen
+        if ($this->isLumen && file_exists(base_path('config/laravels.php'))) {
+            $this->getLaravel()->configure('laravels');
+        }
+    }
+
     protected function start()
     {
+        $this->loadConfigManually();
         $laravelConf = ['rootPath' => base_path(), 'isLumen' => $this->isLumen];
         $svrConf = config('laravels');
         if (file_exists($svrConf['swoole']['pid_file'])) {

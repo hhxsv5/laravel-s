@@ -62,8 +62,13 @@ class Laravel
 
     protected function setLaravel()
     {
-        //Enables support for the _method request parameter to determine the intended HTTP method.
+        // Enables support for the _method request parameter to determine the intended HTTP method.
         Request::enableHttpMethodParameterOverride();
+
+        // Load configuration laravel.php manually for Lumen
+        if ($this->conf['isLumen'] && file_exists($this->conf['rootPath'] . '/config/laravels.php')) {
+            $this->app->configure('laravels');
+        }
     }
 
     public function handleDynamic(Request $request)
