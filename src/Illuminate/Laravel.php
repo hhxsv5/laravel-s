@@ -110,23 +110,22 @@ class Laravel
             return false;
         }
 
+        $code = SymfonyResponse::HTTP_OK;
         $mtime = filemtime($file);
         $modifiedSince = $request->header('if-modified-since');
         if ($modifiedSince !== null) {
             $modifiedSince = strtotime($modifiedSince);
-            if ($modifiedSince !== false && $modifiedSince !== -1 && $mtime <= $modifiedSince) {
-                return new BinaryFileResponse($file, 304);
+            if ($modifiedSince !== false && $modifiedSince <= $mtime) {
+                $code = SymfonyResponse::HTTP_NOT_MODIFIED;
             }
-        } else {
-            $expireTime = 24 * 3600;
-            $headers = [
-                'Cache-Control' => 'max-age=' . $expireTime,
-                'Pragma'        => 'max-age=' . $expireTime,
-                'Expires'       => 'max-age=' . $expireTime,
-                'Last-Modified' => gmdate('D, d M Y H:i:s', $mtime) . ' GMT',
-            ];
-            return new BinaryFileResponse($file, 200, $headers);
         }
+
+        $maxAge = 24 * 3600;
+        $rsp = new BinaryFileResponse($file, $code);
+        $rsp->setLastModified(new \DateTime(date('Y-m-d H:i:s', $mtime)));
+        $rsp->setMaxAge($maxAge);
+        $rsp->setExpires(new \DateTime(date('Y-m-d H:i:s', time() + $maxAge)));
+        return $rsp;
 
     }
 

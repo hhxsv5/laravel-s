@@ -7,25 +7,27 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class StaticResponse extends Response
 {
-    /**
-     * @var File $file
-     */
-    protected $file;
-
     public function __construct(\swoole_http_response $swooleResponse, SymfonyResponse $laravelResponse)
     {
         parent::__construct($swooleResponse, $laravelResponse);
-        $this->file = $this->laravelResponse->getFile();
     }
 
     public function sendContent()
     {
-        $path = $this->file->getRealPath();
-        if (filesize($path) > 0) {
-            $this->swooleResponse->header('Content-Type', $this->file->getMimeType());
-            $this->swooleResponse->sendfile($path);
+        if ($this->laravelResponse->getStatusCode() == SymfonyResponse::HTTP_NOT_MODIFIED) {
+            $this->swooleResponse->end();
         } else {
-            $this->swooleResponse->end('');
+            /**
+             * @var File $file
+             */
+            $file = $this->laravelResponse->getFile();
+            $path = $file->getRealPath();
+            if (filesize($path) > 0) {
+                $this->swooleResponse->header('Content-Type', $file->getMimeType());
+                $this->swooleResponse->sendfile($path);
+            } else {
+                $this->swooleResponse->end();
+            }
         }
     }
 }
