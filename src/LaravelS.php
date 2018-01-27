@@ -53,7 +53,7 @@ class LaravelS extends Server
 
         $laravelRequest = (new Request($request))->toIlluminateRequest();
         $success = $this->handleStaticResource($laravelRequest, $response);
-        if (!$success) {
+        if ($success === false) {
             $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
             $this->handleDynamicResource($laravelRequest, $response);
         }
@@ -64,7 +64,7 @@ class LaravelS extends Server
     {
         if (!empty($this->conf['handle_static'])) {
             $laravelResponse = $this->laravel->handleStatic($laravelRequest);
-            if ($laravelResponse) {
+            if ($laravelResponse !== false) {
                 (new StaticResponse($swooleResponse, $laravelResponse))->send();
                 return true;
             }
