@@ -115,7 +115,7 @@ class Laravel
         $modifiedSince = $request->header('if-modified-since');
         if ($modifiedSince !== null) {
             $modifiedSince = strtotime($modifiedSince);
-            if ($modifiedSince !== false && $modifiedSince <= $mtime) {
+            if ($modifiedSince !== false && $modifiedSince >= $mtime) {
                 $code = SymfonyResponse::HTTP_NOT_MODIFIED;
             }
         }
@@ -124,6 +124,7 @@ class Laravel
         $rsp = new BinaryFileResponse($file, $code);
         $rsp->setLastModified(new \DateTime(date('Y-m-d H:i:s', $mtime)));
         $rsp->setMaxAge($maxAge);
+        $rsp->setPrivate();
         $rsp->setExpires(new \DateTime(date('Y-m-d H:i:s', time() + $maxAge)));
         return $rsp;
 
