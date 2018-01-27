@@ -14,16 +14,16 @@ class StaticResponse extends Response
 
     public function sendContent()
     {
+        /**
+         * @var File $file
+         */
+        $file = $this->laravelResponse->getFile();
+        $this->swooleResponse->header('Content-Type', $file->getMimeType());
         if ($this->laravelResponse->getStatusCode() == SymfonyResponse::HTTP_NOT_MODIFIED) {
             $this->swooleResponse->end();
         } else {
-            /**
-             * @var File $file
-             */
-            $file = $this->laravelResponse->getFile();
             $path = $file->getRealPath();
             if (filesize($path) > 0) {
-                $this->swooleResponse->header('Content-Type', $file->getMimeType());
                 $this->swooleResponse->sendfile($path);
             } else {
                 $this->swooleResponse->end();
