@@ -50,7 +50,9 @@ abstract class Response implements ResponseInterface
         $this->sendStatusCode();
         $this->sendHeaders();
         $this->sendCookies();
-        $gzip AND $this->gzip();
+        if ($gzip) {
+            $this->gzip();
+        }
         $this->sendContent();
     }
 }
