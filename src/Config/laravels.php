@@ -1,7 +1,7 @@
 <?php
 return [
     'listen_ip'     => env('LARAVELS_LISTEN_IP', '0.0.0.0'),
-    'listen_port'   => env('LARAVELS_LISTEN_PORT', 8841),
+    'listen_port'   => env('LARAVELS_LISTEN_PORT', 5200),
     'enable_gzip'   => env('LARAVELS_ENABLE_GZIP', 1),
     'server'        => env('LARAVELS_SERVER', 'LaravelS'),
     'handle_static' => env('LARAVELS_HANDLE_STATIC', 1),
