@@ -78,6 +78,29 @@ $app->configure('laravels');
 | `reload` | Reload all worker process(Contain your business & Laravel/Lumen codes), exclude master/manger process |
 | `publish` | Publish configuration file `laravels.php` of LaravelS into folder `config` |
 
+## Cooperate with Nginx
+
+```Nginx
+upstream laravels {
+    server 192.168.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
+    #server 192.168.0.2:5200 weight=3 max_fails=3 fail_timeout=30s;
+    #server 192.168.0.3:5200 backup;
+}
+server {
+    listen 80;
+    server_name laravels.com;
+    root /xxx/laravel-s-test/public;
+    access_log /docker/log/nginx/$server_name.access.log  main;
+
+    location / {
+        proxy_http_version 1.1;
+        proxy_set_header Connection "keep-alive";
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_pass http://laravels;
+    }
+}
+```
+
 ## Listen Events
 
 - `laravels.received_request` After LaravelS parsed `swoole_http_request` to `Illuminate\Http\Request`, before Laravel's Kernel handles this request.
