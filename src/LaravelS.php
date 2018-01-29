@@ -65,7 +65,7 @@ class LaravelS extends Server
             $laravelResponse = $this->laravel->handleStatic($laravelRequest);
             if ($laravelResponse !== false) {
                 $laravelResponse->headers->set('Server', $this->conf['server'], true);
-                (new StaticResponse($swooleResponse, $laravelResponse))->send();
+                (new StaticResponse($swooleResponse, $laravelResponse))->send($this->conf['enable_gzip']);
                 return true;
             }
         }
@@ -77,7 +77,7 @@ class LaravelS extends Server
         $laravelResponse = $this->laravel->handleDynamic($laravelRequest);
         $laravelResponse->headers->set('Server', $this->conf['server'], true);
         $this->laravel->fireEvent('laravels.generated_response', [$laravelRequest, $laravelResponse]);
-        (new DynamicResponse($swooleResponse, $laravelResponse))->send();
+        (new DynamicResponse($swooleResponse, $laravelResponse))->send($this->conf['enable_gzip']);
         return true;
     }
 

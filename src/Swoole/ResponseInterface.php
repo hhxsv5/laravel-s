@@ -14,5 +14,5 @@ interface ResponseInterface
 
     public function sendContent();
 
-    public function send($acceptGzip = true);
+    public function send($gzip = false);
 }

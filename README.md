@@ -27,8 +27,9 @@ Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.
 | Dependency | Requirement |
 | -------- | -------- |
 | [PHP](https://secure.php.net/manual/en/install.php) | `>= 5.5.9` |
-| [Swoole](https://www.swoole.com/) | `>= 1.7.7` |
+| [Swoole](https://www.swoole.com/) | `>= 1.7.14` `The New The Better` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
+| Http GZIP[Optional] | [zlib](https://zlib.net/), Ubuntu/Debian: `sudo apt-get install zlibc zlib1g zlib1g-dev`, CentOS: `sudo yum install zlib` |
 
 ## Install
 
@@ -121,10 +122,6 @@ public function test(Request $req)
     Test::$string .= $req->input('param2');
 }
 ```
-
-## TODO
-
-- gzip
 
 ## License
 

@@ -47,15 +47,15 @@ abstract class Response implements ResponseInterface
 
     public function gzip()
     {
-        //TODO
+        $this->swooleResponse->gzip();
     }
 
-    public function send($acceptGzip = true)
+    public function send($gzip = false)
     {
         $this->sendStatusCode();
         $this->sendHeaders();
         $this->sendCookies();
-        $this->gzip();
+        $gzip AND $this->gzip();
         $this->sendContent();
     }
 }
