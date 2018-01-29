@@ -12,6 +12,11 @@ class StaticResponse extends Response
         parent::__construct($swooleResponse, $laravelResponse);
     }
 
+    public function gzip()
+    {
+
+    }
+
     public function sendContent()
     {
         /**

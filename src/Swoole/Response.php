@@ -45,22 +45,6 @@ abstract class Response implements ResponseInterface
         }
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function gzip()
-    {
-        if (extension_loaded('zlib')) {
-            $this->swooleResponse->gzip(4);
-        } else {
-            throw new \Exception('Http GZIP requires library "zlib", use "php--ri zlib" to check.');
-        }
-    }
-
-    /**
-     * @param bool $gzip
-     * @throws \Exception
-     */
     public function send($gzip = false)
     {
         $this->sendStatusCode();
