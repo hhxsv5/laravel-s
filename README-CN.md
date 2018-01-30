@@ -77,7 +77,7 @@ $app->configure('laravels');
 | `start` | 启动LaravelS |
 | `stop` | 停止LaravelS |
 | `restart` | 重启LaravelS |
-| `reload` | 重新加载所有worker进程，这些worker进程内包含你的业务代码，不会重启master/manger进程 |
+| `reload` | 重新加载所有worker进程，这些worker进程内包含你的业务代码和框架(Laravel/Lumen)代码，不会重启master/manger进程 |
 | `publish` | 发布配置文件到`config/laravels.php` |
 
 ## 与Nginx配合使用
