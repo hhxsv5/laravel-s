@@ -61,7 +61,6 @@ class Server
     {
         $this->setProcessTitle('laravels: worker process ' . $workerId);
 
-        // Clear opcode cache
         if (function_exists('opcache_reset')) {
             opcache_reset();
         }
