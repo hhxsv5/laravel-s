@@ -124,6 +124,17 @@ $events->listen('laravels.generated_response', function (\Illuminate\Http\Reques
 });
 ```
 
+
+## 使用swoole_http_server实例
+
+```PHP
+/**
+* @var \swoole_http_server
+*/
+$swoole = app('swoole');// Singleton
+var_dump($swoole->stats());
+```
+
 ## 注意事项
 
 - 只能通过`Illuminate\Http\Request`对象来获取请求信息，不能使用超全局变量，像$GLOBALS，$_SERVER，$_GET，$_POST，$_FILES，$_COOKIE，$_SESSION，$_REQUEST，$_ENV。

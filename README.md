@@ -126,6 +126,16 @@ $events->listen('laravels.generated_response', function (\Illuminate\Http\Reques
 });
 ```
 
+## Get the instance of swoole_http_server
+
+```PHP
+/**
+* @var \swoole_http_server
+*/
+$swoole = app('swoole');// Singleton
+var_dump($swoole->stats());
+```
+
 ## Important Notices
 
 - Get all info of request from `Illuminate\Http\Request` Object, `CAN NOT USE` `superglobal` variables like $GLOBALS, $_SERVER, $_GET, $_POST, $_FILES, $_COOKIE, $_SESSION, $_REQUEST, $_ENV
