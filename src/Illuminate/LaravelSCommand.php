@@ -34,7 +34,7 @@ class LaravelSCommand extends Command
     {
         $action = $this->argument('action');
         if (!in_array($action, $this->actions, true)) {
-            $this->warn(sprintf('LaravelS: action <error>%s</error> is not available, only support <info>%s</info>', $action, implode('|', $this->actions)));
+            $this->warn(sprintf('LaravelS: action %s is not available, only support %s', $action, implode('|', $this->actions)));
             return;
         }
         $this->info('LaravelS for ' . $this->getApplication()->getLongVersion());
