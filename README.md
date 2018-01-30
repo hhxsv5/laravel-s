@@ -27,9 +27,9 @@ Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.
 | Dependency | Requirement |
 | -------- | -------- |
 | [PHP](https://secure.php.net/manual/en/install.php) | `>= 5.5.9` |
-| [Swoole](https://www.swoole.com/) | `>= 1.7.14` `The New The Better` |
+| [Swoole](https://www.swoole.com/) | `>= 1.7.14` `The Newer The Better` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
-| GZIP[Optional] | [zlib](https://zlib.net/), Ubuntu/Debian: `sudo apt-get install zlibc zlib1g zlib1g-dev`, CentOS: `sudo yum install zlib` |
+| gzip[Optional] | [zlib](https://zlib.net/), Ubuntu/Debian: `sudo apt-get install zlibc zlib1g zlib1g-dev`, CentOS: `sudo yum install zlib` |
 
 ## Install
 
@@ -111,7 +111,6 @@ server {
 $events->listen('laravels.received_request', function (\Illuminate\Http\Request $req) {
     $req->query->set('get_key', 'hhxsv5');// Change query of request
     $req->request->set('post_key', 'hhxsv5'); // Change post of request
-    \Log::info('Received Request', [$req->getRequestUri(), $req->query->all(), $req->request->all()]);
 });
 ```
 
@@ -120,17 +119,37 @@ $events->listen('laravels.received_request', function (\Illuminate\Http\Request 
 ```PHP
 $events->listen('laravels.generated_response', function (\Illuminate\Http\Request $req, \Symfony\Component\HttpFoundation\Response $rsp) {
     $rsp->header('header-key', 'hhxsv5');// Change header of response
-    \Log::info('Generated Response', [$req->getRequestUri(), $rsp->getContent()]);
 });
 ```
 
 ## Important Notices
 
+- Get all info of request from `Illuminate\Http\Request` Object, `CAN NOT USE` `superglobal` variables like $GLOBALS, $_SERVER, $_GET, $_POST, $_FILES, $_COOKIE, $_SESSION, $_REQUEST, $_ENV
+
+```PHP
+public function form(\Illuminate\Http\Request $request)
+{
+    $name = $request->input('name');
+    $all = $request->all();
+    $sessionId = $request->cookie('sessionId');
+    $photo = $request->file('photo');
+    //...
+}
+```
+
+- Respond by `Illuminate\Http\Response` Object, `CANNOT USE` functions like header(), setcookie(), http_response_code()
+
+```PHP
+public function json()
+{
+    return response()->json(['time' => time()])->header('header1', 'value1')->withCookie('c1', 'v1');
+}
+```
+
 - `global`, `static` variables which you declared are need to destroy(reset) manually.
 
-- Never use `superglobal` variables, like $GLOBALS, $_SERVER, $_GET, $_POST, $_FILES, $_COOKIE, $_SESSION, $_REQUEST, $_ENV
-
 - Infinitely appending element into `static`/`global` variable will lead to memory leak.
+
 ```PHP
 // Some class
 class Test
@@ -138,7 +157,7 @@ class Test
     public static $array = [];
     public static $string = '';
 }
-// In Controller
+// Controller
 public function test(Request $req)
 {
     // Memory leak
