@@ -31,7 +31,7 @@
 | Dependency | Requirement |
 | -------- | -------- |
 | [PHP](https://secure.php.net/manual/en/install.php) | `>= 5.5.9` |
-| [Swoole](https://www.swoole.com/) | `>= 1.7.14` `The Newer The Better` |
+| [Swoole](https://www.swoole.co.uk/) | `>= 1.7.14` `The Newer The Better` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
 | gzip[Optional] | [zlib](https://zlib.net/), Ubuntu/Debian: `sudo apt-get install zlibc zlib1g zlib1g-dev`, CentOS: `sudo yum install zlib` |
 
