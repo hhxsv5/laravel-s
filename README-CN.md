@@ -1,5 +1,5 @@
-# LaravelS - standing on the shoulders of giants
-> Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.
+# LaravelS - 站在巨人的肩膀上
+> 通过Swoole来加速 Laravel/Lumen，其中的S代表Swoole，速度，高性能。
 
 [![Latest Stable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/stable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
 [![Total Downloads](https://poser.pugx.org/hhxsv5/laravel-s/downloads.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
@@ -10,42 +10,40 @@
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 <!-- [![Code Coverage](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/?branch=master) -->
 
-[中文文档](README-CN.md)
+## 特性
 
-## Features
+- 高性能的Swoole
 
-- High performance Swoole
+- 内置Http服务器
 
-- Built-in Http Server
+- 常驻内存
 
-- Memory resident
+- 平滑重启
 
-- Gracefully reload
+- 兼容范围广
 
-- Good compatibility
+- 简单，开箱即用
 
-- Simple & Out of the box
+## 要求
 
-## Requirements
-
-| Dependency | Requirement |
+| 依赖 | 说明 |
 | -------- | -------- |
 | [PHP](https://secure.php.net/manual/en/install.php) | `>= 5.5.9` |
-| [Swoole](https://www.swoole.com/) | `>= 1.7.14` `The Newer The Better` |
+| [Swoole](https://www.swoole.com/) | `>= 1.7.14` `推荐最新的稳定版` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
-| gzip[Optional] | [zlib](https://zlib.net/), Ubuntu/Debian: `sudo apt-get install zlibc zlib1g zlib1g-dev`, CentOS: `sudo yum install zlib` |
+| gzip[可选] | [zlib](https://zlib.net/), Ubuntu/Debian: `sudo apt-get install zlibc zlib1g zlib1g-dev`, CentOS: `sudo yum install zlib` |
 
-## Install
+## 安装
 
-1.Require package via Composer([packagist](https://packagist.org/packages/hhxsv5/laravel-s))
+1.通过composer安装([packagist](https://packagist.org/packages/hhxsv5/laravel-s))
 
 ```Bash
 composer require "hhxsv5/laravel-s:~1.0" -vvv
 ```
 
-2.Add service provider
+2.添加service provider
 
-- `Laravel`: in `config/app.php` file
+- `Laravel`: 修改文件`config/app.php`
 ```PHP
 'providers' => [
     //...
@@ -53,36 +51,36 @@ composer require "hhxsv5/laravel-s:~1.0" -vvv
 ],
 ```
 
-- `Lumen`: in `bootstrap/app.php` file
+- `Lumen`: 修改文件`bootstrap/app.php`
 ```PHP
 $app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
 ```
 
-3.Publish Configuration
+3.发布配置文件
 ```Bash
 php artisan laravels:publish
 ```
 
-`Special for Lumen`: you `DO NOT` need to load this configuration manually in `bootstrap/app.php` file. LaravelS will load it automatically.
+`特别情况`: 你不需要手动加载配置`laravels.php`，LaravelS底层已自动加载。
 ```PHP
-// Unnecessary to call configure()
+// 不必要手动加载，但加载了也不会有问题
 $app->configure('laravels');
 ```
 
-4.Change `config/laravels.php`: listen_ip, listen_port, [swoole's settings](https://wiki.swoole.com/wiki/page/274.html) ...
+4.修改配置`config/laravels.php`：监听的IP，监听的端口，[Swoole的配置](https://wiki.swoole.com/wiki/page/274.html)等等。
 
-## Run Demo
+## 运行
 > `php artisan laravels {start|stop|restart|reload|publish}`
 
-| Command | Description |
+| 命令 | 说明 |
 | --------- | --------- |
-| `start` | Start LaravelS |
-| `stop` | Stop LaravelS |
-| `restart` | Restart LaravelS |
-| `reload` | Reload all worker process(Contain your business & Laravel/Lumen codes), exclude master/manger process |
-| `publish` | Publish configuration file `laravels.php` of LaravelS into folder `config` |
+| `start` | 启动LaravelS |
+| `stop` | 停止LaravelS |
+| `restart` | 重启LaravelS |
+| `reload` | 重新加载所有worker进程，这些worker进程内包含你的业务代码，不会重启master/manger进程 |
+| `publish` | 发布配置文件到`config/laravels.php` |
 
-## Cooperate with Nginx
+## 与Nginx配合使用
 
 ```Nginx
 upstream laravels {
@@ -106,29 +104,29 @@ server {
 }
 ```
 
-## Listen Events
+## 监听事件
 
-- `laravels.received_request` After LaravelS parsed `swoole_http_request` to `Illuminate\Http\Request`, before Laravel's Kernel handles this request.
+- `laravels.received_request` 将`swoole_http_request`转成`Illuminate\Http\Request`后，在Laravel内核处理请求前。
 
 ```PHP
-// Edit file `app/Providers/EventServiceProvider.php`, add the following code into method `boot`
+// 修改`app/Providers/EventServiceProvider.php`, 添加下面监听代码到boot方法中
 $events->listen('laravels.received_request', function (\Illuminate\Http\Request $req) {
-    $req->query->set('get_key', 'hhxsv5');// Change query of request
-    $req->request->set('post_key', 'hhxsv5'); // Change post of request
+    $req->query->set('get_key', 'hhxsv5');// 修改querystring
+    $req->request->set('post_key', 'hhxsv5'); // 修改post body
 });
 ```
 
-- `laravels.generated_response` After Laravel's Kernel handled the request, before LaravelS parses `Illuminate\Http\Response` to `swoole_http_response`.
+- `laravels.generated_response` 在Laravel内核处理完请求后，将`Illuminate\Http\Response`转成`swoole_http_response`之前(下一步将响应给客户端)。
 
 ```PHP
 $events->listen('laravels.generated_response', function (\Illuminate\Http\Request $req, \Symfony\Component\HttpFoundation\Response $rsp) {
-    $rsp->header('header-key', 'hhxsv5');// Change header of response
+    $rsp->header('header-key', 'hhxsv5');// 修改header
 });
 ```
 
-## Important Notices
+## 注意事项
 
-- Get all info of request from `Illuminate\Http\Request` Object, `CAN NOT USE` `superglobal` variables like $GLOBALS, $_SERVER, $_GET, $_POST, $_FILES, $_COOKIE, $_SESSION, $_REQUEST, $_ENV
+- 只能通过`Illuminate\Http\Request`对象来获取请求信息，不能使用超全局变量，像$GLOBALS，$_SERVER，$_GET，$_POST，$_FILES，$_COOKIE，$_SESSION，$_REQUEST，$_ENV。
 
 ```PHP
 public function form(\Illuminate\Http\Request $request)
@@ -141,7 +139,7 @@ public function form(\Illuminate\Http\Request $request)
 }
 ```
 
-- Respond by `Illuminate\Http\Response` Object, compatible with echo/vardump()/print_r()，`CANNOT USE` functions like header(), setcookie(), http_response_code()
+- 推荐通过`Illuminate\Http\Response`对象返回响应信息，兼容echo、vardump()、print_r()，不能通过函数像exit()，die()，header()，setcookie()，http_response_code()。
 
 ```PHP
 public function json()
@@ -150,21 +148,19 @@ public function json()
 }
 ```
 
-- `global`, `static` variables which you declared are need to destroy(reset) manually.
+- 你声明的全局、静态变量必须手动清理掉。
 
-- Infinitely appending element into `static`/`global` variable will lead to memory leak.
+- 无限追加元素到静态或全局变量中，将导致内存爆满。
 
 ```PHP
-// Some class
 class Test
 {
     public static $array = [];
     public static $string = '';
 }
-// Controller
 public function test(Request $req)
 {
-    // Memory leak
+    // 内存爆满
     Test::$array[] = $req->input('param1');
     Test::$string .= $req->input('param2');
 }
