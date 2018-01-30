@@ -147,8 +147,8 @@ class LaravelSCommand extends Command
         $to = base_path('config/laravels.php');
         if (file_exists($to)) {
             $choice = $this->anticipate($to . ' already exists, do you want to override it ? Y/N', ['Y', 'N'], 'N');
-            if (!$choice || strtoupper($choice) === 'N') {
-                $this->info('Publishing complete.');
+            if (!$choice || strtoupper($choice) !== 'Y') {
+                $this->info('Publishing skipped.');
                 return;
             }
         }
