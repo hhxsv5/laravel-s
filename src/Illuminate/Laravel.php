@@ -109,13 +109,31 @@ class Laravel
             return false;
         }
 
-        $file = $this->conf['rootPath'] . '/public' . $uri;
-        if (!is_readable($file)) {
+        // Locate the request file
+        $publicPath = $this->conf['rootPath'] . '/public';
+        $requestFile = $publicPath . $uri;
+        if (is_file($requestFile)) {
+
+        } elseif (is_dir($requestFile)) {
+            $requestFile = rtrim($requestFile, '/');
+            $found = false;
+            foreach (['/index.html', '/index.htm'] as $index) {
+                $tmpFile = $requestFile . $index;
+                if (is_file($tmpFile)) {
+                    $found = true;
+                    $requestFile = $tmpFile;
+                    break;
+                }
+            }
+            if (!$found) {
+                return false;
+            }
+        } else {
             return false;
         }
 
         $code = SymfonyResponse::HTTP_OK;
-        $mtime = filemtime($file);
+        $mtime = filemtime($requestFile);
         $modifiedSince = $request->header('if-modified-since');
         if ($modifiedSince !== null) {
             $modifiedSince = strtotime($modifiedSince);
@@ -125,7 +143,7 @@ class Laravel
         }
 
         $maxAge = 24 * 3600;
-        $rsp = new BinaryFileResponse($file, $code);
+        $rsp = new BinaryFileResponse($requestFile, $code);
         $rsp->setLastModified(new \DateTime(date('Y-m-d H:i:s', $mtime)));
         $rsp->setMaxAge($maxAge);
         $rsp->setPrivate();

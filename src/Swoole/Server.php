@@ -68,6 +68,8 @@ class Server
         if (function_exists('apc_clear_cache')) {
             apc_clear_cache();
         }
+
+        clearstatcache();
     }
 
     public function onWorkerStop(\swoole_http_server $server, $workerId)
