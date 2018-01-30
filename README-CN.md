@@ -20,7 +20,7 @@
 
 - 平滑重启
 
-- 支持Laravel和Lumen，兼容版本广
+- 同时支持Laravel与Lumen，兼容主流版本
 
 - 简单，开箱即用
 
