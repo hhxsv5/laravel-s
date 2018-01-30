@@ -22,7 +22,7 @@
 
 - Gracefully reload
 
-- Good compatibility
+- Support Laravel/Lumen, good compatibility
 
 - Simple & Out of the box
 
