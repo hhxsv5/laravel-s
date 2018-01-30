@@ -168,6 +168,8 @@ class Laravel
 
     public function bindSwoole($swoole)
     {
-        $this->app->singleton('swoole', $swoole);
+        $this->app->singleton('swoole', function () use ($swoole) {
+            return $swoole;
+        });
     }
 }
