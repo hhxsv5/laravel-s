@@ -112,9 +112,7 @@ class Laravel
         // Locate the request file
         $publicPath = $this->conf['rootPath'] . '/public';
         $requestFile = $publicPath . $uri;
-        if (is_file($requestFile)) {
-
-        } elseif (is_dir($requestFile)) {
+        if (is_dir($requestFile)) {
             $requestFile = rtrim($requestFile, '/');
             $found = false;
             foreach (['/index.html', '/index.htm'] as $index) {
@@ -128,7 +126,7 @@ class Laravel
             if (!$found) {
                 return false;
             }
-        } else {
+        } elseif (!is_file($requestFile)) {
             return false;
         }
 
