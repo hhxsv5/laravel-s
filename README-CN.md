@@ -150,7 +150,7 @@ public function form(\Illuminate\Http\Request $request)
 }
 ```
 
-- 推荐通过`Illuminate\Http\Response`对象返回响应信息，兼容echo、vardump()、print_r()，不能通过函数像exit()，die()，header()，setcookie()，http_response_code()。
+- 推荐通过返回`Illuminate\Http\Response`对象来响应请求，兼容echo、vardump()、print_r()，不能使用函数像exit()，die()，header()，setcookie()，http_response_code()。
 
 ```PHP
 public function json()
