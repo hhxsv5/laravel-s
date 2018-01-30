@@ -7,7 +7,7 @@ use Illuminate\Filesystem\Filesystem;
 
 class LaravelSCommand extends Command
 {
-    protected $signature = 'laravels {action?}';
+    protected $signature = 'laravels';
 
     protected $description = 'LaravelS Console Tool';
 
@@ -15,15 +15,14 @@ class LaravelSCommand extends Command
 
     protected $isLumen = false;
 
-    protected $files;
-
-    public function __construct(Filesystem $files)
+    public function __construct()
     {
-        parent::__construct();
-
         $this->actions = ['start', 'stop', 'restart', 'reload', 'publish'];
-        $this->description .= ': ' . implode('|', $this->actions);
-        $this->files = $files;
+        $actions = implode('|', $this->actions);
+        $this->signature .= sprintf(' {action : %s}', $actions);
+        $this->description .= ': ' . $actions;
+
+        parent::__construct();
     }
 
     public function fire()
@@ -35,7 +34,7 @@ class LaravelSCommand extends Command
     {
         $action = $this->argument('action');
         if (!in_array($action, $this->actions, true)) {
-            $this->info('php laravels {' . implode('|', $this->actions) . '}');
+            $this->warn(sprintf('LaravelS: action <error>%s</error> is not available, only support <info>%s</info>', $action, implode('|', $this->actions)));
             return;
         }
         $this->info('LaravelS for ' . $this->getApplication()->getLongVersion());
@@ -166,21 +165,22 @@ class LaravelSCommand extends Command
 
         $toDir = dirname($to);
 
-        if (!$this->files->isDirectory($toDir)) {
-            $this->files->makeDirectory($toDir, 0755, true);
+
+        /**
+         * @var Filesystem $files
+         */
+        $files = app(Filesystem::class);
+
+        if (!$files->isDirectory($toDir)) {
+            $files->makeDirectory($toDir, 0755, true);
         }
 
-        $this->files->copy($from, $to);
+        $files->copy($from, $to);
 
         $from = str_replace(base_path(), '', realpath($from));
 
         $to = str_replace(base_path(), '', realpath($to));
 
         $this->line('<info>Copied File</info> <comment>[' . $from . ']</comment> <info>To</info> <comment>[' . $to . ']</comment>');
-    }
-
-    public function getDescription()
-    {
-        return $this->description;
     }
 }
