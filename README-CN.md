@@ -63,7 +63,7 @@ php artisan laravels:publish
 
 `特别情况`: 你不需要手动加载配置`laravels.php`，LaravelS底层已自动加载。
 ```PHP
-// 不必要手动加载，但加载了也不会有问题
+// 不必手动加载，但加载了也不会有问题
 $app->configure('laravels');
 ```
 
