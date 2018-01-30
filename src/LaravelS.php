@@ -43,6 +43,7 @@ class LaravelS extends Server
         // Delay to include Laravel's autoload.php
         $this->laravel = new Laravel($this->laravelConf);
         $this->laravel->prepareLaravel();
+        $this->laravel->bindSwoole($this->swoole);
 
         // file_put_contents('laravels.log', 'Laravels:onWorkerStart:end already included files ' . json_encode(get_included_files(), JSON_UNESCAPED_SLASHES) . PHP_EOL, FILE_APPEND);
     }

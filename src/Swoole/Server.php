@@ -5,7 +5,7 @@ namespace Hhxsv5\LaravelS\Swoole;
 class Server
 {
     protected $conf;
-    protected $sw;
+    protected $swoole;
 
     protected function __construct(array $conf = [])
     {
@@ -16,9 +16,9 @@ class Server
         $settings = isset($conf['swoole']) ? $conf['swoole'] : [];
 
         if (isset($settings['ssl_cert_file'], $settings['ssl_key_file'])) {
-            $this->sw = new \swoole_http_server($ip, $port, \SWOOLE_PROCESS, \SWOOLE_SOCK_TCP | \SWOOLE_SSL);
+            $this->swoole = new \swoole_http_server($ip, $port, \SWOOLE_PROCESS, \SWOOLE_SOCK_TCP | \SWOOLE_SSL);
         } else {
-            $this->sw = new \swoole_http_server($ip, $port, \SWOOLE_PROCESS);
+            $this->swoole = new \swoole_http_server($ip, $port, \SWOOLE_PROCESS);
         }
 
         $default = [
@@ -27,19 +27,19 @@ class Server
             'enable_reuse_port' => true,
         ];
 
-        $this->sw->set($settings + $default);
+        $this->swoole->set($settings + $default);
     }
 
     protected function bind()
     {
-        $this->sw->on('Start', [$this, 'onStart']);
-        $this->sw->on('Shutdown', [$this, 'onShutdown']);
-        $this->sw->on('ManagerStart', [$this, 'onManagerStart']);
-        $this->sw->on('WorkerStart', [$this, 'onWorkerStart']);
-        $this->sw->on('WorkerStop', [$this, 'onWorkerStop']);
-        $this->sw->on('WorkerExit', [$this, 'onWorkerExit']);
-        $this->sw->on('WorkerError', [$this, 'onWorkerError']);
-        $this->sw->on('Request', [$this, 'onRequest']);
+        $this->swoole->on('Start', [$this, 'onStart']);
+        $this->swoole->on('Shutdown', [$this, 'onShutdown']);
+        $this->swoole->on('ManagerStart', [$this, 'onManagerStart']);
+        $this->swoole->on('WorkerStart', [$this, 'onWorkerStart']);
+        $this->swoole->on('WorkerStop', [$this, 'onWorkerStop']);
+        $this->swoole->on('WorkerExit', [$this, 'onWorkerExit']);
+        $this->swoole->on('WorkerError', [$this, 'onWorkerError']);
+        $this->swoole->on('Request', [$this, 'onRequest']);
     }
 
     public function onStart(\swoole_http_server $server)
@@ -93,7 +93,7 @@ class Server
     public function run()
     {
         $this->bind();
-        $this->sw->start();
+        $this->swoole->start();
     }
 
     protected function setProcessTitle($title)

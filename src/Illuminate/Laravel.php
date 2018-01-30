@@ -165,4 +165,9 @@ class Laravel
     {
         $this->app->events->fire($name, $params);
     }
+
+    public function bindSwoole($swoole)
+    {
+        $this->app->singleton('swoole', $swoole);
+    }
 }
