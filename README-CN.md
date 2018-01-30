@@ -28,7 +28,7 @@
 
 | 依赖 | 说明 |
 | -------- | -------- |
-| [PHP](https://secure.php.net/manual/en/install.php) | `>= 5.5.9` |
+| [PHP](https://secure.php.net/manual/zh/install.php) | `>= 5.5.9` |
 | [Swoole](https://www.swoole.com/) | `>= 1.7.14` `推荐最新的稳定版` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
 | gzip[可选] | [zlib](https://zlib.net/), Ubuntu/Debian: `sudo apt-get install zlibc zlib1g zlib1g-dev`, CentOS: `sudo yum install zlib` |
