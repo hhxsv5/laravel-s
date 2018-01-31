@@ -79,7 +79,7 @@ $app->configure('laravels');
 | `stop` | 停止LaravelS |
 | `restart` | 重启LaravelS |
 | `reload` | 平滑重启所有worker进程，这些worker进程内包含你的业务代码和框架(Laravel/Lumen)代码，不会重启master/manger进程 |
-| `publish` | 发布配置文件到`config/laravels.php` |
+| `publish` | 发布配置文件到你的项目中`config/laravels.php` |
 
 ## 与Nginx配合使用
 

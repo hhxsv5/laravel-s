@@ -81,7 +81,7 @@ $app->configure('laravels');
 | `stop` | Stop LaravelS |
 | `restart` | Restart LaravelS |
 | `reload` | Reload all worker process(Contain your business & Laravel/Lumen codes), exclude master/manger process |
-| `publish` | Publish configuration file `laravels.php` of LaravelS into folder `config` |
+| `publish` | Publish configuration file `laravels.php` of LaravelS into folder `config` of your project |
 
 ## Cooperate with Nginx
 
