@@ -93,6 +93,7 @@ server {
     server_name laravels.com;
     root /xxxpath/laravel-s-test/public;
     access_log /yyypath/log/nginx/$server_name.access.log  main;
+    index index.html index.htm;
     
     # Nginx处理静态资源，LaravelS处理动态资源。
     location / {
