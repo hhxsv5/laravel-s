@@ -100,7 +100,7 @@ server {
     
     # Nginx handles the static resources, LaravelS handles the dynamic resource.
     location / {
-        try_files $uri $uri/ @laravels;
+        try_files $uri @laravels;
     }
 
     location @laravels {
