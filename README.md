@@ -33,13 +33,14 @@
 | [PHP](https://secure.php.net/manual/en/install.php) | `>= 5.5.9` |
 | [Swoole](https://www.swoole.co.uk/) | `>= 1.7.14` `The Newer The Better` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
-| gzip[Optional] | [zlib](https://zlib.net/), Ubuntu/Debian: `sudo apt-get install zlibc zlib1g zlib1g-dev`, CentOS: `sudo yum install zlib` |
+| Gzip[optional] | [zlib](https://zlib.net/), Ubuntu/Debian: `sudo apt-get install zlibc zlib1g zlib1g-dev`, CentOS: `sudo yum install zlib` |
 
 ## Install
 
 1.Require package via Composer([packagist](https://packagist.org/packages/hhxsv5/laravel-s))
 
 ```Bash
+# Run in the root path of your Laravel/Lumen project.
 composer require "hhxsv5/laravel-s:~1.0" -vvv
 ```
 

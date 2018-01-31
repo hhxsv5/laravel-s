@@ -31,13 +31,14 @@
 | [PHP](https://secure.php.net/manual/zh/install.php) | `>= 5.5.9` |
 | [Swoole](https://www.swoole.com/) | `>= 1.7.14` `推荐最新的稳定版` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
-| gzip[可选] | [zlib](https://zlib.net/), Ubuntu/Debian: `sudo apt-get install zlibc zlib1g zlib1g-dev`, CentOS: `sudo yum install zlib` |
+| Gzip[可选的] | [zlib](https://zlib.net/), Ubuntu/Debian: `sudo apt-get install zlibc zlib1g zlib1g-dev`, CentOS: `sudo yum install zlib` |
 
 ## 安装
 
 1.通过composer安装([packagist](https://packagist.org/packages/hhxsv5/laravel-s))
 
 ```Bash
+# 在你的Laravel/Lumen项目的根目录下执行
 composer require "hhxsv5/laravel-s:~1.0" -vvv
 ```
 
