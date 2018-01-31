@@ -93,10 +93,15 @@ upstream laravels {
 server {
     listen 80;
     server_name laravels.com;
-    root /xxx/laravel-s-test/public;
-    access_log /docker/log/nginx/$server_name.access.log  main;
-
+    root /xxxpath/laravel-s-test/public;
+    access_log /yyypath/log/nginx/$server_name.access.log  main;
+    
+    # Nginx handles the static resources, LaravelS handles the dynamic resource.
     location / {
+        try_files $uri @laravels;
+    }
+
+    location @laravels {
         proxy_http_version 1.1;
         proxy_set_header Connection "keep-alive";
         proxy_set_header X-Real-IP $remote_addr;
