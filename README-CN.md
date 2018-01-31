@@ -96,7 +96,8 @@ server {
     
     # Nginx处理静态资源，LaravelS处理动态资源。
     location / {
-        try_files $uri @laravels;
+        index index.html index.htm;
+        try_files $uri $uri/ @laravels;
     }
 
     location @laravels {
