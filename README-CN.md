@@ -35,7 +35,7 @@
 
 ## 安装
 
-1.通过composer安装([packagist](https://packagist.org/packages/hhxsv5/laravel-s))
+1.通过[Composer](https://getcomposer.org/)安装([packagist](https://packagist.org/packages/hhxsv5/laravel-s))
 
 ```Bash
 # 在你的Laravel/Lumen项目的根目录下执行

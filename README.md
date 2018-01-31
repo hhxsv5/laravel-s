@@ -37,7 +37,7 @@
 
 ## Install
 
-1.Require package via Composer([packagist](https://packagist.org/packages/hhxsv5/laravel-s))
+1.Require package via [Composer](https://getcomposer.org/)([packagist](https://packagist.org/packages/hhxsv5/laravel-s))
 
 ```Bash
 # Run in the root path of your Laravel/Lumen project.
