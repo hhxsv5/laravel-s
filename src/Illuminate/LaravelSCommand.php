@@ -92,11 +92,11 @@ class LaravelSCommand extends Command
         $pidFile = config('laravels.swoole.pid_file');
         if (file_exists($pidFile)) {
             $pid = (int)file_get_contents($pidFile);
-            if ($this->killProcess(($pid, 0)) {
-                if ($this->killProcess(($pid, SIGTERM)) {
+            if ($this->killProcess($pid, 0)) {
+                if ($this->killProcess($pid, SIGTERM)) {
                     // Make sure that master process quit
                     $time = 0;
-                    while ($this->killProcess(($pid, 0) && $time <= 20) {
+                    while ($this->killProcess($pid, 0) && $time <= 20) {
                         usleep(100000);
                         $time++;
                     }
@@ -130,12 +130,12 @@ class LaravelSCommand extends Command
         }
 
         $pid = (int)file_get_contents($pidFile);
-        if (!$this->killProcess(($pid, 0)) {
+        if (!$this->killProcess($pid, 0)) {
             $this->error("LaravelS: PID[{$pid}] does not exist, or permission denied.");
             return;
         }
 
-        if ($this->killProcess(($pid, SIGUSR1)) {
+        if ($this->killProcess($pid, SIGUSR1)) {
             $this->info("LaravelS: PID[{$pid}] is reloaded.");
         } else {
             $this->error("LaravelS: PID[{$pid}] is reloaded failed.");
