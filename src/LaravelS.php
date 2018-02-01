@@ -53,9 +53,9 @@ class LaravelS extends Server
         parent::onRequest($request, $response);
 
         $laravelRequest = (new Request($request))->toIlluminateRequest();
+        $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
         $success = $this->handleStaticResource($laravelRequest, $response);
         if ($success === false) {
-            $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
             $this->handleDynamicResource($laravelRequest, $response);
         }
     }
