@@ -130,7 +130,7 @@ $events->listen('laravels.received_request', function (\Illuminate\Http\Request 
 
 ```PHP
 $events->listen('laravels.generated_response', function (\Illuminate\Http\Request $req, \Symfony\Component\HttpFoundation\Response $rsp) {
-    $rsp->header('header-key', 'hhxsv5');// Change header of response
+    $rsp->headers->set('header-key', 'hhxsv5');// Change header of response
 });
 ```
 
