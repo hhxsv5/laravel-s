@@ -97,7 +97,7 @@ class Laravel
 
         ob_end_clean();
 
-        $this->clean($request);
+//        $this->clean($request);
 
         return $response;
     }
@@ -150,7 +150,7 @@ class Laravel
 
     }
 
-    protected function clean(Request $request)
+    public function cleanRequest(Request $request)
     {
         // Clean laravel session
         if ($request->hasSession()) {
