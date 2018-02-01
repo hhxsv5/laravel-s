@@ -37,7 +37,7 @@ class Server
         $this->swoole->on('ManagerStart', [$this, 'onManagerStart']);
         $this->swoole->on('WorkerStart', [$this, 'onWorkerStart']);
         $this->swoole->on('WorkerStop', [$this, 'onWorkerStop']);
-        if (version_compare(swoole_version(), '1.9.17', '>=')) {
+        if (version_compare(\swoole_version(), '1.9.17', '>=')) {
             $this->swoole->on('WorkerExit', [$this, 'onWorkerExit']);
         }
         $this->swoole->on('WorkerError', [$this, 'onWorkerError']);
@@ -106,8 +106,8 @@ class Server
         }
         if (function_exists('cli_set_process_title')) {
             cli_set_process_title($title);
-        } elseif (function_exists('swoole_set_process_name')) {
-            swoole_set_process_name($title);
+        } elseif (function_exists('\swoole_set_process_name')) {
+            \swoole_set_process_name($title);
         }
     }
 
