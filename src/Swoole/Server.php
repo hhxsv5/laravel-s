@@ -49,7 +49,7 @@ class Server
         $this->setProcessTitle('laravels: master process');
 
         if (version_compare(\swoole_version(), '1.9.5', '<')) {
-            file_put_contents($this->conf['pid_file'], $server->master_pid);
+            file_put_contents($this->conf['swoole']['pid_file'], $server->master_pid);
         }
     }
 
