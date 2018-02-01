@@ -185,6 +185,12 @@ public function test(Request $req)
 }
 ```
 
+## 待办事项
+
+1. 针对MySQL/Redis的连接池
+
+2. 包装协MySQL/Redis/Http的程客户端.
+
 ## License
 
 [MIT](https://github.com/hhxsv5/laravel-s/blob/master/LICENSE)

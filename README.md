@@ -188,6 +188,12 @@ public function test(Request $req)
 }
 ```
 
+## Todo list
+
+1. Connection pool for MySQL/Redis.
+
+2. Wrap coroutine clients for MySQL/Redis/Http.
+
 ## License
 
 [MIT](https://github.com/hhxsv5/laravel-s/blob/master/LICENSE)
