@@ -100,6 +100,9 @@ class LaravelSCommand extends Command
                         usleep(100000);
                         $time++;
                     }
+                    if (file_exists($pidFile)) {
+                        unlink($pidFile);
+                    }
                     $this->info("LaravelS: PID[{$pid}] is stopped.");
                 } else {
                     $this->error("LaravelS: PID[{$pid}] is stopped failed.");
