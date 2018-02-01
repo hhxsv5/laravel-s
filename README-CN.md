@@ -59,7 +59,7 @@ $app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
 
 3.发布配置文件
 ```Bash
-php artisan laravels:publish
+php artisan laravels publish
 ```
 
 `特别情况`: 你不需要手动加载配置`laravels.php`，LaravelS底层已自动加载。

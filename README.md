@@ -61,7 +61,7 @@ $app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
 
 3.Publish Configuration
 ```Bash
-php artisan laravels:publish
+php artisan laravels publish
 ```
 
 `Special for Lumen`: you `DO NOT` need to load this configuration manually in `bootstrap/app.php` file. LaravelS will load it automatically.
