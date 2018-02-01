@@ -57,7 +57,7 @@ class LaravelSCommand extends Command
         $svrConf = config('laravels');
         if (file_exists($svrConf['swoole']['pid_file'])) {
             $pid = (int)file_get_contents($svrConf['swoole']['pid_file']);
-            if (\swoole_process::kill($pid, 0)) {
+            if ($this->killProcess($pid, 0)) {
                 $this->warn("LaravelS: PID[{$pid}] is already running.");
                 return;
             }
@@ -92,11 +92,11 @@ class LaravelSCommand extends Command
         $pidFile = config('laravels.swoole.pid_file');
         if (file_exists($pidFile)) {
             $pid = (int)file_get_contents($pidFile);
-            if (\swoole_process::kill($pid, 0)) {
-                if (\swoole_process::kill($pid, SIGTERM)) {
+            if ($this->killProcess(($pid, 0)) {
+                if ($this->killProcess(($pid, SIGTERM)) {
                     // Make sure that master process quit
                     $time = 0;
-                    while (\swoole_process::kill($pid, 0) && $time <= 20) {
+                    while ($this->killProcess(($pid, 0) && $time <= 20) {
                         usleep(100000);
                         $time++;
                     }
@@ -130,12 +130,12 @@ class LaravelSCommand extends Command
         }
 
         $pid = (int)file_get_contents($pidFile);
-        if (!\swoole_process::kill($pid, 0)) {
+        if (!$this->killProcess(($pid, 0)) {
             $this->error("LaravelS: PID[{$pid}] does not exist, or permission denied.");
             return;
         }
 
-        if (\swoole_process::kill($pid, SIGUSR1)) {
+        if ($this->killProcess(($pid, SIGUSR1)) {
             $this->info("LaravelS: PID[{$pid}] is reloaded.");
         } else {
             $this->error("LaravelS: PID[{$pid}] is reloaded failed.");
@@ -182,5 +182,14 @@ class LaravelSCommand extends Command
         $to = str_replace(base_path(), '', realpath($to));
 
         $this->line('<info>Copied File</info> <comment>[' . $from . ']</comment> <info>To</info> <comment>[' . $to . ']</comment>');
+    }
+
+    protected function killProcess($pid, $sig)
+    {
+        try {
+            return \swoole_process::kill($pid, $sig);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }
