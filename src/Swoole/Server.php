@@ -37,7 +37,9 @@ class Server
         $this->swoole->on('ManagerStart', [$this, 'onManagerStart']);
         $this->swoole->on('WorkerStart', [$this, 'onWorkerStart']);
         $this->swoole->on('WorkerStop', [$this, 'onWorkerStop']);
-        $this->swoole->on('WorkerExit', [$this, 'onWorkerExit']);
+        if (version_compare(swoole_version(), '1.9.17', '>=')) {
+            $this->swoole->on('WorkerExit', [$this, 'onWorkerExit']);
+        }
         $this->swoole->on('WorkerError', [$this, 'onWorkerError']);
         $this->swoole->on('Request', [$this, 'onRequest']);
     }
