@@ -7,10 +7,10 @@ use Symfony\Component\HttpFoundation\File\File;
 
 class StaticResponse extends Response
 {
-    public function __construct(\swoole_http_response $swooleResponse, BinaryFileResponse $laravelResponse)
-    {
-        parent::__construct($swooleResponse, $laravelResponse);
-    }
+    /**
+     * @var BinaryFileResponse $laravelResponse
+     */
+    protected $laravelResponse;
 
     public function gzip()
     {
