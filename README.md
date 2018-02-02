@@ -70,7 +70,7 @@ php artisan laravels publish
 $app->configure('laravels');
 ```
 
-4.Change `config/laravels.php`: listen_ip, listen_port, [swoole's settings](https://wiki.swoole.com/wiki/page/274.html) ...
+4.Change `config/laravels.php`: listen_ip, listen_port, refer [Settings](Settings.md).
 
 ## Run Demo
 > `php artisan laravels {start|stop|restart|reload|publish}`

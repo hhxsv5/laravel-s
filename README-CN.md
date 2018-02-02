@@ -68,7 +68,7 @@ php artisan laravels publish
 $app->configure('laravels');
 ```
 
-4.修改配置`config/laravels.php`：监听的IP，监听的端口，[Swoole的配置](https://wiki.swoole.com/wiki/page/274.html)等等。
+4.修改配置`config/laravels.php`：监听的IP、端口等，请参考[配置项](Settings-CN.md)。
 
 ## 运行
 > `php artisan laravels {start|stop|restart|reload|publish}`
