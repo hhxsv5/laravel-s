@@ -187,9 +187,9 @@ public function test(Request $req)
 
 ## 待办事项
 
-1. 针对MySQL/Redis的连接池
+1. 针对MySQL/Redis的连接池。
 
-2. 包装MySQL/Redis/Http的协程客户端.
+2. 包装MySQL/Redis/Http的协程客户端。
 
 ## License
 
