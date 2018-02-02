@@ -31,7 +31,7 @@
 | Dependency | Requirement |
 | -------- | -------- |
 | [PHP](https://secure.php.net/manual/en/install.php) | `>= 5.5.9` |
-| [Swoole](https://www.swoole.co.uk/) | `>= 1.7.14` `The Newer The Better` |
+| [Swoole](https://www.swoole.co.uk/) | `>= 1.7.14` `The Newer The Better` `No longer support PHP5 since 2.0.12` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
 | Gzip[optional] | [zlib](https://zlib.net/), Ubuntu/Debian: `sudo apt-get install zlibc zlib1g zlib1g-dev`, CentOS: `sudo yum install zlib` |
 
@@ -134,7 +134,7 @@ $events->listen('laravels.generated_response', function (\Illuminate\Http\Reques
 });
 ```
 
-## Get the instance of swoole_http_server
+## Get the instance of swoole_http_server in your project
 
 ```PHP
 /**
@@ -179,6 +179,7 @@ class Test
     public static $array = [];
     public static $string = '';
 }
+
 // Controller
 public function test(Request $req)
 {

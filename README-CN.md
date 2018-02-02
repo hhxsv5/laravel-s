@@ -29,7 +29,7 @@
 | 依赖 | 说明 |
 | -------- | -------- |
 | [PHP](https://secure.php.net/manual/zh/install.php) | `>= 5.5.9` |
-| [Swoole](https://www.swoole.com/) | `>= 1.7.14` `推荐最新的稳定版` |
+| [Swoole](https://www.swoole.com/) | `>= 1.7.14` `推荐最新的稳定版` `从2.0.12开始PHP5` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
 | Gzip[可选的] | [zlib](https://zlib.net/), Ubuntu/Debian: `sudo apt-get install zlibc zlib1g zlib1g-dev`, CentOS: `sudo yum install zlib` |
 
@@ -172,11 +172,14 @@ public function json()
 - 无限追加元素到静态或全局变量中，将导致内存爆满。
 
 ```PHP
+// 某类
 class Test
 {
     public static $array = [];
     public static $string = '';
 }
+
+// 某控制器
 public function test(Request $req)
 {
     // 内存爆满
