@@ -2,12 +2,12 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class StaticResponse extends Response
 {
-    public function __construct(\swoole_http_response $swooleResponse, SymfonyResponse $laravelResponse)
+    public function __construct(\swoole_http_response $swooleResponse, BinaryFileResponse $laravelResponse)
     {
         parent::__construct($swooleResponse, $laravelResponse);
     }
@@ -24,7 +24,7 @@ class StaticResponse extends Response
          */
         $file = $this->laravelResponse->getFile();
         $this->swooleResponse->header('Content-Type', $file->getMimeType());
-        if ($this->laravelResponse->getStatusCode() == SymfonyResponse::HTTP_NOT_MODIFIED) {
+        if ($this->laravelResponse->getStatusCode() == BinaryFileResponse::HTTP_NOT_MODIFIED) {
             $this->swooleResponse->end();
         } else {
             $path = $file->getRealPath();

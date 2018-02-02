@@ -3,11 +3,18 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 abstract class Response implements ResponseInterface
 {
     protected $swooleResponse;
+
+    /**
+     * @var SymfonyResponse|JsonResponse|BinaryFileResponse|RedirectResponse
+     */
     protected $laravelResponse;
 
     public function __construct(\swoole_http_response $swooleResponse, SymfonyResponse $laravelResponse)
