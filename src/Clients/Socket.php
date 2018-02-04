@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Clients;
 
-class Socket extends BaseClient
+class Socket extends Base
 {
     public function __construct($sockType, $syncType = false)
     {

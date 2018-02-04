@@ -3,11 +3,11 @@
 namespace Hhxsv5\LaravelS\Clients\Coroutine;
 
 
-use Hhxsv5\LaravelS\Clients\BaseClient;
+use Hhxsv5\LaravelS\Clients\Base;
 use Swoole\Coroutine\MySQL as SwooleMySQLClient;
 use Swoole\Coroutine;
 
-class MySQL extends BaseClient
+class MySQL extends Base
 {
     public function __construct()
     {

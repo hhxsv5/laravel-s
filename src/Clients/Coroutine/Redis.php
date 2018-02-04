@@ -2,11 +2,11 @@
 
 namespace Hhxsv5\LaravelS\Clients\Coroutine;
 
-use Hhxsv5\LaravelS\Clients\BaseClient;
+use Hhxsv5\LaravelS\Clients\Base;
 use Swoole\Coroutine\Redis as SwooleRedisClient;
 use Swoole\Coroutine;
 
-class Redis extends BaseClient
+class Redis extends Base
 {
     public function __construct()
     {

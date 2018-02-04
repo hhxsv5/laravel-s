@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Clients;
 
-class BaseClient
+class Base
 {
     protected $cli;
 

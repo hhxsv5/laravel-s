@@ -2,11 +2,11 @@
 
 namespace Hhxsv5\LaravelS\Clients\Coroutine;
 
-use Hhxsv5\LaravelS\Clients\BaseClient;
+use Hhxsv5\LaravelS\Clients\Base;
 use Swoole\Coroutine\Http\Client as SwooleHttpClient;
 use Swoole\Coroutine;
 
-class HTTP extends BaseClient
+class HTTP extends Base
 {
     public function __construct($url, $timeout = 5)
     {

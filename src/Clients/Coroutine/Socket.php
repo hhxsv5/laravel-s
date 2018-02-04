@@ -2,10 +2,11 @@
 
 namespace Hhxsv5\LaravelS\Clients\Coroutine;
 
+use Hhxsv5\LaravelS\Clients\Base;
 use Swoole\Coroutine\Client as SwooleCoroutineClient;
 use Swoole\Coroutine;
 
-class Socket
+class Socket extends Base
 {
     public function __construct($sockType)
     {
