@@ -32,5 +32,12 @@
     "psr-4": {
       "Hhxsv5\\LaravelS\\": "src"
     }
+  }，
+  "extra": {
+    "laravel": {
+      "providers": {
+        "Hhxsv5\\LaravelS\\Illuminate\\LaravelSServiceProvider"
+      }
+    }
   }
 }
