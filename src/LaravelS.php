@@ -100,11 +100,6 @@ class LaravelS extends Server
         self::$s = $this;
     }
 
-    public function reload()
-    {
-
-    }
-
     public function __destruct()
     {
 
