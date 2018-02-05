@@ -35,9 +35,9 @@
   },
   "extra": {
     "laravel": {
-      "providers": {
+      "providers": [
         "Hhxsv5\\LaravelS\\Illuminate\\LaravelSServiceProvider"
-      }
+      ]
     }
   }
 }
