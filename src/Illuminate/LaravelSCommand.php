@@ -53,7 +53,17 @@ class LaravelSCommand extends Command
 
     protected function start()
     {
-        $this->info('LaravelS <comment>Speed up your Laravel/Lumen</comment>');
+        static $logo = <<<EOS
+ _                               _  _____ 
+| |                             | |/ ____|
+| |     __ _ _ __ __ ___   _____| | (___  
+| |    / _` | '__/ _` \ \ / / _ \ |\___ \ 
+| |___| (_| | | | (_| |\ V /  __/ |____) |
+|______\__,_|_|  \__,_| \_/ \___|_|_____/ 
+                                           
+EOS;
+        $this->info($logo);
+        $this->info('Speed up your Laravel/Lumen');
         $this->table(['Component', 'Version'], [
             ['Component' => 'PHP', 'Version' => phpversion()],
             ['Component' => 'Swoole', 'Version' => \swoole_version()],
