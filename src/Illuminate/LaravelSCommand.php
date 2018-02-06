@@ -53,8 +53,13 @@ class LaravelSCommand extends Command
 
     protected function start()
     {
-        $laravelConf = ['rootPath' => base_path(), 'isLumen' => $this->isLumen];
         $svrConf = config('laravels');
+        $laravelConf = [
+            'rootPath'   => base_path(),
+            'staticPath' => empty($svrConf['swoole']['document_root']) ? base_path('public') : $svrConf['swoole']['document_root'],
+            'isLumen'    => $this->isLumen,
+        ];
+
         if (file_exists($svrConf['swoole']['pid_file'])) {
             $pid = (int)file_get_contents($svrConf['swoole']['pid_file']);
             if ($this->killProcess($pid, 0)) {

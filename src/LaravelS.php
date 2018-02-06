@@ -62,6 +62,7 @@ class LaravelS extends Server
 
     protected function handleStaticResource(IlluminateRequest $laravelRequest, \swoole_http_response $swooleResponse)
     {
+        // For Swoole < 1.9.17
         if (!empty($this->conf['handle_static'])) {
             $laravelResponse = $this->laravel->handleStatic($laravelRequest);
             if ($laravelResponse !== false) {
