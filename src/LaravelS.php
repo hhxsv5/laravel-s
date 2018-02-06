@@ -50,13 +50,18 @@ class LaravelS extends Server
 
     public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
     {
-        parent::onRequest($request, $response);
-
-        $laravelRequest = (new Request($request))->toIlluminateRequest();
-        $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
-        $success = $this->handleStaticResource($laravelRequest, $response);
-        if ($success === false) {
-            $this->handleDynamicResource($laravelRequest, $response);
+        try {
+            parent::onRequest($request, $response);
+            $laravelRequest = (new Request($request))->toIlluminateRequest();
+            $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
+            $success = $this->handleStaticResource($laravelRequest, $response);
+            if ($success === false) {
+                $this->handleDynamicResource($laravelRequest, $response);
+            }
+        } catch (\Exception $e) {
+            echo sprintf('[LaravelS]onRequest: %s:%s, [%d]%s%s%s', $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), PHP_EOL;
+            $response->status(500);
+            $response->end('Oops! An unexpected error occurred, please take a look the Swoole log.');
         }
     }
 
