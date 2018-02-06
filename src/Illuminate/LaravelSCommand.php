@@ -54,9 +54,12 @@ class LaravelSCommand extends Command
     protected function start()
     {
         $svrConf = config('laravels');
+        if (empty($svrConf['swoole']['document_root'])) {
+            $svrConf['swoole']['document_root'] = base_path('public');
+        }
         $laravelConf = [
             'rootPath'   => base_path(),
-            'staticPath' => empty($svrConf['swoole']['document_root']) ? base_path('public') : $svrConf['swoole']['document_root'],
+            'staticPath' => $svrConf['swoole']['document_root'],
             'isLumen'    => $this->isLumen,
         ];
 
