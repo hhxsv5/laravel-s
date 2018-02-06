@@ -102,7 +102,7 @@ class LaravelSCommand extends Command
         }
     }
 
-    protected function stop($ignoreErr = false)
+    protected function stop()
     {
         $pidFile = config('laravels.swoole.pid_file');
         if (file_exists($pidFile)) {
@@ -127,9 +127,6 @@ class LaravelSCommand extends Command
                 if (file_exists($pidFile)) {
                     unlink($pidFile);
                 }
-                if (!$ignoreErr) {
-                    return;
-                }
             }
         } else {
             $this->info('LaravelS: already stopped.');
@@ -138,7 +135,7 @@ class LaravelSCommand extends Command
 
     protected function restart()
     {
-        $this->stop(true);
+        $this->stop();
         $this->start();
     }
 
