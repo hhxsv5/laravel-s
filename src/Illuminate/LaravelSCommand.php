@@ -37,7 +37,13 @@ class LaravelSCommand extends Command
             $this->warn(sprintf('LaravelS: action %s is not available, only support %s', $action, implode('|', $this->actions)));
             return;
         }
-        $this->info('LaravelS for ' . $this->getApplication()->getLongVersion());
+        $this->info('LaravelS <comment>Speed up your Laravel/Lumen</comment>');
+        $this->table(['Component', 'Version'], [
+            ['Component' => 'PHP', 'Version' => phpversion()],
+            ['Component' => 'Swoole', 'Version' => \swoole_version()],
+            ['Component' => $this->getApplication()->getName(), 'Version' => $this->getApplication()->getVersion()],
+        ]);
+
         $this->isLumen = stripos($this->getApplication()->getVersion(), 'Lumen') !== false;
         $this->loadConfigManually();
         $this->{$action}();
@@ -117,6 +123,9 @@ class LaravelSCommand extends Command
                 }
             } else {
                 $this->warn("LaravelS: PID[{$pid}] does not exist, or permission denied.");
+                if (file_exists($pidFile)) {
+                    unlink($pidFile);
+                }
                 if (!$ignoreErr) {
                     return;
                 }
