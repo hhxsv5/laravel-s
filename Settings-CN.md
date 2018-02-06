@@ -8,6 +8,6 @@
 
 - `server`：`string` 当通过LaravelS响应数据时，设置HTTP头部`Server`的值，若为空则不设置，default `LaravelS`。
 
-- `handle_static`：`bool` 是否需要LaravelS处理静态资源，默认`false`，建议Nginx处理静态资源，LaravelS仅处理动态资源。
+- `handle_static`：`bool` 是否开启LaravelS处理静态资源(要求 `Swoole >= 1.7.21`，若`Swoole >= 1.9.17`则由Swoole自己处理)，默认`false`，建议Nginx处理静态资源，LaravelS仅处理动态资源。静态资源的默认路径为`base_path('public')`，可通过修改`swoole.document_root`变更。
 
 - `swoole`：`array` 请参考[Swoole配置项](https://wiki.swoole.com/wiki/page/274.html)

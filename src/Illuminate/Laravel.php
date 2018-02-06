@@ -108,7 +108,7 @@ class Laravel
         }
 
         // Locate the request file
-        $publicPath = $this->conf['rootPath'] . '/public';
+        $publicPath = $this->conf['staticPath'];
         $requestFile = $publicPath . $uri;
         if (is_dir($requestFile)) {
             $requestFile = rtrim($requestFile, '/');

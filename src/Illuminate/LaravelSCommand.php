@@ -37,7 +37,7 @@ class LaravelSCommand extends Command
             $this->warn(sprintf('LaravelS: action %s is not available, only support %s', $action, implode('|', $this->actions)));
             return;
         }
-        $this->info('LaravelS for ' . $this->getApplication()->getLongVersion());
+
         $this->isLumen = stripos($this->getApplication()->getVersion(), 'Lumen') !== false;
         $this->loadConfigManually();
         $this->{$action}();
@@ -53,8 +53,23 @@ class LaravelSCommand extends Command
 
     protected function start()
     {
-        $laravelConf = ['rootPath' => base_path(), 'isLumen' => $this->isLumen];
+        $this->info('LaravelS <comment>Speed up your Laravel/Lumen</comment>');
+        $this->table(['Component', 'Version'], [
+            ['Component' => 'PHP', 'Version' => phpversion()],
+            ['Component' => 'Swoole', 'Version' => \swoole_version()],
+            ['Component' => $this->getApplication()->getName(), 'Version' => $this->getApplication()->getVersion()],
+        ]);
+
         $svrConf = config('laravels');
+        if (empty($svrConf['swoole']['document_root'])) {
+            $svrConf['swoole']['document_root'] = base_path('public');
+        }
+        $laravelConf = [
+            'rootPath'   => base_path(),
+            'staticPath' => $svrConf['swoole']['document_root'],
+            'isLumen'    => $this->isLumen,
+        ];
+
         if (file_exists($svrConf['swoole']['pid_file'])) {
             $pid = (int)file_get_contents($svrConf['swoole']['pid_file']);
             if ($this->killProcess($pid, 0)) {
@@ -71,7 +86,7 @@ class LaravelSCommand extends Command
             return;
         }
         fwrite($fp, json_encode(compact('svrConf', 'laravelConf')));
-        fclose($fp);
+        pclose($fp);
         $pidFile = config('laravels.swoole.pid_file');
 
         // Make sure that master process started
@@ -87,7 +102,7 @@ class LaravelSCommand extends Command
         }
     }
 
-    protected function stop($ignoreErr = false)
+    protected function stop()
     {
         $pidFile = config('laravels.swoole.pid_file');
         if (file_exists($pidFile)) {
@@ -109,8 +124,8 @@ class LaravelSCommand extends Command
                 }
             } else {
                 $this->warn("LaravelS: PID[{$pid}] does not exist, or permission denied.");
-                if (!$ignoreErr) {
-                    return;
+                if (file_exists($pidFile)) {
+                    unlink($pidFile);
                 }
             }
         } else {
@@ -120,7 +135,7 @@ class LaravelSCommand extends Command
 
     protected function restart()
     {
-        $this->stop(true);
+        $this->stop();
         $this->start();
     }
 

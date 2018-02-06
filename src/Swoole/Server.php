@@ -14,6 +14,7 @@ class Server
         $ip = isset($conf['listen_ip']) ? $conf['listen_ip'] : '0.0.0.0';
         $port = isset($conf['listen_port']) ? $conf['listen_port'] : 8841;
         $settings = isset($conf['swoole']) ? $conf['swoole'] : [];
+        $settings['enable_static_handler'] = !empty($conf['handle_static']);
 
         if (isset($settings['ssl_cert_file'], $settings['ssl_key_file'])) {
             $this->swoole = new \swoole_http_server($ip, $port, \SWOOLE_PROCESS, \SWOOLE_SOCK_TCP | \SWOOLE_SSL);

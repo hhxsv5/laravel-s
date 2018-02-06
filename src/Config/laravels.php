@@ -12,5 +12,6 @@ return [
         'pid_file'      => storage_path('laravels.pid'),
         'log_file'      => storage_path('logs/swoole-' . date('Y-m-d') . '.log'),
         'log_level'     => 4,
+        'document_root' => base_path('public'),
     ],
 ];

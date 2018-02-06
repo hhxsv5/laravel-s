@@ -8,6 +8,6 @@
 
 - `server`: `string` Set HTTP header `Server` when respond by LaravelS, default `LaravelS`.
 
-- `handle_static`: `bool` Whether handle the static resource by LaravelS, default `false`, Suggest that Nginx handles the statics and LaravelS handles the dynamics.
+- `handle_static`: `bool` Whether handle the static resource by LaravelS(Require `Swoole >= 1.7.21`, Handle by Swoole if `Swoole >= 1.9.17`), default `false`, Suggest that Nginx handles the statics and LaravelS handles the dynamics. The default path of static resource is `base_path('public')`, you can modify `swoole.document_root` to change it.
 
 - `swoole`: `array` refer [Swoole Configuration](https://www.swoole.co.uk/docs/modules/swoole-server/configuration)
