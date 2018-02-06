@@ -59,7 +59,7 @@ class LaravelS extends Server
                 $this->handleDynamicResource($laravelRequest, $response);
             }
         } catch (\Exception $e) {
-            echo sprintf('[LaravelS]onRequest: %s:%s, [%d]%s%s%s', $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), PHP_EOL;
+            echo sprintf('[ERROR][LaravelS]onRequest: %s:%s, [%d]%s%s%s', $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), PHP_EOL;
             $response->status(500);
             $response->end('Oops! An unexpected error occurred, please take a look the Swoole log.');
         }
