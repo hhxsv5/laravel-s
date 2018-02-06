@@ -86,7 +86,7 @@ class LaravelSCommand extends Command
             return;
         }
         fwrite($fp, json_encode(compact('svrConf', 'laravelConf')));
-        fclose($fp);
+        pclose($fp);
         $pidFile = config('laravels.swoole.pid_file');
 
         // Make sure that master process started
