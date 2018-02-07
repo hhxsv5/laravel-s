@@ -47,6 +47,10 @@ class Server
 
     public function onStart(\swoole_http_server $server)
     {
+        foreach (spl_autoload_functions() as $function) {
+            spl_autoload_unregister($function);
+        }
+
         $this->setProcessTitle('laravels: master process');
 
         if (version_compare(\swoole_version(), '1.9.5', '<')) {
