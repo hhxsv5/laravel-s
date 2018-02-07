@@ -109,30 +109,39 @@ class Laravel
             return false;
         }
 
-        // Locate the request file
         $publicPath = $this->conf['staticPath'];
         $requestFile = $publicPath . $uri;
-        if (is_dir($requestFile)) {
-            $requestFile = rtrim($requestFile, '/');
-            $found = false;
-            foreach (['/index.html', '/index.htm'] as $index) {
-                $tmpFile = $requestFile . $index;
-                if (is_file($tmpFile)) {
-                    $found = true;
-                    $requestFile = $tmpFile;
-                    break;
-                }
-            }
-            if (!$found) {
+        if (is_file($requestFile)) {
+
+        } elseif (is_dir($requestFile)) {
+            $indexFile = $this->lookupIndex($requestFile);
+            if ($indexFile === false) {
                 return false;
             }
-        } elseif (!is_file($requestFile)) {
+            $requestFile = $indexFile;
+        } else {
             return false;
         }
 
+        return $this->createStaticResponse($requestFile, $request->header('if-modified-since'));
+    }
+
+    protected function lookupIndex($folder)
+    {
+        $folder = rtrim($folder, '/') . '/';
+        foreach (['index.html', 'index.htm'] as $index) {
+            $tmpFile = $folder . $index;
+            if (is_file($tmpFile)) {
+                return $tmpFile;
+            }
+        }
+        return false;
+    }
+
+    public function createStaticResponse($requestFile, $modifiedSince = null)
+    {
         $code = SymfonyResponse::HTTP_OK;
         $mtime = filemtime($requestFile);
-        $modifiedSince = $request->header('if-modified-since');
         if ($modifiedSince !== null) {
             $modifiedSince = strtotime($modifiedSince);
             if ($modifiedSince !== false && $modifiedSince >= $mtime) {
@@ -147,7 +156,6 @@ class Laravel
         $rsp->setPrivate();
         $rsp->setExpires(new \DateTime(date('Y-m-d H:i:s', time() + $maxAge)));
         return $rsp;
-
     }
 
     public function cleanRequest(Request $request)
