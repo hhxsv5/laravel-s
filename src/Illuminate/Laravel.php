@@ -5,6 +5,7 @@ namespace Hhxsv5\LaravelS\Illuminate;
 
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Facade;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -171,6 +172,11 @@ class Laravel
             foreach ($cookies->getQueuedCookies() as $name => $cookie) {
                 $cookies->unqueue($name);
             }
+        }
+
+        if ($this->app->getProvider('\Illuminate\Auth\AuthServiceProvider')) {
+            $this->app->register('\Illuminate\Auth\AuthServiceProvider', [], true);
+            Facade::clearResolvedInstance('auth');
         }
 
         //...
