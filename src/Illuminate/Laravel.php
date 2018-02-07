@@ -44,6 +44,8 @@ class Laravel
         // Lumen hasn't this autoload file
         if (file_exists($autoload)) {
             require_once $autoload;
+        } else {
+            require_once $this->conf['rootPath'] . '/vendor/autoload.php';
         }
     }
 
