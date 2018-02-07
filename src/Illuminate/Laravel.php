@@ -112,18 +112,17 @@ class Laravel
         $publicPath = $this->conf['staticPath'];
         $requestFile = $publicPath . $uri;
         if (is_file($requestFile)) {
-
+            return $this->createStaticResponse($requestFile, $request->header('if-modified-since'));
         } elseif (is_dir($requestFile)) {
             $indexFile = $this->lookupIndex($requestFile);
             if ($indexFile === false) {
                 return false;
+            } else {
+                return $this->createStaticResponse($indexFile, $request->header('if-modified-since'));
             }
-            $requestFile = $indexFile;
         } else {
             return false;
         }
-
-        return $this->createStaticResponse($requestFile, $request->header('if-modified-since'));
     }
 
     protected function lookupIndex($folder)
