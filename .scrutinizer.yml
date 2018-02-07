@@ -6,13 +6,13 @@ filter:
 build:
     environment:
         php:
-            version: 5.6.33
+            version: 5.6
             ini:
                 'date.timezone': 'Asia/Shanghai'
+                'extension': 'swoole.so'
     dependencies:
             before:
-                - pecl install swoole-1.9.23
-                - composer install
+                - pecl install swoole-1.7.14
                 - composer require laravel/framework:~5.1.0
     nodes:
             analysis:
