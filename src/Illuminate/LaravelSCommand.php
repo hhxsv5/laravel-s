@@ -32,7 +32,7 @@ class LaravelSCommand extends Command
 
     public function handle()
     {
-        $action = $this->argument('action');
+        $action = (string)$this->argument('action');
         if (!in_array($action, $this->actions, true)) {
             $this->warn(sprintf('LaravelS: action %s is not available, only support %s', $action, implode('|', $this->actions)));
             return;
@@ -51,7 +51,7 @@ class LaravelSCommand extends Command
         }
     }
 
-    protected function start()
+    protected function outputLogo()
     {
         static $logo = <<<EOS
  _                               _  _____ 
@@ -69,6 +69,11 @@ EOS;
             ['Component' => 'Swoole', 'Version' => \swoole_version()],
             ['Component' => $this->getApplication()->getName(), 'Version' => $this->getApplication()->getVersion()],
         ]);
+    }
+
+    protected function start()
+    {
+        $this->outputLogo();
 
         $svrConf = config('laravels');
         if (empty($svrConf['swoole']['document_root'])) {
@@ -91,7 +96,7 @@ EOS;
         // Implements gracefully reload, avoid including laravel's files before worker start
         $cmd = sprintf('%s %s/../GoLaravelS.php', PHP_BINARY, __DIR__);
         $fp = popen($cmd, 'w');
-        if (!$fp) {
+        if ($fp === false) {
             $this->error('LaravelS: popen ' . $cmd . ' failed');
             return;
         }
