@@ -12,7 +12,7 @@ class DynamicResponse extends Response
         if (extension_loaded('zlib')) {
             $this->swooleResponse->gzip(4);
         } else {
-            throw new \Exception('Http GZIP requires library "zlib", use "php--ri zlib" to check.');
+            throw new \Exception('Http GZIP requires library "zlib", use "php --ri zlib" to check.');
         }
     }
 
