@@ -33,7 +33,7 @@
 | [PHP](https://secure.php.net/manual/zh/install.php) | `>= 5.5.9` |
 | [Swoole](https://www.swoole.com/) | `>= 1.7.14` `推荐最新的稳定版` `从2.0.12开始不再支持PHP5` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
-| Gzip[可选的] | [zlib](https://zlib.net/), 检查本机libz是否可用`ldconfig -p&#124;grep libz` |
+| Gzip[可选的] | [zlib](https://zlib.net/), 检查本机libz是否可用ldconfig -p&#124;grep libz |
 
 ## 安装
 
