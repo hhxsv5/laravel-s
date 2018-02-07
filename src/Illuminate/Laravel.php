@@ -32,16 +32,15 @@ class Laravel
 
     public function prepareLaravel()
     {
-        $this->bootstrap();
+        $this->autoload();
         $this->createApp();
         $this->createKernel();
         $this->setLaravel();
     }
 
-    protected function bootstrap()
+    protected function autoload()
     {
         $autoload = $this->conf['rootPath'] . '/bootstrap/autoload.php';
-        // Lumen hasn't this autoload file
         if (file_exists($autoload)) {
             require_once $autoload;
         } else {
