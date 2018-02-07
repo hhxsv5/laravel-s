@@ -33,7 +33,7 @@
 | [PHP](https://secure.php.net/manual/en/install.php) | `>= 5.5.9` |
 | [Swoole](https://www.swoole.co.uk/) | `>= 1.7.14` `The Newer The Better` `No longer support PHP5 since 2.0.12` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
-| Gzip[optional] | [zlib](https://zlib.net/), Ubuntu/Debian: `sudo apt-get install zlibc zlib1g zlib1g-dev`, CentOS: `sudo yum install zlib` |
+| Gzip[optional] | [zlib](https://zlib.net/), check by `ldconfig -p|grep libz` |
 
 ## Install
 
