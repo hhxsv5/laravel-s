@@ -83,7 +83,7 @@ EOS;
         if (file_exists($svrConf['swoole']['pid_file'])) {
             $pid = (int)file_get_contents($svrConf['swoole']['pid_file']);
             if ($this->killProcess($pid, 0)) {
-                $this->warn("LaravelS: PID[{$pid}] is already running.");
+                $this->warn(sprintf('LaravelS: PID[%s] is already running at %s:%s.', $pid, $svrConf['listen_ip'], $svrConf['listen_port']));
                 return;
             }
         }
@@ -106,7 +106,7 @@ EOS;
             $time++;
         }
         if (file_exists($pidFile)) {
-            $this->info(sprintf('LaravelS: PID[%s] is running.', file_get_contents($pidFile)));
+            $this->info(sprintf('LaravelS: PID[%s] is running at %s:%s.', file_get_contents($pidFile), $svrConf['listen_ip'], $svrConf['listen_port']));
         } else {
             $this->error(sprintf('LaravelS: PID file[%s] does not exist.', $pidFile));
         }
