@@ -175,7 +175,7 @@ class Laravel
         }
 
         // Re-register singleton auth
-        if ($this->app->getProvider('\Illuminate\Auth\AuthServiceProvider')) {
+        if (class_exists('\Illuminate\Auth\AuthServiceProvider', false)) {
             $this->app->register('\Illuminate\Auth\AuthServiceProvider', [], true);
             Facade::clearResolvedInstance('auth');
         }
