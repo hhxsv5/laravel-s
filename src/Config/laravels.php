@@ -2,7 +2,7 @@
 return [
     'listen_ip'     => env('LARAVELS_LISTEN_IP', '127.0.0.1'),
     'listen_port'   => env('LARAVELS_LISTEN_PORT', 5200),
-    'enable_gzip'   => env('LARAVELS_ENABLE_GZIP', true),
+    'enable_gzip'   => env('LARAVELS_ENABLE_GZIP', false),
     'server'        => env('LARAVELS_SERVER', 'LaravelS'),
     'handle_static' => env('LARAVELS_HANDLE_STATIC', false),
     'swoole'        => [
