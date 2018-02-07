@@ -4,7 +4,7 @@
 
 - `listen_port`：`int` 监听的端口，如果端口小于1024则需要`root`权限，default `5200`。
 
-- `enable_gzip`：`bool` 当通过LaravelS响应数据时，是否启用gzip压缩响应的内容，依赖于库[zlib](https://zlib.net/)，通过命令`php --ri swoole|grep zlib`查看是否启用。如果开启则会自动加上头部`Content-Encoding`，默认`true`。
+- `enable_gzip`：`bool` 当通过LaravelS响应数据时，是否启用gzip压缩响应的内容，依赖于库[zlib](https://zlib.net/)，通过命令`php --ri swoole|grep zlib`查看是否启用。如果开启则会自动加上头部`Content-Encoding`，默认`false`，推荐开启gzip，会更省网络流量。
 
 - `server`：`string` 当通过LaravelS响应数据时，设置HTTP头部`Server`的值，若为空则不设置，default `LaravelS`。
 
