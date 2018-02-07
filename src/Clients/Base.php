@@ -21,4 +21,11 @@ class Base
         }
         return call_user_func_array([$this->cli, $name], $arguments);
     }
+
+    public function __destruct()
+    {
+        if (method_exists($this->cli, 'close')) {
+            $this->cli->close();
+        }
+    }
 }

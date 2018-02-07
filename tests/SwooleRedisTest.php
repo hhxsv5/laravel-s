@@ -1,7 +1,5 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-
 class SwooleHttpServer
 {
     protected $redis;
@@ -38,7 +36,7 @@ class SwooleHttpServer
 /**
  * @covers SwooleHttpServer
  */
-final class SwooleRedisTest extends TestCase
+final class SwooleRedisTest extends \PHPUnit\Framework\TestCase
 {
     public function testStart()
     {
