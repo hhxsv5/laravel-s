@@ -95,13 +95,11 @@ EOS;
 
         // Implements gracefully reload, avoid including laravel's files before worker start
         $cmd = sprintf('%s %s/../GoLaravelS.php', PHP_BINARY, __DIR__);
-        $fp = popen($cmd, 'w');
-        if ($fp === false) {
+        $ret = $this->popen($cmd, json_encode(compact('svrConf', 'laravelConf')));
+        if ($ret === false) {
             $this->error('LaravelS: popen ' . $cmd . ' failed');
             return;
         }
-        fwrite($fp, json_encode(compact('svrConf', 'laravelConf')));
-        pclose($fp);
         $pidFile = config('laravels.swoole.pid_file');
 
         // Make sure that master process started
@@ -115,6 +113,19 @@ EOS;
         } else {
             $this->error(sprintf('LaravelS: PID file[%s] does not exist.', $pidFile));
         }
+    }
+
+    protected function popen($cmd, $input = null)
+    {
+        $fp = popen($cmd, 'w');
+        if ($fp === false) {
+            return false;
+        }
+        if ($input !== null) {
+            fwrite($fp, $input);
+        }
+        pclose($fp);
+        return true;
     }
 
     protected function stop()
