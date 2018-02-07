@@ -164,11 +164,11 @@ class Laravel
         }
 
         // Clean laravel cookie queue
-        if (class_exists('\Illuminate\Cookie\CookieJar', false)) {
+        if (isset($this->app['cookie'])) {
             /**
-             * @var \Illuminate\Cookie\CookieJar $cookies
+             * @var \Illuminate\Contracts\Cookie\QueueingFactory $cookies
              */
-            $cookies = $this->app->make(\Illuminate\Cookie\CookieJar::class);
+            $cookies = $this->app['cookie'];
             foreach ($cookies->getQueuedCookies() as $name => $cookie) {
                 $cookies->unqueue($name);
             }
