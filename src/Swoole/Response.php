@@ -36,7 +36,7 @@ abstract class Response implements ResponseInterface
         foreach ($this->laravelResponse->headers->getCookies() as $cookie) {
             $this->swooleResponse->cookie(
                 $cookie->getName(),
-                urlencode($cookie->getValue()),
+                $cookie->getValue(),
                 $cookie->getExpiresTime(),
                 $cookie->getPath(),
                 $cookie->getDomain(),
