@@ -118,7 +118,7 @@ server {
 ```
 
 ## 监听事件
-> 通常，你可以在这些事件中重置全局变量和静态变量、修改请求和响应的对象。
+> 通常，你可以在这些事件中重置或销毁一些全局或静态的变量，也可以修改当前的请求和响应。
 
 - `laravels.received_request` 将`swoole_http_request`转成`Illuminate\Http\Request`后，在Laravel内核处理请求前。
 

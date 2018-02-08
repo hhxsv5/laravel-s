@@ -118,7 +118,7 @@ server {
 ```
 
 ## Listen Events
-> Usually, you can reset some `global/static` variables, or change the `Request/Response` object.
+> Usually, you can reset/destroy some `global/static` variables, or change the current `Request/Response` object.
 
 - `laravels.received_request` After LaravelS parsed `swoole_http_request` to `Illuminate\Http\Request`, before Laravel's Kernel handles this request.
 
