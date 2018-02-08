@@ -106,6 +106,9 @@ server {
 
     location @laravels {
         proxy_http_version 1.1;
+        # proxy_connect_timeout 60s;
+        # proxy_send_timeout 60s;
+        # proxy_read_timeout 120s;
         proxy_set_header Connection "keep-alive";
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header Host $host;
