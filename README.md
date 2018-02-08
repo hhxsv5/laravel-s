@@ -118,11 +118,13 @@ server {
 ```
 
 ## Listen Events
+> Usually, you can reset some `global/static` variables, or change the `Request/Response` object.
 
 - `laravels.received_request` After LaravelS parsed `swoole_http_request` to `Illuminate\Http\Request`, before Laravel's Kernel handles this request.
 
 ```PHP
 // Edit file `app/Providers/EventServiceProvider.php`, add the following code into method `boot`
+// If no variable $exents, you can also call \Event::listen(). 
 $events->listen('laravels.received_request', function (\Illuminate\Http\Request $req) {
     $req->query->set('get_key', 'hhxsv5');// Change query of request
     $req->request->set('post_key', 'hhxsv5'); // Change post of request

@@ -118,11 +118,13 @@ server {
 ```
 
 ## 监听事件
+> 通常，你可以在这些事件中重置全局变量和静态变量、修改请求和响应的对象。
 
 - `laravels.received_request` 将`swoole_http_request`转成`Illuminate\Http\Request`后，在Laravel内核处理请求前。
 
 ```PHP
 // 修改`app/Providers/EventServiceProvider.php`, 添加下面监听代码到boot方法中
+// 如果变量$exents不存在，你也可以调用\Event::listen()。
 $events->listen('laravels.received_request', function (\Illuminate\Http\Request $req) {
     $req->query->set('get_key', 'hhxsv5');// 修改querystring
     $req->request->set('post_key', 'hhxsv5'); // 修改post body
