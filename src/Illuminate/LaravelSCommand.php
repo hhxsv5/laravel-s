@@ -79,6 +79,9 @@ EOS;
         if (empty($svrConf['swoole']['document_root'])) {
             $svrConf['swoole']['document_root'] = base_path('public');
         }
+        if (empty($svrConf['process_prefix'])) {
+            $svrConf['process_prefix'] = base_path();
+        }
         $laravelConf = [
             'rootPath'   => base_path(),
             'staticPath' => $svrConf['swoole']['document_root'],
