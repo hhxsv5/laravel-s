@@ -77,7 +77,7 @@ $app->configure('laravels');
 
 | Command | Description |
 | --------- | --------- |
-| `start` | Start LaravelS, list the processes by `ps -ef|grep laravels` |
+| `start` | Start LaravelS, list the processes by ps -ef&#124;grep laravels |
 | `stop` | Stop LaravelS |
 | `restart` | Restart LaravelS |
 | `reload` | Reload all worker process(Contain your business & Laravel/Lumen codes), exclude master/manger process |
