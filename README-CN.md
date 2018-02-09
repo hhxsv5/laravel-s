@@ -77,7 +77,7 @@ $app->configure('laravels');
 
 | 命令 | 说明 |
 | --------- | --------- |
-| `start` | 启动LaravelS |
+| `start` | 启动LaravelS，展示已启动的进程列表 `ps -ef|grep laravels` |
 | `stop` | 停止LaravelS |
 | `restart` | 重启LaravelS |
 | `reload` | 平滑重启所有worker进程，这些worker进程内包含你的业务代码和框架(Laravel/Lumen)代码，不会重启master/manger进程 |
