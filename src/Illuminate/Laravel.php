@@ -183,21 +183,21 @@ class Laravel
 
         // Re-register some singleton providers
         if (class_exists('\Illuminate\Auth\AuthServiceProvider', false)) {
+            $this->app->register('\Illuminate\Auth\AuthServiceProvider', [], true)->boot();
             Facade::clearResolvedInstance('auth');
             Facade::clearResolvedInstance('auth.driver');
-            $this->app->register('\Illuminate\Auth\AuthServiceProvider', [], true);
 
             // for jwt auth
             if (class_exists('\Tymon\JWTAuth\Providers\LaravelServiceProvider', false)) {
-                $this->app->register('\Tymon\JWTAuth\Providers\LaravelServiceProvider', [], true);
+                $this->app->register('\Tymon\JWTAuth\Providers\LaravelServiceProvider', [], true)->boot();
             }
             if (class_exists('\Tymon\JWTAuth\Providers\LumenServiceProvider', false)) {
-                $this->app->register('\Tymon\JWTAuth\Providers\LumenServiceProvider', [], true);
+                $this->app->register('\Tymon\JWTAuth\Providers\LumenServiceProvider', [], true)->boot();
             }
         }
         if (class_exists('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', false)) {
             Facade::clearResolvedInstance('auth.password');
-            $this->app->register('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', [], true);
+            $this->app->register('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', [], true)->boot();
         }
 
         //...
