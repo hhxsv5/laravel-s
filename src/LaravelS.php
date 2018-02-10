@@ -73,7 +73,6 @@ class LaravelS extends Server
             if ($laravelResponse !== false) {
                 $laravelResponse->headers->set('Server', $this->conf['server'], true);
                 $this->laravel->fireEvent('laravels.generated_response', [$laravelRequest, $laravelResponse]);
-                $this->laravel->cleanRequest($laravelRequest);
                 (new StaticResponse($swooleResponse, $laravelResponse))->send($this->conf['enable_gzip']);
                 return true;
             }
