@@ -183,7 +183,7 @@ class Laravel
 
         // Re-register some singleton providers
         if (class_exists('\Illuminate\Auth\AuthServiceProvider', false)) {
-            $this->app->register('\Illuminate\Auth\AuthServiceProvider', [], true)->boot();
+            $this->app->register('\Illuminate\Auth\AuthServiceProvider', [], true);
             Facade::clearResolvedInstance('auth');
             Facade::clearResolvedInstance('auth.driver');
 
@@ -197,7 +197,7 @@ class Laravel
         }
         if (class_exists('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', false)) {
             Facade::clearResolvedInstance('auth.password');
-            $this->app->register('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', [], true)->boot();
+            $this->app->register('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', [], true);
         }
 
         //...
