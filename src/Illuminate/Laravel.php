@@ -191,6 +191,9 @@ class Laravel
             if (class_exists('\Tymon\JWTAuth\Providers\LaravelServiceProvider', false)) {
                 $this->app->register('\Tymon\JWTAuth\Providers\LaravelServiceProvider', [], true);
             }
+            if (class_exists('\Tymon\JWTAuth\Providers\LumenServiceProvider', false)) {
+                $this->app->register('\Tymon\JWTAuth\Providers\LumenServiceProvider', [], true);
+            }
         }
         if (class_exists('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', false)) {
             Facade::clearResolvedInstance('auth.password');
