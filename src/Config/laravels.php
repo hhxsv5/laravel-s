@@ -6,7 +6,7 @@ return [
     'server'        => env('LARAVELS_SERVER', 'LaravelS'),
     'handle_static' => env('LARAVELS_HANDLE_STATIC', false),
     'swoole'        => [
-        'dispatch_mode' => 2,
+        'dispatch_mode' => 3,
         'max_request'   => 3000,
         'daemonize'     => 1,
         'pid_file'      => storage_path('laravels.pid'),
