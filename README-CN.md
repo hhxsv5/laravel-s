@@ -1,5 +1,5 @@
 # LaravelS - 站在巨人的肩膀上
-> 通过Swoole来加速 Laravel/Lumen，其中的S代表Swoole，速度，高性能。
+> 🚀 通过Swoole来加速 Laravel/Lumen，其中的S代表Swoole，速度，高性能。
 
 [![Latest Stable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/stable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
 [![Total Downloads](https://poser.pugx.org/hhxsv5/laravel-s/downloads.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
