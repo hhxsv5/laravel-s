@@ -152,7 +152,7 @@ var_dump($swoole->stats());
 
 ## 注意事项
 
-- 只能通过`Illuminate\Http\Request`对象来获取请求信息，不能使用超全局变量，像$GLOBALS，$_SERVER，$_GET，$_POST，$_FILES，$_COOKIE，$_SESSION，$_REQUEST，$_ENV。
+- 推荐通过`Illuminate\Http\Request`对象来获取请求信息，兼容$_SERVER、$_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST，`不能使用`$_SESSION、$_ENV。
 
 ```PHP
 public function form(\Illuminate\Http\Request $request)
@@ -161,11 +161,12 @@ public function form(\Illuminate\Http\Request $request)
     $all = $request->all();
     $sessionId = $request->cookie('sessionId');
     $photo = $request->file('photo');
+    $rawContent = $request->getContent();
     //...
 }
 ```
 
-- 推荐通过返回`Illuminate\Http\Response`对象来响应请求，兼容echo、vardump()、print_r()，不能使用函数像exit()，die()，header()，setcookie()，http_response_code()。
+- 推荐通过返回`Illuminate\Http\Response`对象来响应请求，兼容echo、vardump()、print_r()，`不能使用`函数像exit()、die()、header()、setcookie()、http_response_code()。
 
 ```PHP
 public function json()
@@ -174,7 +175,7 @@ public function json()
 }
 ```
 
-- 你声明的全局、静态变量必须手动清理掉。
+- 你声明的全局、静态变量必须手动清理或重置。
 
 - 无限追加元素到静态或全局变量中，将导致内存爆满。
 

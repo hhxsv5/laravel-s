@@ -151,7 +151,7 @@ var_dump($swoole->stats());
 
 ## Important Notices
 
-- Get all info of request from `Illuminate\Http\Request` Object, `CAN NOT USE` `superglobal` variables like $GLOBALS, $_SERVER, $_GET, $_POST, $_FILES, $_COOKIE, $_SESSION, $_REQUEST, $_ENV
+- Get all info of request from `Illuminate\Http\Request` Object, compatible with $_SERVER/$_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST, `CANNOT USE` $_SESSION, $_ENV.
 
 ```PHP
 public function form(\Illuminate\Http\Request $request)
@@ -160,11 +160,12 @@ public function form(\Illuminate\Http\Request $request)
     $all = $request->all();
     $sessionId = $request->cookie('sessionId');
     $photo = $request->file('photo');
+    $rawContent = $request->getContent();
     //...
 }
 ```
 
-- Respond by `Illuminate\Http\Response` Object, compatible with echo/vardump()/print_r()，`CANNOT USE` functions like header(), setcookie(), http_response_code()
+- Respond by `Illuminate\Http\Response` Object, compatible with echo/vardump()/print_r()，`CANNOT USE` functions like header()/setcookie()/http_response_code().
 
 ```PHP
 public function json()
