@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
-use Illuminate\Http\Request as IlluminateRequest;
+use Hhxsv5\LaravelS\Illuminate\Request as IlluminateRequest;
 
 class Request
 {
@@ -30,14 +30,16 @@ class Request
         }
         $_SERVER = array_change_key_case($_SERVER, CASE_UPPER);
 
-        $request = ['C' => $_COOKIE, 'G' => $_GET, 'P' => $_POST];
+        $requests = ['C' => $_COOKIE, 'G' => $_GET, 'P' => $_POST];
         $requestOrder = ini_get('request_order') ?: ini_get('variables_order');
         $requestOrder = preg_replace('#[^CGP]#', '', strtoupper($requestOrder)) ?: 'GP';
         foreach (str_split($requestOrder) as $order) {
-            $_REQUEST = array_merge($_REQUEST, $request[$order]);
+            $_REQUEST = array_merge($_REQUEST, $requests[$order]);
         }
 
-        return IlluminateRequest::capture();
+        $request = IlluminateRequest::capture();
+        $request->setContent($this->swooleRequest->rawContent());
+        return $request;
     }
 
 }
