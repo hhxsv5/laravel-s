@@ -60,8 +60,12 @@ class LaravelS extends Server
             }
         } catch (\Exception $e) {
             echo sprintf('[%s][ERROR][LaravelS]onRequest: %s:%s, [%d]%s%s%s', date('Y-m-d H:i:s'), $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), PHP_EOL;
-            $response->status(500);
-            $response->end('Oops! An unexpected error occurred, please take a look the Swoole log.');
+            try {
+                $response->status(500);
+                $response->end('Oops! An unexpected error occurred, please take a look the Swoole log.');
+            } catch (\Exception $e) {
+                // Catch: zm_deactivate_swoole: Fatal error: Uncaught exception 'ErrorException' with message 'swoole_http_response::status(): http client#2 is not exist.
+            }
         }
     }
 
