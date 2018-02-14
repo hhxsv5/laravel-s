@@ -19,6 +19,10 @@ class DynamicResponse extends Response
     public function sendContent()
     {
         $content = $this->laravelResponse->getContent();
-        $this->swooleResponse->end($content);
+        if (isset($content[0])) {
+            $this->swooleResponse->end($content);
+        } else {
+            $this->swooleResponse->end();
+        }
     }
 }
