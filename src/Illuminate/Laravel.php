@@ -4,6 +4,7 @@ namespace Hhxsv5\LaravelS\Illuminate;
 
 
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Http\Request as IlluminateRequest;
 use Illuminate\Support\Facades\Facade;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -68,7 +69,7 @@ class Laravel
         }
     }
 
-    public function handleDynamic(Request $request)
+    public function handleDynamic(IlluminateRequest $request)
     {
         ob_start();
 
@@ -98,7 +99,7 @@ class Laravel
         return $response;
     }
 
-    public function handleStatic(Request $request)
+    public function handleStatic(IlluminateRequest $request)
     {
         $uri = $request->getRequestUri();
         if (isset(self::$staticBlackList[$uri])) {
@@ -153,7 +154,7 @@ class Laravel
         return $rsp;
     }
 
-    public function cleanRequest(Request $request)
+    public function cleanRequest(IlluminateRequest $request)
     {
         // Clean laravel session
         if ($request->hasSession()) {

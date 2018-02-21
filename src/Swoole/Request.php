@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
-use Hhxsv5\LaravelS\Illuminate\Request as IlluminateRequest;
+use Illuminate\Http\Request as IlluminateRequest;
 
 class Request
 {
@@ -13,6 +13,9 @@ class Request
         $this->swooleRequest = $request;
     }
 
+    /**
+     * @return IlluminateRequest
+     */
     public function toIlluminateRequest()
     {
         $_GET = isset($this->swooleRequest->get) ? $this->swooleRequest->get : [];
@@ -38,7 +41,15 @@ class Request
         }
 
         $request = IlluminateRequest::capture();
-        $request->setContent($this->swooleRequest->rawContent());
+        try {
+            $reflection = new \ReflectionClass($request);
+            $content = $reflection->getProperty('content');
+            $content->setAccessible(true);
+            $content->setValue($request, $this->swooleRequest->rawContent());
+        } catch (\Exception $e) {
+
+        }
+
         return $request;
     }
 
