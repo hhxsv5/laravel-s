@@ -47,7 +47,7 @@ class Request
             $content->setAccessible(true);
             $content->setValue($request, $this->swooleRequest->rawContent());
         } catch (\Exception $e) {
-
+            // Do nothing
         }
 
         return $request;
