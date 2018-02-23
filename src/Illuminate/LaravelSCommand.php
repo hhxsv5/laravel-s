@@ -137,7 +137,8 @@ EOS;
         if (file_exists($pidFile)) {
             $pid = (int)file_get_contents($pidFile);
             if ($this->killProcess($pid, 0)) {
-                if ($this->killProcess($pid, SIGTERM)) {
+                $killSig = PHP_OS === 'Darwin' ? SIGTERM : SIGKILL;
+                if ($this->killProcess($pid, $killSig)) {
                     // Make sure that master process quit
                     $time = 0;
                     while ($this->killProcess($pid, 0) && $time <= 20) {

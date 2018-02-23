@@ -110,7 +110,7 @@ class Server
 
     protected function setProcessTitle($title)
     {
-        if (PHP_OS == 'Darwin') {
+        if (PHP_OS === 'Darwin') {
             return;
         }
         if (function_exists('cli_set_process_title')) {
