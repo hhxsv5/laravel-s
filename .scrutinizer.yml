@@ -11,7 +11,7 @@ build:
                 'date.timezone': 'Asia/Shanghai'
     dependencies:
             before:
-                - pecl install swoole-1.7.14
+                - pecl install swoole-1.7.19
                 - composer require laravel/framework:~5.1.0
                 - composer require eaglewu/swoole-ide-helper
     nodes:
