@@ -1,5 +1,5 @@
 # LaravelS - standing on the shoulders of giants
-> Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.
+> 🚀 Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.
 
 [![Latest Stable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/stable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
 [![Total Downloads](https://poser.pugx.org/hhxsv5/laravel-s/downloads.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
@@ -31,9 +31,9 @@
 | Dependency | Requirement |
 | -------- | -------- |
 | [PHP](https://secure.php.net/manual/en/install.php) | `>= 5.5.9` |
-| [Swoole](https://www.swoole.co.uk/) | `>= 1.7.14` `The Newer The Better` `No longer support PHP5 since 2.0.12` |
+| [Swoole](https://www.swoole.co.uk/) | `>= 1.7.19` `The Newer The Better` `No longer support PHP5 since 2.0.12` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
-| Gzip[optional] | [zlib](https://zlib.net/), Ubuntu/Debian: `sudo apt-get install zlibc zlib1g zlib1g-dev`, CentOS: `sudo yum install zlib` |
+| Gzip[optional] | [zlib](https://zlib.net/), check by *ldconfig -p&#124;grep libz* |
 
 ## Install
 
@@ -42,6 +42,7 @@
 ```Bash
 # Run in the root path of your Laravel/Lumen project.
 composer require "hhxsv5/laravel-s:~1.0" -vvv
+# Make sure that your composer.lock file is under the VCS
 ```
 
 2.Add service provider
@@ -77,7 +78,7 @@ $app->configure('laravels');
 
 | Command | Description |
 | --------- | --------- |
-| `start` | Start LaravelS |
+| `start` | Start LaravelS, list the processes by *ps -ef&#124;grep laravels* |
 | `stop` | Stop LaravelS |
 | `restart` | Restart LaravelS |
 | `reload` | Reload all worker process(Contain your business & Laravel/Lumen codes), exclude master/manger process |
@@ -106,6 +107,9 @@ server {
 
     location @laravels {
         proxy_http_version 1.1;
+        # proxy_connect_timeout 60s;
+        # proxy_send_timeout 60s;
+        # proxy_read_timeout 120s;
         proxy_set_header Connection "keep-alive";
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header Host $host;
@@ -115,11 +119,13 @@ server {
 ```
 
 ## Listen Events
+> Usually, you can reset/destroy some `global/static` variables, or change the current `Request/Response` object.
 
 - `laravels.received_request` After LaravelS parsed `swoole_http_request` to `Illuminate\Http\Request`, before Laravel's Kernel handles this request.
 
 ```PHP
 // Edit file `app/Providers/EventServiceProvider.php`, add the following code into method `boot`
+// If no variable $exents, you can also call \Event::listen(). 
 $events->listen('laravels.received_request', function (\Illuminate\Http\Request $req) {
     $req->query->set('get_key', 'hhxsv5');// Change query of request
     $req->request->set('post_key', 'hhxsv5'); // Change post of request
@@ -146,7 +152,7 @@ var_dump($swoole->stats());
 
 ## Important Notices
 
-- Get all info of request from `Illuminate\Http\Request` Object, `CAN NOT USE` `superglobal` variables like $GLOBALS, $_SERVER, $_GET, $_POST, $_FILES, $_COOKIE, $_SESSION, $_REQUEST, $_ENV
+- Get all info of request from `Illuminate\Http\Request` Object, compatible with $_SERVER/$_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST, `CANNOT USE` $_SESSION, $_ENV.
 
 ```PHP
 public function form(\Illuminate\Http\Request $request)
@@ -155,11 +161,12 @@ public function form(\Illuminate\Http\Request $request)
     $all = $request->all();
     $sessionId = $request->cookie('sessionId');
     $photo = $request->file('photo');
+    $rawContent = $request->getContent();
     //...
 }
 ```
 
-- Respond by `Illuminate\Http\Response` Object, compatible with echo/vardump()/print_r()，`CANNOT USE` functions like header(), setcookie(), http_response_code()
+- Respond by `Illuminate\Http\Response` Object, compatible with echo/vardump()/print_r()，`CANNOT USE` functions like header()/setcookie()/http_response_code().
 
 ```PHP
 public function json()
@@ -194,6 +201,8 @@ public function test(Request $req)
 1. Connection pool for MySQL/Redis.
 
 2. Wrap coroutine clients for MySQL/Redis/Http.
+
+3. Automatic coroutine for swoole `2.1+`
 
 ## License
 

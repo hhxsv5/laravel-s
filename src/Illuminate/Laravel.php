@@ -4,7 +4,8 @@ namespace Hhxsv5\LaravelS\Illuminate;
 
 
 use Illuminate\Contracts\Http\Kernel;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request as IlluminateRequest;
+use Illuminate\Support\Facades\Facade;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -32,16 +33,15 @@ class Laravel
 
     public function prepareLaravel()
     {
-        $this->bootstrap();
+        $this->autoload();
         $this->createApp();
         $this->createKernel();
         $this->setLaravel();
     }
 
-    protected function bootstrap()
+    protected function autoload()
     {
         $autoload = $this->conf['rootPath'] . '/bootstrap/autoload.php';
-        // Lumen hasn't this autoload file
         if (file_exists($autoload)) {
             require_once $autoload;
         } else {
@@ -63,16 +63,13 @@ class Laravel
 
     protected function setLaravel()
     {
-        // Enables support for the _method request parameter to determine the intended HTTP method.
-        Request::enableHttpMethodParameterOverride();
-
         // Load configuration laravel.php manually for Lumen
         if ($this->conf['isLumen'] && file_exists($this->conf['rootPath'] . '/config/laravels.php')) {
             $this->app->configure('laravels');
         }
     }
 
-    public function handleDynamic(Request $request)
+    public function handleDynamic(IlluminateRequest $request)
     {
         ob_start();
 
@@ -102,37 +99,45 @@ class Laravel
         return $response;
     }
 
-    public function handleStatic(Request $request)
+    public function handleStatic(IlluminateRequest $request)
     {
         $uri = $request->getRequestUri();
         if (isset(self::$staticBlackList[$uri])) {
             return false;
         }
 
-        // Locate the request file
         $publicPath = $this->conf['staticPath'];
         $requestFile = $publicPath . $uri;
-        if (is_dir($requestFile)) {
-            $requestFile = rtrim($requestFile, '/');
-            $found = false;
-            foreach (['/index.html', '/index.htm'] as $index) {
-                $tmpFile = $requestFile . $index;
-                if (is_file($tmpFile)) {
-                    $found = true;
-                    $requestFile = $tmpFile;
-                    break;
-                }
-            }
-            if (!$found) {
+        if (is_file($requestFile)) {
+            return $this->createStaticResponse($requestFile, $request->header('if-modified-since'));
+        } elseif (is_dir($requestFile)) {
+            $indexFile = $this->lookupIndex($requestFile);
+            if ($indexFile === false) {
                 return false;
+            } else {
+                return $this->createStaticResponse($indexFile, $request->header('if-modified-since'));
             }
-        } elseif (!is_file($requestFile)) {
+        } else {
             return false;
         }
+    }
 
+    protected function lookupIndex($folder)
+    {
+        $folder = rtrim($folder, '/') . '/';
+        foreach (['index.html', 'index.htm'] as $index) {
+            $tmpFile = $folder . $index;
+            if (is_file($tmpFile)) {
+                return $tmpFile;
+            }
+        }
+        return false;
+    }
+
+    public function createStaticResponse($requestFile, $modifiedSince = null)
+    {
         $code = SymfonyResponse::HTTP_OK;
         $mtime = filemtime($requestFile);
-        $modifiedSince = $request->header('if-modified-since');
         if ($modifiedSince !== null) {
             $modifiedSince = strtotime($modifiedSince);
             if ($modifiedSince !== false && $modifiedSince >= $mtime) {
@@ -147,10 +152,9 @@ class Laravel
         $rsp->setPrivate();
         $rsp->setExpires(new \DateTime(date('Y-m-d H:i:s', time() + $maxAge)));
         return $rsp;
-
     }
 
-    public function cleanRequest(Request $request)
+    public function cleanRequest(IlluminateRequest $request)
     {
         // Clean laravel session
         if ($request->hasSession()) {
@@ -164,14 +168,33 @@ class Laravel
         }
 
         // Clean laravel cookie queue
-        if (class_exists('\Illuminate\Cookie\CookieJar', false)) {
+        if (isset($this->app['cookie'])) {
             /**
-             * @var \Illuminate\Cookie\CookieJar $cookies
+             * @var \Illuminate\Contracts\Cookie\QueueingFactory $cookies
              */
-            $cookies = $this->app->make(\Illuminate\Cookie\CookieJar::class);
+            $cookies = $this->app['cookie'];
             foreach ($cookies->getQueuedCookies() as $name => $cookie) {
                 $cookies->unqueue($name);
             }
+        }
+
+        // Re-register some singleton providers
+        if (class_exists('\Illuminate\Auth\AuthServiceProvider', false)) {
+            $this->app->register('\Illuminate\Auth\AuthServiceProvider', [], true);
+            Facade::clearResolvedInstance('auth');
+            Facade::clearResolvedInstance('auth.driver');
+
+            // for jwt auth
+            if (class_exists('\Tymon\JWTAuth\Providers\LaravelServiceProvider', false)) {
+                $this->app->register('\Tymon\JWTAuth\Providers\LaravelServiceProvider', [], true)->boot();
+            }
+            if (class_exists('\Tymon\JWTAuth\Providers\LumenServiceProvider', false)) {
+                $this->app->register('\Tymon\JWTAuth\Providers\LumenServiceProvider', [], true)->boot();
+            }
+        }
+        if (class_exists('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', false)) {
+            Facade::clearResolvedInstance('auth.password');
+            $this->app->register('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', [], true);
         }
 
         //...

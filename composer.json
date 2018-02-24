@@ -2,7 +2,11 @@
   "name": "hhxsv5/laravel-s",
   "type": "library",
   "license": "MIT",
-  "description": "LaravelS: Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.",
+  "support": {
+    "issues": "https://github.com/hhxsv5/laravel-s/issues",
+    "source": "https://github.com/hhxsv5/laravel-s"
+  },
+  "description": "🚀 LaravelS: Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.",
   "keywords": [
     "LaravelS",
     "speed-laravel",
@@ -22,11 +26,10 @@
     }
   ],
   "require": {
-    "php": ">=5.5.9",
-    "ext-swoole": ">=1.7.14"
+    "php": ">=5.5.9"
   },
   "suggest": {
-    "ext-swoole": "Event-driven asynchronous & concurrent & coroutine networking engine with high performance for PHP."
+    "ext-swoole": "Event-driven asynchronous & concurrent & coroutine networking engine with high performance for PHP, require >= 1.7.19."
   },
   "autoload": {
     "psr-4": {
@@ -39,5 +42,7 @@
         "Hhxsv5\\LaravelS\\Illuminate\\LaravelSServiceProvider"
       ]
     }
-  }
+  },
+  "prefer-stable": true,
+  "minimum-stability": "dev"
 }

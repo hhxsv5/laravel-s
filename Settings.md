@@ -4,7 +4,7 @@
 
 - `listen_port`: `int` The listening port, need `root` permission if port less than `1024`, default `5200`.
 
-- `enable_gzip`: `bool` Whether enable the gzip of response content when respond by LaravelS. The header about Content-Encoding will be added automatically if enable, default `true`.
+- `enable_gzip`: `bool` Whether enable the gzip of response content when respond by LaravelS, depend on [zlib](https://zlib.net/), use `php --ri swoole|grep zlib` to check whether enable. The header about Content-Encoding will be added automatically if enable, default `false`, recommend to enable to save network traffic.
 
 - `server`: `string` Set HTTP header `Server` when respond by LaravelS, default `LaravelS`.
 

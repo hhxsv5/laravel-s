@@ -3,7 +3,6 @@
 namespace Hhxsv5\LaravelS\Swoole;
 
 use Illuminate\Http\Request as IlluminateRequest;
-use Symfony\Component\HttpFoundation\HeaderBag;
 
 class Request
 {
@@ -14,26 +13,44 @@ class Request
         $this->swooleRequest = $request;
     }
 
+    /**
+     * @return IlluminateRequest
+     */
     public function toIlluminateRequest()
     {
-        $get = isset($this->swooleRequest->get) ? $this->swooleRequest->get : [];
-        $post = isset($this->swooleRequest->post) ? $this->swooleRequest->post : [];
-        $cookies = isset($this->swooleRequest->cookie) ? $this->swooleRequest->cookie : [];
-        $server = isset($this->swooleRequest->server) ? $this->swooleRequest->server : [];
+        $_GET = isset($this->swooleRequest->get) ? $this->swooleRequest->get : [];
+        $_POST = isset($this->swooleRequest->post) ? $this->swooleRequest->post : [];
+        $_COOKIE = isset($this->swooleRequest->cookie) ? $this->swooleRequest->cookie : [];
+        $_SERVER = isset($this->swooleRequest->server) ? $this->swooleRequest->server : [];
         $headers = isset($this->swooleRequest->header) ? $this->swooleRequest->header : [];
-        $files = isset($this->swooleRequest->files) ? $this->swooleRequest->files : [];
+        $_FILES = isset($this->swooleRequest->files) ? $this->swooleRequest->files : [];
+        $_ENV = [];
+        $_REQUEST = [];
 
         foreach ($headers as $key => $value) {
             $key = str_replace('-', '_', $key);
-            $server['http_' . $key] = $value;
+            $_SERVER['http_' . $key] = $value;
         }
-        $server = array_change_key_case($server, CASE_UPPER);
+        $_SERVER = array_change_key_case($_SERVER, CASE_UPPER);
 
-        $content = $this->swooleRequest->rawContent() ?: null;
-        $laravelRequest = new IlluminateRequest($get, $post, [], $cookies, $files, $server, $content);
-        $laravelRequest->headers = new HeaderBag($headers);
+        $requests = ['C' => $_COOKIE, 'G' => $_GET, 'P' => $_POST];
+        $requestOrder = ini_get('request_order') ?: ini_get('variables_order');
+        $requestOrder = preg_replace('#[^CGP]#', '', strtoupper($requestOrder)) ?: 'GP';
+        foreach (str_split($requestOrder) as $order) {
+            $_REQUEST = array_merge($_REQUEST, $requests[$order]);
+        }
 
-        return $laravelRequest;
+        $request = IlluminateRequest::capture();
+        try {
+            $reflection = new \ReflectionClass($request);
+            $content = $reflection->getProperty('content');
+            $content->setAccessible(true);
+            $content->setValue($request, $this->swooleRequest->rawContent());
+        } catch (\Exception $e) {
+            // Do nothing
+        }
+
+        return $request;
     }
 
 }

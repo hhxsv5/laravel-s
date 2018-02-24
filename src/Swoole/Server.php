@@ -47,7 +47,11 @@ class Server
 
     public function onStart(\swoole_http_server $server)
     {
-        $this->setProcessTitle('laravels: master process');
+        foreach (spl_autoload_functions() as $function) {
+            spl_autoload_unregister($function);
+        }
+
+        $this->setProcessTitle(sprintf('%s laravels: master process', $this->conf['process_prefix']));
 
         if (version_compare(\swoole_version(), '1.9.5', '<')) {
             file_put_contents($this->conf['swoole']['pid_file'], $server->master_pid);
@@ -61,12 +65,12 @@ class Server
 
     public function onManagerStart(\swoole_http_server $server)
     {
-        $this->setProcessTitle('laravels: manager process');
+        $this->setProcessTitle(sprintf('%s laravels: manager process', $this->conf['process_prefix']));
     }
 
     public function onWorkerStart(\swoole_http_server $server, $workerId)
     {
-        $this->setProcessTitle('laravels: worker process ' . $workerId);
+        $this->setProcessTitle(sprintf('%s laravels: worker process %d', $this->conf['process_prefix'], $workerId));
 
         if (function_exists('opcache_reset')) {
             opcache_reset();
@@ -106,7 +110,7 @@ class Server
 
     protected function setProcessTitle($title)
     {
-        if (PHP_OS == 'Darwin') {
+        if (PHP_OS === 'Darwin') {
             return;
         }
         if (function_exists('cli_set_process_title')) {

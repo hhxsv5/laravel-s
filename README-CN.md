@@ -1,5 +1,5 @@
 # LaravelS - 站在巨人的肩膀上
-> 通过Swoole来加速 Laravel/Lumen，其中的S代表Swoole，速度，高性能。
+> 🚀 通过Swoole来加速 Laravel/Lumen，其中的S代表Swoole，速度，高性能。
 
 [![Latest Stable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/stable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
 [![Total Downloads](https://poser.pugx.org/hhxsv5/laravel-s/downloads.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
@@ -31,9 +31,9 @@
 | 依赖 | 说明 |
 | -------- | -------- |
 | [PHP](https://secure.php.net/manual/zh/install.php) | `>= 5.5.9` |
-| [Swoole](https://www.swoole.com/) | `>= 1.7.14` `推荐最新的稳定版` `从2.0.12开始不再支持PHP5` |
+| [Swoole](https://www.swoole.com/) | `>= 1.7.19` `推荐最新的稳定版` `从2.0.12开始不再支持PHP5` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
-| Gzip[可选的] | [zlib](https://zlib.net/), Ubuntu/Debian: `sudo apt-get install zlibc zlib1g zlib1g-dev`, CentOS: `sudo yum install zlib` |
+| Gzip[可选的] | [zlib](https://zlib.net/), 检查本机libz是否可用*ldconfig -p&#124;grep libz* |
 
 ## 安装
 
@@ -42,6 +42,7 @@
 ```Bash
 # 在你的Laravel/Lumen项目的根目录下执行
 composer require "hhxsv5/laravel-s:~1.0" -vvv
+# 确保你的composer.lock文件是在版本控制中
 ```
 
 2.添加service provider
@@ -77,7 +78,7 @@ $app->configure('laravels');
 
 | 命令 | 说明 |
 | --------- | --------- |
-| `start` | 启动LaravelS |
+| `start` | 启动LaravelS，展示已启动的进程列表 *ps -ef&#124;grep laravels* |
 | `stop` | 停止LaravelS |
 | `restart` | 重启LaravelS |
 | `reload` | 平滑重启所有worker进程，这些worker进程内包含你的业务代码和框架(Laravel/Lumen)代码，不会重启master/manger进程 |
@@ -106,6 +107,9 @@ server {
 
     location @laravels {
         proxy_http_version 1.1;
+        # proxy_connect_timeout 60s;
+        # proxy_send_timeout 60s;
+        # proxy_read_timeout 120s;
         proxy_set_header Connection "keep-alive";
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header Host $host;
@@ -115,11 +119,13 @@ server {
 ```
 
 ## 监听事件
+> 通常，你可以在这些事件中重置或销毁一些全局或静态的变量，也可以修改当前的请求和响应。
 
 - `laravels.received_request` 将`swoole_http_request`转成`Illuminate\Http\Request`后，在Laravel内核处理请求前。
 
 ```PHP
 // 修改`app/Providers/EventServiceProvider.php`, 添加下面监听代码到boot方法中
+// 如果变量$exents不存在，你也可以调用\Event::listen()。
 $events->listen('laravels.received_request', function (\Illuminate\Http\Request $req) {
     $req->query->set('get_key', 'hhxsv5');// 修改querystring
     $req->request->set('post_key', 'hhxsv5'); // 修改post body
@@ -147,7 +153,7 @@ var_dump($swoole->stats());
 
 ## 注意事项
 
-- 只能通过`Illuminate\Http\Request`对象来获取请求信息，不能使用超全局变量，像$GLOBALS，$_SERVER，$_GET，$_POST，$_FILES，$_COOKIE，$_SESSION，$_REQUEST，$_ENV。
+- 推荐通过`Illuminate\Http\Request`对象来获取请求信息，兼容$_SERVER、$_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST，`不能使用`$_SESSION、$_ENV。
 
 ```PHP
 public function form(\Illuminate\Http\Request $request)
@@ -156,11 +162,12 @@ public function form(\Illuminate\Http\Request $request)
     $all = $request->all();
     $sessionId = $request->cookie('sessionId');
     $photo = $request->file('photo');
+    $rawContent = $request->getContent();
     //...
 }
 ```
 
-- 推荐通过返回`Illuminate\Http\Response`对象来响应请求，兼容echo、vardump()、print_r()，不能使用函数像exit()，die()，header()，setcookie()，http_response_code()。
+- 推荐通过返回`Illuminate\Http\Response`对象来响应请求，兼容echo、vardump()、print_r()，`不能使用`函数像exit()、die()、header()、setcookie()、http_response_code()。
 
 ```PHP
 public function json()
@@ -169,7 +176,7 @@ public function json()
 }
 ```
 
-- 你声明的全局、静态变量必须手动清理掉。
+- 你声明的全局、静态变量必须手动清理或重置。
 
 - 无限追加元素到静态或全局变量中，将导致内存爆满。
 
@@ -195,6 +202,8 @@ public function test(Request $req)
 1. 针对MySQL/Redis的连接池。
 
 2. 包装MySQL/Redis/Http的协程客户端。
+
+3. 针对Swoole `2.1+` 自动的协程支持。
 
 ## License
 

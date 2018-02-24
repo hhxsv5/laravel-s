@@ -32,7 +32,7 @@ class LaravelSCommand extends Command
 
     public function handle()
     {
-        $action = $this->argument('action');
+        $action = (string)$this->argument('action');
         if (!in_array($action, $this->actions, true)) {
             $this->warn(sprintf('LaravelS: action %s is not available, only support %s', $action, implode('|', $this->actions)));
             return;
@@ -51,7 +51,7 @@ class LaravelSCommand extends Command
         }
     }
 
-    protected function start()
+    protected function outputLogo()
     {
         static $logo = <<<EOS
  _                               _  _____ 
@@ -69,10 +69,18 @@ EOS;
             ['Component' => 'Swoole', 'Version' => \swoole_version()],
             ['Component' => $this->getApplication()->getName(), 'Version' => $this->getApplication()->getVersion()],
         ]);
+    }
+
+    protected function start()
+    {
+        $this->outputLogo();
 
         $svrConf = config('laravels');
         if (empty($svrConf['swoole']['document_root'])) {
             $svrConf['swoole']['document_root'] = base_path('public');
+        }
+        if (empty($svrConf['process_prefix'])) {
+            $svrConf['process_prefix'] = base_path();
         }
         $laravelConf = [
             'rootPath'   => base_path(),
@@ -83,20 +91,18 @@ EOS;
         if (file_exists($svrConf['swoole']['pid_file'])) {
             $pid = (int)file_get_contents($svrConf['swoole']['pid_file']);
             if ($this->killProcess($pid, 0)) {
-                $this->warn("LaravelS: PID[{$pid}] is already running.");
+                $this->warn(sprintf('LaravelS: PID[%s] is already running at %s:%s.', $pid, $svrConf['listen_ip'], $svrConf['listen_port']));
                 return;
             }
         }
 
         // Implements gracefully reload, avoid including laravel's files before worker start
         $cmd = sprintf('%s %s/../GoLaravelS.php', PHP_BINARY, __DIR__);
-        $fp = popen($cmd, 'w');
-        if (!$fp) {
+        $ret = $this->popen($cmd, json_encode(compact('svrConf', 'laravelConf')));
+        if ($ret === false) {
             $this->error('LaravelS: popen ' . $cmd . ' failed');
             return;
         }
-        fwrite($fp, json_encode(compact('svrConf', 'laravelConf')));
-        pclose($fp);
         $pidFile = config('laravels.swoole.pid_file');
 
         // Make sure that master process started
@@ -106,10 +112,23 @@ EOS;
             $time++;
         }
         if (file_exists($pidFile)) {
-            $this->info(sprintf('LaravelS: PID[%s] is running.', file_get_contents($pidFile)));
+            $this->info(sprintf('LaravelS: PID[%s] is running at %s:%s.', file_get_contents($pidFile), $svrConf['listen_ip'], $svrConf['listen_port']));
         } else {
             $this->error(sprintf('LaravelS: PID file[%s] does not exist.', $pidFile));
         }
+    }
+
+    protected function popen($cmd, $input = null)
+    {
+        $fp = popen($cmd, 'w');
+        if ($fp === false) {
+            return false;
+        }
+        if ($input !== null) {
+            fwrite($fp, $input);
+        }
+        pclose($fp);
+        return true;
     }
 
     protected function stop()
@@ -123,6 +142,7 @@ EOS;
                     $time = 0;
                     while ($this->killProcess($pid, 0) && $time <= 20) {
                         usleep(100000);
+                        $this->killProcess($pid, SIGTERM);
                         $time++;
                     }
                     if (file_exists($pidFile)) {
