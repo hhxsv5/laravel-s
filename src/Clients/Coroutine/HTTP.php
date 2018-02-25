@@ -8,23 +8,36 @@ use Swoole\Coroutine;
 
 class HTTP extends Base
 {
-    public function __construct($url, $timeout = 5)
+    protected $path;
+
+    public function __construct($url, $timeout = 5, array $headers = [])
     {
-        $host = parse_url($url, PHP_URL_HOST);
-        $port = parse_url($url, PHP_URL_PORT) ?: 80;
+        $parses = parse_url($url);
+        $host = $parses['host'];
+        $port = isset($parses['port']) ? $parses['port'] : 80;
+        $this->path = sprintf('%s%s%s',
+            isset($parses['path']) ? $parses['path'] : '/',
+            isset($parses['query']) ? ('?' . $parses['query']) : '',
+            isset($parses['fragment']) ? ('#' . $parses['fragment']) : ''
+        );
 
         if (version_compare(\swoole_version(), '1.9.24', '<')) {
-            swoole_async_dns_lookup($host, function ($host, $ip) use ($port) {
+            swoole_async_dns_lookup($host, function ($host, $ip) use ($port, $headers, $timeout) {
                 $this->cli = new SwooleHttpClient($ip, $port);
+                $this->cli->setHeaders($headers + ['Host' => $host]);
+                $this->cli->set(['timeout' => $timeout]);
             });
         } else {
             $this->cli = new SwooleHttpClient($host, $port);
+            $this->cli->setHeaders($headers + ['Host' => $host]);
+            $this->cli->set(['timeout' => $timeout]);
         }
+    }
 
-        $this->cli->setHeaders([
-            'Host' => $host,
-        ]);
-        $this->cli->set(['timeout' => $timeout]);
+    public function get()
+    {
+        $this->cli->get($this->path);
+        return $this->cli->body;
     }
 
     public function __call($name, $arguments)

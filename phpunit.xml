@@ -1,0 +1,7 @@
+<phpunit bootstrap="vendor/autoload.php">
+    <testsuites>
+        <testsuite name="LaravelS">
+            <file>tests/HttpClientTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>

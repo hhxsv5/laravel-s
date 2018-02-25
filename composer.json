@@ -33,7 +33,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Hhxsv5\\LaravelS\\": "src"
+      "Hhxsv5\\LaravelS\\": "src",
+      "Hhxsv5\\LaravelS\\Tests\\": "tests"
     }
   },
   "extra": {
