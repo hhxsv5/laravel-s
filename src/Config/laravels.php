@@ -13,6 +13,10 @@ return [
         'log_file'      => storage_path('logs/swoole-' . date('Y-m-d') . '.log'),
         'log_level'     => 4,
         'document_root' => base_path('public'),
-        // other settings like worker_num, backlog ...
+        /**
+         * The other settings of Swoole like worker_num, backlog ...
+         * @see https://wiki.swoole.com/wiki/page/274.html  Chinese
+         * @see https://www.swoole.co.uk/docs/modules/swoole-server/configuration  English
+         */
     ],
 ];
