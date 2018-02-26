@@ -41,14 +41,10 @@ class Request
         }
 
         $request = IlluminateRequest::capture();
-        try {
-            $reflection = new \ReflectionClass($request);
-            $content = $reflection->getProperty('content');
-            $content->setAccessible(true);
-            $content->setValue($request, $this->swooleRequest->rawContent());
-        } catch (\Exception $e) {
-            // Do nothing
-        }
+        $reflection = new \ReflectionObject($request);
+        $content = $reflection->getProperty('content');
+        $content->setAccessible(true);
+        $content->setValue($request, $this->swooleRequest->rawContent());
 
         return $request;
     }

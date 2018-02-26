@@ -8,6 +8,7 @@ use Hhxsv5\LaravelS\Swoole\Request;
 use Hhxsv5\LaravelS\Swoole\Server;
 use Hhxsv5\LaravelS\Swoole\StaticResponse;
 use Illuminate\Http\Request as IlluminateRequest;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
 /**
@@ -90,7 +91,11 @@ class LaravelS extends Server
         $laravelResponse->headers->set('Server', $this->conf['server'], true);
         $this->laravel->fireEvent('laravels.generated_response', [$laravelRequest, $laravelResponse]);
         $this->laravel->cleanRequest($laravelRequest);
-        (new DynamicResponse($swooleResponse, $laravelResponse))->send($this->conf['enable_gzip']);
+        if ($laravelResponse instanceof BinaryFileResponse) {
+            (new StaticResponse($swooleResponse, $laravelResponse))->send($this->conf['enable_gzip']);
+        } else {
+            (new DynamicResponse($swooleResponse, $laravelResponse))->send($this->conf['enable_gzip']);
+        }
         return true;
     }
 
