@@ -202,7 +202,9 @@ public function test(Request $req)
 
 2. Wrap coroutine clients for MySQL/Redis/Http.
 
-3. Automatic coroutine for swoole `2.1+`
+3. Automatic coroutine for swoole `2.1+`.
+
+4. Support `inotify` to restart/reload automatically after modifying code.
 
 ## License
 
