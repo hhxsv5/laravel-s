@@ -33,6 +33,25 @@ class LaravelS extends Server
         $this->laravelConf = $laravelConf;
     }
 
+    public function onManagerStart(\swoole_http_server $server)
+    {
+        parent::onManagerStart($server);
+
+        $autoReload = function (\swoole_process $process) use ($server) {
+            $inotify = new Inotify();
+            //$this->laravelConf['rootPath']
+            $inotify->on('/docker/www/med3/laravel-s-test/app/Http/Controllers/TestController.php', IN_MODIFY, function () use ($server) {
+                //$server->reload();
+                echo 'reload', PHP_EOL;
+            });
+            $inotify->run();
+        };
+
+        $reloadProcess = new \swoole_process($autoReload, false);
+        $reloadProcess->name(sprintf('%s laravels: inotify process', $this->conf['process_prefix']));
+        $reloadProcess->start();
+    }
+
     public function onWorkerStart(\swoole_http_server $server, $workerId)
     {
         parent::onWorkerStart($server, $workerId);
