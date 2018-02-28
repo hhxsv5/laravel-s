@@ -36,7 +36,7 @@
 | [Swoole](https://www.swoole.co.uk/) | `>= 1.7.19` `The Newer The Better` `No longer support PHP5 since 2.0.12` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
 | Gzip[optional] | [zlib](https://zlib.net/), be used to compress the HTTP response, check by *ldconfig -p&#124;grep libz* |
-| Inotify[optional] | [inotify](http://pecl.php.net/package/inotify), be used to reload worker processes in real time, check by *php --ri inotify* |
+| Inotify[optional] | [inotify](http://pecl.php.net/package/inotify), be used to reload all worker processes when your code is modified, check by *php --ri inotify* |
 
 ## Install
 
