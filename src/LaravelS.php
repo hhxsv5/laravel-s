@@ -49,11 +49,11 @@ class LaravelS extends Server
             $this->setProcessTitle(sprintf('%s laravels: inotify process', $this->conf['process_prefix']));
             $inotify = new Inotify($this->laravelConf['rootPath'], IN_CREATE | IN_MODIFY | IN_DELETE, function ($event) use ($process) {
                 $this->swoole->reload();
-                echo 'LaravelS: reloaded by inotify at ', date('Y-m-d H:i:s'), ', file: ', $event['name'], PHP_EOL;
+                echo '[', date('Y-m-d H:i:s'), '] LaravelS: reloaded by inotify, file: ', $event['name'], PHP_EOL;
             });
             $inotify->addFileTypes($fileTypes);
             $inotify->watch();
-            echo 'LaravelS: count of watched files by inotify: ', $inotify->getWatchedFileCount(), PHP_EOL;
+            echo '[', date('Y-m-d H:i:s'), '] LaravelS: count of watched files by inotify: ', $inotify->getWatchedFileCount(), PHP_EOL;
             $inotify->start();
         };
 
