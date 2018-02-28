@@ -41,7 +41,7 @@ class LaravelS extends Server
         }
 
         if (!extension_loaded('inotify')) {
-            throw new \Exception('Inotify reload requires library "inotify", use "php --ri inotify" to check.');
+            return;
         }
 
         $fileTypes = isset($this->conf['inotify_reload']['file_types']) ? (array)$this->conf['inotify_reload']['file_types'] : [];
