@@ -12,6 +12,7 @@ return [
     'inotify_reload' => [
         'enable'     => false,
         'file_types' => ['.php'],
+        'log'        => true,
     ],
     'swoole'         => [
         'dispatch_mode' => 2,

@@ -14,4 +14,6 @@
  
 - `inotify_reload.file_types`: `array` `Inotify` 监控的文件类型，默认有`.php`。 
 
+- `inotify_reload.log`: `bool` 是否输出Reload的日志，默认`true`。
+
 - `swoole`：`array` 请参考[Swoole配置项](https://wiki.swoole.com/wiki/page/274.html)

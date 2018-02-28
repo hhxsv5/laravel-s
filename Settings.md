@@ -12,6 +12,8 @@
 
 - `inotify_reload.enable`: `bool` Whether enable the `Inotify Reload` to reload all worker processes when your code is modified, depend on [inotify](http://pecl.php.net/package/inotify), use `php --ri inotify` to check whether the available. default `false`, `recommend to enable in development environment only`.
  
-- `inotify_reload.file_types`: `array` The file types which `Inotify` watched. 
+- `inotify_reload.file_types`: `array` The file types which `Inotify` watched, default `['.php']`.
+
+- `inotify_reload.log`: `bool` Whether output the reload log, default `true`.
 
 - `swoole`: `array` refer [Swoole Configuration](https://www.swoole.co.uk/docs/modules/swoole-server/configuration)

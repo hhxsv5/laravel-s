@@ -44,16 +44,21 @@ class LaravelS extends Server
             return;
         }
 
+        $log = !empty($this->conf['inotify_reload']['log']);
         $fileTypes = isset($this->conf['inotify_reload']['file_types']) ? (array)$this->conf['inotify_reload']['file_types'] : [];
-        $autoReload = function (\swoole_process $process) use ($fileTypes) {
+        $autoReload = function (\swoole_process $process) use ($fileTypes, $log) {
             $this->setProcessTitle(sprintf('%s laravels: inotify process', $this->conf['process_prefix']));
-            $inotify = new Inotify($this->laravelConf['rootPath'], IN_CREATE | IN_MODIFY | IN_DELETE, function ($event) use ($process) {
+            $inotify = new Inotify($this->laravelConf['rootPath'], IN_CREATE | IN_MODIFY | IN_DELETE, function ($event) use ($process, $log) {
                 $this->swoole->reload();
-                echo '[', date('Y-m-d H:i:s'), '] LaravelS: reloaded by inotify, file: ', $event['name'], PHP_EOL;
+                if ($log) {
+                    echo '[', date('Y-m-d H:i:s'), '] LaravelS: reloaded by inotify, file: ', $event['name'], PHP_EOL;
+                }
             });
             $inotify->addFileTypes($fileTypes);
             $inotify->watch();
-            echo '[', date('Y-m-d H:i:s'), '] LaravelS: count of watched files by inotify: ', $inotify->getWatchedFileCount(), PHP_EOL;
+            if ($log) {
+                echo '[', date('Y-m-d H:i:s'), '] LaravelS: count of watched files by inotify: ', $inotify->getWatchedFileCount(), PHP_EOL;
+            }
             $inotify->start();
         };
 
