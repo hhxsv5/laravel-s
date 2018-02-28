@@ -30,7 +30,7 @@
   },
   "suggest": {
     "ext-swoole": "Event-driven asynchronous & concurrent & coroutine networking engine with high performance for PHP, require >= 1.7.19.",
-    "ext-inotify": "Inotify for reload in real time."
+    "ext-inotify": "Inotify, used to reload all worker processes when your code is modified."
   },
   "autoload": {
     "psr-4": {
