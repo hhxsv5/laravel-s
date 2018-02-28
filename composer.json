@@ -29,7 +29,8 @@
     "php": ">=5.5.9"
   },
   "suggest": {
-    "ext-swoole": "Event-driven asynchronous & concurrent & coroutine networking engine with high performance for PHP, require >= 1.7.19."
+    "ext-swoole": "Event-driven asynchronous & concurrent & coroutine networking engine with high performance for PHP, require >= 1.7.19.",
+    "ext-inotify": "Inotify for reload in real time."
   },
   "autoload": {
     "psr-4": {

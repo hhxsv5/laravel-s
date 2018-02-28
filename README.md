@@ -22,6 +22,8 @@
 
 - Gracefully reload
 
+- Automatically reload when code is modified
+
 - Support Laravel/Lumen, good compatibility
 
 - Simple & Out of the box
@@ -33,7 +35,8 @@
 | [PHP](https://secure.php.net/manual/en/install.php) | `>= 5.5.9` |
 | [Swoole](https://www.swoole.co.uk/) | `>= 1.7.19` `The Newer The Better` `No longer support PHP5 since 2.0.12` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
-| Gzip[optional] | [zlib](https://zlib.net/), check by *ldconfig -p&#124;grep libz* |
+| Gzip[optional] | [zlib](https://zlib.net/), be used to compress the HTTP response, check by *ldconfig -p&#124;grep libz* |
+| Inotify[optional] | [inotify](http://pecl.php.net/package/inotify), be used to reload worker processes in real time, check by *php --ri inotify* |
 
 ## Install
 
@@ -81,7 +84,7 @@ $app->configure('laravels');
 | `start` | Start LaravelS, list the processes by *ps -ef&#124;grep laravels* |
 | `stop` | Stop LaravelS |
 | `restart` | Restart LaravelS |
-| `reload` | Reload all worker process(Contain your business & Laravel/Lumen codes), exclude master/manger process |
+| `reload` | Reload all worker processes(Contain your business & Laravel/Lumen codes), exclude master/manger process |
 | `publish` | Publish configuration file `laravels.php` of LaravelS into folder `config` of your project |
 
 ## Cooperate with Nginx
@@ -203,8 +206,6 @@ public function test(Request $req)
 2. Wrap coroutine clients for MySQL/Redis/Http.
 
 3. Automatic coroutine for swoole `2.1+`.
-
-4. Support `inotify` to restart/reload automatically after modifying code.
 
 ## License
 
