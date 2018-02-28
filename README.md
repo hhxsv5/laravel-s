@@ -87,7 +87,7 @@ $app->configure('laravels');
 | `reload` | Reload all worker processes(Contain your business & Laravel/Lumen codes), exclude master/manger process |
 | `publish` | Publish configuration file `laravels.php` of LaravelS into folder `config` of your project |
 
-## Cooperate with Nginx
+## Cooperate with Nginx (Recommended)
 
 ```Nginx
 upstream laravels {
@@ -119,6 +119,47 @@ server {
         proxy_pass http://laravels;
     }
 }
+```
+
+## Cooperate with Apache
+
+```Apache
+<VirtualHost *:443>
+    ServerName www.laravels.com
+    ServerAdmin hhxsv5@sina.com
+
+    DocumentRoot /xxxpath/laravel-s-test/public;
+    <Directory "/">
+        AllowOverride None
+        Require all granted
+    </Directory>
+
+    LoadModule proxy_module /yyypath/modules/mod_proxy.so
+    LoadModule proxy_module /yyypath/modules/mod_proxy_balancer.so
+    LoadModule proxy_module /yyypath/modules/mod_lbmethod_byrequests.so.so
+    LoadModule proxy_module /yyypath/modules/mod_proxy_http.so.so
+    LoadModule proxy_module /yyypath/modules/mod_slotmem_shm.so
+    LoadModule proxy_module /yyypath/modules/mod_rewrite.so
+
+    ProxyRequests Off
+    ProxyPreserveHost On
+    <Proxy balancer://laravels>  
+        BalancerMember http://192.168.1.1:8011 loadfactor=7
+        #BalancerMember http://192.168.1.2:8011 loadfactor=3
+        #BalancerMember http://192.168.1.3:8011 loadfactor=1 status=+H
+        ProxySet lbmethod=byrequests
+    </Proxy>
+    #ProxyPass / balancer://laravels/
+    #ProxyPassReverse / balancer://laravels/
+
+    # Apache handles the static resources, LaravelS handles the dynamic resource.
+    RewriteEngine On
+    RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
+    RewriteRule ^/(.*)$ balancer://laravels/%{REQUEST_URI} [P,QSA,L]
+
+    ErrorLog ${APACHE_LOG_DIR}/www.laravels.com.error.log
+    CustomLog ${APACHE_LOG_DIR}/www.laravels.com.access.log combined
+</VirtualHost>
 ```
 
 ## Listen Events
