@@ -34,10 +34,17 @@ class LaravelS extends Server
         $this->addInotifyProcess();
     }
 
+    /**
+     * @throws \Exception
+     */
     protected function addInotifyProcess()
     {
         if (empty($this->conf['inotify_reload']) || empty($this->conf['inotify_reload']['enable'])) {
             return;
+        }
+
+        if (extension_loaded('inotify')) {
+            throw new \Exception('Inotify reload requires library "inotify", use "php --ri inotify" to check.');
         }
 
         $fileTypes = isset($this->conf['inotify_reload']['file_types']) ? (array)$this->conf['inotify_reload']['file_types'] : [];
@@ -49,7 +56,7 @@ class LaravelS extends Server
             });
             $inotify->addFileTypes($fileTypes);
             $inotify->watch();
-            echo 'LaravelS: inotify watched files: ', $inotify->getWatchedFileCount(), PHP_EOL;
+            echo 'LaravelS: count of watched files by inotify: ', $inotify->getWatchedFileCount(), PHP_EOL;
             $inotify->start();
         };
 

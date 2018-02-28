@@ -8,10 +8,10 @@ class Inotify
     private $watchPath;
     private $watchMask;
     private $watchHandler;
-    private $reloading       = false;
-    private $reloadFileTypes = ['.php' => true];
-    private $wdPath          = [];
-    private $pathWd          = [];
+    private $doing     = false;
+    private $fileTypes = ['.php' => true];
+    private $wdPath    = [];
+    private $pathWd    = [];
 
     public function __construct($watchPath, $watchMask, callable $watchHandler)
     {
@@ -24,7 +24,7 @@ class Inotify
     public function addFileType($type)
     {
         $type = '.' . trim($type, '.');
-        $this->reloadFileTypes[$type] = true;
+        $this->fileTypes[$type] = true;
     }
 
     public function addFileTypes(array $types)
@@ -56,7 +56,7 @@ class Inotify
                 }
 
                 $fileType = strrchr($file, '.');
-                if (isset($this->reloadFileTypes[$fileType])) {
+                if (isset($this->fileTypes[$fileType])) {
                     $wd = inotify_add_watch($this->fd, $file, $this->watchMask);
                     $this->bind($wd, $file);
                 }
@@ -68,9 +68,10 @@ class Inotify
     protected function clearWatch()
     {
         foreach ($this->wdPath as $wd => $path) {
-            inotify_rm_watch($this->fd, $wd);
-            $this->unbind($wd, $path);
+            @inotify_rm_watch($this->fd, $wd);
         }
+        $this->wdPath = [];
+        $this->pathWd = [];
     }
 
     protected function bind($wd, $path)
@@ -79,9 +80,12 @@ class Inotify
         $this->wdPath[$wd] = $path;
     }
 
-    protected function unbind($wd, $path)
+    protected function unbind($wd, $path = null)
     {
-        unset($this->wdPath[$wd], $this->pathWd[$path]);
+        unset($this->wdPath[$wd]);
+        if ($path !== null) {
+            unset($this->pathWd[$path]);
+        }
     }
 
     public function start()
@@ -94,22 +98,26 @@ class Inotify
                 }
 
                 $fileType = strchr($event['name'], '.');
-                if (!isset($this->reloadFileTypes[$fileType])) {
+                if (!isset($this->fileTypes[$fileType])) {
                     continue;
                 }
 
-                if ($this->reloading) {
+                if ($this->doing) {
                     continue;
                 }
-                $this->reloading = true;
 
-                // Clear watch to avoid multiple events
-                $this->clearWatch();
-                call_user_func_array($this->watchHandler, [$event]);
+                swoole_timer_after(100, function () use ($event) {
+                    call_user_func_array($this->watchHandler, [$event]);
 
-                // Watch again
-                $this->watch();
-                $this->reloading = false;
+//                    // Clear watch to avoid multiple events
+//                    $this->clearWatch();
+//                    // Watch again
+//                    $this->watch();
+
+                    $this->doing = false;
+                });
+                $this->doing = true;
+                break;
             }
         });
         swoole_event_wait();
