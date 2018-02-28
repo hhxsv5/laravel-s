@@ -23,14 +23,42 @@ class Inotify
         $this->reloadFileTypes[$type] = true;
     }
 
+    public function addFileTypes(array $types)
+    {
+        foreach ($types as $type) {
+            $this->addFileType($type);
+        }
+    }
+
     public function on($path, $mask, callable $handler)
     {
         if (isset($this->pathWd[$path])) {
-            inotify_rm_watch($this->fd, $this->pathWd[$path]);
-            unset($this->wdHandler[$this->pathWd[$path]]);
+            return false;
         }
+
         $wd = inotify_add_watch($this->fd, $path, $mask);
         $this->bind($wd, $path, $handler, $mask);
+
+        if (is_dir($path)) {
+            $files = scandir($path);
+            foreach ($files as $file) {
+                if ($file === '.' || $file === '..') {
+                    continue;
+                }
+                $file = $path . DIRECTORY_SEPARATOR . $file;
+                if (is_dir($file)) {
+                    $this->on($file, $mask, $handler);
+                }
+
+                $fileType = strrchr($file, '.');
+                if (isset($this->reloadFileTypes[$fileType])) {
+                    var_dump($file);
+                    $wd = inotify_add_watch($this->fd, $file, $mask);
+                    $this->bind($wd, $file, $handler, $mask);
+                }
+            }
+        }
+        return true;
     }
 
     protected function bind($wd, $path, $handler, $mask)
@@ -74,6 +102,7 @@ class Inotify
                 $this->unbind($event['wd']);
             }
         });
+        swoole_event_wait();
     }
 
     public function stop()

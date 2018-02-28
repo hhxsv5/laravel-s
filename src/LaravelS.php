@@ -31,22 +31,23 @@ class LaravelS extends Server
     {
         parent::__construct($svrConf);
         $this->laravelConf = $laravelConf;
-        $this->inotify();
+        $this->addInotifyProcess();
     }
 
-    protected function inotify()
+    protected function addInotifyProcess()
     {
-        if (empty($this->conf['inotify_reload'])) {
+        if (empty($this->conf['inotify_reload']) || empty($this->conf['inotify_reload']['enable'])) {
             return;
         }
 
-        $autoReload = function (\swoole_process $process) {
+        $fileTypes = isset($this->conf['inotify_reload']['file_types']) ? (array)$this->conf['inotify_reload']['file_types'] : [];
+        $autoReload = function (\swoole_process $process) use ($fileTypes) {
             $this->setProcessTitle(sprintf('%s laravels: inotify process', $this->conf['process_prefix']));
             $inotify = new Inotify();
-            //$this->laravelConf['rootPath']
-            $inotify->on('/docker/www/med3/laravel-s-test/app/Http/Controllers/TestController.php', IN_CREATE | IN_MODIFY | IN_DELETE | IN_MOVE | IN_CLOSE_WRITE, function ($event) use ($process, $action) {
+            $inotify->addFileTypes($fileTypes);
+            $inotify->on($this->laravelConf['rootPath'], IN_CREATE | IN_MODIFY | IN_DELETE | IN_MOVE | IN_CLOSE_WRITE, function ($event) use ($process) {
                 $this->swoole->reload();
-                echo 'LaravelS: inotify ', $action, 'ed at ', date('Y-m-d H:i:s'), PHP_EOL;
+                echo 'LaravelS: reloaded by inotify at ', date('Y-m-d H:i:s'), PHP_EOL;
             });
             $inotify->start();
         };
