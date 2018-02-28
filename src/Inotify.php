@@ -5,16 +5,20 @@ namespace Hhxsv5\LaravelS;
 class Inotify
 {
     private $fd;
+    private $watchPath;
+    private $watchMask;
+    private $watchHandler;
     private $reloading       = false;
     private $reloadFileTypes = ['.php' => true];
-    private $wdHandler       = [];
-    private $wdMask          = [];
     private $wdPath          = [];
     private $pathWd          = [];
 
-    public function __construct()
+    public function __construct($watchPath, $watchMask, callable $watchHandler)
     {
         $this->fd = inotify_init();
+        $this->watchPath = $watchPath;
+        $this->watchMask = $watchMask;
+        $this->watchHandler = $watchHandler;
     }
 
     public function addFileType($type)
@@ -30,14 +34,15 @@ class Inotify
         }
     }
 
-    public function on($path, $mask, callable $handler)
+    public function watch()
     {
-        if (isset($this->pathWd[$path])) {
-            return false;
-        }
+        $this->_watch($this->watchPath);
+    }
 
-        $wd = inotify_add_watch($this->fd, $path, $mask);
-        $this->bind($wd, $path, $handler, $mask);
+    protected function _watch($path)
+    {
+        $wd = inotify_add_watch($this->fd, $path, $this->watchMask);
+        $this->bind($wd, $path);
 
         if (is_dir($path)) {
             $files = scandir($path);
@@ -47,59 +52,64 @@ class Inotify
                 }
                 $file = $path . DIRECTORY_SEPARATOR . $file;
                 if (is_dir($file)) {
-                    $this->on($file, $mask, $handler);
+                    $this->_watch($file);
                 }
 
                 $fileType = strrchr($file, '.');
                 if (isset($this->reloadFileTypes[$fileType])) {
-                    var_dump($file);
-                    $wd = inotify_add_watch($this->fd, $file, $mask);
-                    $this->bind($wd, $file, $handler, $mask);
+                    $wd = inotify_add_watch($this->fd, $file, $this->watchMask);
+                    $this->bind($wd, $file);
                 }
             }
         }
         return true;
     }
 
-    protected function bind($wd, $path, $handler, $mask)
+    protected function clearWatch()
+    {
+        foreach ($this->wdPath as $wd => $path) {
+            inotify_rm_watch($this->fd, $wd);
+            $this->unbind($wd, $path);
+        }
+    }
+
+    protected function bind($wd, $path)
     {
         $this->pathWd[$path] = $wd;
-        $this->wdHandler[$wd] = $handler;
-        $this->wdMask[$wd] = $mask;
         $this->wdPath[$wd] = $path;
     }
 
-    protected function unbind($wd)
+    protected function unbind($wd, $path)
     {
-        unset($this->wdHandler[$wd], $this->wdMask[$wd], $this->wdPath[$wd]);
+        unset($this->wdPath[$wd], $this->pathWd[$path]);
     }
 
     public function start()
     {
         swoole_event_add($this->fd, function ($fp) {
             $events = inotify_read($this->fd);
-//            var_dump($events);
             foreach ($events as $event) {
-                if ($this->reloading) {
+                if ($event['mask'] == IN_IGNORED) {
                     continue;
                 }
 
-//                if ($event['mask'] == IN_IGNORED) {
-//                    continue;
-//                }
-//
-//                $fileType = strchr($event['name'], '.');
-//                if (!isset($this->reloadFileTypes[$fileType])) {
-//                    continue;
-//                }
+                $fileType = strchr($event['name'], '.');
+                if (!isset($this->reloadFileTypes[$fileType])) {
+                    continue;
+                }
 
+                if ($this->reloading) {
+                    continue;
+                }
                 $this->reloading = true;
-                call_user_func_array($this->wdHandler[$event['wd']], [$event]);
-                $this->reloading = false;
 
-                $wd = inotify_add_watch($this->fd, $this->wdPath[$event['wd']], $this->wdMask[$event['wd']]);
-                $this->bind($wd, $this->wdPath[$event['wd']], $this->wdHandler[$event['wd']], $this->wdMask[$event['wd']]);
-                $this->unbind($event['wd']);
+                // Clear watch to avoid multiple events
+                $this->clearWatch();
+                call_user_func_array($this->watchHandler, [$event]);
+
+                // Watch again
+                $this->watch();
+                $this->reloading = false;
             }
         });
         swoole_event_wait();
@@ -109,6 +119,11 @@ class Inotify
     {
         swoole_event_del($this->fd);
         fclose($this->fd);
+    }
+
+    public function getWatchedFileCount()
+    {
+        return count($this->wdPath);
     }
 
     public function __destruct()
