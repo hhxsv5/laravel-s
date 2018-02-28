@@ -8,15 +8,15 @@
   },
   "description": "🚀 LaravelS: Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.",
   "keywords": [
+    "swoole",
     "LaravelS",
     "speed-laravel",
     "speed-lumen",
-    "swoole",
     "laravel-swoole",
     "lumen-swoole",
     "http-server",
     "coroutine",
-    "high-performance"
+    "inotify-reload"
   ],
   "homepage": "https://github.com/hhxsv5/laravel-s",
   "authors": [
