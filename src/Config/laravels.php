@@ -1,15 +1,16 @@
 <?php
+/**
+ * @see https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md  Chinese
+ * @see https://github.com/hhxsv5/laravel-s/blob/master/Settings.md  English
+ */
 return [
-    'listen_ip'     => env('LARAVELS_LISTEN_IP', '127.0.0.1'),
-    'listen_port'   => env('LARAVELS_LISTEN_PORT', 5200),
-    'enable_gzip'   => env('LARAVELS_ENABLE_GZIP', false),
-    'server'        => env('LARAVELS_SERVER', 'LaravelS'),
-    'handle_static' => env('LARAVELS_HANDLE_STATIC', false),
-    'inotify'       => [
-        'enable' => false,
-        'action' => 'reload',
-    ],
-    'swoole'        => [
+    'listen_ip'      => env('LARAVELS_LISTEN_IP', '127.0.0.1'),
+    'listen_port'    => env('LARAVELS_LISTEN_PORT', 5200),
+    'enable_gzip'    => env('LARAVELS_ENABLE_GZIP', false),
+    'server'         => env('LARAVELS_SERVER', 'LaravelS'),
+    'handle_static'  => env('LARAVELS_HANDLE_STATIC', false),
+    'inotify_reload' => false,
+    'swoole'         => [
         'dispatch_mode' => 2,
         'max_request'   => 3000,
         'daemonize'     => 1,
