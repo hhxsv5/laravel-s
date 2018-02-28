@@ -7,7 +7,7 @@ class Server
     protected $conf;
     protected $swoole;
 
-    protected function __construct(array $conf = [])
+    protected function __construct(array $conf)
     {
         $this->conf = $conf;
 

@@ -27,16 +27,13 @@ class LaravelS extends Server
      */
     protected $laravel;
 
-    protected function __construct(array $svrConf = [], array $laravelConf)
+    protected function __construct(array $svrConf, array $laravelConf)
     {
         parent::__construct($svrConf);
         $this->laravelConf = $laravelConf;
         $this->addInotifyProcess();
     }
 
-    /**
-     * @throws \Exception
-     */
     protected function addInotifyProcess()
     {
         if (empty($this->conf['inotify_reload']) || empty($this->conf['inotify_reload']['enable'])) {
@@ -150,7 +147,7 @@ class LaravelS extends Server
 
     }
 
-    public static function getInstance(array $svrConf = [], array $laravelConf = [])
+    public static function getInstance(array $svrConf, array $laravelConf)
     {
         if (self::$s === null) {
             self::$s = new static($svrConf, $laravelConf);
