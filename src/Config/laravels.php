@@ -5,6 +5,10 @@ return [
     'enable_gzip'   => env('LARAVELS_ENABLE_GZIP', false),
     'server'        => env('LARAVELS_SERVER', 'LaravelS'),
     'handle_static' => env('LARAVELS_HANDLE_STATIC', false),
+    'inotify'       => [
+        'enable' => false,
+        'action' => 'reload',
+    ],
     'swoole'        => [
         'dispatch_mode' => 2,
         'max_request'   => 3000,

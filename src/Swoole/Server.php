@@ -2,6 +2,8 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
+use Hhxsv5\LaravelS\Inotify;
+
 class Server
 {
     protected $conf;
@@ -36,6 +38,7 @@ class Server
         $this->swoole->on('Start', [$this, 'onStart']);
         $this->swoole->on('Shutdown', [$this, 'onShutdown']);
         $this->swoole->on('ManagerStart', [$this, 'onManagerStart']);
+        $this->swoole->on('ManagerStop', [$this, 'onManagerStop']);
         $this->swoole->on('WorkerStart', [$this, 'onWorkerStart']);
         $this->swoole->on('WorkerStop', [$this, 'onWorkerStop']);
         if (version_compare(\swoole_version(), '1.9.17', '>=')) {
@@ -43,6 +46,33 @@ class Server
         }
         $this->swoole->on('WorkerError', [$this, 'onWorkerError']);
         $this->swoole->on('Request', [$this, 'onRequest']);
+    }
+
+    protected function inotify()
+    {
+        if (empty($this->conf['inotify']) || empty($this->conf['inotify']['enable'])) {
+            return;
+        }
+
+        $action = isset($this->conf['inotify']['action']) ? $this->conf['inotify']['action'] : 'reload';
+        if (!in_array($action, ['reload', 'restart'], true)) {
+            echo 'LaravelS: inotify.action is invalid, available actions: reload/restart', PHP_EOL;
+            return;
+        }
+
+        $autoReload = function (\swoole_process $process) use ($action) {
+            $this->setProcessTitle(sprintf('%s laravels: inotify process', $this->conf['process_prefix']));
+            $inotify = new Inotify();
+            //$this->laravelConf['rootPath']
+            $inotify->on('/docker/www/med3/laravel-s-test/app/Http/Controllers/TestController.php', IN_CREATE | IN_MODIFY | IN_DELETE | IN_MOVE | IN_CLOSE_WRITE, function ($event) use ($process, $action) {
+                $this->swoole->$action();
+                echo 'LaravelS: inotify ', $action, 'ed', PHP_EOL;
+            });
+            $inotify->start();
+        };
+
+        $inotifyProcess = new \swoole_process($autoReload, false);
+        $this->swoole->addProcess($inotifyProcess);
     }
 
     public function onStart(\swoole_http_server $server)
@@ -66,6 +96,11 @@ class Server
     public function onManagerStart(\swoole_http_server $server)
     {
         $this->setProcessTitle(sprintf('%s laravels: manager process', $this->conf['process_prefix']));
+    }
+
+    public function onManagerStop(\swoole_http_server $server)
+    {
+
     }
 
     public function onWorkerStart(\swoole_http_server $server, $workerId)
@@ -104,6 +139,7 @@ class Server
 
     public function run()
     {
+        $this->inotify();
         $this->bind();
         $this->swoole->start();
     }
