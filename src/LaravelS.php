@@ -50,7 +50,7 @@ class LaravelS extends Server
         $fileTypes = isset($this->conf['inotify_reload']['file_types']) ? (array)$this->conf['inotify_reload']['file_types'] : [];
         $autoReload = function (\swoole_process $process) use ($fileTypes) {
             $this->setProcessTitle(sprintf('%s laravels: inotify process', $this->conf['process_prefix']));
-            $inotify = new Inotify($this->laravelConf['rootPath'] . '/app/Http/Controllers', IN_CREATE | IN_MODIFY | IN_DELETE, function ($event) use ($process) {
+            $inotify = new Inotify($this->laravelConf['rootPath'], IN_CREATE | IN_MODIFY | IN_DELETE, function ($event) use ($process) {
                 $this->swoole->reload();
                 echo 'LaravelS: reloaded by inotify at ', date('Y-m-d H:i:s'), PHP_EOL;
             });
