@@ -43,7 +43,7 @@ class LaravelS extends Server
             return;
         }
 
-        if (extension_loaded('inotify')) {
+        if (!extension_loaded('inotify')) {
             throw new \Exception('Inotify reload requires library "inotify", use "php --ri inotify" to check.');
         }
 
