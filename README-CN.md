@@ -124,7 +124,7 @@ server {
 ## 与Apache配合使用
 
 ```Apache
-<VirtualHost *:443>
+<VirtualHost *:80>
     ServerName www.laravels.com
     ServerAdmin hhxsv5@sina.com
 
