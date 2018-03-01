@@ -2,6 +2,8 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
+use Hhxsv5\LaravelS\Swoole\Task\Event;
+
 class Server
 {
     protected $conf;
@@ -45,6 +47,10 @@ class Server
         }
         $this->swoole->on('WorkerError', [$this, 'onWorkerError']);
         $this->swoole->on('Request', [$this, 'onRequest']);
+
+        if (!empty($this->conf['tasks'])) {
+            $this->swoole->on('Task', [$this, 'onTask']);
+        }
     }
 
     public function onStart(\swoole_http_server $server)
@@ -107,6 +113,22 @@ class Server
     public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
     {
 
+    }
+
+    public function onTask(\swoole_http_request $server, $taskId, $srcWorkerId, $data)
+    {
+        /**
+         * @var Event
+         */
+        $event = $data;
+        $eventCls = get_class($event);
+        if (!isset($this->conf['tasks'][$eventCls])) {
+            return;
+        }
+
+        $listenerCls = $this->conf['tasks'][$eventCls];
+        $listener = new $listenerCls();
+        $listener->handle($event);
     }
 
     public function run()
