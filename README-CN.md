@@ -90,6 +90,14 @@ $app->configure('laravels');
 ## 与Nginx配合使用（推荐）
 
 ```Nginx
+
+gzip on;
+gzip_min_length 1024;
+gzip_comp_level 2;
+gzip_types text/plain text/css text/javascript application/json application/javascript application/x-javascript application/xml application/x-httpd-php image/jpeg image/gif image/png font/ttf font/otf image/svg+xml;
+gzip_vary on;
+gzip_disable "msie6";
+
 upstream laravels {
     server 192.168.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
     #server 192.168.0.2:5200 weight=3 max_fails=3 fail_timeout=30s;
