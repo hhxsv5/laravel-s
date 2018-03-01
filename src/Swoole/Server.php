@@ -88,7 +88,12 @@ class Server
 
     public function onWorkerStart(\swoole_http_server $server, $workerId)
     {
-        $this->setProcessTitle(sprintf('%s laravels: worker process %d', $this->conf['process_prefix'], $workerId));
+        if ($workerId >= $server->setting['worker_num']) {
+            $process = 'task worker';
+        } else {
+            $process = 'worker';
+        }
+        $this->setProcessTitle(sprintf('%s laravels: %s process %d', $this->conf['process_prefix'], $process, $workerId));
 
         if (function_exists('opcache_reset')) {
             opcache_reset();
