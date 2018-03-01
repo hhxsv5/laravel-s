@@ -49,7 +49,12 @@ class Server
         $this->swoole->on('Request', [$this, 'onRequest']);
 
         if (!empty($this->conf['tasks'])) {
+            if (empty($this->conf['swoole']['task_worker_num']) || $this->conf['swoole']['task_worker_num'] < 0) {
+                throw new \Exception('Swoole Task need to set task_worker_num > 0');
+            }
+
             $this->swoole->on('Task', [$this, 'onTask']);
+            $this->swoole->on('Finish', [$this, 'onFinish']);
         }
     }
 
@@ -115,7 +120,7 @@ class Server
 
     }
 
-    public function onTask(\swoole_http_request $server, $taskId, $srcWorkerId, $data)
+    public function onTask(\swoole_http_server $server, $taskId, $srcWorkerId, $data)
     {
         /**
          * @var Event
@@ -129,6 +134,11 @@ class Server
         $listenerCls = $this->conf['tasks'][$eventCls];
         $listener = new $listenerCls();
         $listener->handle($event);
+    }
+
+    public function onFinish(\swoole_http_request $server, $taskId, $data)
+    {
+
     }
 
     public function run()
