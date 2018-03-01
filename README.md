@@ -132,6 +132,13 @@ server {
 ## Cooperate with Apache
 
 ```Apache
+LoadModule proxy_module /yyypath/modules/mod_deflate.so
+<IfModule deflate_module>
+    SetOutputFilter DEFLATE
+    DeflateCompressionLevel 2
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/json application/javascript application/x-javascript application/xml application/x-httpd-php image/jpeg image/gif image/png font/ttf font/otf image/svg+xml
+</IfModule>
+
 <VirtualHost *:80>
     ServerName www.laravels.com
     ServerAdmin hhxsv5@sina.com
