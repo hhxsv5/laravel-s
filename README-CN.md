@@ -90,7 +90,6 @@ $app->configure('laravels');
 ## 与Nginx配合使用（推荐）
 
 ```Nginx
-
 gzip on;
 gzip_min_length 1024;
 gzip_comp_level 2;
