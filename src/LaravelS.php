@@ -7,6 +7,7 @@ use Hhxsv5\LaravelS\Swoole\DynamicResponse;
 use Hhxsv5\LaravelS\Swoole\Request;
 use Hhxsv5\LaravelS\Swoole\Server;
 use Hhxsv5\LaravelS\Swoole\StaticResponse;
+use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Illuminate\Http\Request as IlluminateRequest;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -100,6 +101,28 @@ class LaravelS extends Server
             } catch (\Exception $e) {
                 // Catch: zm_deactivate_swoole: Fatal error: Uncaught exception 'ErrorException' with message 'swoole_http_response::status(): http client#2 is not exist.
             }
+        }
+    }
+
+    public function onTask(\swoole_http_server $server, $taskId, $srcWorkerId, $data)
+    {
+        parent::onTask($server, $taskId, $srcWorkerId, $data);
+
+        /**
+         * @var Event
+         */
+        $event = $data;
+        $eventCls = get_class($event);
+        if (!isset($this->conf['tasks'][$eventCls])) {
+            return;
+        }
+
+        $listenerCls = $this->conf['tasks'][$eventCls];
+        try {
+            $listener = new $listenerCls();
+            $listener->handle($event);
+        } catch (\Exception $e) {
+            // Do nothing to avoid 'zend_mm_heap corrupted'
         }
     }
 
