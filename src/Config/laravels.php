@@ -10,7 +10,7 @@ return [
     'server'         => env('LARAVELS_SERVER', 'LaravelS'),
     'handle_static'  => env('LARAVELS_HANDLE_STATIC', false),
     'inotify_reload' => [
-        'enable'     => false,
+        'enable'     => env('LARAVELS_INOTIFY_RELOAD', false),
         'file_types' => ['.php'],
         'log'        => true,
     ],
