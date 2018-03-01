@@ -249,10 +249,6 @@ public function test(Request $req)
 
 2. 包装MySQL/Redis/Http的协程客户端。
 
-3. 针对Swoole `2.1+` 自动的协程支持。
-
-4. 支持`inotify`，实现修改代码后自动重启或重新加载。
-
 ## License
 
 [MIT](https://github.com/hhxsv5/laravel-s/blob/master/LICENSE)
