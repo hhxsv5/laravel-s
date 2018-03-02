@@ -241,7 +241,7 @@ class TestListener1 extends Listener
 // 在"config/laravels.php"中绑定事件与监听器，一个事件可以有多个监听器，多个监听器按顺序执行
 [
     // ...
-    'tasks' => [
+    'events' => [
         \App\Tasks\TestEvent::class => [
             \App\Tasks\TestListener1::class,
             //\App\Tasks\TestListener2::class,

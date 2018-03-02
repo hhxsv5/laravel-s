@@ -241,7 +241,7 @@ class TestListener1 extends Listener
 // Bind event & listeners in file "config/laravels.php", one event => many listeners
 [
     // ...
-    'tasks' => [
+    'events' => [
         \App\Tasks\TestEvent::class => [
             \App\Tasks\TestListener1::class,
             //\App\Tasks\TestListener2::class,
