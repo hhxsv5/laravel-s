@@ -219,6 +219,11 @@ class TestEvent extends Event
     {
         $this->data = $data;
     }
+    
+    public function getData()
+    {
+        return $this->data;
+    }
 }
 ```
 
@@ -231,6 +236,7 @@ class TestListener1 extends Listener
 {
     public function handle(Event $event)
     {
+        // $data = $event->getData();
         sleep(2);// Simulate the slow codes
         // throw new \Exception('an exception'); // all exceptions will be ignored
     }
