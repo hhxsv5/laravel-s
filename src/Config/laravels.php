@@ -22,7 +22,7 @@ return [
         'max_request'   => 3000,
         'daemonize'     => 1,
         'pid_file'      => storage_path('laravels.pid'),
-        'log_file'      => storage_path('logs/swoole-' . date('Y-m-d') . '.log'),
+        'log_file'      => storage_path(sprintf('logs/swoole-%s.log' . date('Y-m'))),
         'log_level'     => 4,
         'document_root' => base_path('public'),
 
