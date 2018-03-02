@@ -20,7 +20,7 @@
 
 - Memory resident
 
-- Asynchronous event listening
+- Asynchronous event listening base on Task
 
 - Gracefully reload
 
