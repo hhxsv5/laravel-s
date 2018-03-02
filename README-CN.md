@@ -209,7 +209,7 @@ $events->listen('laravels.generated_response', function (\Illuminate\Http\Reques
 ```
 
 ### 自定义的异步事件
-> 事件监听的处理能力受task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
+> 事件监听的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
 
 1.创建事件类
 ```PHP
@@ -270,6 +270,7 @@ var_dump($success);//判断是否触发成功
 ```
 
 ## 优雅的投递异步任务
+> 异步任务的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
 
 1.创建任务类
 ```PHP

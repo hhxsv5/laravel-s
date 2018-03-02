@@ -270,6 +270,7 @@ var_dump($success);// Return true if sucess, otherwise false
 ```
 
 ## Elegant delivery for asynchronous task
+> The performance of task processing is influenced by number of Swoole task process, you need to set [task_worker_num](https://www.swoole.co.uk/docs/modules/swoole-server/configuration) appropriately.
 
 1.Create task class
 ```PHP
