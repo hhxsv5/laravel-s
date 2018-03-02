@@ -10,7 +10,11 @@ abstract class Event
 
     public static function fire(self $event)
     {
-        $taskId = app('swoole')->task($event);
-        return $taskId !== false;
+        try {
+            $taskId = app('swoole')->task($event);
+            return $taskId !== false;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }
