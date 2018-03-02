@@ -46,7 +46,7 @@ class Server
         $this->swoole->on('WorkerError', [$this, 'onWorkerError']);
         $this->swoole->on('Request', [$this, 'onRequest']);
 
-        if (!empty($this->conf['events'])) {
+        if (!empty($this->conf['swoole']['task_worker_num'])) {
             $this->swoole->on('Task', [$this, 'onTask']);
             $this->swoole->on('Finish', [$this, 'onFinish']);
         }
