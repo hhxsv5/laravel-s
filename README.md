@@ -208,7 +208,7 @@ $events->listen('laravels.generated_response', function (\Illuminate\Http\Reques
 > The performance of listener processing is influenced by number of Swoole task process, you need to set [task_worker_num](https://www.swoole.co.uk/docs/modules/swoole-server/configuration) appropriately.
 
 ```PHP
-// 创建事件
+// Create event class
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 
 class TestEvent extends Event
@@ -223,7 +223,7 @@ class TestEvent extends Event
 ```
 
 ```PHP
-// 创建监听器
+// Create listener class
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 
@@ -231,14 +231,14 @@ class TestListener1 extends Listener
 {
     public function handle(Event $event)
     {
-        sleep(2);// 模拟一些慢速的事件处理
-        // throw new \Exception('an exception'); //上层会自动忽略handle时抛出的异常
+        sleep(2);// Simulate the slow codes
+        // throw new \Exception('an exception'); // all exceptions will be ignored
     }
 }
 ```
 
 ```PHP
-// 在config/laravels.php中绑定事件与监听器，一个事件可以有多个监听器，多个监听器按顺序执行
+// Bind event & listeners in file config/laravels.php, one event => many listeners
 [
     // ...
     'tasks' => [
@@ -252,9 +252,9 @@ class TestListener1 extends Listener
 ```
 
 ```PHP
-// 实例化事件并通过fire触发，此操作是异步的，触发后立即返回，由task进程继续处理监听器中的handle逻辑
+// Create instance of event and fire it, `fire` is asynchronous.
 $success = Event::fire(new TestEvent('event data'));
-var_dump($success);//判断是否触发成功
+var_dump($success);// Return true if sucess, otherwise false
 ```
 
 ## Get the instance of swoole_http_server in your project

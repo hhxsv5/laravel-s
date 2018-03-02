@@ -208,7 +208,7 @@ $events->listen('laravels.generated_response', function (\Illuminate\Http\Reques
 > 事件监听的处理能力受task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
 
 ```PHP
-// 创建事件
+// 创建事件类
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 
 class TestEvent extends Event
@@ -223,7 +223,7 @@ class TestEvent extends Event
 ```
 
 ```PHP
-// 创建监听器
+// 创建监听器类
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 
