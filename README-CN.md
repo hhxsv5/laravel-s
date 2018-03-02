@@ -238,7 +238,7 @@ class TestListener1 extends Listener
 ```
 
 ```PHP
-// 在config/laravels.php中绑定事件与监听器，一个事件可以有多个监听器，多个监听器按顺序执行
+// 在"config/laravels.php"中绑定事件与监听器，一个事件可以有多个监听器，多个监听器按顺序执行
 [
     // ...
     'tasks' => [

@@ -238,7 +238,7 @@ class TestListener1 extends Listener
 ```
 
 ```PHP
-// Bind event & listeners in file config/laravels.php, one event => many listeners
+// Bind event & listeners in file "config/laravels.php", one event => many listeners
 [
     // ...
     'tasks' => [
@@ -252,7 +252,7 @@ class TestListener1 extends Listener
 ```
 
 ```PHP
-// Create instance of event and fire it, `fire` is asynchronous.
+// Create instance of event and fire it, "fire" is asynchronous.
 $success = Event::fire(new TestEvent('event data'));
 var_dump($success);// Return true if sucess, otherwise false
 ```
