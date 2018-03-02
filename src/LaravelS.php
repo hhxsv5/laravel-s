@@ -113,11 +113,11 @@ class LaravelS extends Server
          */
         $event = $data;
         $eventClass = get_class($event);
-        if (!isset($this->conf['tasks'][$eventClass])) {
+        if (!isset($this->conf['events'][$eventClass])) {
             return;
         }
 
-        $listenerClasses = $this->conf['tasks'][$eventClass];
+        $listenerClasses = $this->conf['events'][$eventClass];
         try {
             if (!is_array($listenerClasses)) {
                 $listenerClasses = (array)$listenerClasses;

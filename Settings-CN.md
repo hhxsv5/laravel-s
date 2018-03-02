@@ -17,3 +17,5 @@
 - `inotify_reload.log`: `bool` 是否输出Reload的日志，默认`true`。
 
 - `swoole`：`array` 请参考[Swoole配置项](https://wiki.swoole.com/wiki/page/274.html)
+
+- `events`：`array` 自定义的异步事件和监听的绑定列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#自定义的异步事件)

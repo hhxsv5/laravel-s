@@ -30,6 +30,6 @@ return [
          * @see https://www.swoole.co.uk/docs/modules/swoole-server/configuration  English
          */
     ],
-    'tasks'          => [
+    'events'         => [
     ],
 ];

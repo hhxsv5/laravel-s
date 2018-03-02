@@ -17,3 +17,5 @@
 - `inotify_reload.log`: `bool` Whether output the reload log, default `true`.
 
 - `swoole`: `array` refer [Swoole Configuration](https://www.swoole.co.uk/docs/modules/swoole-server/configuration)
+
+- `events`：`array` The customized asynchronous event list of listener binding, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#customized-asynchronous-events)
