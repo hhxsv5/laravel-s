@@ -20,6 +20,8 @@
 
 - Memory resident
 
+- Asynchronous event listening
+
 - Gracefully reload
 
 - Automatically reload when code is modified
@@ -179,6 +181,8 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 ```
 
 ## Listen Events
+
+### System Events
 > Usually, you can reset/destroy some `global/static` variables, or change the current `Request/Response` object.
 
 - `laravels.received_request` After LaravelS parsed `swoole_http_request` to `Illuminate\Http\Request`, before Laravel's Kernel handles this request.
@@ -198,6 +202,59 @@ $events->listen('laravels.received_request', function (\Illuminate\Http\Request 
 $events->listen('laravels.generated_response', function (\Illuminate\Http\Request $req, \Symfony\Component\HttpFoundation\Response $rsp) {
     $rsp->headers->set('header-key', 'hhxsv5');// Change header of response
 });
+```
+
+### Customized Asynchronous Events
+> The performance of listener processing is influenced by number of Swoole task process, you need to set [task_worker_num]((https://wiki.swoole.com/wiki/page/276.html)) appropriately.
+
+```PHP
+// 创建事件
+use Hhxsv5\LaravelS\Swoole\Task\Event;
+
+class TestEvent extends Event
+{
+    private $data;
+
+    public function __construct($data)
+    {
+        $this->data = $data;
+    }
+}
+```
+
+```PHP
+// 创建监听器
+use Hhxsv5\LaravelS\Swoole\Task\Event;
+use Hhxsv5\LaravelS\Swoole\Task\Listener;
+
+class TestListener1 extends Listener
+{
+    public function handle(Event $event)
+    {
+        sleep(2);// 模拟一些慢速的事件处理
+        // throw new \Exception('an exception'); //上层会自动忽略handle时抛出的异常
+    }
+}
+```
+
+```PHP
+// 在config/laravels.php中绑定事件与监听器，一个事件可以有多个监听器，多个监听器按顺序执行
+[
+    // ...
+    'tasks' => [
+        \App\Tasks\TestEvent::class => [
+            \App\Tasks\TestListener1::class,
+            //\App\Tasks\TestListener2::class,
+        ],
+    ],
+    // ...
+];
+```
+
+```PHP
+// 实例化事件并通过fire触发，此操作是异步的，触发后立即返回，由task进程继续处理监听器中的handle逻辑
+$success = Event::fire(new TestEvent('event data'));
+var_dump($success);//判断是否触发成功
 ```
 
 ## Get the instance of swoole_http_server in your project

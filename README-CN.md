@@ -20,6 +20,8 @@
 
 - 常驻内存
 
+- 异步的事件监听
+
 - 平滑Reload
 
 - 代码修改后自动Reload
@@ -179,6 +181,8 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 ```
 
 ## 监听事件
+
+### 系统事件
 > 通常，你可以在这些事件中重置或销毁一些全局或静态的变量，也可以修改当前的请求和响应。
 
 - `laravels.received_request` 将`swoole_http_request`转成`Illuminate\Http\Request`后，在Laravel内核处理请求前。
@@ -200,6 +204,58 @@ $events->listen('laravels.generated_response', function (\Illuminate\Http\Reques
 });
 ```
 
+### 自定义的异步事件
+> 事件监听的处理能力受task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
+
+```PHP
+// 创建事件
+use Hhxsv5\LaravelS\Swoole\Task\Event;
+
+class TestEvent extends Event
+{
+    private $data;
+
+    public function __construct($data)
+    {
+        $this->data = $data;
+    }
+}
+```
+
+```PHP
+// 创建监听器
+use Hhxsv5\LaravelS\Swoole\Task\Event;
+use Hhxsv5\LaravelS\Swoole\Task\Listener;
+
+class TestListener1 extends Listener
+{
+    public function handle(Event $event)
+    {
+        sleep(2);// 模拟一些慢速的事件处理
+        // throw new \Exception('an exception'); //上层会自动忽略handle时抛出的异常
+    }
+}
+```
+
+```PHP
+// 在config/laravels.php中绑定事件与监听器，一个事件可以有多个监听器，多个监听器按顺序执行
+[
+    // ...
+    'tasks' => [
+        \App\Tasks\TestEvent::class => [
+            \App\Tasks\TestListener1::class,
+            //\App\Tasks\TestListener2::class,
+        ],
+    ],
+    // ...
+];
+```
+
+```PHP
+// 实例化事件并通过fire触发，此操作是异步的，触发后立即返回，由task进程继续处理监听器中的handle逻辑
+$success = Event::fire(new TestEvent('event data'));
+var_dump($success);//判断是否触发成功
+```
 
 ## 在你的项目中使用`swoole_http_server`实例
 
