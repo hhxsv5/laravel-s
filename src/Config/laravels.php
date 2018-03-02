@@ -19,7 +19,7 @@ return [
         'reactor_num'   => \swoole_cpu_num() * 2,
         'worker_num'    => \swoole_cpu_num() * 2,
         //'task_worker_num' => \swoole_cpu_num() * 2,
-        'max_request'   => 3000,
+        'max_request'   => 5000,
         'daemonize'     => 1,
         'pid_file'      => storage_path('laravels.pid'),
         'log_file'      => storage_path(sprintf('logs/swoole-%s.log', date('Y-m'))),
