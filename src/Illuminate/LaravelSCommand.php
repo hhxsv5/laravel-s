@@ -84,7 +84,8 @@ EOS;
         }
         if (!empty($svrConf['events'])) {
             if (empty($svrConf['swoole']['task_worker_num']) || $svrConf['swoole']['task_worker_num'] <= 0) {
-                throw new \Exception('Swoole Task need to set task_worker_num > 0');
+                $this->error('LaravelS: Asynchronous event listening needs to set task_worker_num > 0');
+                return;
             }
         }
 
