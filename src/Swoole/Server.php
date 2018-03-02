@@ -47,10 +47,9 @@ class Server
         $this->swoole->on('Request', [$this, 'onRequest']);
 
         if (!empty($this->conf['tasks'])) {
-            if (empty($this->conf['swoole']['task_worker_num']) || $this->conf['swoole']['task_worker_num'] < 0) {
+            if (empty($this->conf['swoole']['task_worker_num']) || $this->conf['swoole']['task_worker_num'] <= 0) {
                 throw new \Exception('Swoole Task need to set task_worker_num > 0');
             }
-
             $this->swoole->on('Task', [$this, 'onTask']);
             $this->swoole->on('Finish', [$this, 'onFinish']);
         }
