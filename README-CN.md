@@ -22,6 +22,8 @@
 
 - 基于Task的异步事件监听
 
+- 优雅的投递异步任务
+
 - 平滑Reload
 
 - 代码修改后自动Reload
@@ -209,8 +211,8 @@ $events->listen('laravels.generated_response', function (\Illuminate\Http\Reques
 ### 自定义的异步事件
 > 事件监听的处理能力受task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
 
+1.创建事件类
 ```PHP
-// 创建事件类
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 
 class TestEvent extends Event
@@ -229,8 +231,8 @@ class TestEvent extends Event
 }
 ```
 
+2.创建监听器类
 ```PHP
-// 创建监听器类
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 
@@ -245,6 +247,7 @@ class TestListener1 extends Listener
 }
 ```
 
+3.绑定事件与监听器
 ```PHP
 // 在"config/laravels.php"中绑定事件与监听器，一个事件可以有多个监听器，多个监听器按顺序执行
 [
@@ -259,10 +262,41 @@ class TestListener1 extends Listener
 ];
 ```
 
+4.触发事件
 ```PHP
-// 实例化事件并通过fire触发，此操作是异步的，触发后立即返回，由task进程继续处理监听器中的handle逻辑
+// 实例化TestEvent并通过fire触发，此操作是异步的，触发后立即返回，由Task进程继续处理监听器中的handle逻辑
 $success = Event::fire(new TestEvent('event data'));
 var_dump($success);//判断是否触发成功
+```
+
+## 优雅的投递异步任务
+
+1.创建任务类
+```PHP
+use Hhxsv5\LaravelS\Swoole\Task\Task;
+
+class TestTask extends Task
+{
+    private $data;
+
+    public function __construct($data)
+    {
+        $this->data = $data;
+    }
+
+    public function handle()
+    {
+        sleep(2);// 模拟一些慢速的事件处理
+        // throw new \Exception('an exception'); //上层会自动忽略handle时抛出的异常
+    }
+}
+```
+
+2.投递
+```PHP
+// 实例化TestTask并通过deliver投递，此操作是异步的，投递后立即返回，由Task进程继续处理TestTask中的handle逻辑
+$ret = Task::deliver(new TestTask('task data'));
+var_dump($ret);//判断是否投递成功
 ```
 
 ## 在你的项目中使用`swoole_http_server`实例

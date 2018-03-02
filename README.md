@@ -22,6 +22,8 @@
 
 - Asynchronous event listening base on Task
 
+- Elegant delivery for asynchronous task
+
 - Gracefully reload
 
 - Automatically reload when code is modified
@@ -209,8 +211,8 @@ $events->listen('laravels.generated_response', function (\Illuminate\Http\Reques
 ### Customized Asynchronous Events
 > The performance of listener processing is influenced by number of Swoole task process, you need to set [task_worker_num](https://www.swoole.co.uk/docs/modules/swoole-server/configuration) appropriately.
 
+1.Create event class
 ```PHP
-// Create event class
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 
 class TestEvent extends Event
@@ -229,8 +231,8 @@ class TestEvent extends Event
 }
 ```
 
+2.Create listener class
 ```PHP
-// Create listener class
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 
@@ -245,6 +247,7 @@ class TestListener1 extends Listener
 }
 ```
 
+3.Bind event & listeners
 ```PHP
 // Bind event & listeners in file "config/laravels.php", one event => many listeners
 [
@@ -259,10 +262,41 @@ class TestListener1 extends Listener
 ];
 ```
 
+4.Fire event
 ```PHP
 // Create instance of event and fire it, "fire" is asynchronous.
 $success = Event::fire(new TestEvent('event data'));
 var_dump($success);// Return true if sucess, otherwise false
+```
+
+## Elegant delivery for asynchronous task
+
+1.Create task class
+```PHP
+use Hhxsv5\LaravelS\Swoole\Task\Task;
+
+class TestTask extends Task
+{
+    private $data;
+
+    public function __construct($data)
+    {
+        $this->data = $data;
+    }
+
+    public function handle()
+    {
+        sleep(2);// Simulate the slow codes
+        // throw new \Exception('an exception'); // all exceptions will be ignored
+    }
+}
+```
+
+2.Deliver task
+```PHP
+// Create instance of TestTask and deliver it, "deliver" is asynchronous.
+$ret = Task::deliver(new TestTask('task data'));
+var_dump($ret);// Return true if sucess, otherwise false
 ```
 
 ## Get the instance of swoole_http_server in your project
