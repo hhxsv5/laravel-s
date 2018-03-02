@@ -31,9 +31,13 @@ class Request
             $key = str_replace('-', '_', $key);
             $_SERVER['http_' . $key] = $value;
         }
-        // Fix client ip
+        // Fix client real-ip
         if (isset($this->swooleRequest->header['x-real-ip'])) {
-            $_SERVER['REMOTE_ADDR'] = $this->swooleRequest->header['x-real-ip'];
+            $_SERVER['REMOTE_ADDR'] = (string)$this->swooleRequest->header['x-real-ip'];
+        }
+        // Fix client real-port
+        if (isset($this->swooleRequest->header['x-real-port'])) {
+            $_SERVER['REMOTE_PORT'] = (int)$this->swooleRequest->header['x-real-port'];
         }
         $_SERVER = array_change_key_case($_SERVER, CASE_UPPER);
 
