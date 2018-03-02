@@ -205,7 +205,7 @@ $events->listen('laravels.generated_response', function (\Illuminate\Http\Reques
 ```
 
 ### Customized Asynchronous Events
-> The performance of listener processing is influenced by number of Swoole task process, you need to set [task_worker_num]((https://wiki.swoole.com/wiki/page/276.html)) appropriately.
+> The performance of listener processing is influenced by number of Swoole task process, you need to set [task_worker_num](https://www.swoole.co.uk/docs/modules/swoole-server/configuration) appropriately.
 
 ```PHP
 // 创建事件
