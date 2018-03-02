@@ -15,16 +15,16 @@ return [
         'log'        => true,
     ],
     'swoole'         => [
-        'dispatch_mode'   => 2,
-        'reactor_num'     => \swoole_cpu_num() * 2,
-        'worker_num'      => \swoole_cpu_num() * 2,
-        'task_worker_num' => \swoole_cpu_num() * 2,
-        'max_request'     => 3000,
-        'daemonize'       => 1,
-        'pid_file'        => storage_path('laravels.pid'),
-        'log_file'        => storage_path('logs/swoole-' . date('Y-m-d') . '.log'),
-        'log_level'       => 4,
-        'document_root'   => base_path('public'),
+        'dispatch_mode' => 2,
+        'reactor_num'   => \swoole_cpu_num() * 2,
+        'worker_num'    => \swoole_cpu_num() * 2,
+        //'task_worker_num' => \swoole_cpu_num() * 2,
+        'max_request'   => 3000,
+        'daemonize'     => 1,
+        'pid_file'      => storage_path('laravels.pid'),
+        'log_file'      => storage_path('logs/swoole-' . date('Y-m-d') . '.log'),
+        'log_level'     => 4,
+        'document_root' => base_path('public'),
 
         /**
          * The other settings of Swoole like worker_num, backlog ...
