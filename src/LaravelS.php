@@ -8,6 +8,8 @@ use Hhxsv5\LaravelS\Swoole\Request;
 use Hhxsv5\LaravelS\Swoole\Server;
 use Hhxsv5\LaravelS\Swoole\StaticResponse;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
+use Hhxsv5\LaravelS\Swoole\Task\Listener;
+use Hhxsv5\LaravelS\Swoole\Task\Task;
 use Illuminate\Http\Request as IlluminateRequest;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -108,10 +110,15 @@ class LaravelS extends Server
     {
         parent::onTask($server, $taskId, $srcWorkerId, $data);
 
-        /**
-         * @var Event
-         */
-        $event = $data;
+        if ($data instanceof Event) {
+            $this->handleEvent($data);
+        } elseif ($data instanceof Task) {
+            $this->handleTask($data);
+        }
+    }
+
+    protected function handleEvent(Event $event)
+    {
         $eventClass = get_class($event);
         if (!isset($this->conf['events'][$eventClass])) {
             return;
@@ -123,9 +130,21 @@ class LaravelS extends Server
                 $listenerClasses = (array)$listenerClasses;
             }
             foreach ($listenerClasses as $listenerClass) {
+                /**
+                 * @var Listener $listener
+                 */
                 $listener = new $listenerClass();
                 $listener->handle($event);
             }
+        } catch (\Exception $e) {
+            // Do nothing to avoid 'zend_mm_heap corrupted'
+        }
+    }
+
+    protected function handleTask(Task $task)
+    {
+        try {
+            $task->handle();
         } catch (\Exception $e) {
             // Do nothing to avoid 'zend_mm_heap corrupted'
         }
