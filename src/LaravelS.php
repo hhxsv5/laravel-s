@@ -112,15 +112,20 @@ class LaravelS extends Server
          * @var Event
          */
         $event = $data;
-        $eventCls = get_class($event);
-        if (!isset($this->conf['tasks'][$eventCls])) {
+        $eventClass = get_class($event);
+        if (!isset($this->conf['tasks'][$eventClass])) {
             return;
         }
 
-        $listenerCls = $this->conf['tasks'][$eventCls];
+        $listenerClasses = $this->conf['tasks'][$eventClass];
         try {
-            $listener = new $listenerCls();
-            $listener->handle($event);
+            if (!is_array($listenerClasses)) {
+                $listenerClasses = (array)$listenerClasses;
+            }
+            foreach ($listenerClasses as $listenerClass) {
+                $listener = new $listenerClass();
+                $listener->handle($event);
+            }
         } catch (\Exception $e) {
             // Do nothing to avoid 'zend_mm_heap corrupted'
         }
