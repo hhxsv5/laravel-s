@@ -27,7 +27,7 @@ return [
         'document_root' => base_path('public'),
 
         /**
-         * The other settings of Swoole like worker_num, backlog ...
+         * More settings of Swoole
          * @see https://wiki.swoole.com/wiki/page/274.html  Chinese
          * @see https://www.swoole.co.uk/docs/modules/swoole-server/configuration  English
          */
