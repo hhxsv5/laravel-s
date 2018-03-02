@@ -82,6 +82,12 @@ EOS;
         if (empty($svrConf['process_prefix'])) {
             $svrConf['process_prefix'] = base_path();
         }
+        if (!empty($svrConf['events'])) {
+            if (empty($svrConf['swoole']['task_worker_num']) || $svrConf['swoole']['task_worker_num'] <= 0) {
+                throw new \Exception('Swoole Task need to set task_worker_num > 0');
+            }
+        }
+
         $laravelConf = [
             'rootPath'   => base_path(),
             'staticPath' => $svrConf['swoole']['document_root'],
