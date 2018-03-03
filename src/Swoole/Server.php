@@ -19,6 +19,11 @@ class Server
 
     protected $enableWebsocket = false;
 
+    /**
+     * @var WebsocketHandlerInterface
+     */
+    protected static $websocketHandler;
+
     protected function __construct(array $conf)
     {
         $this->conf = $conf;
@@ -65,15 +70,49 @@ class Server
     protected function bindWebsocketEvent()
     {
         if ($this->enableWebsocket) {
-            $handlerClass = $this->conf['websocket']['handler'];
-            $handler = new $handlerClass();
-            if (!($handler instanceof WebsocketHandlerInterface)) {
-                throw new \Exception(sprintf('%s must implement the interface %s', get_class($handler), WebsocketHandlerInterface::class));
-            }
-            $this->swoole->on('Open', [$handler, 'onOpen']);
-            $this->swoole->on('Message', [$handler, 'onMessage']);
-            $this->swoole->on('Close', [$handler, 'onClose']);
+            $this->swoole->on('Open', function () {
+                $handler = $this->getWebsocketHandler();
+                try {
+                    call_user_func_array([$handler, 'onOpen'], func_get_args());
+                } catch (\Exception $e) {
+                    // Do nothing to avoid 'zend_mm_heap corrupted'
+                }
+            });
+
+            $this->swoole->on('Message', function () {
+                $handler = $this->getWebsocketHandler();
+                try {
+                    call_user_func_array([$handler, 'onMessage'], func_get_args());
+                } catch (\Exception $e) {
+                    // Do nothing to avoid 'zend_mm_heap corrupted'
+                }
+            });
+
+            $this->swoole->on('Close', function () {
+                $handler = $this->getWebsocketHandler();
+                try {
+                    call_user_func_array([$handler, 'onClose'], func_get_args());
+                } catch (\Exception $e) {
+                    // Do nothing to avoid 'zend_mm_heap corrupted'
+                }
+            });
         }
+    }
+
+    protected function getWebsocketHandler()
+    {
+        static $handler;
+        if ($handler) {
+            return $handler;
+        }
+
+        $handlerClass = $this->conf['websocket']['handler'];
+        $t = new $handlerClass();
+        if (!($t instanceof WebsocketHandlerInterface)) {
+            throw new \Exception(sprintf('%s must implement the interface %s', get_class($handler), WebsocketHandlerInterface::class));
+        }
+        $handler = $t;
+        return $handler;
     }
 
     public function onStart(\swoole_http_server $server)
