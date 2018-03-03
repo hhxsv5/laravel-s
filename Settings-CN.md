@@ -10,11 +10,15 @@
 
 - `handle_static`：`bool` 是否开启LaravelS处理静态资源(要求 `Swoole >= 1.7.21`，若`Swoole >= 1.9.17`则由Swoole自己处理)，默认`false`，建议Nginx处理静态资源，LaravelS仅处理动态资源。静态资源的默认路径为`base_path('public')`，可通过修改`swoole.document_root`变更。
 
-- `inotify_reload.enable`: `bool` 是否开启`Inotify Reload`，用于当修改代码后实时Reload所有worker进程，依赖库[inotify](http://pecl.php.net/package/inotify)，通过命令`php --ri inotify`检查是否可用，默认`false`，`建议仅开发环境开启`。
+- `inotify_reload.enable`：`bool` 是否开启`Inotify Reload`，用于当修改代码后实时Reload所有worker进程，依赖库[inotify](http://pecl.php.net/package/inotify)，通过命令`php --ri inotify`检查是否可用，默认`false`，`建议仅开发环境开启`。
  
-- `inotify_reload.file_types`: `array` `Inotify` 监控的文件类型，默认有`.php`。 
+- `inotify_reload.file_types`：`array` `Inotify` 监控的文件类型，默认有`.php`。 
 
-- `inotify_reload.log`: `bool` 是否输出Reload的日志，默认`true`。
+- `inotify_reload.log`：`bool` 是否输出Reload的日志，默认`true`。
+
+- `websocket.enable`：`bool` 是否启用Websocket服务器。启用后监听的IP和端口与Http服务器相同，默认`false`。
+
+- `websocket.handler`：`string` Websocket逻辑处理的类名，需实现接口`WebsocketHandlerInterface`，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#启用Websocket服务器)
 
 - `swoole`：`array` 请参考[Swoole配置项](https://wiki.swoole.com/wiki/page/274.html)
 

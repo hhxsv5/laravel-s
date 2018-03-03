@@ -16,7 +16,7 @@
 
 - 高性能的Swoole
 
-- 内置Http服务器
+- 内置Http/Websocket服务器
 
 - 常驻内存
 
@@ -44,7 +44,7 @@
 
 ## 安装
 
-1.通过[Composer](https://getcomposer.org/)安装([packagist](https://packagist.org/packages/hhxsv5/laravel-s))
+1.通过[Composer](https://getcomposer.org/)安装([packagist](https://packagist.org/packages/hhxsv5/laravel-s))。
 
 ```Bash
 # 在你的Laravel/Lumen项目的根目录下执行
@@ -52,7 +52,7 @@ composer require "hhxsv5/laravel-s:~1.0" -vvv
 # 确保你的composer.lock文件是在版本控制中
 ```
 
-2.添加service provider
+2.添加Service Provider。
 
 - `Laravel`: 修改文件`config/app.php`
 ```PHP
@@ -67,12 +67,12 @@ composer require "hhxsv5/laravel-s:~1.0" -vvv
 $app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
 ```
 
-3.发布配置文件
+3.发布配置文件。
 ```Bash
 php artisan laravels publish
 ```
 
-`特别情况`: 你不需要手动加载配置`laravels.php`，LaravelS底层已自动加载。
+`使用Lumen时的特别说明`: 你不需要手动加载配置`laravels.php`，LaravelS底层已自动加载。
 ```PHP
 // 不必手动加载，但加载了也不会有问题
 $app->configure('laravels');
@@ -183,6 +183,39 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
     CustomLog ${APACHE_LOG_DIR}/www.laravels.com.access.log combined
 </VirtualHost>
 ```
+## 启用Websocket服务器
+> Websocket服务器监听的IP和端口与Http服务器相同。
+
+1.创建Websocket Handler类，并实现接口`WebsocketHandlerInterface`。
+```PHP
+namespace App\Services;
+use Hhxsv5\LaravelS\Swoole\WebsocketHandlerInterface;
+class WebsocketService implements WebsocketHandlerInterface
+{
+    public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
+    {
+        $server->push($request->fd, 'Welcome to LaravelS');
+        // throw new \Exception('an exception'); //上层会自动忽略handle时抛出的异常
+    }
+    public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame)
+    {
+        $server->push($frame->fd, date('Y-m-d H:i:s'));
+    }
+    public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
+    {
+    }
+}
+```
+
+2.更改配置`config/laravels.php`。
+```PHP
+// ...
+'websocket'      => [
+    'enable'  => true,
+    'handler' => \App\Services\WebsocketService::class,
+],
+// ...
+```
 
 ## 监听事件
 
@@ -211,19 +244,16 @@ $events->listen('laravels.generated_response', function (\Illuminate\Http\Reques
 ### 自定义的异步事件
 > 事件监听的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
 
-1.创建事件类
+1.创建事件类。
 ```PHP
 use Hhxsv5\LaravelS\Swoole\Task\Event;
-
 class TestEvent extends Event
 {
     private $data;
-
     public function __construct($data)
     {
         $this->data = $data;
     }
-    
     public function getData()
     {
         return $this->data;
@@ -231,11 +261,10 @@ class TestEvent extends Event
 }
 ```
 
-2.创建监听器类
+2.创建监听器类。
 ```PHP
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
-
 class TestListener1 extends Listener
 {
     public function handle(Event $event)
@@ -247,7 +276,7 @@ class TestListener1 extends Listener
 }
 ```
 
-3.绑定事件与监听器
+3.绑定事件与监听器。
 ```PHP
 // 在"config/laravels.php"中绑定事件与监听器，一个事件可以有多个监听器，多个监听器按顺序执行
 [
@@ -262,7 +291,7 @@ class TestListener1 extends Listener
 ];
 ```
 
-4.触发事件
+4.触发事件。
 ```PHP
 // 实例化TestEvent并通过fire触发，此操作是异步的，触发后立即返回，由Task进程继续处理监听器中的handle逻辑
 $success = Event::fire(new TestEvent('event data'));
@@ -272,19 +301,16 @@ var_dump($success);//判断是否触发成功
 ## 优雅的投递异步任务
 > 异步任务的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
 
-1.创建任务类
+1.创建任务类。
 ```PHP
 use Hhxsv5\LaravelS\Swoole\Task\Task;
-
 class TestTask extends Task
 {
     private $data;
-
     public function __construct($data)
     {
         $this->data = $data;
     }
-
     public function handle()
     {
         sleep(2);// 模拟一些慢速的事件处理
@@ -293,7 +319,7 @@ class TestTask extends Task
 }
 ```
 
-2.投递
+2.投递任务。
 ```PHP
 // 实例化TestTask并通过deliver投递，此操作是异步的，投递后立即返回，由Task进程继续处理TestTask中的handle逻辑
 $ret = Task::deliver(new TestTask('task data'));

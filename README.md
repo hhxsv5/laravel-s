@@ -16,7 +16,7 @@
 
 - High performance Swoole
 
-- Built-in Http Server
+- Built-in Http/Websocket Server
 
 - Memory resident
 
@@ -44,7 +44,7 @@
 
 ## Install
 
-1.Require package via [Composer](https://getcomposer.org/)([packagist](https://packagist.org/packages/hhxsv5/laravel-s))
+1.Require package via [Composer](https://getcomposer.org/)([packagist](https://packagist.org/packages/hhxsv5/laravel-s)).
 
 ```Bash
 # Run in the root path of your Laravel/Lumen project.
@@ -52,7 +52,7 @@ composer require "hhxsv5/laravel-s:~1.0" -vvv
 # Make sure that your composer.lock file is under the VCS
 ```
 
-2.Add service provider
+2.Add Service Provider.
 
 - `Laravel`: in `config/app.php` file
 ```PHP
@@ -67,12 +67,12 @@ composer require "hhxsv5/laravel-s:~1.0" -vvv
 $app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
 ```
 
-3.Publish Configuration
+3.Publish Configuration.
 ```Bash
 php artisan laravels publish
 ```
 
-`Special for Lumen`: you `DO NOT` need to load this configuration manually in `bootstrap/app.php` file. LaravelS will load it automatically.
+`Special for Lumen`: you `DO NOT` need to load this configuration manually in `bootstrap/app.php` file, LaravelS will load it automatically.
 ```PHP
 // Unnecessary to call configure()
 $app->configure('laravels');
@@ -184,6 +184,40 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 </VirtualHost>
 ```
 
+## Enable Websocket Server
+> The Listening address of Websocket Sever is the same as Http Server.
+
+1.Create Websocket Handler class, and implement interface `WebsocketHandlerInterface`.
+```PHP
+namespace App\Services;
+use Hhxsv5\LaravelS\Swoole\WebsocketHandlerInterface;
+class WebsocketService implements WebsocketHandlerInterface
+{
+    public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
+    {
+        $server->push($request->fd, 'Welcome to LaravelS');
+        // throw new \Exception('an exception'); // all exceptions will be ignored
+    }
+    public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame)
+    {
+        $server->push($frame->fd, date('Y-m-d H:i:s'));
+    }
+    public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
+    {
+    }
+}
+```
+
+2.Modify `config/laravels.php`.
+```PHP
+// ...
+'websocket'      => [
+    'enable'  => true,
+    'handler' => \App\Services\WebsocketService::class,
+],
+// ...
+```
+
 ## Listen Events
 
 ### System Events
@@ -211,19 +245,16 @@ $events->listen('laravels.generated_response', function (\Illuminate\Http\Reques
 ### Customized Asynchronous Events
 > The performance of listener processing is influenced by number of Swoole task process, you need to set [task_worker_num](https://www.swoole.co.uk/docs/modules/swoole-server/configuration) appropriately.
 
-1.Create event class
+1.Create event class.
 ```PHP
 use Hhxsv5\LaravelS\Swoole\Task\Event;
-
 class TestEvent extends Event
 {
     private $data;
-
     public function __construct($data)
     {
         $this->data = $data;
     }
-    
     public function getData()
     {
         return $this->data;
@@ -231,11 +262,10 @@ class TestEvent extends Event
 }
 ```
 
-2.Create listener class
+2.Create listener class.
 ```PHP
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
-
 class TestListener1 extends Listener
 {
     public function handle(Event $event)
@@ -247,7 +277,7 @@ class TestListener1 extends Listener
 }
 ```
 
-3.Bind event & listeners
+3.Bind event & listeners.
 ```PHP
 // Bind event & listeners in file "config/laravels.php", one event => many listeners
 [
@@ -262,7 +292,7 @@ class TestListener1 extends Listener
 ];
 ```
 
-4.Fire event
+4.Fire event.
 ```PHP
 // Create instance of event and fire it, "fire" is asynchronous.
 $success = Event::fire(new TestEvent('event data'));
@@ -272,19 +302,16 @@ var_dump($success);// Return true if sucess, otherwise false
 ## Elegant delivery for asynchronous task
 > The performance of task processing is influenced by number of Swoole task process, you need to set [task_worker_num](https://www.swoole.co.uk/docs/modules/swoole-server/configuration) appropriately.
 
-1.Create task class
+1.Create task class.
 ```PHP
 use Hhxsv5\LaravelS\Swoole\Task\Task;
-
 class TestTask extends Task
 {
     private $data;
-
     public function __construct($data)
     {
         $this->data = $data;
     }
-
     public function handle()
     {
         sleep(2);// Simulate the slow codes
@@ -293,7 +320,7 @@ class TestTask extends Task
 }
 ```
 
-2.Deliver task
+2.Deliver task.
 ```PHP
 // Create instance of TestTask and deliver it, "deliver" is asynchronous.
 $ret = Task::deliver(new TestTask('task data'));

@@ -16,6 +16,10 @@
 
 - `inotify_reload.log`: `bool` Whether output the reload log, default `true`.
 
+- `websocket.enable`: `bool` Whether enable Websocket Server. The Listening address of Websocket Sever is the same as Http Server, default `false`.
+
+- `websocket.handler`: `string` The class name for Websocket handler, needs to implement interface `WebsocketHandlerInterface`, refer[Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server)
+
 - `swoole`: `array` refer [Swoole Configuration](https://www.swoole.co.uk/docs/modules/swoole-server/configuration)
 
 - `events`：`array` The customized asynchronous event list of listener binding, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#customized-asynchronous-events)
