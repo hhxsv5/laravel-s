@@ -101,8 +101,8 @@ class Server
 
     protected function getWebsocketHandler()
     {
-        static $handler;
-        if ($handler) {
+        static $handler = null;
+        if ($handler !== null) {
             return $handler;
         }
 
