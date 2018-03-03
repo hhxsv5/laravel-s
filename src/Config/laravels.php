@@ -14,12 +14,16 @@ return [
         'file_types' => ['.php'],
         'log'        => true,
     ],
+    'websocket'      => [
+        'enable' => false,
+        //'handler' => XxxHandler::class,
+    ],
     'swoole'         => [
         'dispatch_mode' => 2,
         'reactor_num'   => \swoole_cpu_num() * 2,
         'worker_num'    => \swoole_cpu_num() * 2,
         //'task_worker_num' => \swoole_cpu_num() * 2,
-        'max_request'   => 5000,
+        'max_request'   => 3000,
         'daemonize'     => 1,
         //'open_tcp_nodelay' => 1,
         'pid_file'      => storage_path('laravels.pid'),

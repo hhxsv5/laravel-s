@@ -2,37 +2,47 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
+use Hhxsv5\LaravelS\Swoole\Websocket\Handler as WebsocketHandler;
+
 class Server
 {
     protected $conf;
+
+    /**
+     * @var \swoole_http_server
+     */
     protected $swoole;
+
+    protected static $swooleDefaultSettings = [
+        'reload_async'      => true,
+        'max_wait_time'     => 60,
+        'enable_reuse_port' => true,
+    ];
+
+    protected $enableWebsocket = false;
 
     protected function __construct(array $conf)
     {
         $this->conf = $conf;
+        $this->enableWebsocket = !empty($this->conf['websocket']['enable']);
 
         $ip = isset($conf['listen_ip']) ? $conf['listen_ip'] : '0.0.0.0';
         $port = isset($conf['listen_port']) ? $conf['listen_port'] : 8841;
         $settings = isset($conf['swoole']) ? $conf['swoole'] : [];
         $settings['enable_static_handler'] = !empty($conf['handle_static']);
 
+        $serverClass = $this->enableWebsocket ? \swoole_websocket_server::class : \swoole_http_server::class;
         if (isset($settings['ssl_cert_file'], $settings['ssl_key_file'])) {
-            $this->swoole = new \swoole_http_server($ip, $port, \SWOOLE_PROCESS, \SWOOLE_SOCK_TCP | \SWOOLE_SSL);
+            $this->swoole = new $serverClass($ip, $port, \SWOOLE_PROCESS, \SWOOLE_SOCK_TCP | \SWOOLE_SSL);
         } else {
-            $this->swoole = new \swoole_http_server($ip, $port, \SWOOLE_PROCESS);
+            $this->swoole = new $serverClass($ip, $port, \SWOOLE_PROCESS);
         }
 
-        $default = [
-            'reload_async'      => true,
-            'max_wait_time'     => 60,
-            'enable_reuse_port' => true,
-        ];
-
-        $this->swoole->set($settings + $default);
-        $this->bind();
+        $this->swoole->set($settings + self::$swooleDefaultSettings);
+        $this->bindEvent();
     }
 
-    protected function bind()
+    protected function bindEvent()
     {
         $this->swoole->on('Start', [$this, 'onStart']);
         $this->swoole->on('Shutdown', [$this, 'onShutdown']);
@@ -49,6 +59,21 @@ class Server
         if (!empty($this->conf['swoole']['task_worker_num'])) {
             $this->swoole->on('Task', [$this, 'onTask']);
             $this->swoole->on('Finish', [$this, 'onFinish']);
+        }
+
+        $this->bindWebsocketEvent();
+    }
+
+    protected function bindWebsocketEvent()
+    {
+        if ($this->enableWebsocket) {
+            $handler = new ($this->conf['websocket']['handler']);
+            if (!($handler instanceof WebsocketHandler)) {
+                throw new \Exception(sprintf('%s must implement the interface %s', get_class($handler), WebsocketHandler::class);
+            }
+            $this->swoole->on('Open', [$handler, 'onOpen']);
+            $this->swoole->on('Message', [$handler, 'onMessage']);
+            $this->swoole->on('Close', [$handler, 'onClose']);
         }
     }
 
