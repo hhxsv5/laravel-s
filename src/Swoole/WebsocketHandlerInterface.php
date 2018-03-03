@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
-interface WebsocketHandler
+interface WebsocketHandlerInterface
 {
     public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request);
 
