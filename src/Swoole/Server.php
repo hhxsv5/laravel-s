@@ -42,10 +42,11 @@ class Server
         }
 
         $this->swoole->set($settings + self::$swooleDefaultSettings);
-        $this->bindEvent();
+        $this->bindHttpEvent();
+        $this->bindWebsocketEvent();
     }
 
-    protected function bindEvent()
+    protected function bindHttpEvent()
     {
         $this->swoole->on('Start', [$this, 'onStart']);
         $this->swoole->on('Shutdown', [$this, 'onShutdown']);
@@ -63,8 +64,6 @@ class Server
             $this->swoole->on('Task', [$this, 'onTask']);
             $this->swoole->on('Finish', [$this, 'onFinish']);
         }
-
-        $this->bindWebsocketEvent();
     }
 
     protected function bindWebsocketEvent()

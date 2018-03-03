@@ -211,4 +211,9 @@ class Laravel
             return $swoole;
         });
     }
+
+    public function make($abstract, array $parameters = [])
+    {
+        return $this->app->make($abstract, $parameters);
+    }
 }
