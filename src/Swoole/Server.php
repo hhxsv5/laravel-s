@@ -65,7 +65,8 @@ class Server
     protected function bindWebsocketEvent()
     {
         if ($this->enableWebsocket) {
-            $handler = new ($this->conf['websocket']['handler']);
+            $handerCls = $this->conf['websocket']['handler'];
+            $handler = new $handerCls;
             if (!($handler instanceof WebsocketHandlerInterface)) {
                 throw new \Exception(sprintf('%s must implement the interface %s', get_class($handler), WebsocketHandlerInterface::class));
             }
