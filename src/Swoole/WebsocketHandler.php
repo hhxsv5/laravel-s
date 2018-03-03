@@ -1,8 +1,8 @@
 <?php
 
-namespace Hhxsv5\LaravelS\Swoole\Websocket;
+namespace Hhxsv5\LaravelS\Swoole;
 
-interface Handler
+interface WebsocketHandler
 {
     public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request);
 

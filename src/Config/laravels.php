@@ -16,7 +16,7 @@ return [
     ],
     'websocket'      => [
         'enable' => false,
-        //'handler' => XxxHandler::class,
+        //'handler' => XxxWebsocketHandler::class,
     ],
     'swoole'         => [
         'dispatch_mode' => 2,

@@ -2,8 +2,6 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
-use Hhxsv5\LaravelS\Swoole\Websocket\Handler as WebsocketHandler;
-
 class Server
 {
     protected $conf;
