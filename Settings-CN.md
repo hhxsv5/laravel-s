@@ -16,9 +16,9 @@
 
 - `inotify_reload.log`：`bool` 是否输出Reload的日志，默认`true`。
 
-- `websocket.enable`：`bool` 是否启用Websocket服务器。启用后监听的IP和端口与Http服务器相同，默认`false`。
+- `websocket.enable`：`bool` 是否启用Websocket服务器。启用后Websocket服务器监听的IP和端口与Http服务器相同，默认`false`。
 
-- `websocket.handler`：`string` Websocket逻辑处理的类名，需实现接口`WebsocketHandlerInterface`，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#启用Websocket服务器)
+- `websocket.handler`：`string` Websocket逻辑处理的类名，需实现接口`WebsocketHandlerInterface`，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#启用websocket服务器)
 
 - `swoole`：`array` 请参考[Swoole配置项](https://wiki.swoole.com/wiki/page/274.html)
 
