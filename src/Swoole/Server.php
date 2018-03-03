@@ -69,7 +69,7 @@ class Server
         if ($this->enableWebsocket) {
             $handler = new ($this->conf['websocket']['handler']);
             if (!($handler instanceof WebsocketHandler)) {
-                throw new \Exception(sprintf('%s must implement the interface %s', get_class($handler), WebsocketHandler::class);
+                throw new \Exception(sprintf('%s must implement the interface %s', get_class($handler), WebsocketHandler::class));
             }
             $this->swoole->on('Open', [$handler, 'onOpen']);
             $this->swoole->on('Message', [$handler, 'onMessage']);
