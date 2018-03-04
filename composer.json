@@ -10,12 +10,14 @@
   "keywords": [
     "swoole",
     "LaravelS",
+    "coroutine",
     "http server",
     "websocket server",
     "async task",
     "async event",
-    "coroutine",
-    "inotify reload"
+    "inotify reload",
+    "memory resident",
+    "high performance"
   ],
   "homepage": "https://github.com/hhxsv5/laravel-s",
   "authors": [
