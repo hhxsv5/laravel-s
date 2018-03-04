@@ -41,6 +41,12 @@ class Request
         }
         $_SERVER = array_change_key_case($_SERVER, CASE_UPPER);
 
+        // Fix argv & argc
+        if (!isset($_SERVER['argv'])) {
+            $_SERVER['argv'] = isset($GLOBALS['argv']) ? $GLOBALS['argv'] : [];
+            $_SERVER['argc'] = isset($GLOBALS['argc']) ? $GLOBALS['argc'] : 0;
+        }
+
         $requests = ['C' => $_COOKIE, 'G' => $_GET, 'P' => $_POST];
         $requestOrder = ini_get('request_order') ?: ini_get('variables_order');
         $requestOrder = preg_replace('#[^CGP]#', '', strtoupper($requestOrder)) ?: 'GP';
