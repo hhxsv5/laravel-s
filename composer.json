@@ -15,6 +15,9 @@
     "laravel-swoole",
     "lumen-swoole",
     "http-server",
+    "websocket-server",
+    "async-task",
+    "async-event",
     "coroutine",
     "inotify-reload"
   ],
