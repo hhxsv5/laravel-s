@@ -190,15 +190,20 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 ```PHP
 namespace App\Services;
 use Hhxsv5\LaravelS\Swoole\WebsocketHandlerInterface;
+/**
+ * @see https://wiki.swoole.com/wiki/page/400.html
+ */
 class WebsocketService implements WebsocketHandlerInterface
 {
     public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
     {
+        \Log::info('New Websocket connection', [$request->fd]);
         $server->push($request->fd, 'Welcome to LaravelS');
         // throw new \Exception('an exception'); //上层会自动忽略handle时抛出的异常
     }
     public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame)
     {
+        \Log::info('Received message', [$frame->fd, $frame->data, $frame->opcode, $frame->finish]);
         $server->push($frame->fd, date('Y-m-d H:i:s'));
     }
     public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
@@ -269,7 +274,7 @@ class TestListener1 extends Listener
 {
     public function handle(Event $event)
     {
-        // $data = $event->getData();
+        \Log::info(__CLASS__ . ':handle start', [$event->getData()]);
         sleep(2);// 模拟一些慢速的事件处理
         // throw new \Exception('an exception'); //上层会自动忽略handle时抛出的异常
     }
@@ -313,6 +318,7 @@ class TestTask extends Task
     }
     public function handle()
     {
+        \Log::info(__CLASS__ . ':handle start', [$this->data]);
         sleep(2);// 模拟一些慢速的事件处理
         // throw new \Exception('an exception'); //上层会自动忽略handle时抛出的异常
     }
