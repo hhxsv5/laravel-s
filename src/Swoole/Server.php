@@ -2,6 +2,10 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
+use Hhxsv5\LaravelS\Swoole\Task\Event;
+use Hhxsv5\LaravelS\Swoole\Task\Listener;
+use Hhxsv5\LaravelS\Swoole\Task\Task;
+
 class Server
 {
     protected $conf;
@@ -42,7 +46,9 @@ class Server
         }
 
         $this->swoole->set($settings + self::$swooleDefaultSettings);
+
         $this->bindHttpEvent();
+        $this->bindTaskEvent();
         $this->bindWebsocketEvent();
     }
 
@@ -59,7 +65,10 @@ class Server
         }
         $this->swoole->on('WorkerError', [$this, 'onWorkerError']);
         $this->swoole->on('Request', [$this, 'onRequest']);
+    }
 
+    protected function bindTaskEvent()
+    {
         if (!empty($this->conf['swoole']['task_worker_num'])) {
             $this->swoole->on('Task', [$this, 'onTask']);
             $this->swoole->on('Finish', [$this, 'onFinish']);
@@ -183,12 +192,49 @@ class Server
 
     public function onTask(\swoole_http_server $server, $taskId, $srcWorkerId, $data)
     {
-
+        if ($data instanceof Event) {
+            $this->handleEvent($data);
+        } elseif ($data instanceof Task) {
+            $this->handleTask($data);
+        }
     }
 
     public function onFinish(\swoole_http_request $server, $taskId, $data)
     {
 
+    }
+
+    protected function handleEvent(Event $event)
+    {
+        $eventClass = get_class($event);
+        if (!isset($this->conf['events'][$eventClass])) {
+            return;
+        }
+
+        $listenerClasses = $this->conf['events'][$eventClass];
+        try {
+            if (!is_array($listenerClasses)) {
+                $listenerClasses = (array)$listenerClasses;
+            }
+            foreach ($listenerClasses as $listenerClass) {
+                /**
+                 * @var Listener $listener
+                 */
+                $listener = new $listenerClass();
+                $listener->handle($event);
+            }
+        } catch (\Exception $e) {
+            // Do nothing to avoid 'zend_mm_heap corrupted'
+        }
+    }
+
+    protected function handleTask(Task $task)
+    {
+        try {
+            $task->handle();
+        } catch (\Exception $e) {
+            // Do nothing to avoid 'zend_mm_heap corrupted'
+        }
     }
 
     public function run()

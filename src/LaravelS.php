@@ -7,9 +7,6 @@ use Hhxsv5\LaravelS\Swoole\DynamicResponse;
 use Hhxsv5\LaravelS\Swoole\Request;
 use Hhxsv5\LaravelS\Swoole\Server;
 use Hhxsv5\LaravelS\Swoole\StaticResponse;
-use Hhxsv5\LaravelS\Swoole\Task\Event;
-use Hhxsv5\LaravelS\Swoole\Task\Listener;
-use Hhxsv5\LaravelS\Swoole\Task\Task;
 use Illuminate\Http\Request as IlluminateRequest;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -103,50 +100,6 @@ class LaravelS extends Server
             } catch (\Exception $e) {
                 // Catch: zm_deactivate_swoole: Fatal error: Uncaught exception 'ErrorException' with message 'swoole_http_response::status(): http client#2 is not exist.
             }
-        }
-    }
-
-    public function onTask(\swoole_http_server $server, $taskId, $srcWorkerId, $data)
-    {
-        parent::onTask($server, $taskId, $srcWorkerId, $data);
-
-        if ($data instanceof Event) {
-            $this->handleEvent($data);
-        } elseif ($data instanceof Task) {
-            $this->handleTask($data);
-        }
-    }
-
-    protected function handleEvent(Event $event)
-    {
-        $eventClass = get_class($event);
-        if (!isset($this->conf['events'][$eventClass])) {
-            return;
-        }
-
-        $listenerClasses = $this->conf['events'][$eventClass];
-        try {
-            if (!is_array($listenerClasses)) {
-                $listenerClasses = (array)$listenerClasses;
-            }
-            foreach ($listenerClasses as $listenerClass) {
-                /**
-                 * @var Listener $listener
-                 */
-                $listener = new $listenerClass();
-                $listener->handle($event);
-            }
-        } catch (\Exception $e) {
-            // Do nothing to avoid 'zend_mm_heap corrupted'
-        }
-    }
-
-    protected function handleTask(Task $task)
-    {
-        try {
-            $task->handle();
-        } catch (\Exception $e) {
-            // Do nothing to avoid 'zend_mm_heap corrupted'
         }
     }
 
