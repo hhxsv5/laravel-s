@@ -66,6 +66,18 @@ class LaravelS extends Server
         $this->swoole->addProcess($inotifyProcess);
     }
 
+    protected function getWebsocketHandler()
+    {
+        $this->laravel->consoleKernelBootstrap();
+        return parent::getWebsocketHandler();
+    }
+
+    public function onTask(\swoole_http_server $server, $taskId, $srcWorkerId, $data)
+    {
+        $this->laravel->consoleKernelBootstrap();
+        parent::onTask($server, $taskId, $srcWorkerId, $data);
+    }
+
     public function onWorkerStart(\swoole_http_server $server, $workerId)
     {
         parent::onWorkerStart($server, $workerId);
