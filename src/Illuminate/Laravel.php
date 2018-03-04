@@ -72,7 +72,11 @@ class Laravel
 
     public function consoleKernelBootstrap()
     {
-        if (!$this->conf['isLumen']) {
+        if ($this->conf['isLumen']) {
+            if (Facade::getFacadeApplication() === null) {
+                $this->app->withFacades();
+            }
+        } else {
             $this->app->make(ConsoleKernel::class)->bootstrap();
         }
     }
