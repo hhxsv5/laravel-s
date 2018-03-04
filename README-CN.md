@@ -299,6 +299,7 @@ class TestListener1 extends Listener
 4.触发事件。
 ```PHP
 // 实例化TestEvent并通过fire触发，此操作是异步的，触发后立即返回，由Task进程继续处理监听器中的handle逻辑
+use Hhxsv5\LaravelS\Swoole\Task\Event;
 $success = Event::fire(new TestEvent('event data'));
 var_dump($success);//判断是否触发成功
 ```
@@ -328,6 +329,7 @@ class TestTask extends Task
 2.投递任务。
 ```PHP
 // 实例化TestTask并通过deliver投递，此操作是异步的，投递后立即返回，由Task进程继续处理TestTask中的handle逻辑
+use Hhxsv5\LaravelS\Swoole\Task\Task;
 $ret = Task::deliver(new TestTask('task data'));
 var_dump($ret);//判断是否投递成功
 ```

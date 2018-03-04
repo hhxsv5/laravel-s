@@ -300,6 +300,7 @@ class TestListener1 extends Listener
 4.Fire event.
 ```PHP
 // Create instance of event and fire it, "fire" is asynchronous.
+use Hhxsv5\LaravelS\Swoole\Task\Event;
 $success = Event::fire(new TestEvent('event data'));
 var_dump($success);// Return true if sucess, otherwise false
 ```
@@ -329,6 +330,7 @@ class TestTask extends Task
 2.Deliver task.
 ```PHP
 // Create instance of TestTask and deliver it, "deliver" is asynchronous.
+use Hhxsv5\LaravelS\Swoole\Task\Task;
 $ret = Task::deliver(new TestTask('task data'));
 var_dump($ret);// Return true if sucess, otherwise false
 ```
