@@ -72,7 +72,9 @@ class Laravel
 
     public function consoleKernelBootstrap()
     {
-        $this->app->make(ConsoleKernel::class)->bootstrap();
+        if (!$this->conf['isLumen']) {
+            $this->app->make(ConsoleKernel::class)->bootstrap();
+        }
     }
 
     public function handleDynamic(IlluminateRequest $request)
