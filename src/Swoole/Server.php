@@ -23,11 +23,6 @@ class Server
 
     protected $enableWebsocket = false;
 
-    /**
-     * @var WebsocketHandlerInterface
-     */
-    protected static $websocketHandler;
-
     protected function __construct(array $conf)
     {
         $this->conf = $conf;
