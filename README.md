@@ -20,9 +20,9 @@
 
 - Memory resident
 
-- Asynchronous event listening base on Task
+- Asynchronous event listening
 
-- Elegant delivery for asynchronous task
+- Asynchronous task queue
 
 - Gracefully reload
 
@@ -305,7 +305,7 @@ $success = Event::fire(new TestEvent('event data'));
 var_dump($success);// Return true if sucess, otherwise false
 ```
 
-## Elegant delivery for asynchronous task
+## Asynchronous task queue
 > The performance of task processing is influenced by number of Swoole task process, you need to set [task_worker_num](https://www.swoole.co.uk/docs/modules/swoole-server/configuration) appropriately.
 
 1.Create task class.

@@ -20,9 +20,9 @@
 
 - 常驻内存
 
-- 基于Task的异步事件监听
+- 异步的事件监听
 
-- 优雅的投递异步任务
+- 异步的任务队列
 
 - 平滑Reload
 
@@ -304,7 +304,7 @@ $success = Event::fire(new TestEvent('event data'));
 var_dump($success);//判断是否触发成功
 ```
 
-## 优雅的投递异步任务
+## 异步的任务队列
 > 异步任务的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
 
 1.创建任务类。
