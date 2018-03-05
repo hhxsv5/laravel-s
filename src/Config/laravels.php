@@ -20,7 +20,7 @@ return [
     ],
     'swoole'         => [
         'daemonize'          => env('LARAVELS_DAEMONIZE', true),
-        'dispatch_mode'      => 2,
+        'dispatch_mode'      => 3,
         'reactor_num'        => \swoole_cpu_num() * 2,
         'worker_num'         => \swoole_cpu_num() * 2,
         //'task_worker_num'   => \swoole_cpu_num() * 2,
