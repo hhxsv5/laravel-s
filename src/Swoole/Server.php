@@ -15,12 +15,6 @@ class Server
      */
     protected $swoole;
 
-    protected static $swooleDefaultSettings = [
-        'reload_async'      => true,
-        'max_wait_time'     => 60,
-        'enable_reuse_port' => true,
-    ];
-
     protected $enableWebsocket = false;
 
     protected function __construct(array $conf)
@@ -40,7 +34,7 @@ class Server
             $this->swoole = new $serverClass($ip, $port, \SWOOLE_PROCESS);
         }
 
-        $this->swoole->set($settings + self::$swooleDefaultSettings);
+        $this->swoole->set($settings);
 
         $this->bindHttpEvent();
         $this->bindTaskEvent();
