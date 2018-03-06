@@ -21,9 +21,9 @@ return [
     'swoole'         => [
         'daemonize'          => env('LARAVELS_DAEMONIZE', true),
         'dispatch_mode'      => 3,
-        'reactor_num'        => \swoole_cpu_num() * 2,
-        'worker_num'         => \swoole_cpu_num() * 2,
-        //'task_worker_num'   => \swoole_cpu_num() * 2,
+        'reactor_num'        => function_exists('\swoole_cpu_num') ? \swoole_cpu_num() * 2 : 4,
+        'worker_num'         => function_exists('\swoole_cpu_num') ? \swoole_cpu_num() * 2 : 8,
+        //'task_worker_num'   => function_exists('\swoole_cpu_num') ? \swoole_cpu_num() * 2 : 8,
         'task_ipc_mode'      => 3,
         'task_max_request'   => 3000,
         'task_tmpdir'        => is_dir('/dev/shm') && is_writable('/dev/shm') ? '/dev/shm' : '/tmp',
