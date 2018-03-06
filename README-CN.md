@@ -396,6 +396,8 @@ public function test(Request $req)
 
 2. 包装MySQL/Redis/Http的协程客户端。
 
+## 打赏
+
 ## License
 
 [MIT](https://github.com/hhxsv5/laravel-s/blob/master/LICENSE)
