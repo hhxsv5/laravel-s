@@ -40,7 +40,7 @@
 | [Swoole](https://www.swoole.com/) | `>= 1.7.19` `推荐最新的稳定版` `从2.0.12开始不再支持PHP5` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
 | Gzip[可选的] | [zlib](https://zlib.net/)，用于压缩HTTP响应，检查本机`libz`是否可用 *ldconfig -p&#124;grep libz* |
-| Inotify[可选的] | [inotify](http://pecl.php.net/package/inotify)，用于实时地reload worker进程，检查本机`inotify`是否可用 *php --ri inotify* |
+| Inotify[可选的] | [inotify](http://pecl.php.net/package/inotify)，用于修改代码后自动Reload Worker进程，检查本机`inotify`是否可用 *php --ri inotify* |
 
 ## 安装
 
@@ -397,7 +397,7 @@ public function test(Request $req)
 2. 包装MySQL/Redis/Http的协程客户端。
 
 ## 打赏
-<img src="https://github.com/hhxsv5/laravel-s/blob/master/ds-wechat.jpeg" width="200px" alt="微信">&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://github.com/hhxsv5/laravel-s/blob/master/ds-alipay.png" width="200px" alt="支付宝">
+<img src="https://github.com/hhxsv5/laravel-s/blob/master/reward.png" height="200px" alt="打赏">
 
 ## License
 
