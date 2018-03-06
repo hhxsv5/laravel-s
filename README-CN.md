@@ -397,8 +397,8 @@ public function test(Request $req)
 2. 包装MySQL/Redis/Http的协程客户端。
 
 ## 打赏
-![微信](https://github.com/hhxsv5/laravel-s/blob/master/ds-wechat.jpeg){:width="100px"}
-![支付宝](https://github.com/hhxsv5/laravel-s/blob/master/ds-alipay.jpeg){:width="100px"}
+<img src="https://github.com/hhxsv5/laravel-s/blob/master/ds-wechat.jpeg" width="100px" alt="微信">
+<img src="https://github.com/hhxsv5/laravel-s/blob/master/ds-alipay.jpeg" width="100px" alt="支付宝">
 
 ## License
 
