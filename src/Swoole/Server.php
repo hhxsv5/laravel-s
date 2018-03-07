@@ -191,7 +191,7 @@ class Server
         }
     }
 
-    public function onFinish(\swoole_http_request $server, $taskId, $data)
+    public function onFinish(\swoole_http_server $server, $taskId, $data)
     {
         if ($data instanceof Task) {
             $data->finish();
