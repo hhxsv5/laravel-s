@@ -185,12 +185,17 @@ class Server
             $this->handleEvent($data);
         } elseif ($data instanceof Task) {
             $this->handleTask($data);
+            if (method_exists($data, 'finish')) {
+                return $data;
+            }
         }
     }
 
     public function onFinish(\swoole_http_request $server, $taskId, $data)
     {
-
+        if ($data instanceof Task) {
+            $data->finish();
+        }
     }
 
     protected function handleEvent(Event $event)

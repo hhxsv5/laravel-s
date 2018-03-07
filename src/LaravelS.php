@@ -75,7 +75,10 @@ class LaravelS extends Server
     public function onTask(\swoole_http_server $server, $taskId, $srcWorkerId, $data)
     {
         $this->laravel->consoleKernelBootstrap();
-        parent::onTask($server, $taskId, $srcWorkerId, $data);
+        $ret = parent::onTask($server, $taskId, $srcWorkerId, $data);
+        if ($ret !== null) {
+            return $ret;
+        }
     }
 
     public function onWorkerStart(\swoole_http_server $server, $workerId)
