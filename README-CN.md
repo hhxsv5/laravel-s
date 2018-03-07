@@ -318,7 +318,7 @@ class TestTask extends Task
     {
         $this->data = $data;
     }
-    // 处理任务的逻辑
+    // 处理任务的逻辑，运行在Task进程中，不能投递任务
     public function handle()
     {
         \Log::info(__CLASS__ . ':handle start', [$this->data]);
@@ -326,10 +326,11 @@ class TestTask extends Task
         // throw new \Exception('an exception'); //上层会自动忽略handle时抛出的异常
         $this->result = 'the result of ' . $this->data;
     }
-    // 可选的，完成事件，任务处理完后的逻辑
+    // 可选的，完成事件，任务处理完后的逻辑，运行在Worker进程中，可以投递任务
     public function finish()
     {
         \Log::info(__CLASS__ . ':finish start', [$this->result]);
+        Task::deliver(new TestTask2('task2')); // 投递其他任务
     }
 }
 ```
