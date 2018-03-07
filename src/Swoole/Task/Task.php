@@ -15,7 +15,6 @@ abstract class Task
      */
     protected $delay;
 
-
     public function delay($delay)
     {
         if ($delay <= 0) {
@@ -32,7 +31,6 @@ abstract class Task
     {
         return $this->delay;
     }
-
 
     abstract public function handle();
 
