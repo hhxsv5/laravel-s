@@ -339,7 +339,9 @@ class TestTask extends Task
 ```PHP
 // 实例化TestTask并通过deliver投递，此操作是异步的，投递后立即返回，由Task进程继续处理TestTask中的handle逻辑
 use Hhxsv5\LaravelS\Swoole\Task\Task;
-$ret = Task::deliver(new TestTask('task data'));
+$task = new TestTask('task data');
+// $task->delay(3);// 延迟3秒投放任务
+$ret = Task::deliver($task);
 var_dump($ret);//判断是否投递成功
 ```
 

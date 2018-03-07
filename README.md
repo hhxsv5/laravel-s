@@ -340,7 +340,9 @@ class TestTask extends Task
 ```PHP
 // Create instance of TestTask and deliver it, "deliver" is asynchronous.
 use Hhxsv5\LaravelS\Swoole\Task\Task;
-$ret = Task::deliver(new TestTask('task data'));
+$task = new TestTask('task data');
+// $task->delay(3);// delay 3 seconds to deliver task
+$ret = Task::deliver($task);
 var_dump($ret);// Return true if sucess, otherwise false
 ```
 
