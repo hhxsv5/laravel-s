@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-n=1000
-c=200
-target="http://example.org/"
+n=2000
+c=500
+target="http://127.0.0.1:5200/"
 
-rc=3
+rc=5
 total=0
 for ((i=1; i<=${rc}; ++i))
 do
