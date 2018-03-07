@@ -313,15 +313,23 @@ use Hhxsv5\LaravelS\Swoole\Task\Task;
 class TestTask extends Task
 {
     private $data;
+    private $result;
     public function __construct($data)
     {
         $this->data = $data;
     }
+    // 处理任务的逻辑
     public function handle()
     {
         \Log::info(__CLASS__ . ':handle start', [$this->data]);
         sleep(2);// 模拟一些慢速的事件处理
         // throw new \Exception('an exception'); //上层会自动忽略handle时抛出的异常
+        $this->result = 'the result of ' . $this->data;
+    }
+    // 可选的，完成事件，任务处理完后的逻辑
+    public function finish()
+    {
+        \Log::info(__CLASS__ . ':finish start', [$this->result]);
     }
 }
 ```

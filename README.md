@@ -314,15 +314,23 @@ use Hhxsv5\LaravelS\Swoole\Task\Task;
 class TestTask extends Task
 {
     private $data;
+    private $result;
     public function __construct($data)
     {
         $this->data = $data;
     }
+    // The logic of task handling
     public function handle()
     {
         \Log::info(__CLASS__ . ':handle start', [$this->data]);
         sleep(2);// Simulate the slow codes
         // throw new \Exception('an exception'); // all exceptions will be ignored
+        $this->result = 'the result of ' . $this->data;
+    }
+    // Optional, finish event, the logic of after task handling
+    public function finish()
+    {
+        \Log::info(__CLASS__ . ':finish start', [$this->result]);
     }
 }
 ```
