@@ -203,7 +203,8 @@ class Laravel
             if (class_exists('\Tymon\JWTAuth\Providers\LumenServiceProvider', false)) {
                 $this->app->register('\Tymon\JWTAuth\Providers\LumenServiceProvider', [], true)->boot();
             }
-            //for passport
+
+            // for passport
             if (class_exists('\Laravel\Passport\PassportServiceProvider', false)) {
                 $this->app->register('\Laravel\Passport\PassportServiceProvider', [], true)->boot();
             }
