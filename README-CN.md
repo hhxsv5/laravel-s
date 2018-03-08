@@ -241,6 +241,8 @@ $events->listen('laravels.received_request', function (\Illuminate\Http\Request 
 - `laravels.generated_response` 在Laravel内核处理完请求后，将`Illuminate\Http\Response`转成`swoole_http_response`之前(下一步将响应给客户端)。
 
 ```PHP
+// 修改`app/Providers/EventServiceProvider.php`, 添加下面监听代码到boot方法中
+// 如果变量$exents不存在，你也可以调用\Event::listen()。
 $events->listen('laravels.generated_response', function (\Illuminate\Http\Request $req, \Symfony\Component\HttpFoundation\Response $rsp) {
     $rsp->headers->set('header-key', 'hhxsv5');// 修改header
 });

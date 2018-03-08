@@ -242,6 +242,8 @@ $events->listen('laravels.received_request', function (\Illuminate\Http\Request 
 - `laravels.generated_response` After Laravel's Kernel handled the request, before LaravelS parses `Illuminate\Http\Response` to `swoole_http_response`.
 
 ```PHP
+// Edit file `app/Providers/EventServiceProvider.php`, add the following code into method `boot`
+// If no variable $exents, you can also call \Event::listen(). 
 $events->listen('laravels.generated_response', function (\Illuminate\Http\Request $req, \Symfony\Component\HttpFoundation\Response $rsp) {
     $rsp->headers->set('header-key', 'hhxsv5');// Change header of response
 });
