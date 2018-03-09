@@ -10,7 +10,7 @@
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 <!-- [![Code Coverage](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/?branch=master) -->
 
-**[English Documentation](README.md)**  ++==QQ交流群：698480528==++
+**[English Documentation](README.md)**  ++QQ交流群：698480528++
 
 ## 特性
 
