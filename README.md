@@ -404,6 +404,8 @@ public function test(Request $req)
 }
 ```
 
+## [Known Compatible Issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues.md)
+
 ## Todo list
 
 1. Connection pool for MySQL/Redis.

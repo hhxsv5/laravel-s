@@ -403,6 +403,8 @@ public function test(Request $req)
 }
 ```
 
+## [已知的兼容性问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues-CN.md)
+
 ## 待办事项
 
 1. 针对MySQL/Redis的连接池。
