@@ -1,6 +1,7 @@
 # Known compatibility issues
 
 ## use package [jenssegers/agent](https://github.com/jenssegers/agent)
+> [Listen System Event](https://github.com/hhxsv5/laravel-s/blob/master/README.md#system-events)
 
 ```PHP
 // Reset UserAgent
