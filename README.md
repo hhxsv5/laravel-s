@@ -10,7 +10,7 @@
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 <!-- [![Code Coverage](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/?branch=master) -->
 
-**[中文文档](README-CN.md)**
+**[中文文档](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md)**
 
 ## Features
 
@@ -78,7 +78,7 @@ php artisan laravels publish
 $app->configure('laravels');
 ```
 
-4.Change `config/laravels.php`: listen_ip, listen_port, refer [Settings](Settings.md).
+4.Change `config/laravels.php`: listen_ip, listen_port, refer [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
 ## Run Demo
 > `php artisan laravels {start|stop|restart|reload|publish}`

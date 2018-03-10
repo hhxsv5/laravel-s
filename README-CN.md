@@ -10,7 +10,7 @@
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 <!-- [![Code Coverage](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/?branch=master) -->
 
-**[English Documentation](README.md)**  *QQ交流群：698480528*
+**[English Documentation](https://github.com/hhxsv5/laravel-s/blob/master/README.md)**  *QQ交流群：698480528*
 
 ## 特性
 
@@ -78,7 +78,7 @@ php artisan laravels publish
 $app->configure('laravels');
 ```
 
-4.修改配置`config/laravels.php`：监听的IP、端口等，请参考[配置项](Settings-CN.md)。
+4.修改配置`config/laravels.php`：监听的IP、端口等，请参考[配置项](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
 ## 运行
 > `php artisan laravels {start|stop|restart|reload|publish}`
