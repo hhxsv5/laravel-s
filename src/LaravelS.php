@@ -27,10 +27,58 @@ class LaravelS extends Server
      */
     protected $laravel;
 
-    protected function __construct(array $svrConf = [], array $laravelConf)
+    protected function __construct(array $svrConf, array $laravelConf)
     {
         parent::__construct($svrConf);
         $this->laravelConf = $laravelConf;
+        $this->addInotifyProcess();
+    }
+
+    protected function addInotifyProcess()
+    {
+        if (empty($this->conf['inotify_reload']) || empty($this->conf['inotify_reload']['enable'])) {
+            return;
+        }
+
+        if (!extension_loaded('inotify')) {
+            return;
+        }
+
+        $log = !empty($this->conf['inotify_reload']['log']);
+        $fileTypes = isset($this->conf['inotify_reload']['file_types']) ? (array)$this->conf['inotify_reload']['file_types'] : [];
+        $autoReload = function (\swoole_process $process) use ($fileTypes, $log) {
+            $this->setProcessTitle(sprintf('%s laravels: inotify process', $this->conf['process_prefix']));
+            $inotify = new Inotify($this->laravelConf['rootPath'], IN_CREATE | IN_MODIFY | IN_DELETE, function ($event) use ($log) {
+                $this->swoole->reload();
+                if ($log) {
+                    echo '[', date('Y-m-d H:i:s'), '] LaravelS: reloaded by inotify, file: ', $event['name'], PHP_EOL;
+                }
+            });
+            $inotify->addFileTypes($fileTypes);
+            $inotify->watch();
+            if ($log) {
+                echo '[', date('Y-m-d H:i:s'), '] LaravelS: count of watched files by inotify: ', $inotify->getWatchedFileCount(), PHP_EOL;
+            }
+            $inotify->start();
+        };
+
+        $inotifyProcess = new \swoole_process($autoReload, false);
+        $this->swoole->addProcess($inotifyProcess);
+    }
+
+    protected function getWebsocketHandler()
+    {
+        $this->laravel->consoleKernelBootstrap();
+        return parent::getWebsocketHandler();
+    }
+
+    public function onTask(\swoole_http_server $server, $taskId, $srcWorkerId, $data)
+    {
+        $this->laravel->consoleKernelBootstrap();
+        $ret = parent::onTask($server, $taskId, $srcWorkerId, $data);
+        if ($ret !== null) {
+            return $ret;
+        }
     }
 
     public function onWorkerStart(\swoole_http_server $server, $workerId)
@@ -119,7 +167,7 @@ class LaravelS extends Server
 
     }
 
-    public static function getInstance(array $svrConf = [], array $laravelConf = [])
+    public static function getInstance(array $svrConf, array $laravelConf)
     {
         if (self::$s === null) {
             self::$s = new static($svrConf, $laravelConf);

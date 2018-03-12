@@ -3,7 +3,8 @@
 namespace Hhxsv5\LaravelS\Illuminate;
 
 
-use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Contracts\Http\Kernel as HttpKernel;
+use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 use Illuminate\Http\Request as IlluminateRequest;
 use Illuminate\Support\Facades\Facade;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -14,7 +15,7 @@ class Laravel
     protected $app;
 
     /**
-     * @var Kernel $laravelKernel
+     * @var HttpKernel $laravelKernel
      */
     protected $laravelKernel;
 
@@ -57,7 +58,7 @@ class Laravel
     protected function createKernel()
     {
         if (!$this->conf['isLumen']) {
-            $this->laravelKernel = $this->app->make(Kernel::class);
+            $this->laravelKernel = $this->app->make(HttpKernel::class);
         }
     }
 
@@ -66,6 +67,17 @@ class Laravel
         // Load configuration laravel.php manually for Lumen
         if ($this->conf['isLumen'] && file_exists($this->conf['rootPath'] . '/config/laravels.php')) {
             $this->app->configure('laravels');
+        }
+    }
+
+    public function consoleKernelBootstrap()
+    {
+        if ($this->conf['isLumen']) {
+            if (Facade::getFacadeApplication() === null) {
+                $this->app->withFacades();
+            }
+        } else {
+            $this->app->make(ConsoleKernel::class)->bootstrap();
         }
     }
 
@@ -191,11 +203,20 @@ class Laravel
             if (class_exists('\Tymon\JWTAuth\Providers\LumenServiceProvider', false)) {
                 $this->app->register('\Tymon\JWTAuth\Providers\LumenServiceProvider', [], true)->boot();
             }
+
+            // for passport
+            if (class_exists('\Laravel\Passport\PassportServiceProvider', false)) {
+                $this->app->register('\Laravel\Passport\PassportServiceProvider', [], true)->boot();
+            }
         }
         if (class_exists('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', false)) {
             Facade::clearResolvedInstance('auth.password');
             $this->app->register('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', [], true);
         }
+
+        // Clear request
+        $this->app->forgetInstance('request');
+        Facade::clearResolvedInstance('request');
 
         //...
     }
@@ -210,5 +231,10 @@ class Laravel
         $this->app->singleton('swoole', function () use ($swoole) {
             return $swoole;
         });
+    }
+
+    public function make($abstract, array $parameters = [])
+    {
+        return $this->app->make($abstract, $parameters);
     }
 }

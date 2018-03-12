@@ -8,15 +8,16 @@
   },
   "description": "🚀 LaravelS: Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.",
   "keywords": [
-    "LaravelS",
-    "speed-laravel",
-    "speed-lumen",
     "swoole",
-    "laravel-swoole",
-    "lumen-swoole",
-    "http-server",
+    "LaravelS",
     "coroutine",
-    "high-performance"
+    "http server",
+    "websocket server",
+    "async task",
+    "async event",
+    "inotify reload",
+    "memory resident",
+    "high performance"
   ],
   "homepage": "https://github.com/hhxsv5/laravel-s",
   "authors": [
@@ -29,7 +30,8 @@
     "php": ">=5.5.9"
   },
   "suggest": {
-    "ext-swoole": "Event-driven asynchronous & concurrent & coroutine networking engine with high performance for PHP, require >= 1.7.19."
+    "ext-swoole": "Event-driven asynchronous & concurrent & coroutine networking engine with high performance for PHP, require >= 1.7.19.",
+    "ext-inotify": "Inotify, used to reload all worker processes when your code is modified."
   },
   "autoload": {
     "psr-4": {

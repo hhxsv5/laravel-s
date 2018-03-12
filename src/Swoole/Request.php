@@ -31,7 +31,21 @@ class Request
             $key = str_replace('-', '_', $key);
             $_SERVER['http_' . $key] = $value;
         }
+        // Fix client real-ip
+        if (isset($this->swooleRequest->header['x-real-ip'])) {
+            $_SERVER['REMOTE_ADDR'] = (string)$this->swooleRequest->header['x-real-ip'];
+        }
+        // Fix client real-port
+        if (isset($this->swooleRequest->header['x-real-port'])) {
+            $_SERVER['REMOTE_PORT'] = (int)$this->swooleRequest->header['x-real-port'];
+        }
         $_SERVER = array_change_key_case($_SERVER, CASE_UPPER);
+
+        // Fix argv & argc
+        if (!isset($_SERVER['argv'])) {
+            $_SERVER['argv'] = isset($GLOBALS['argv']) ? $GLOBALS['argv'] : [];
+            $_SERVER['argc'] = isset($GLOBALS['argc']) ? $GLOBALS['argc'] : 0;
+        }
 
         $requests = ['C' => $_COOKIE, 'G' => $_GET, 'P' => $_POST];
         $requestOrder = ini_get('request_order') ?: ini_get('variables_order');
