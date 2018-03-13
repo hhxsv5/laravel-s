@@ -118,7 +118,6 @@ server {
     location / {
         try_files $uri @laravels;
     }
-
     location @laravels {
         proxy_http_version 1.1;
         # proxy_connect_timeout 60s;
@@ -222,6 +221,48 @@ class WebsocketService implements WebsocketHandlerInterface
 ],
 // ...
 ```
+
+3.Cooperate with Nginx (Recommended)
+```Nginx
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+upstream laravels-ws {
+    server 192.168.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
+    #server 192.168.0.2:5200 weight=3 max_fails=3 fail_timeout=30s;
+    #server 192.168.0.3:5200 backup;
+}
+
+server {
+    listen 80;
+    server_name laravels-ws.com;
+    root /xxxpath/laravel-s-test/public;
+    access_log /yyypath/log/nginx/$server_name.access.log  main;
+    autoindex off;
+    index index.html index.htm;
+    
+    location / {
+        try_files $uri @laravels;
+    }
+    location @laravels {
+        proxy_http_version 1.1;
+        # proxy_connect_timeout 60s;
+        # proxy_send_timeout 60s;
+        # proxy_read_timeout 120s;
+        proxy_set_header Connection "keep-alive";
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Real-PORT $remote_port;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_pass http://laravels-ws;
+    }
+}
+```
+
 
 ## Listen Events
 
