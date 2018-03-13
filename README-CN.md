@@ -16,7 +16,7 @@
 
 - 高性能的Swoole
 
-- 内置Http/Websocket服务器
+- 内置Http/WebSocket服务器
 
 - 常驻内存
 
@@ -182,10 +182,10 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
     CustomLog ${APACHE_LOG_DIR}/www.laravels.com.access.log combined
 </VirtualHost>
 ```
-## 启用Websocket服务器
-> Websocket服务器监听的IP和端口与Http服务器相同。
+## 启用WebSocket服务器
+> WebSocket服务器监听的IP和端口与Http服务器相同。
 
-1.创建Websocket Handler类，并实现接口`WebsocketHandlerInterface`。
+1.创建WebSocket Handler类，并实现接口`WebsocketHandlerInterface`。
 ```PHP
 namespace App\Services;
 use Hhxsv5\LaravelS\Swoole\WebsocketHandlerInterface;
@@ -222,6 +222,7 @@ class WebsocketService implements WebsocketHandlerInterface
 ```
 
 3.与Nginx配合使用（推荐）
+> 参考 [WebSocket代理](http://nginx.org/en/docs/http/websocket.html)
 ```Nginx
 map $http_upgrade $connection_upgrade {
     default upgrade;
@@ -243,9 +244,6 @@ server {
     index index.html index.htm;
     
     location / {
-        try_files $uri @laravels;
-    }
-    location @laravels {
         proxy_http_version 1.1;
         # proxy_connect_timeout 60s;
         # proxy_send_timeout 60s;
