@@ -16,7 +16,7 @@
 
 - High performance Swoole
 
-- Built-in Http/Websocket Server
+- Built-in Http/WebSocket Server
 
 - Memory resident
 
@@ -183,10 +183,10 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 </VirtualHost>
 ```
 
-## Enable Websocket Server
-> The Listening address of Websocket Sever is the same as Http Server.
+## Enable WebSocket Server
+> The Listening address of WebSocket Sever is the same as Http Server.
 
-1.Create Websocket Handler class, and implement interface `WebsocketHandlerInterface`.
+1.Create WebSocket Handler class, and implement interface `WebsocketHandlerInterface`.
 ```PHP
 namespace App\Services;
 use Hhxsv5\LaravelS\Swoole\WebsocketHandlerInterface;
@@ -223,6 +223,7 @@ class WebsocketService implements WebsocketHandlerInterface
 ```
 
 3.Cooperate with Nginx (Recommended)
+> Refer [WebSocket Proxy](http://nginx.org/en/docs/http/websocket.html)
 ```Nginx
 map $http_upgrade $connection_upgrade {
     default upgrade;
