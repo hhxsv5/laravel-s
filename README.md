@@ -248,7 +248,7 @@ server {
         proxy_http_version 1.1;
         # proxy_connect_timeout 60s;
         # proxy_send_timeout 60s;
-        # proxy_read_timeout: Nginx will close the connection if client does not send data to server in 60 seconds 
+        # proxy_read_timeout: Nginx will close the connection if client does not send data to server in 60 seconds; At the same time, this close behavior is affected by heartbeat setting of Swoole
         # proxy_read_timeout 60s;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Real-PORT $remote_port;

@@ -247,7 +247,7 @@ server {
         proxy_http_version 1.1;
         # proxy_connect_timeout 60s;
         # proxy_send_timeout 60s;
-        # proxy_read_timeout：如果60秒内客户端没有发数据到服务端，那么Nginx会关闭连接
+        # proxy_read_timeout：如果60秒内客户端没有发数据到服务端，那么Nginx会关闭连接；同时，Swoole的心跳设置也会影响连接的关闭
         # proxy_read_timeout 60s;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Real-PORT $remote_port;
