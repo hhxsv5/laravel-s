@@ -247,7 +247,8 @@ server {
         proxy_http_version 1.1;
         # proxy_connect_timeout 60s;
         # proxy_send_timeout 60s;
-        # proxy_read_timeout 120s;
+        # proxy_read_timeout：如果60秒内客户端没有发数据到服务端，那么Nginx会关闭连接
+        # proxy_read_timeout 60s;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Real-PORT $remote_port;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
