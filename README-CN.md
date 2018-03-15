@@ -385,14 +385,15 @@ $ret = Task::deliver($task);
 var_dump($ret);//判断是否投递成功
 ```
 
-## 在你的项目中使用`swoole_http_server`实例
+## 在你的项目中使用`swoole_server`实例
 
 ```PHP
 /**
-* @var \swoole_http_server
-*/
-$swoole = app('swoole');// Singleton
-var_dump($swoole->stats());
+ * 如果启用websocket server，$swoole是`swoole_websocket_server`的实例，否则是是`\swoole_http_server`的实例
+ * @var \swoole_http_server|\swoole_websocket_server $swoole
+ */
+$swoole = app('swoole');
+var_dump($swoole->stats());// 单例
 ```
 
 ## 注意事项

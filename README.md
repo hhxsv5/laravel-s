@@ -387,14 +387,15 @@ $ret = Task::deliver($task);
 var_dump($ret);// Return true if sucess, otherwise false
 ```
 
-## Get the instance of swoole_http_server in your project
+## Get the instance of `swoole_server` in your project
 
 ```PHP
 /**
-* @var \swoole_http_server
-*/
-$swoole = app('swoole');// Singleton
-var_dump($swoole->stats());
+ * $swoole is the instance of `swoole_websocket_server` if enable websocket server, otherwise `\swoole_http_server`
+ * @var \swoole_http_server|\swoole_websocket_server $swoole
+ */
+$swoole = app('swoole');
+var_dump($swoole->stats());// Singleton
 ```
 
 ## Important Notices
