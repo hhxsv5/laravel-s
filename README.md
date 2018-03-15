@@ -224,6 +224,7 @@ class WebsocketService implements WebsocketHandlerInterface
 
 3.Cooperate with Nginx (Recommended)
 > Refer [WebSocket Proxy](http://nginx.org/en/docs/http/websocket.html)
+
 ```Nginx
 map $http_upgrade $connection_upgrade {
     default upgrade;
