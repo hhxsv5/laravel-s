@@ -93,6 +93,8 @@ EOS;
             'rootPath'   => base_path(),
             'staticPath' => $svrConf['swoole']['document_root'],
             'isLumen'    => $this->isLumen,
+            '_SERVER'    => $_SERVER,
+            '_ENV'       => $_ENV,
         ];
 
         if (file_exists($svrConf['swoole']['pid_file'])) {

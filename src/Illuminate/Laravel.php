@@ -68,6 +68,11 @@ class Laravel
         if ($this->conf['isLumen'] && file_exists($this->conf['rootPath'] . '/config/laravels.php')) {
             $this->app->configure('laravels');
         }
+
+        $server = isset($this->conf['_SERVER']) ? $this->conf['_SERVER'] : [];
+        $env = isset($this->conf['_ENV']) ? $this->conf['_ENV'] : [];
+        $_SERVER = array_merge($_SERVER, $server);
+        $_ENV = array_merge($_ENV, $env);
     }
 
     public function consoleKernelBootstrap()

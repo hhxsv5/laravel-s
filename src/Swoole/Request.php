@@ -21,25 +21,24 @@ class Request
         $_GET = isset($this->swooleRequest->get) ? $this->swooleRequest->get : [];
         $_POST = isset($this->swooleRequest->post) ? $this->swooleRequest->post : [];
         $_COOKIE = isset($this->swooleRequest->cookie) ? $this->swooleRequest->cookie : [];
-        $_SERVER = isset($this->swooleRequest->server) ? $this->swooleRequest->server : [];
+        $server = isset($this->swooleRequest->server) ? $this->swooleRequest->server : [];
         $headers = isset($this->swooleRequest->header) ? $this->swooleRequest->header : [];
         $_FILES = isset($this->swooleRequest->files) ? $this->swooleRequest->files : [];
-        $_ENV = [];
         $_REQUEST = [];
 
         foreach ($headers as $key => $value) {
             $key = str_replace('-', '_', $key);
-            $_SERVER['http_' . $key] = $value;
+            $server['http_' . $key] = $value;
         }
         // Fix client real-ip
         if (isset($this->swooleRequest->header['x-real-ip'])) {
-            $_SERVER['REMOTE_ADDR'] = (string)$this->swooleRequest->header['x-real-ip'];
+            $server['REMOTE_ADDR'] = (string)$this->swooleRequest->header['x-real-ip'];
         }
         // Fix client real-port
         if (isset($this->swooleRequest->header['x-real-port'])) {
-            $_SERVER['REMOTE_PORT'] = (int)$this->swooleRequest->header['x-real-port'];
+            $server['REMOTE_PORT'] = (int)$this->swooleRequest->header['x-real-port'];
         }
-        $_SERVER = array_change_key_case($_SERVER, CASE_UPPER);
+        $_SERVER = array_merge($_SERVER, array_change_key_case($server, CASE_UPPER));
 
         // Fix argv & argc
         if (!isset($_SERVER['argv'])) {
