@@ -273,7 +273,7 @@ server {
 ```PHP
 // Edit file `app/Providers/EventServiceProvider.php`, add the following code into method `boot`
 // If no variable $exents, you can also call \Event::listen(). 
-$events->listen('laravels.received_request', function (\Illuminate\Http\Request $req) {
+$events->listen('laravels.received_request', function (\Illuminate\Http\Request $req, $app) {
     $req->query->set('get_key', 'hhxsv5');// Change query of request
     $req->request->set('post_key', 'hhxsv5'); // Change post of request
 });
@@ -284,7 +284,7 @@ $events->listen('laravels.received_request', function (\Illuminate\Http\Request 
 ```PHP
 // Edit file `app/Providers/EventServiceProvider.php`, add the following code into method `boot`
 // If no variable $exents, you can also call \Event::listen(). 
-$events->listen('laravels.generated_response', function (\Illuminate\Http\Request $req, \Symfony\Component\HttpFoundation\Response $rsp) {
+$events->listen('laravels.generated_response', function (\Illuminate\Http\Request $req, \Symfony\Component\HttpFoundation\Response $rsp, $app) {
     $rsp->headers->set('header-key', 'hhxsv5');// Change header of response
 });
 ```
