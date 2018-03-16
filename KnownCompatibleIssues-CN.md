@@ -6,6 +6,7 @@
 ```PHP
 // 重置UserAgent
 \Event::listen('laravels.received_request', function (\Illuminate\Http\Request $req) {
-    $this->app->agent->setUserAgent($req->server->get('HTTP_USER_AGENT'));
+    $this->app->agent->setHttpHeaders($req->server->all());
+    $this->app->agent->setUserAgent();
 });
 ```
