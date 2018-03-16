@@ -399,7 +399,7 @@ var_dump($swoole->stats());// 单例
 
 ## 注意事项
 
-- 推荐通过`Illuminate\Http\Request`对象来获取请求信息，兼容$_SERVER、$_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST，`不能使用`$_SESSION、$_ENV。
+- 推荐通过`Illuminate\Http\Request`对象来获取请求信息，兼容$_SERVER、$_ENV、$_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST，`不能使用`$_SESSION。
 
 ```PHP
 public function form(\Illuminate\Http\Request $request)

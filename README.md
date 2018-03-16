@@ -401,7 +401,7 @@ var_dump($swoole->stats());// Singleton
 
 ## Important Notices
 
-- Get all info of request from `Illuminate\Http\Request` Object, compatible with $_SERVER/$_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST, `CANNOT USE` $_SESSION, $_ENV.
+- Get all info of request from `Illuminate\Http\Request` Object, compatible with $_SERVER/$_ENV/$_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST, `CANNOT USE` $_SESSION.
 
 ```PHP
 public function form(\Illuminate\Http\Request $request)
