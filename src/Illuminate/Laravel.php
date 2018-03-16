@@ -231,6 +231,11 @@ class Laravel
         $this->app->events->fire($name, $params);
     }
 
+    public function bindRequest(IlluminateRequest $request)
+    {
+        $this->app->instance('request', $request);
+    }
+
     public function bindSwoole($swoole)
     {
         $this->app->singleton('swoole', function () use ($swoole) {
