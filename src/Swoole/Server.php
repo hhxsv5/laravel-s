@@ -22,8 +22,8 @@ class Server
         $this->conf = $conf;
         $this->enableWebsocket = !empty($this->conf['websocket']['enable']);
 
-        $ip = isset($conf['listen_ip']) ? $conf['listen_ip'] : '0.0.0.0';
-        $port = isset($conf['listen_port']) ? $conf['listen_port'] : 8841;
+        $ip = isset($conf['listen_ip']) ? $conf['listen_ip'] : '127.0.0.1';
+        $port = isset($conf['listen_port']) ? $conf['listen_port'] : 5200;
         $settings = isset($conf['swoole']) ? $conf['swoole'] : [];
         $settings['enable_static_handler'] = !empty($conf['handle_static']);
 
