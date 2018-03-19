@@ -89,7 +89,7 @@ $app->configure('laravels');
 | `stop` | Stop LaravelS |
 | `restart` | Restart LaravelS |
 | `reload` | Reload all worker processes(Contain your business & Laravel/Lumen codes), exclude master/manger process |
-| `publish` | Publish configuration file `laravels.php` of LaravelS into folder `config` of your project |
+| `publish` | Publish configuration file `laravels.php` into folder `config`, `suggest that do publish after upgrade LaravelS` |
 
 ## Cooperate with Nginx (Recommended)
 
