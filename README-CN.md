@@ -68,7 +68,7 @@ $app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
 ```
 
 3.发布配置文件。
-> `升级LaravelS后，建议重新发布一次配置文件`
+> `每次升级LaravelS后，建议重新发布一次配置文件`
 ```Bash
 php artisan laravels publish
 ```
