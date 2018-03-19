@@ -26,7 +26,7 @@ return [
         //'task_worker_num'   => function_exists('\swoole_cpu_num') ? \swoole_cpu_num() * 2 : 8,
         'task_ipc_mode'      => 3,
         'task_max_request'   => 3000,
-        'task_tmpdir'        => is_dir('/dev/shm') && is_writable('/dev/shm') ? '/dev/shm' : '/tmp',
+        'task_tmpdir'        => @is_writable('/dev/shm/') ? '/dev/shm' : '/tmp',
         'message_queue_key'  => sprintf('sw_%s', md5(base_path())),
         'max_request'        => 3000,
         'open_tcp_nodelay'   => true,
