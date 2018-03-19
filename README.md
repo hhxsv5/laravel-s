@@ -68,6 +68,8 @@ $app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
 ```
 
 3.Publish Configuration.
+> `Suggest that do publish after upgrade LaravelS`
+
 ```Bash
 php artisan laravels publish
 ```
@@ -89,7 +91,7 @@ $app->configure('laravels');
 | `stop` | Stop LaravelS |
 | `restart` | Restart LaravelS |
 | `reload` | Reload all worker processes(Contain your business & Laravel/Lumen codes), exclude master/manger process |
-| `publish` | Publish configuration file `laravels.php` into folder `config`, `suggest that do publish after upgrade LaravelS` |
+| `publish` | Publish configuration file `laravels.php` into folder `config` |
 
 ## Cooperate with Nginx (Recommended)
 
