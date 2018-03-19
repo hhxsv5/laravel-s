@@ -68,7 +68,7 @@ $app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
 ```
 
 3.Publish Configuration.
-> `Suggest that do publish after upgrade LaravelS every time`
+> *Suggest that do publish after upgrade LaravelS every time*
 ```Bash
 php artisan laravels publish
 ```
