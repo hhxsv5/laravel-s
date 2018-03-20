@@ -36,12 +36,13 @@ class Server
 
         $this->swoole->set($settings);
 
+        $this->bindBaseEvent();
         $this->bindHttpEvent();
         $this->bindTaskEvent();
         $this->bindWebsocketEvent();
     }
 
-    protected function bindHttpEvent()
+    protected function bindBaseEvent()
     {
         $this->swoole->on('Start', [$this, 'onStart']);
         $this->swoole->on('Shutdown', [$this, 'onShutdown']);
@@ -53,6 +54,10 @@ class Server
             $this->swoole->on('WorkerExit', [$this, 'onWorkerExit']);
         }
         $this->swoole->on('WorkerError', [$this, 'onWorkerError']);
+    }
+
+    protected function bindHttpEvent()
+    {
         $this->swoole->on('Request', [$this, 'onRequest']);
     }
 
