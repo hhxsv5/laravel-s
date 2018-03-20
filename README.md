@@ -220,6 +220,12 @@ class WebsocketService implements WebsocketHandlerInterface
     'enable'  => true,
     'handler' => \App\Services\WebsocketService::class,
 ],
+'swoole'         => [
+    //...
+    // Must set dispatch_mode in (2, 4, 5), see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
+    'dispatch_mode' => 2,
+    //...
+],
 // ...
 ```
 
