@@ -467,7 +467,7 @@ public function test(Request $req)
 
 | 支持者 | 金额 |
 | --- | --- |
-| *思勇 efa***@gmail.com | 18.88元 |
+| `*思勇 efa***@gmail.com` | 18.88元 |
 
 ## License
 
