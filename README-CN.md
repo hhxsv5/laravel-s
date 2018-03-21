@@ -465,7 +465,7 @@ public function test(Request $req)
 
 ### 感谢
 
-- `*思勇 efa***@gmail.com` 18.88元
+- ==*思勇 efa***@gmail.com== 18.88元
 
 ## License
 
