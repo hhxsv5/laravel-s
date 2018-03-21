@@ -459,7 +459,13 @@ public function test(Request $req)
 2. 包装MySQL/Redis/Http的协程客户端。
 
 ## 打赏
+> 您的支持是我们坚持的最大动力。
+
 <img src="https://github.com/hhxsv5/laravel-s/blob/master/reward.png" height="200px" alt="打赏">
+
+### 感谢
+
+- `*思勇 efa***@gmail.com` 18.88元
 
 ## License
 
