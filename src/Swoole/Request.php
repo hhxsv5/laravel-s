@@ -3,6 +3,7 @@
 namespace Hhxsv5\LaravelS\Swoole;
 
 use Illuminate\Http\Request as IlluminateRequest;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class Request
 {
@@ -58,6 +59,13 @@ class Request
         $content = $reflection->getProperty('content');
         $content->setAccessible(true);
         $content->setValue($request, $this->swooleRequest->rawContent());
+
+        if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')
+            && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), array('PUT', 'DELETE', 'PATCH'))
+        ) {
+            parse_str($request->getContent(), $data);
+            $request->request = new ParameterBag($data);
+        }
 
         return $request;
     }
