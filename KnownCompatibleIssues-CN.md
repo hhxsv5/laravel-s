@@ -11,5 +11,14 @@
 });
 ```
 
-## 不能调用这些函数 `flush`/`ob_flush`/`ob_end_flush`/`ob_implicit_flush`
-> 因为`swoole_http_response`不支持`flush`
+## 不能使用这些函数
+
+- `flush`/`ob_flush`/`ob_end_flush`/`ob_implicit_flush`：`swoole_http_response`不支持`flush`。
+
+- `exit()`/`die()`: 将导致Worker/Task/Process进程立即退出，建议通过抛异常跳出函数调用栈，[Swoole文档](https://wiki.swoole.com/wiki/page/501.html)。
+
+- `header()`/`setcookie()`/`http_response_code()`：HTTP响应只能通过`swoole_http_response`对象。
+
+## 不能使用的全局变量
+
+- `$_SESSION`
