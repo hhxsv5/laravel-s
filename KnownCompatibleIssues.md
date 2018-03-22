@@ -10,3 +10,6 @@
     $app->agent->setUserAgent();
 });
 ```
+
+## Cannot call these functions `flush`/`ob_flush`/`ob_end_flush`/`ob_implicit_flush`
+> Because `swoole_http_response` does not support `flush`

@@ -458,6 +458,8 @@ public function test(Request $req)
 
 2. 包装MySQL/Redis/Http的协程客户端。
 
+3. 定时器。
+
 ## 打赏
 > 您的支持是我们坚持的最大动力。
 

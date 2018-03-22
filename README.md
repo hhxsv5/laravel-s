@@ -460,6 +460,8 @@ public function test(Request $req)
 
 2. Wrap coroutine clients for MySQL/Redis/Http.
 
+3. Timer.
+
 ## License
 
 [MIT](https://github.com/hhxsv5/laravel-s/blob/master/LICENSE)
