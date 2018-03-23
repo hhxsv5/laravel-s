@@ -463,13 +463,14 @@ public function test(Request $req)
 ## 打赏
 > 您的支持是我们坚持的最大动力。
 
-<img src="https://github.com/hhxsv5/laravel-s/blob/master/reward.png" height="200px" alt="打赏">
+<img src="https://github.com/hhxsv5/laravel-s/blob/master/reward.png" height="300px" alt="打赏">
 
 ### 感谢
 
 | 支持者 | 金额 |
 | --- | --- |
 | `*思勇 efa***@gmail.com` | 18.88元 |
+| `魂之挽歌` | 100元 |
 
 ## License
 
