@@ -22,3 +22,9 @@
 ## 不能使用的全局变量
 
 - `$_SESSION`
+
+## 大小限制
+
+- `Swoole`限制了`GET`请求头的最大尺寸为`8KB`，建议`Cookie`的不要太大，不然`$_COOKIE`可能解析失败。
+
+- `POST`数据或文件上传的最大尺寸受`Swoole`配置[`package_max_length`](https://wiki.swoole.com/wiki/page/301.html)影响，默认上限是`2M`。

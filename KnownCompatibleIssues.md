@@ -22,3 +22,9 @@
 ## Cannot use these global variables
 
 - `$_SESSION`
+
+## Size limit
+
+- The max size of `GET` request's header is `8KB`, restricted by `Swoole`, the big `Cookie` in Http header will lead to parse `$_COOKIE` fail.
+
+- The max size of `POST` data/file is limited by `Swoole` [`package_max_length`](https://www.swoole.co.uk/docs/modules/swoole-server/configuration), default `2M`.
