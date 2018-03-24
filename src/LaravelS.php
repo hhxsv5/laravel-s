@@ -32,7 +32,6 @@ class LaravelS extends Server
         parent::__construct($svrConf);
         $this->laravelConf = $laravelConf;
         $this->addInotifyProcess();
-        $this->addTimerProcess();
     }
 
     protected function addInotifyProcess()
@@ -68,24 +67,6 @@ class LaravelS extends Server
         $this->swoole->addProcess($inotifyProcess);
     }
 
-    protected function addTimerProcess()
-    {
-        if (empty($this->conf['timer']['enable']) || empty($this->conf['timer']['jobs'])) {
-            return;
-        }
-
-        $startTimer = function (\swoole_process $process) {
-            $this->setProcessTitle(sprintf('%s laravels: timer process', $this->conf['process_prefix']));
-            $laravel = new Laravel($this->laravelConf);
-            $laravel->prepareLaravel();
-            $laravel->consoleKernelBootstrap();
-            parent::registerTimers($this->conf['timer']['jobs']);
-        };
-
-        $timerProcess = new \swoole_process($startTimer, false);
-        $this->swoole->addProcess($timerProcess);
-    }
-
     protected function getWebsocketHandler()
     {
         $this->laravel->consoleKernelBootstrap();
@@ -113,6 +94,11 @@ class LaravelS extends Server
         $this->laravel = new Laravel($this->laravelConf);
         $this->laravel->prepareLaravel();
         $this->laravel->bindSwoole($this->swoole);
+
+        if ($workerId === 0) {
+            //$this->laravel->consoleKernelBootstrap();
+            parent::registerTimers($this->conf['timer']['jobs']);
+        }
 
         // file_put_contents('laravels.log', 'Laravels:onWorkerStart:end already included files ' . json_encode(get_included_files(), JSON_UNESCAPED_SLASHES) . PHP_EOL, FILE_APPEND);
     }

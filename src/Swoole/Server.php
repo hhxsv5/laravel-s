@@ -5,6 +5,7 @@ namespace Hhxsv5\LaravelS\Swoole;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
+use Hhxsv5\LaravelS\Swoole\Task\TimerTask;
 use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 
 class Server
@@ -122,8 +123,9 @@ class Server
             if (!($job instanceof CronJob)) {
                 throw new \Exception(sprintf('%s must implement the abstract class %s', get_class($job), CronJob::class));
             }
-            $timerId = $this->swoole->tick($job->interval(), function ($timerId) use ($job) {
-                $job->run();
+            $timerId = swoole_timer_tick($job->interval(), function ($timerId) use ($job) {
+                $taskJob = new TimerTask($job);
+                $this->swoole->task($taskJob);
             });
             $job->setTimerId($timerId);
         }
