@@ -36,11 +36,12 @@ class LaravelS extends Server
 
     protected function addInotifyProcess()
     {
-        if (empty($this->conf['inotify_reload']) || empty($this->conf['inotify_reload']['enable'])) {
+        if (empty($this->conf['inotify_reload']['enable'])) {
             return;
         }
 
         if (!extension_loaded('inotify')) {
+            $this->log('require extension inotify', 'WARN');
             return;
         }
 
@@ -51,13 +52,13 @@ class LaravelS extends Server
             $inotify = new Inotify($this->laravelConf['rootPath'], IN_CREATE | IN_MODIFY | IN_DELETE, function ($event) use ($log) {
                 $this->swoole->reload();
                 if ($log) {
-                    echo '[', date('Y-m-d H:i:s'), '] LaravelS: reloaded by inotify, file: ', $event['name'], PHP_EOL;
+                    $this->log(sprintf('reloaded by inotify, file: %s', $event['name']));
                 }
             });
             $inotify->addFileTypes($fileTypes);
             $inotify->watch();
             if ($log) {
-                echo '[', date('Y-m-d H:i:s'), '] LaravelS: count of watched files by inotify: ', $inotify->getWatchedFileCount(), PHP_EOL;
+                $this->log(sprintf('count of watched files by inotify: %d', $inotify->getWatchedFileCount()));
             }
             $inotify->start();
         };
@@ -109,7 +110,7 @@ class LaravelS extends Server
                 $this->handleDynamicResource($laravelRequest, $response);
             }
         } catch (\Exception $e) {
-            echo sprintf('[%s][ERROR][LaravelS]onRequest: %s:%s, [%d]%s%s%s', date('Y-m-d H:i:s'), $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), PHP_EOL;
+            $this->log(sprintf('onRequest: %s:%s, [%d]%s%s%s', $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), 'ERROR');
             try {
                 $response->status(500);
                 $response->end('Oops! An unexpected error occurred, please take a look the Swoole log.');

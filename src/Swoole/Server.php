@@ -50,8 +50,13 @@ class Server
         $this->swoole->on('ManagerStop', [$this, 'onManagerStop']);
         $this->swoole->on('WorkerStart', [$this, 'onWorkerStart']);
         $this->swoole->on('WorkerStop', [$this, 'onWorkerStop']);
-        if (version_compare(\swoole_version(), '1.9.17', '>=')) {
+        $swooleVer = \swoole_version();
+        if (version_compare($swooleVer, '1.9.17', '>=') && version_compare($swooleVer, '2.0.0', '<=')) {
             $this->swoole->on('WorkerExit', [$this, 'onWorkerExit']);
+        } elseif (version_compare($swooleVer, '2.0.8', '>=')) {
+            $this->swoole->on('WorkerExit', [$this, 'onWorkerExit']);
+        } else {
+            $this->log('bind event[WorkerExit] fail, require Swoole version( ( >=1.9.17 && <=2.0.0 ) || >=2.0.8 )', 'WARN');
         }
         $this->swoole->on('WorkerError', [$this, 'onWorkerError']);
     }
@@ -253,4 +258,9 @@ class Server
         }
     }
 
+
+    protected function log($msg, $type = 'INFO')
+    {
+        echo sprintf('[%s] [%s] LaravelS: %s', date('Y-m-d H:i:s'), $type, $msg), PHP_EOL;
+    }
 }
