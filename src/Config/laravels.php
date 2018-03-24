@@ -18,6 +18,12 @@ return [
         'enable' => false,
         //'handler' => XxxWebsocketHandler::class,
     ],
+    'timer'          => [
+        'enable' => false,
+//        'jobs' => [
+//            XxxCronJob::class,
+//        ],
+    ],
     'swoole'         => [
         'daemonize'          => env('LARAVELS_DAEMONIZE', true),
         'dispatch_mode'      => 1,
