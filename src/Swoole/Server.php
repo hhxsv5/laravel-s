@@ -5,6 +5,7 @@ namespace Hhxsv5\LaravelS\Swoole;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
+use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 
 class Server
 {

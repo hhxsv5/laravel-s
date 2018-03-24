@@ -1,6 +1,6 @@
 <?php
 
-namespace Hhxsv5\LaravelS\Swoole;
+namespace Hhxsv5\LaravelS\Swoole\Timer;
 
 abstract class CronJob implements CronJobInterface
 {
