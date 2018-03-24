@@ -114,13 +114,9 @@ class Server
         return $handler;
     }
 
-    protected function startTimer()
+    protected function registerTimers(array $jobClasses)
     {
-        if (empty($this->conf['timer']['enable']) || empty($this->conf['timer']['jobs'])) {
-            return;
-        }
-
-        foreach ($this->conf['timer']['jobs'] as $jobClass) {
+        foreach ($jobClasses as $jobClass) {
             $job = new $jobClass();
             if (!($job instanceof CronJob)) {
                 throw new \Exception(sprintf('%s must implement the abstract class %s', get_class($job), CronJob::class));

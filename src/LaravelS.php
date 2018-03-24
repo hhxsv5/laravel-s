@@ -32,7 +32,7 @@ class LaravelS extends Server
         parent::__construct($svrConf);
         $this->laravelConf = $laravelConf;
         $this->addInotifyProcess();
-        $this->startTimer();
+        $this->addTimerProcess();
     }
 
     protected function addInotifyProcess()
@@ -68,6 +68,24 @@ class LaravelS extends Server
         $this->swoole->addProcess($inotifyProcess);
     }
 
+    protected function addTimerProcess()
+    {
+        if (empty($this->conf['timer']['enable']) || empty($this->conf['timer']['jobs'])) {
+            return;
+        }
+
+        $startTimer = function (\swoole_process $process) {
+            $this->setProcessTitle(sprintf('%s laravels: timer process', $this->conf['process_prefix']));
+            $laravel = new Laravel($this->laravelConf);
+            $laravel->prepareLaravel();
+            $laravel->consoleKernelBootstrap();
+            parent::registerTimers($this->conf['timer']['jobs']);
+        };
+
+        $timerProcess = new \swoole_process($startTimer, false);
+        $this->swoole->addProcess($timerProcess);
+    }
+
     protected function getWebsocketHandler()
     {
         $this->laravel->consoleKernelBootstrap();
@@ -81,19 +99,6 @@ class LaravelS extends Server
         if ($ret !== null) {
             return $ret;
         }
-    }
-
-    protected function startTimer()
-    {
-        $startTimer = function (\swoole_process $process) {
-            $this->setProcessTitle(sprintf('%s laravels: timer process', $this->conf['process_prefix']));
-            $laravel = new Laravel($this->laravelConf);
-            $laravel->prepareLaravel();
-            $laravel->consoleKernelBootstrap();
-            parent::startTimer();
-        };
-        $timerProcess = new \swoole_process($startTimer, false);
-        $this->swoole->addProcess($timerProcess);
     }
 
     public function onWorkerStart(\swoole_http_server $server, $workerId)
