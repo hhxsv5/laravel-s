@@ -88,6 +88,12 @@ EOS;
                 return;
             }
         }
+        if (!empty($svrConf['timer']['enable'])) {
+            if (empty($svrConf['swoole']['task_worker_num']) || $svrConf['swoole']['task_worker_num'] <= 0) {
+                $this->error('LaravelS: Asynchronous timer needs to set task_worker_num > 0');
+                return;
+            }
+        }
 
         $laravelConf = [
             'rootPath'   => base_path(),
