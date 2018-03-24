@@ -50,14 +50,6 @@ class Server
         $this->swoole->on('ManagerStop', [$this, 'onManagerStop']);
         $this->swoole->on('WorkerStart', [$this, 'onWorkerStart']);
         $this->swoole->on('WorkerStop', [$this, 'onWorkerStop']);
-        $swooleVer = \swoole_version();
-        if (version_compare($swooleVer, '1.9.17', '>=') && version_compare($swooleVer, '2.0.0', '<=')) {
-            $this->swoole->on('WorkerExit', [$this, 'onWorkerExit']);
-        } elseif (version_compare($swooleVer, '2.0.8', '>=')) {
-            $this->swoole->on('WorkerExit', [$this, 'onWorkerExit']);
-        } else {
-            $this->log('bind event[WorkerExit] fail, require Swoole version( ( >=1.9.17 && <=2.0.0 ) || >=2.0.8 )', 'WARN');
-        }
         $this->swoole->on('WorkerError', [$this, 'onWorkerError']);
     }
 
@@ -170,11 +162,6 @@ class Server
     }
 
     public function onWorkerStop(\swoole_http_server $server, $workerId)
-    {
-
-    }
-
-    public function onWorkerExit(\swoole_http_server $server, $workerId)
     {
 
     }
