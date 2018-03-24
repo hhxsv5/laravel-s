@@ -20,9 +20,9 @@ return [
     ],
     'timer'          => [
         'enable' => false,
-//        'jobs' => [
-//            XxxCronJob::class,
-//        ],
+        'jobs'   => [
+            //XxxCronJob::class,
+        ],
     ],
     'swoole'         => [
         'daemonize'          => env('LARAVELS_DAEMONIZE', true),

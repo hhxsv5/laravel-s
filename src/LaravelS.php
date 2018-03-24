@@ -32,6 +32,7 @@ class LaravelS extends Server
         parent::__construct($svrConf);
         $this->laravelConf = $laravelConf;
         $this->addInotifyProcess();
+        $this->startTimer();
     }
 
     protected function addInotifyProcess()
@@ -80,6 +81,19 @@ class LaravelS extends Server
         if ($ret !== null) {
             return $ret;
         }
+    }
+
+    protected function startTimer()
+    {
+        $startTimer = function (\swoole_process $process) {
+            $this->setProcessTitle(sprintf('%s laravels: timer process', $this->conf['process_prefix']));
+            $laravel = new Laravel($this->laravelConf);
+            $laravel->prepareLaravel();
+            $laravel->consoleKernelBootstrap();
+            parent::startTimer();
+        };
+        $timerProcess = new \swoole_process($startTimer, false);
+        $this->swoole->addProcess($timerProcess);
     }
 
     public function onWorkerStart(\swoole_http_server $server, $workerId)

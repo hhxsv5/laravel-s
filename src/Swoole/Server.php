@@ -114,6 +114,24 @@ class Server
         return $handler;
     }
 
+    protected function startTimer()
+    {
+        if (empty($this->conf['timer']['enable']) || empty($this->conf['timer']['jobs'])) {
+            return;
+        }
+
+        foreach ($this->conf['timer']['jobs'] as $jobClass) {
+            $job = new $jobClass();
+            if (!($job instanceof CronJob)) {
+                throw new \Exception(sprintf('%s must implement the abstract class %s', get_class($job), CronJob::class));
+            }
+            $timerId = $this->swoole->tick($job->interval(), function ($timerId) use ($job) {
+                $job->run();
+            });
+            $job->setTimerId($timerId);
+        }
+    }
+
     public function onStart(\swoole_http_server $server)
     {
         foreach (spl_autoload_functions() as $function) {
