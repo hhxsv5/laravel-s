@@ -96,7 +96,6 @@ class LaravelS extends Server
         $this->laravel->bindSwoole($this->swoole);
 
         if ($workerId === 0) {
-            //$this->laravel->consoleKernelBootstrap();
             parent::registerTimers($this->conf['timer']['jobs']);
         }
 

@@ -123,8 +123,8 @@ class Server
             if (!($job instanceof CronJob)) {
                 throw new \Exception(sprintf('%s must implement the abstract class %s', get_class($job), CronJob::class));
             }
-            $timerId = swoole_timer_tick($job->interval(), function ($timerId) use ($job) {
-                $taskJob = new TimerTask($job);
+            $taskJob = new TimerTask($job);
+            $timerId = swoole_timer_tick($job->interval(), function ($timerId) use ($taskJob) {
                 $this->swoole->task($taskJob);
             });
             $job->setTimerId($timerId);

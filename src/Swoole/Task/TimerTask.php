@@ -18,9 +18,4 @@ class TimerTask extends Task
     {
         $this->job->run();
     }
-
-    public function finish()
-    {
-
-    }
 }
