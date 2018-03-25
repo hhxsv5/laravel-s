@@ -24,7 +24,7 @@
 
 - Asynchronous task queue
 
-- Millisecond Cron Job
+- Millisecond cron job
 
 - Gracefully reload
 
@@ -54,7 +54,7 @@ composer require "hhxsv5/laravel-s:~1.0" -vvv
 # Make sure that your composer.lock file is under the VCS
 ```
 
-2.Add Service Provider.
+2.Add service provider.
 
 - `Laravel`: in `config/app.php` file
 ```PHP
@@ -69,7 +69,7 @@ composer require "hhxsv5/laravel-s:~1.0" -vvv
 $app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
 ```
 
-3.Publish Configuration.
+3.Publish configuration.
 > *Suggest that do publish after upgrade LaravelS every time*
 ```Bash
 php artisan laravels publish
@@ -83,7 +83,7 @@ $app->configure('laravels');
 
 4.Change `config/laravels.php`: listen_ip, listen_port, refer [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
-## Run Demo
+## Run demo
 > `php artisan laravels {start|stop|restart|reload|publish}`
 
 | Command | Description |
@@ -186,7 +186,7 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 </VirtualHost>
 ```
 
-## Enable WebSocket Server
+## Enable WebSocket server
 > The Listening address of WebSocket Sever is the same as Http Server.
 
 1.Create WebSocket Handler class, and implement interface `WebsocketHandlerInterface`.
@@ -272,9 +272,9 @@ server {
 ```
 
 
-## Listen Events
+## Listen events
 
-### System Events
+### System events
 > Usually, you can reset/destroy some `global/static` variables, or change the current `Request/Response` object.
 
 - `laravels.received_request` After LaravelS parsed `swoole_http_request` to `Illuminate\Http\Request`, before Laravel's Kernel handles this request.
@@ -298,7 +298,7 @@ $events->listen('laravels.generated_response', function (\Illuminate\Http\Reques
 });
 ```
 
-### Customized Asynchronous Events
+### Customized asynchronous events
 > The performance of listener processing is influenced by number of Swoole task process, you need to set [task_worker_num](https://www.swoole.co.uk/docs/modules/swoole-server/configuration) appropriately.
 
 1.Create event class.
@@ -397,7 +397,7 @@ $ret = Task::deliver($task);
 var_dump($ret);// Return true if sucess, otherwise false
 ```
 
-## Millisecond Cron Job
+## Millisecond cron job
 > Wrapper cron job base on [Swoole's Millisecond Timer](https://www.swoole.co.uk/docs/modules/swoole-async-io), replace `Linux` `Crontab`.
 
 1.Create cron job class.
@@ -455,7 +455,7 @@ $swoole = app('swoole');
 var_dump($swoole->stats());// Singleton
 ```
 
-## Important Notices
+## Important notices
 
 - Get all info of request from `Illuminate\Http\Request` Object, compatible with $_SERVER/$_ENV/$_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST, `CANNOT USE` $_SESSION.
 
@@ -501,15 +501,13 @@ public function test(Request $req)
 }
 ```
 
-## [Known Compatible Issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues.md)
+## [Known compatible issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues.md)
 
 ## Todo list
 
 1. Connection pool for MySQL/Redis.
 
 2. Wrap coroutine clients for MySQL/Redis/Http.
-
-3. Timer.
 
 ## License
 
