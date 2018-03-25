@@ -15,9 +15,11 @@ class Request
     }
 
     /**
+     * @param array $rawServer
+     * @param array $rawEnv
      * @return IlluminateRequest
      */
-    public function toIlluminateRequest()
+    public function toIlluminateRequest($rawServer = [], $rawEnv = [])
     {
         $_GET = isset($this->swooleRequest->get) ? $this->swooleRequest->get : [];
         $_POST = isset($this->swooleRequest->post) ? $this->swooleRequest->post : [];
@@ -39,7 +41,8 @@ class Request
         if (isset($this->swooleRequest->header['x-real-port'])) {
             $server['REMOTE_PORT'] = (int)$this->swooleRequest->header['x-real-port'];
         }
-        $_SERVER = array_merge($_SERVER, array_change_key_case($server, CASE_UPPER));
+        $_SERVER = array_merge($rawServer, array_change_key_case($server, CASE_UPPER));
+        $_ENV = $rawEnv;
 
         // Fix argv & argc
         if (!isset($_SERVER['argv'])) {

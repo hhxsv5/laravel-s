@@ -27,6 +27,8 @@ class Laravel
         '/web.config' => 1,
     ];
 
+    private $rawGlobals = [];
+
     public function __construct(array $conf = [])
     {
         $this->conf = $conf;
@@ -71,8 +73,13 @@ class Laravel
 
         $server = isset($this->conf['_SERVER']) ? $this->conf['_SERVER'] : [];
         $env = isset($this->conf['_ENV']) ? $this->conf['_ENV'] : [];
-        $_SERVER = array_merge($_SERVER, $server);
-        $_ENV = array_merge($_ENV, $env);
+        $this->rawGlobals['_SERVER'] = array_merge($_SERVER, $server);
+        $this->rawGlobals['_ENV'] = array_merge($_ENV, $env);
+    }
+
+    public function getRawGlobals()
+    {
+        return $this->rawGlobals;
     }
 
     public function consoleKernelBootstrap()

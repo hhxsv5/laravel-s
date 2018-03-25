@@ -109,7 +109,10 @@ class LaravelS extends Server
     {
         try {
             parent::onRequest($request, $response);
-            $laravelRequest = (new Request($request))->toIlluminateRequest();
+            $rawGlobals = $this->laravel->getRawGlobals();
+            $server = isset($rawGlobals['_SERVER']) ? $rawGlobals['_SERVER'] : [];
+            $env = isset($rawGlobals['_ENV']) ? $rawGlobals['_ENV'] : [];
+            $laravelRequest = (new Request($request))->toIlluminateRequest($server, $env);
             $this->laravel->bindRequest($laravelRequest);
             $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
             $success = $this->handleStaticResource($laravelRequest, $response);
