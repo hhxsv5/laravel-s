@@ -19,7 +19,7 @@ class Request
      * @param array $rawEnv
      * @return IlluminateRequest
      */
-    public function toIlluminateRequest($rawServer = [], $rawEnv = [])
+    public function toIlluminateRequest(array $rawServer = [], array $rawEnv = [])
     {
         $_GET = isset($this->swooleRequest->get) ? $this->swooleRequest->get : [];
         $_POST = isset($this->swooleRequest->post) ? $this->swooleRequest->post : [];
