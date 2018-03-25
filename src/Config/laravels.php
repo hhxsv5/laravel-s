@@ -21,7 +21,8 @@ return [
     'timer'          => [
         'enable' => false,
         'jobs'   => [
-            //\Hhxsv5\LaravelS\Illuminate\LaravelScheduleJob::class, // Enable this job to run `php artisan schedule:run` every 1 minute, replace Linux Crontab
+            // Enable LaravelScheduleJob to run `php artisan schedule:run` every 1 minute, replace Linux Crontab
+            //\Hhxsv5\LaravelS\Illuminate\LaravelScheduleJob::class,
             //XxxCronJob::class,
         ],
     ],
