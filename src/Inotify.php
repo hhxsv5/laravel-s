@@ -42,6 +42,9 @@ class Inotify
     protected function _watch($path)
     {
         $wd = inotify_add_watch($this->fd, $path, $this->watchMask);
+        if ($wd === false) {
+            return false;
+        }
         $this->bind($wd, $path);
 
         if (is_dir($path)) {
@@ -58,6 +61,9 @@ class Inotify
                 $fileType = strrchr($file, '.');
                 if (isset($this->fileTypes[$fileType])) {
                     $wd = inotify_add_watch($this->fd, $file, $this->watchMask);
+                    if ($wd === false) {
+                        return false;
+                    }
                     $this->bind($wd, $file);
                 }
             }
