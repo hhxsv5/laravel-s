@@ -24,7 +24,7 @@
 
 - Asynchronous task queue
 
-- Cron Job
+- Millisecond Cron Job
 
 - Gracefully reload
 
@@ -397,7 +397,7 @@ $ret = Task::deliver($task);
 var_dump($ret);// Return true if sucess, otherwise false
 ```
 
-## Cron Job
+## Millisecond Cron Job
 > Wrapper cron job base on [Swoole's Millisecond Timer](https://www.swoole.co.uk/docs/modules/swoole-async-io), replace `Linux` `Crontab`.
 
 1.Create cron job class.

@@ -24,7 +24,7 @@
 
 - 异步的任务队列
 
-- 定时任务
+- 毫秒级定时任务
 
 - 平滑Reload
 
@@ -395,7 +395,7 @@ $ret = Task::deliver($task);
 var_dump($ret);//判断是否投递成功
 ```
 
-## 定时任务
+## 毫秒级定时任务
 > 基于[Swoole的毫秒定时器](https://wiki.swoole.com/wiki/page/244.html)，封装的定时任务，取代`Linux`的`Crontab`。
 
 1.创建定时任务类。
