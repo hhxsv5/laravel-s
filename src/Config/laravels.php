@@ -21,6 +21,7 @@ return [
     'timer'          => [
         'enable' => false,
         'jobs'   => [
+            //\Hhxsv5\LaravelS\Illuminate\LaravelScheduleJob::class, // Enable job to run `php artisan schedule:run` every 30s
             //XxxCronJob::class,
         ],
     ],
