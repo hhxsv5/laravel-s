@@ -89,13 +89,17 @@ class Server
                 }
             });
 
-            $this->swoole->on('Close', function () {
-                $handler = $this->getWebsocketHandler();
-                try {
-                    call_user_func_array([$handler, 'onClose'], func_get_args());
-                } catch (\Exception $e) {
-                    // Do nothing to avoid 'zend_mm_heap corrupted'
+            $this->swoole->on('Close', function (\swoole_http_server $server, $fd) {
+                $clientInfo = $server->getClientInfo($fd);
+                if (isset($clientInfo['websocket_status']) && $clientInfo['websocket_status'] === \WEBSOCKET_STATUS_FRAME) {
+                    $handler = $this->getWebsocketHandler();
+                    try {
+                        call_user_func_array([$handler, 'onClose'], func_get_args());
+                    } catch (\Exception $e) {
+                        // Do nothing to avoid 'zend_mm_heap corrupted'
+                    }
                 }
+                // else ignore the close event for http server
             });
         }
     }
