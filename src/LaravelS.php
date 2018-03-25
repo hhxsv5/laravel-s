@@ -49,7 +49,7 @@ class LaravelS extends Server
 
         $log = !empty($this->conf['inotify_reload']['log']);
         $fileTypes = isset($this->conf['inotify_reload']['file_types']) ? (array)$this->conf['inotify_reload']['file_types'] : [];
-        $autoReload = function (\swoole_process $process) use ($fileTypes, $log) {
+        $autoReload = function () use ($fileTypes, $log) {
             $this->setProcessTitle(sprintf('%s laravels: inotify process', $this->conf['process_prefix']));
             $inotify = new Inotify($this->laravelConf['rootPath'], IN_CREATE | IN_MODIFY | IN_DELETE, function ($event) use ($log) {
                 $this->swoole->reload();
@@ -75,7 +75,7 @@ class LaravelS extends Server
             return;
         }
 
-        $startTimer = function (\swoole_process $process) {
+        $startTimer = function () {
             $this->setProcessTitle(sprintf('%s laravels: timer process', $this->conf['process_prefix']));
             $laravel = $this->initLaravel();
             $laravel->consoleKernelBootstrap();
