@@ -28,3 +28,10 @@
 - The max size of `GET` request's header is `8KB`, restricted by `Swoole`, the big `Cookie` will lead to parse `$_COOKIE` fail.
 
 - The max size of `POST` data/file is restricted by `Swoole` [`package_max_length`](https://www.swoole.co.uk/docs/modules/swoole-server/configuration), default `2M`.
+
+## Inotify reached the watchers limit
+> `Warning: inotify_add_watch(): The user limit on the total number of inotify watches was reached`
+
+- Inotify limit is `8192` for most `Linux`, but the amount of actual project may be more than it, then lead to watch fail.
+
+- Increase the amount of inotify watchers to `524288`: `echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p`, note: you need to enable `privileged` for `Docker`.
