@@ -10,7 +10,7 @@
 
 - `handle_static`：`bool` 是否开启LaravelS处理静态资源(要求 `Swoole >= 1.7.21`，若`Swoole >= 1.9.17`则由Swoole自己处理)，默认`false`，建议Nginx处理静态资源，LaravelS仅处理动态资源。静态资源的默认路径为`base_path('public')`，可通过修改`swoole.document_root`变更。
 
-- `inotify_reload.enable`：`bool` 是否开启`Inotify Reload`，用于当修改代码后实时Reload所有worker进程，依赖库[inotify](http://pecl.php.net/package/inotify)，通过命令`php --ri inotify`检查是否可用，默认`false`，`建议仅开发环境开启`。
+- `inotify_reload.enable`：`bool` 是否开启`Inotify Reload`，用于当修改代码后实时Reload所有worker进程，依赖库[inotify](http://pecl.php.net/package/inotify)，通过命令`php --ri inotify`检查是否可用，默认`false`，`建议仅开发环境开启`，[修改监听数上限](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues-CN.md#inotify%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E6%95%B0%E8%BE%BE%E5%88%B0%E4%B8%8A%E9%99%90)。
  
 - `inotify_reload.file_types`：`array` `Inotify` 监控的文件类型，默认有`.php`。 
 
