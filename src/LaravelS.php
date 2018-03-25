@@ -7,6 +7,7 @@ use Hhxsv5\LaravelS\Swoole\DynamicResponse;
 use Hhxsv5\LaravelS\Swoole\Request;
 use Hhxsv5\LaravelS\Swoole\Server;
 use Hhxsv5\LaravelS\Swoole\StaticResponse;
+use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 use Illuminate\Http\Request as IlluminateRequest;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -32,6 +33,7 @@ class LaravelS extends Server
         parent::__construct($svrConf);
         $this->laravelConf = $laravelConf;
         $this->addInotifyProcess();
+        $this->addTimerProcess();
     }
 
     protected function addInotifyProcess()
@@ -67,10 +69,44 @@ class LaravelS extends Server
         $this->swoole->addProcess($inotifyProcess);
     }
 
+    protected function addTimerProcess()
+    {
+        if (empty($this->conf['timer']['enable']) || empty($this->conf['timer']['jobs'])) {
+            return;
+        }
+
+        $startTimer = function (\swoole_process $process) {
+            $this->setProcessTitle(sprintf('%s laravels: timer process', $this->conf['process_prefix']));
+            $laravel = $this->initLaravel();
+            $laravel->consoleKernelBootstrap();
+            foreach ($this->conf['timer']['jobs'] as $jobClass) {
+                $job = new $jobClass();
+                if (!($job instanceof CronJob)) {
+                    throw new \Exception(sprintf('%s must implement the abstract class %s', get_class($job), CronJob::class));
+                }
+                $timerId = swoole_timer_tick($job->interval(), function ($timerId) use ($job) {
+                    $job->run();
+                });
+                $job->setTimerId($timerId);
+            }
+        };
+
+        $timerProcess = new \swoole_process($startTimer, false);
+        $this->swoole->addProcess($timerProcess);
+    }
+
     protected function getWebsocketHandler()
     {
         $this->laravel->consoleKernelBootstrap();
         return parent::getWebsocketHandler();
+    }
+
+    protected function initLaravel()
+    {
+        $laravel = new Laravel($this->laravelConf);
+        $laravel->prepareLaravel();
+        $laravel->bindSwoole($this->swoole);
+        return $laravel;
     }
 
     public function onTask(\swoole_http_server $server, $taskId, $srcWorkerId, $data)
@@ -91,16 +127,7 @@ class LaravelS extends Server
         // To implement gracefully reload
         // Delay to create Laravel
         // Delay to include Laravel's autoload.php
-        $this->laravel = new Laravel($this->laravelConf);
-        $this->laravel->prepareLaravel();
-        $this->laravel->bindSwoole($this->swoole);
-
-        if ($workerId === 0) {
-            if (empty($this->conf['timer']['enable']) || empty($this->conf['timer']['jobs'])) {
-                return;
-            }
-            parent::registerTimers($this->conf['timer']['jobs']);
-        }
+        $this->laravel = $this->initLaravel();
 
         // file_put_contents('laravels.log', 'Laravels:onWorkerStart:end already included files ' . json_encode(get_included_files(), JSON_UNESCAPED_SLASHES) . PHP_EOL, FILE_APPEND);
     }

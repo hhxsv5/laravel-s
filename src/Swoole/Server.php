@@ -116,21 +116,6 @@ class Server
         return $handler;
     }
 
-    protected function registerTimers(array $jobClasses)
-    {
-        foreach ($jobClasses as $jobClass) {
-            $job = new $jobClass();
-            if (!($job instanceof CronJob)) {
-                throw new \Exception(sprintf('%s must implement the abstract class %s', get_class($job), CronJob::class));
-            }
-            $taskJob = new TimerTask($job);
-            $timerId = swoole_timer_tick($job->interval(), function ($timerId) use ($taskJob) {
-                $this->swoole->task($taskJob);
-            });
-            $job->setTimerId($timerId);
-        }
-    }
-
     public function onStart(\swoole_http_server $server)
     {
         foreach (spl_autoload_functions() as $function) {
