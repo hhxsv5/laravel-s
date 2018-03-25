@@ -24,6 +24,8 @@
 
 - Asynchronous task queue
 
+- Cron Job
+
 - Gracefully reload
 
 - Automatically reload when code is modified
@@ -393,6 +395,53 @@ $task = new TestTask('task data');
 // $task->delay(3);// delay 3 seconds to deliver task
 $ret = Task::deliver($task);
 var_dump($ret);// Return true if sucess, otherwise false
+```
+
+## Cron Job
+> Wrapper cron job base on [Swoole's Millisecond Timer](https://www.swoole.co.uk/docs/modules/swoole-async-io), replace `Linux` `Crontab`.
+
+1.Create cron job class.
+```PHP
+namespace App\Jobs\Timer;
+use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
+class TestCronJob extends CronJob
+{
+    protected $i = 0;
+    public function __construct()
+    {
+    }
+    public function interval()
+    {
+        return 1000;// Run every 1000ms
+    }
+    public function run()
+    {
+        \Log::info(__METHOD__, ['start', $this->i, microtime(true)]);
+        // do something
+        $this->i++;
+        \Log::info(__METHOD__, ['end', $this->i, microtime(true)]);
+
+        if ($this->i >= 10) { // run 10 times only
+            \Log::info(__METHOD__, ['stop', $this->i, microtime(true)]);
+            $this->stop(); // stop this cron job
+        }
+    }
+}
+```
+
+2.bind cron job.
+```PHP
+// Bind cron jobs in file "config/laravels.php"
+[
+    // ...
+    'timer'          => [
+        'enable' => true, // Enable Timer
+        'jobs'   => [ // the list of cron job
+            \App\Jobs\Timer\TestCronJob::class,
+        ],
+    ],
+    // ...
+];
 ```
 
 ## Get the instance of `swoole_server` in your project

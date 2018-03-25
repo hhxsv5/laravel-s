@@ -24,6 +24,8 @@
 
 - 异步的任务队列
 
+- 定时任务
+
 - 平滑Reload
 
 - 代码修改后自动Reload
@@ -391,6 +393,53 @@ $task = new TestTask('task data');
 // $task->delay(3);// 延迟3秒投放任务
 $ret = Task::deliver($task);
 var_dump($ret);//判断是否投递成功
+```
+
+## 定时任务
+> 基于[Swoole的毫秒定时器](https://wiki.swoole.com/wiki/page/244.html)，封装的定时任务，取代`Linux`的`Crontab`。
+
+1.创建定时任务类。
+```PHP
+namespace App\Jobs\Timer;
+use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
+class TestCronJob extends CronJob
+{
+    protected $i = 0;
+    public function __construct()
+    {
+    }
+    public function interval()
+    {
+        return 1000;// 每1秒运行一次
+    }
+    public function run()
+    {
+        \Log::info(__METHOD__, ['start', $this->i, microtime(true)]);
+        // do something
+        $this->i++;
+        \Log::info(__METHOD__, ['end', $this->i, microtime(true)]);
+
+        if ($this->i >= 10) { // 运行10次后不再执行
+            \Log::info(__METHOD__, ['stop', $this->i, microtime(true)]);
+            $this->stop(); // stop this cron job
+        }
+    }
+}
+```
+
+2.绑定定时任务类。
+```PHP
+// 在"config/laravels.php"绑定定时任务类
+[
+    // ...
+    'timer'          => [
+        'enable' => true, //启用Timer
+        'jobs'   => [ //绑定的定时任务类列表
+            \App\Jobs\Timer\TestCronJob::class,
+        ],
+    ],
+    // ...
+];
 ```
 
 ## 在你的项目中使用`swoole_server`实例
