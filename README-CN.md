@@ -435,6 +435,7 @@ class TestCronJob extends CronJob
     'timer'          => [
         'enable' => true, //启用Timer
         'jobs'   => [ //绑定的定时任务类列表
+            //\Hhxsv5\LaravelS\Illuminate\LaravelScheduleJob::class, // 启用此定时任务来执行`php artisan schedule:run`，每分钟一次，替代Linux Crontab
             \App\Jobs\Timer\TestCronJob::class,
         ],
     ],
