@@ -84,13 +84,14 @@ class LaravelS extends Server
                 if (!($job instanceof CronJob)) {
                     throw new \Exception(sprintf('%s must implement the abstract class %s', get_class($job), CronJob::class));
                 }
-                $timerId = swoole_timer_tick($job->interval(), function ($timerId) use ($job) {
+                $timerId = swoole_timer_tick($job->interval(), function () use ($job) {
                     $job->run();
                 });
                 $job->setTimerId($timerId);
             }
         };
 
+        //TODO: re-register timer when reload worker
         $timerProcess = new \swoole_process($startTimer, false);
         $this->swoole->addProcess($timerProcess);
     }
