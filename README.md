@@ -16,7 +16,7 @@
 
 - High performance Swoole
 
-- Built-in Http/WebSocket Server
+- Built-in Http/WebSocket server
 
 - Memory resident
 
