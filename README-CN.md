@@ -28,7 +28,7 @@
 
 - 平滑Reload
 
-- 代码修改后自动Reload
+- 修改代码后自动Reload
 
 - 同时支持Laravel与Lumen，兼容主流版本
 
