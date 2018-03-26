@@ -16,15 +16,15 @@
 
 - 高性能的Swoole
 
-- 内置Http/WebSocket服务器
+- 内置Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%90%AF%E7%94%A8websocket%E6%9C%8D%E5%8A%A1%E5%99%A8)服务器
 
 - 常驻内存
 
-- 异步的事件监听
+- [异步的事件监听](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E5%BC%82%E6%AD%A5%E4%BA%8B%E4%BB%B6)
 
-- 异步的任务队列
+- [异步的任务队列](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%BC%82%E6%AD%A5%E7%9A%84%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97)
 
-- 毫秒级定时任务
+- [毫秒级定时任务](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E6%AF%AB%E7%A7%92%E7%BA%A7%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1)
 
 - 平滑Reload
 

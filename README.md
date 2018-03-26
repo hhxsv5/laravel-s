@@ -16,15 +16,15 @@
 
 - High performance Swoole
 
-- Built-in Http/WebSocket server
+- Built-in Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server) server
 
 - Memory resident
 
-- Asynchronous event listening
+- [Asynchronous event listening](https://github.com/hhxsv5/laravel-s/blob/master/README.md#customized-asynchronous-events)
 
-- Asynchronous task queue
+- [Asynchronous task queue](https://github.com/hhxsv5/laravel-s/blob/master/README.md#asynchronous-task-queue)
 
-- Millisecond cron job
+- [Millisecond cron job](https://github.com/hhxsv5/laravel-s/blob/master/README.md#millisecond-cron-job)
 
 - Gracefully reload
 
