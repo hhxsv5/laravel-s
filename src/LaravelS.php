@@ -65,7 +65,7 @@ class LaravelS extends Server
             $inotify->start();
         };
 
-        $inotifyProcess = new \swoole_process($autoReload, false);
+        $inotifyProcess = new \swoole_process($autoReload, false, false);
         $this->swoole->addProcess($inotifyProcess);
     }
 
@@ -91,8 +91,7 @@ class LaravelS extends Server
             }
         };
 
-        //TODO: re-register timer when reload worker
-        $timerProcess = new \swoole_process($startTimer, false);
+        $timerProcess = new \swoole_process($startTimer, false, false);
         $this->swoole->addProcess($timerProcess);
     }
 
