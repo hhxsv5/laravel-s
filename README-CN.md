@@ -521,6 +521,7 @@ public function test(Request $req)
 | `*思勇 efa***@gmail.com` | 18.88元 |
 | `魂之挽歌` | 100元 |
 | `小南瓜` | 10.01元 |
+| `*丁智` | 16.66元 |
 
 ## License
 
