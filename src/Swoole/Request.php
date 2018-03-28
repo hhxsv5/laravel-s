@@ -62,6 +62,9 @@ class Request
         $content = $reflection->getProperty('content');
         $content->setAccessible(true);
         $content->setValue($request, $this->swooleRequest->rawContent());
+        $json = $reflection->getProperty('json');
+        $json->setAccessible(true);
+        $json->setValue($request, null);
 
         if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')
             && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), array('PUT', 'DELETE', 'PATCH'))
