@@ -62,9 +62,19 @@ class Request
         $content = $reflection->getProperty('content');
         $content->setAccessible(true);
         $content->setValue($request, $this->swooleRequest->rawContent());
-        $json = $reflection->getProperty('json');
-        $json->setAccessible(true);
-        $json->setValue($request, null);
+        
+        if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/json')
+            && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), array('POST', 'PUT', 'DELETE', 'PATCH'))
+        ) {
+            $data = json_decode($request->getContent(), true);
+            if($data != NULL) {
+                $request->request = new ParameterBag($data);
+
+                $json = $reflection->getProperty('json');
+                $json->setAccessible(true);
+                $json->setValue($request, $request->request);
+            }
+        }
 
         if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')
             && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), array('PUT', 'DELETE', 'PATCH'))
