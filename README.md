@@ -324,6 +324,10 @@ use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 class TestListener1 extends Listener
 {
+    // Declare constructor without parameters
+    public function __construct()
+    {
+    }
     public function handle(Event $event)
     {
         \Log::info(__CLASS__ . ':handle start', [$event->getData()]);
@@ -407,6 +411,7 @@ use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 class TestCronJob extends CronJob
 {
     protected $i = 0;
+    // Declare constructor without parameters
     public function __construct()
     {
     }
