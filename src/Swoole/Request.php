@@ -58,6 +58,11 @@ class Request
         }
 
         $request = IlluminateRequest::capture();
+
+        /**
+         * Fix missed rawContent & parse JSON into $_POST
+         * @see \Illuminate\Http\Request::createFromBase()
+         */
         $reflection = new \ReflectionObject($request);
         $content = $reflection->getProperty('content');
         $content->setAccessible(true);
