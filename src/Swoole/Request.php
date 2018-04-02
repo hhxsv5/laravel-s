@@ -65,6 +65,9 @@ class Request
         $json = $reflection->getProperty('json');
         $json->setAccessible(true);
         $json->setValue($request, null);
+        $getInputSource = $reflection->getMethod('getInputSource');
+        $getInputSource->setAccessible(true);
+        $request->request = $getInputSource->invoke($request);
 
         if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')
             && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), array('PUT', 'DELETE', 'PATCH'))
