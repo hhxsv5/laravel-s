@@ -359,7 +359,7 @@ var_dump($success);//判断是否触发成功
 ```
 
 ## 异步的任务队列
-> 异步任务的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
+> 此特性依赖`Swoole`的`AsyncTask`，必须先设置`config/laravels.php`的`swoole.task_worker_num`。异步任务的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
 
 1.创建任务类。
 ```PHP
