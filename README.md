@@ -432,6 +432,7 @@ class TestCronJob extends CronJob
             \Log::info(__METHOD__, ['stop', $this->i, microtime(true)]);
             $this->stop(); // stop this cron job
         }
+        // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
     }
 }
 ```

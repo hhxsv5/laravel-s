@@ -85,7 +85,11 @@ class LaravelS extends Server
                     throw new \Exception(sprintf('%s must implement the abstract class %s', get_class($job), CronJob::class));
                 }
                 $timerId = swoole_timer_tick($job->interval(), function () use ($job) {
-                    $job->run();
+                    try {
+                        $job->run();
+                    } catch (\Exception $e) {
+                        $this->logException($e);
+                    }
                 });
                 $job->setTimerId($timerId);
             }

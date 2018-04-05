@@ -428,8 +428,9 @@ class TestCronJob extends CronJob
 
         if ($this->i >= 10) { // 运行10次后不再执行
             \Log::info(__METHOD__, ['stop', $this->i, microtime(true)]);
-            $this->stop(); // stop this cron job
+            $this->stop(); // 终止此任务
         }
+        // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
 }
 ```
