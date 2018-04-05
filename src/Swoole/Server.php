@@ -209,19 +209,26 @@ class Server
         }
 
         $listenerClasses = $this->conf['events'][$eventClass];
-        try {
-            if (!is_array($listenerClasses)) {
-                $listenerClasses = (array)$listenerClasses;
+        if (!is_array($listenerClasses)) {
+            $listenerClasses = (array)$listenerClasses;
+        }
+        foreach ($listenerClasses as $listenerClass) {
+            /**
+             * @var Listener $listener
+             */
+            $listener = new $listenerClass();
+            if (!($listener instanceof Listener)) {
+                throw new \Exception(sprintf('%s must extend the abstract class %s', $listenerClass, Listener::class));
             }
-            foreach ($listenerClasses as $listenerClass) {
-                /**
-                 * @var Listener $listener
-                 */
-                $listener = new $listenerClass();
+            try {
                 $listener->handle($event);
+            } catch (\Exception $e) {
+                try {
+                    $listener->onException($e);
+                } catch (\Exception $e) {
+                    // Do nothing to avoid 'zend_mm_heap corrupted'
+                }
             }
-        } catch (\Exception $e) {
-            // Do nothing to avoid 'zend_mm_heap corrupted'
         }
     }
 
@@ -230,7 +237,11 @@ class Server
         try {
             $task->handle();
         } catch (\Exception $e) {
-            // Do nothing to avoid 'zend_mm_heap corrupted'
+            try {
+                $task->onException($e);
+            } catch (\Exception $e) {
+                // Do nothing to avoid 'zend_mm_heap corrupted'
+            }
         }
     }
 

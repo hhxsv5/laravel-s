@@ -332,7 +332,12 @@ class TestListener1 extends Listener
     {
         \Log::info(__CLASS__ . ':handle start', [$event->getData()]);
         sleep(2);// Simulate the slow codes
-        // throw new \Exception('an exception'); // all exceptions will be ignored
+        // throw new \Exception('an exception'); // all exceptions will be passed to onException()
+    }
+    // Optional, exception callback for handle() to avoid terminating Task processes.
+    public function onException(\Exception $e)
+    {
+        \Log::error('Catch exception', [$e]);
     }
 }
 ```
@@ -379,7 +384,7 @@ class TestTask extends Task
     {
         \Log::info(__CLASS__ . ':handle start', [$this->data]);
         sleep(2);// Simulate the slow codes
-        // throw new \Exception('an exception'); // all exceptions will be ignored
+        // throw new \Exception('an exception'); // all exceptions will be passed to onException()
         $this->result = 'the result of ' . $this->data;
     }
     // Optional, finish event, the logic of after task handling, run in worker process, CAN deliver task 
@@ -387,6 +392,11 @@ class TestTask extends Task
     {
         \Log::info(__CLASS__ . ':finish start', [$this->result]);
         Task::deliver(new TestTask2('task2 data')); // Deliver the other task
+    }
+    // Optional, exception callback for handle() to avoid terminating Task processes.
+    public function onException(\Exception $e)
+    {
+        \Log::error('Catch exception', [$e]);
     }
 }
 ```

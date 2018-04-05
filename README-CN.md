@@ -330,7 +330,12 @@ class TestListener1 extends Listener
     {
         \Log::info(__CLASS__ . ':handle start', [$event->getData()]);
         sleep(2);// 模拟一些慢速的事件处理
-        // throw new \Exception('an exception'); //上层会自动忽略handle时抛出的异常
+        // throw new \Exception('an exception');// handle时抛出的异常会回调给onException()
+    }
+    // 可选的，针对handle()的异常处理函数，避免终止Task进程。
+    public function onException(\Exception $e)
+    {
+        \Log::error('Catch exception', [$e]);
     }
 }
 ```
@@ -377,7 +382,7 @@ class TestTask extends Task
     {
         \Log::info(__CLASS__ . ':handle start', [$this->data]);
         sleep(2);// 模拟一些慢速的事件处理
-        // throw new \Exception('an exception'); //上层会自动忽略handle时抛出的异常
+        // throw new \Exception('an exception');// handle时抛出的异常会回调给onException()
         $this->result = 'the result of ' . $this->data;
     }
     // 可选的，完成事件，任务处理完后的逻辑，运行在Worker进程中，可以投递任务
@@ -385,6 +390,11 @@ class TestTask extends Task
     {
         \Log::info(__CLASS__ . ':finish start', [$this->result]);
         Task::deliver(new TestTask2('task2')); // 投递其他任务
+    }
+    // 可选的，针对handle()的异常处理函数，避免终止Task进程。
+    public function onException(\Exception $e)
+    {
+        \Log::error('Catch exception', [$e]);
     }
 }
 ```
