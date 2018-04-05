@@ -77,6 +77,7 @@ class Server
                     call_user_func_array([$handler, 'onOpen'], func_get_args());
                 } catch (\Exception $e) {
                     // Do nothing to avoid 'zend_mm_heap corrupted'
+                    $this->log(sprintf('Catch exception in onOpen(): %s:%s, [%d]%s%s%s', $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), 'ERROR');
                 }
             });
 
@@ -86,6 +87,7 @@ class Server
                     call_user_func_array([$handler, 'onMessage'], func_get_args());
                 } catch (\Exception $e) {
                     // Do nothing to avoid 'zend_mm_heap corrupted'
+                    $this->log(sprintf('Catch exception in onMessage(): %s:%s, [%d]%s%s%s', $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), 'ERROR');
                 }
             });
 
@@ -97,6 +99,7 @@ class Server
                         call_user_func_array([$handler, 'onClose'], func_get_args());
                     } catch (\Exception $e) {
                         // Do nothing to avoid 'zend_mm_heap corrupted'
+                        $this->log(sprintf('Catch exception in onClose(): %s:%s, [%d]%s%s%s', $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), 'ERROR');
                     }
                 }
                 // else ignore the close event for http server
