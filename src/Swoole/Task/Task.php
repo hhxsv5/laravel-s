@@ -32,11 +32,6 @@ abstract class Task
         return $this->delay;
     }
 
-    public function onException(\Exception $e)
-    {
-
-    }
-
     abstract public function handle();
 
     public static function deliver(self $task)
