@@ -76,7 +76,7 @@ class Server
                 try {
                     call_user_func_array([$handler, 'onOpen'], func_get_args());
                 } catch (\Exception $e) {
-                    $this->logException(get_class($handler) . '->onOpen()', $e);
+                    $this->logException($e);
                 }
             });
 
@@ -85,7 +85,7 @@ class Server
                 try {
                     call_user_func_array([$handler, 'onMessage'], func_get_args());
                 } catch (\Exception $e) {
-                    $this->logException(get_class($handler) . '->onMessage()', $e);
+                    $this->logException($e);
                 }
             });
 
@@ -96,7 +96,7 @@ class Server
                     try {
                         call_user_func_array([$handler, 'onClose'], func_get_args());
                     } catch (\Exception $e) {
-                        $this->logException(get_class($handler) . '->onClose()', $e);
+                        $this->logException($e);
                     }
                 }
                 // else ignore the close event for http server
@@ -223,7 +223,7 @@ class Server
             try {
                 $listener->handle($event);
             } catch (\Exception $e) {
-                $this->logException(get_class($listener) . '->handle()', $e);
+                $this->logException($e);
             }
         }
     }
@@ -233,7 +233,7 @@ class Server
         try {
             $task->handle();
         } catch (\Exception $e) {
-            $this->logException(get_class($task) . '->handle()', $e);
+            $this->logException($e);
         }
     }
 
@@ -254,9 +254,9 @@ class Server
         }
     }
 
-    protected function logException($msg, \Exception $e)
+    protected function logException(\Exception $e)
     {
-        $this->log(sprintf('%s: %s:%s, [%d]%s%s%s', $msg, $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), 'ERROR');
+        $this->log(sprintf('Uncaught exception \'%s\': %s:%s, [%d]%s%s%s', get_class($e), $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), 'ERROR');
     }
 
     protected function log($msg, $type = 'INFO')
