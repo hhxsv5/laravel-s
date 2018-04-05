@@ -202,17 +202,17 @@ class WebsocketService implements WebsocketHandlerInterface
     {
         \Log::info('New Websocket connection', [$request->fd]);
         $server->push($request->fd, 'Welcome to LaravelS');
-        // throw new \Exception('an exception');// all exceptions will be ignored, then record it into Swoole log, you need to try/catch them
+        // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
     }
     public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame)
     {
         \Log::info('Received message', [$frame->fd, $frame->data, $frame->opcode, $frame->finish]);
         $server->push($frame->fd, date('Y-m-d H:i:s'));
-        // throw new \Exception('an exception');// all exceptions will be ignored, then record it into Swoole log, you need to try/catch them
+        // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
     }
     public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
     {
-        // throw new \Exception('an exception');// all exceptions will be ignored, then record it into Swoole log, you need to try/catch them
+        // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
     }
 }
 ```
@@ -334,7 +334,7 @@ class TestListener1 extends Listener
     {
         \Log::info(__CLASS__ . ':handle start', [$event->getData()]);
         sleep(2);// Simulate the slow codes
-        // throw new \Exception('an exception');// all exceptions will be ignored, then record it into Swoole log, you need to try/catch them
+        // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
     }
 }
 ```
@@ -381,7 +381,7 @@ class TestTask extends Task
     {
         \Log::info(__CLASS__ . ':handle start', [$this->data]);
         sleep(2);// Simulate the slow codes
-        // throw new \Exception('an exception');// all exceptions will be ignored, then record it into Swoole log, you need to try/catch them
+        // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
         $this->result = 'the result of ' . $this->data;
     }
     // Optional, finish event, the logic of after task handling, run in worker process, CAN deliver task 
