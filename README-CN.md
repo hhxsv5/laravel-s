@@ -201,15 +201,17 @@ class WebsocketService implements WebsocketHandlerInterface
     {
         \Log::info('New Websocket connection', [$request->fd]);
         $server->push($request->fd, 'Welcome to LaravelS');
-        // throw new \Exception('an exception'); //上层会自动忽略handle时抛出的异常
+        // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
     public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame)
     {
         \Log::info('Received message', [$frame->fd, $frame->data, $frame->opcode, $frame->finish]);
         $server->push($frame->fd, date('Y-m-d H:i:s'));
+        // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
     public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
     {
+        // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
 }
 ```
@@ -330,12 +332,7 @@ class TestListener1 extends Listener
     {
         \Log::info(__CLASS__ . ':handle start', [$event->getData()]);
         sleep(2);// 模拟一些慢速的事件处理
-        // throw new \Exception('an exception');// handle时抛出的异常会回调给onException()
-    }
-    // 可选的，针对handle()的异常处理函数，避免终止Task进程。
-    public function onException(\Exception $e)
-    {
-        \Log::error('Catch exception', [$e]);
+        // throw new \Exception('an exception');// handle时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
 }
 ```
@@ -382,7 +379,7 @@ class TestTask extends Task
     {
         \Log::info(__CLASS__ . ':handle start', [$this->data]);
         sleep(2);// 模拟一些慢速的事件处理
-        // throw new \Exception('an exception');// handle时抛出的异常会回调给onException()
+        // throw new \Exception('an exception');// handle时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
         $this->result = 'the result of ' . $this->data;
     }
     // 可选的，完成事件，任务处理完后的逻辑，运行在Worker进程中，可以投递任务
@@ -390,11 +387,6 @@ class TestTask extends Task
     {
         \Log::info(__CLASS__ . ':finish start', [$this->result]);
         Task::deliver(new TestTask2('task2')); // 投递其他任务
-    }
-    // 可选的，针对handle()的异常处理函数，避免终止Task进程。
-    public function onException(\Exception $e)
-    {
-        \Log::error('Catch exception', [$e]);
     }
 }
 ```

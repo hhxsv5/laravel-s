@@ -76,8 +76,7 @@ class Server
                 try {
                     call_user_func_array([$handler, 'onOpen'], func_get_args());
                 } catch (\Exception $e) {
-                    // Do nothing to avoid 'zend_mm_heap corrupted'
-                    $this->log(sprintf('Catch exception in onOpen(): %s:%s, [%d]%s%s%s', $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), 'ERROR');
+                    $this->logException(get_class($handler) . '->onOpen()', $e);
                 }
             });
 
@@ -86,8 +85,7 @@ class Server
                 try {
                     call_user_func_array([$handler, 'onMessage'], func_get_args());
                 } catch (\Exception $e) {
-                    // Do nothing to avoid 'zend_mm_heap corrupted'
-                    $this->log(sprintf('Catch exception in onMessage(): %s:%s, [%d]%s%s%s', $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), 'ERROR');
+                    $this->logException(get_class($handler) . '->onMessage()', $e);
                 }
             });
 
@@ -98,8 +96,7 @@ class Server
                     try {
                         call_user_func_array([$handler, 'onClose'], func_get_args());
                     } catch (\Exception $e) {
-                        // Do nothing to avoid 'zend_mm_heap corrupted'
-                        $this->log(sprintf('Catch exception in onClose(): %s:%s, [%d]%s%s%s', $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), 'ERROR');
+                        $this->logException(get_class($handler) . '->onClose()', $e);
                     }
                 }
                 // else ignore the close event for http server
@@ -226,11 +223,7 @@ class Server
             try {
                 $listener->handle($event);
             } catch (\Exception $e) {
-                try {
-                    $listener->onException($e);
-                } catch (\Exception $e) {
-                    // Do nothing to avoid 'zend_mm_heap corrupted'
-                }
+                $this->logException(get_class($listener) . '->handle()', $e);
             }
         }
     }
@@ -240,11 +233,7 @@ class Server
         try {
             $task->handle();
         } catch (\Exception $e) {
-            try {
-                $task->onException($e);
-            } catch (\Exception $e) {
-                // Do nothing to avoid 'zend_mm_heap corrupted'
-            }
+            $this->logException(get_class($task) . '->handle()', $e);
         }
     }
 
@@ -265,6 +254,10 @@ class Server
         }
     }
 
+    protected function logException($msg, \Exception $e)
+    {
+        $this->log(sprintf('%s: %s:%s, [%d]%s%s%s', $msg, $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), 'ERROR');
+    }
 
     protected function log($msg, $type = 'INFO')
     {
