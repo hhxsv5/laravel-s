@@ -38,7 +38,11 @@ abstract class Task
     {
         $deliver = function () use ($task) {
             try {
-                $taskId = app('swoole')->task($task);
+                /**
+                 * @var \swoole_http_server $swoole
+                 */
+                $swoole = app('swoole');
+                $taskId = $swoole->task($task);
                 return $taskId !== false;
             } catch (\Exception $e) {
                 return false;
