@@ -254,7 +254,7 @@ class Server
 
     protected function logException(\Exception $e)
     {
-        $this->log(sprintf('Uncaught exception \'%s\': %s:%s, [%d]%s%s%s', get_class($e), $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), 'ERROR');
+        $this->log(sprintf('Uncaught exception \'%s\': [%d]%s called in %s:%d%s%s', get_class($e), $e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine(), PHP_EOL, $e->getTraceAsString()), 'ERROR');
     }
 
     protected function log($msg, $type = 'INFO')
