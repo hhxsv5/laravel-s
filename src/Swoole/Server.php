@@ -69,30 +69,30 @@ class Server
     protected function bindWebsocketEvent()
     {
         if ($this->enableWebsocket) {
-            $this->swoole->on('Open', function () {
+            $this->swoole->on('Open', function (\swoole_websocket_server $server, \swoole_http_request $request) {
                 $handler = $this->getWebsocketHandler();
                 try {
-                    call_user_func_array([$handler, 'onOpen'], func_get_args());
+                    $handler->onOpen($server, $request);
                 } catch (\Exception $e) {
                     $this->logException($e);
                 }
             });
 
-            $this->swoole->on('Message', function () {
+            $this->swoole->on('Message', function (\swoole_websocket_server $server, \swoole_websocket_frame $frame) {
                 $handler = $this->getWebsocketHandler();
                 try {
-                    call_user_func_array([$handler, 'onMessage'], func_get_args());
+                    $handler->onMessage($server, $frame);
                 } catch (\Exception $e) {
                     $this->logException($e);
                 }
             });
 
-            $this->swoole->on('Close', function (\swoole_http_server $server, $fd) {
+            $this->swoole->on('Close', function (\swoole_websocket_server $server, $fd, $reactorId) {
                 $clientInfo = $server->getClientInfo($fd);
                 if (isset($clientInfo['websocket_status']) && $clientInfo['websocket_status'] === \WEBSOCKET_STATUS_FRAME) {
                     $handler = $this->getWebsocketHandler();
                     try {
-                        call_user_func_array([$handler, 'onClose'], func_get_args());
+                        $handler->onClose($server, $fd, $reactorId);
                     } catch (\Exception $e) {
                         $this->logException($e);
                     }
