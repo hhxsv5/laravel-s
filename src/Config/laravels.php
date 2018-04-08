@@ -26,6 +26,10 @@ return [
             //XxxCronJob::class,
         ],
     ],
+    'events'         => [
+    ],
+    'swoole_tables'  => [
+    ],
     'swoole'         => [
         'daemonize'          => env('LARAVELS_DAEMONIZE', true),
         'dispatch_mode'      => 1,
@@ -53,7 +57,5 @@ return [
          * @see https://wiki.swoole.com/wiki/page/274.html  Chinese
          * @see https://www.swoole.co.uk/docs/modules/swoole-server/configuration  English
          */
-    ],
-    'events'         => [
     ],
 ];

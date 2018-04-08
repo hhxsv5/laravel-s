@@ -40,6 +40,7 @@ class Server
         $this->bindHttpEvent();
         $this->bindTaskEvent();
         $this->bindWebsocketEvent();
+        $this->bindSwooleTables();
     }
 
     protected function bindBaseEvent()
@@ -116,6 +117,23 @@ class Server
         }
         $handler = $t;
         return $handler;
+    }
+
+    protected function bindSwooleTables()
+    {
+        $tables = isset($this->conf['swoole_tables']) ? (array)$this->conf['swoole_tables'] : [];
+        foreach ($tables as $name => $table) {
+            $t = new \swoole_table($table['size']);
+            foreach ($table['column'] as $column) {
+                if (isset($column['size'])) {
+                    $t->column($column['name'], $column['type'], $column['size']);
+                } else {
+                    $t->column($column['name'], $column['type']);
+                }
+            }
+            $t->create();
+            $this->swoole->$name = $t;
+        }
     }
 
     public function onStart(\swoole_http_server $server)
