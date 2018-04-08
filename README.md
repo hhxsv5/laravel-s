@@ -493,6 +493,7 @@ var_dump($swoole->stats());// Singleton
 // Scene：bind UserId & FD in WebSocket
 public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
 {
+    // var_dump(app('swoole') === $server);// The same instance
     $userId = 1000;
     $key = sprintf('%s_fd', $userId);
     app('swoole')->wsTable->set($key, ['fd' => $request->fd]);// Bind UserId & FD

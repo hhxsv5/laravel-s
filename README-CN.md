@@ -491,6 +491,7 @@ var_dump($swoole->stats());// 单例
 // 场景：WebSocket中UserId与FD绑定
 public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
 {
+    // var_dump(app('swoole') === $server);// 同一实例
     $userId = 1000;
     $key = sprintf('%s_fd', $userId);
     app('swoole')->wsTable->set($key, ['fd' => $request->fd]);// 绑定UserId与FD
