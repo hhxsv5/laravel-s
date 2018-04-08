@@ -198,6 +198,10 @@ use Hhxsv5\LaravelS\Swoole\WebsocketHandlerInterface;
  */
 class WebsocketService implements WebsocketHandlerInterface
 {
+    // Declare constructor without parameters
+    public function __construct()
+    {
+    }
     public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
     {
         \Log::info('New Websocket connection', [$request->fd]);
