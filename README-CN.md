@@ -236,8 +236,7 @@ class WebsocketService implements WebsocketHandlerInterface
 // ...
 ```
 
-3.使用`swoole_table`绑定FD与UserId，可选的。也可以用其他全局存储服务，例如Redis/Memcached/MySQL，但需要注意多个`Swoole Server`实例时FD可能相同。
-[Swoole Table示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E4%BD%BF%E7%94%A8swoole_table)
+3.使用`swoole_table`绑定FD与UserId，可选的，[Swoole Table示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E4%BD%BF%E7%94%A8swoole_table)。也可以用其他全局存储服务，例如Redis/Memcached/MySQL，但需要注意多个`Swoole Server`实例时FD可能相同。
 
 4.与Nginx配合使用（推荐）
 > 参考 [WebSocket代理](http://nginx.org/en/docs/http/websocket.html)
