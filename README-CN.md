@@ -463,6 +463,54 @@ $swoole = app('swoole');
 var_dump($swoole->stats());// 单例
 ```
 
+## 使用`swoole_table`
+
+1.定义`swoole_table`，支持定义多个Table。
+> Swoole启动之前会自动创建定义好的所有Table。
+
+```PHP
+// 在"config/laravels.php"配置`swoole_table`
+[
+    // ...
+    'swoole_tables'  => [
+        // 场景：WebSocket中UserId与FD绑定
+        'ws' => [// Key为Table名称，使用时会自动添加Table后缀，避免重名。这里定义名为wsTable的Table
+            'size'   => 102400,//Table的最大行数
+            'column' => [// Table的列定义
+                ['name' => 'fd', 'type' => \swoole_table::TYPE_INT, 'size' => 8],
+            ],
+        ],
+        //...继续定义其他Table
+    ],
+    // ...
+];
+```
+
+2.访问`swoole_table`：所有的Table实例均绑定在`swoole_server`上，通过`app('swoole')->xxxTable`访问。
+```PHP
+// 场景：WebSocket中UserId与FD绑定
+public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
+{
+    $userId = 1000;
+    $key = sprintf('%s_fd', $userId);
+    app('swoole')->wsTable->set($key, ['fd' => $request->fd]);// 绑定UserId与FD
+    $server->push($request->fd, 'Welcome to LaravelS');
+}
+public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame)
+{
+    foreach (app('swoole')->wsTable as $row) {
+        $server->push($row['fd'], 'Broadcast: ' . date('Y-m-d H:i:s'));// 广播
+    }
+}
+public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
+{
+    $userId = 1000;
+    $key = sprintf('%s_fd', $userId);
+    app('swoole')->wsTable->del($key);// 解绑UserId与FD
+    $server->push($fd, 'Goodbye');
+}
+```
+
 ## 注意事项
 
 - 推荐通过`Illuminate\Http\Request`对象来获取请求信息，兼容$_SERVER、$_ENV、$_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST，`不能使用`$_SESSION。

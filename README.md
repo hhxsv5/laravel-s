@@ -465,6 +465,54 @@ $swoole = app('swoole');
 var_dump($swoole->stats());// Singleton
 ```
 
+## Use `swoole_table`
+
+1.Define `swoole_table`, support multiple.
+> All defined tables will be created before Swoole starting.
+
+```PHP
+// in file "config/laravels.php"
+[
+    // ...
+    'swoole_tables'  => [
+        // Scene：bind UserId & FD in WebSocket
+        'ws' => [// The Key is table name, will add suffix "Table" to avoid naming conficts. Here defined a table named "wsTable"
+            'size'   => 102400,// The max size
+            'column' => [// Define the columns
+                ['name' => 'fd', 'type' => \swoole_table::TYPE_INT, 'size' => 8],
+            ],
+        ],
+        //...Define the other tables
+    ],
+    // ...
+];
+```
+
+2.Access `swoole_table`: all table instances will be bound on `swoole_server`, access by `app('swoole')->xxxTable`.
+```PHP
+// Scene：bind UserId & FD in WebSocket
+public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
+{
+    $userId = 1000;
+    $key = sprintf('%s_fd', $userId);
+    app('swoole')->wsTable->set($key, ['fd' => $request->fd]);// Bind UserId & FD
+    $server->push($request->fd, 'Welcome to LaravelS');
+}
+public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame)
+{
+    foreach (app('swoole')->wsTable as $row) {
+        $server->push($row['fd'], 'Broadcast: ' . date('Y-m-d H:i:s'));// Broadcast
+    }
+}
+public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
+{
+    $userId = 1000;
+    $key = sprintf('%s_fd', $userId);
+    app('swoole')->wsTable->del($key);// Unbind
+    $server->push($fd, 'Goodbye');
+}
+```
+
 ## Important notices
 
 - Get all info of request from `Illuminate\Http\Request` Object, compatible with $_SERVER/$_ENV/$_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST, `CANNOT USE` $_SESSION.
