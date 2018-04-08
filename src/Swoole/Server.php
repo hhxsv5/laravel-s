@@ -132,6 +132,7 @@ class Server
                 }
             }
             $t->create();
+            $name .= 'Table'; // Avoid naming conflicts
             $this->swoole->$name = $t;
         }
     }
