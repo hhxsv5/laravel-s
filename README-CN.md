@@ -466,7 +466,7 @@ var_dump($swoole->stats());// 单例
 ## 使用`swoole_table`
 
 1.定义`swoole_table`，支持定义多个Table。
-> Swoole启动之前会自动创建定义好的所有Table。
+> Swoole启动之前会创建定义的所有Table。
 
 ```PHP
 // 在"config/laravels.php"配置`swoole_table`
