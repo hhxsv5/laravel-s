@@ -504,7 +504,7 @@ public function onOpen(\swoole_websocket_server $server, \swoole_http_request $r
 public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame)
 {
     foreach (app('swoole')->wsTable as $key => $row) {
-        if (strpos($key, 'uid:') !== false) {
+        if (strpos($key, 'uid:') === 0) {
             $server->push($row['value'], 'Broadcast: ' . date('Y-m-d H:i:s'));// 广播
         }
     }
