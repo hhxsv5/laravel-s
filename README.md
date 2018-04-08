@@ -483,7 +483,7 @@ var_dump($swoole->stats());// Singleton
         'ws' => [// The Key is table name, will add suffix "Table" to avoid naming conficts. Here defined a table named "wsTable"
             'size'   => 102400,// The max size
             'column' => [// Define the columns
-                ['name' => 'fd', 'type' => \swoole_table::TYPE_INT, 'size' => 8],
+                ['name' => 'value', 'type' => \swoole_table::TYPE_INT, 'size' => 8],
             ],
         ],
         //...Define the other tables
@@ -498,22 +498,26 @@ var_dump($swoole->stats());// Singleton
 public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
 {
     // var_dump(app('swoole') === $server);// The same instance
-    $userId = 1000;
-    $key = sprintf('%s_fd', $userId);
-    app('swoole')->wsTable->set($key, ['fd' => $request->fd]);// Bind UserId & FD
+    $userId = mt_rand(1000, 10000);
+    app('swoole')->wsTable->set('uid:' . $userId, ['value' => $request->fd]);// Bind map uid to fd
+    app('swoole')->wsTable->set('fd:' . $request->fd, ['value' => $userId]);// Bind map fd to uid
     $server->push($request->fd, 'Welcome to LaravelS');
 }
 public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame)
 {
-    foreach (app('swoole')->wsTable as $row) {
-        $server->push($row['fd'], 'Broadcast: ' . date('Y-m-d H:i:s'));// Broadcast
+    foreach (app('swoole')->wsTable as $key => $row) {
+        if (strpos($key, 'uid:') !== false) {
+            $server->push($row['value'], 'Broadcast: ' . date('Y-m-d H:i:s'));// Broadcast
+        }
     }
 }
 public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 {
-    $userId = 1000;
-    $key = sprintf('%s_fd', $userId);
-    app('swoole')->wsTable->del($key);// Unbind
+    $uid = app('swoole')->wsTable->get('fd:' . $fd);
+    if ($uid !== false) {
+        app('swoole')->wsTable->del('uid:' . $uid['value']); // Ubind uid map
+    }
+    app('swoole')->wsTable->del('fd:' . $fd);// Unbind fd map
     $server->push($fd, 'Goodbye');
 }
 ```

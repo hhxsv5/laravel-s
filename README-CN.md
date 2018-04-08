@@ -481,7 +481,7 @@ var_dump($swoole->stats());// 单例
         'ws' => [// Key为Table名称，使用时会自动添加Table后缀，避免重名。这里定义名为wsTable的Table
             'size'   => 102400,//Table的最大行数
             'column' => [// Table的列定义
-                ['name' => 'fd', 'type' => \swoole_table::TYPE_INT, 'size' => 8],
+                ['name' => 'value', 'type' => \swoole_table::TYPE_INT, 'size' => 8],
             ],
         ],
         //...继续定义其他Table
@@ -496,22 +496,26 @@ var_dump($swoole->stats());// 单例
 public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
 {
     // var_dump(app('swoole') === $server);// 同一实例
-    $userId = 1000;
-    $key = sprintf('%s_fd', $userId);
-    app('swoole')->wsTable->set($key, ['fd' => $request->fd]);// 绑定UserId与FD
+    $userId = mt_rand(1000, 10000);
+    app('swoole')->wsTable->set('uid:' . $userId, ['value' => $request->fd]);// 绑定uid到fd的映射
+    app('swoole')->wsTable->set('fd:' . $request->fd, ['value' => $userId]);// 绑定fd到uid的映射
     $server->push($request->fd, 'Welcome to LaravelS');
 }
 public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame)
 {
-    foreach (app('swoole')->wsTable as $row) {
-        $server->push($row['fd'], 'Broadcast: ' . date('Y-m-d H:i:s'));// 广播
+    foreach (app('swoole')->wsTable as $key => $row) {
+        if (strpos($key, 'uid:') !== false) {
+            $server->push($row['value'], 'Broadcast: ' . date('Y-m-d H:i:s'));// 广播
+        }
     }
 }
 public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 {
-    $userId = 1000;
-    $key = sprintf('%s_fd', $userId);
-    app('swoole')->wsTable->del($key);// 解绑UserId与FD
+    $uid = app('swoole')->wsTable->get('fd:' . $fd);
+    if ($uid !== false) {
+        app('swoole')->wsTable->del('uid:' . $uid['value']);// 解绑uid映射
+    }
+    app('swoole')->wsTable->del('fd:' . $fd);// 解绑fd映射
     $server->push($fd, 'Goodbye');
 }
 ```
