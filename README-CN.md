@@ -116,7 +116,7 @@ server {
     access_log /yyypath/log/nginx/$server_name.access.log  main;
     autoindex off;
     index index.html index.htm;
-    # Nginx处理静态资源，LaravelS处理动态资源。
+    # Nginx处理静态资源(建议开启gzip)，LaravelS处理动态资源。
     location / {
         try_files $uri @laravels;
     }
@@ -259,7 +259,7 @@ server {
     access_log /yyypath/log/nginx/$server_name.access.log  main;
     autoindex off;
     index index.html index.htm;
-    # Nginx处理静态资源，LaravelS处理动态资源。
+    # Nginx处理静态资源(建议开启gzip)，LaravelS处理动态资源。
     location / {
         try_files $uri @laravels;
     }

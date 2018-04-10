@@ -116,7 +116,7 @@ server {
     access_log /yyypath/log/nginx/$server_name.access.log  main;
     autoindex off;
     index index.html index.htm;
-    # Nginx handles the static resources, LaravelS handles the dynamic resource.
+    # Nginx handles the static resources(recommend enabling gzip), LaravelS handles the dynamic resource.
     location / {
         try_files $uri @laravels;
     }
@@ -259,7 +259,7 @@ server {
     access_log /yyypath/log/nginx/$server_name.access.log  main;
     autoindex off;
     index index.html index.htm;
-    # Nginx handles the static resources, LaravelS handles the dynamic resource.
+    # Nginx handles the static resources(recommend enabling gzip), LaravelS handles the dynamic resource.
     location / {
         try_files $uri @laravels;
     }
