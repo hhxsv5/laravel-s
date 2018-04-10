@@ -116,7 +116,6 @@ server {
     access_log /yyypath/log/nginx/$server_name.access.log  main;
     autoindex off;
     index index.html index.htm;
-    
     # Nginx handles the static resources, LaravelS handles the dynamic resource.
     location / {
         try_files $uri @laravels;
@@ -260,8 +259,11 @@ server {
     access_log /yyypath/log/nginx/$server_name.access.log  main;
     autoindex off;
     index index.html index.htm;
-    
+    # Nginx handles the static resources, LaravelS handles the dynamic resource.
     location / {
+        try_files $uri @laravels;
+    }
+    location @laravels {
         proxy_http_version 1.1;
         # proxy_connect_timeout 60s;
         # proxy_send_timeout 60s;
