@@ -92,7 +92,7 @@ EOS;
         $laravelConf = [
             'rootPath'           => base_path(),
             'staticPath'         => $svrConf['swoole']['document_root'],
-            'register_providers' => array_get($svrConf, 'register_providers', []),
+            'register_providers' => array_unique((array)array_get($svrConf, 'register_providers', [])),
             'isLumen'            => $this->isLumen,
             '_SERVER'            => $_SERVER,
             '_ENV'               => $_ENV,
