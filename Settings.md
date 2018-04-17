@@ -24,4 +24,6 @@
 
 - `swoole_tables`：`array` The defined of `swoole_table` list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#use-swoole_table)
 
+- `register_providers`: `array` The `Service Provider` list, will be re-registered `every request`, and run method `boot()` if it exist.
+
 - `swoole`: `array` refer [Swoole Configuration](https://www.swoole.co.uk/docs/modules/swoole-server/configuration)
