@@ -17,7 +17,7 @@
 
 - `exit()`/`die()`: 将导致Worker/Task/Process进程立即退出，建议通过抛异常跳出函数调用栈，[Swoole文档](https://wiki.swoole.com/wiki/page/501.html)。
 
-- `header()`/`setcookie()`/`http_response_code()`：HTTP响应只能通过`swoole_http_response`对象。
+- `header()`/`setcookie()`/`http_response_code()`：HTTP响应只能通过Laravel/Lumen的`Response`对象。
 
 ## 不能使用的全局变量
 
