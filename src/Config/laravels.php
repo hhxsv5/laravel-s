@@ -4,21 +4,21 @@
  * @see https://github.com/hhxsv5/laravel-s/blob/master/Settings.md  English
  */
 return [
-    'listen_ip'      => env('LARAVELS_LISTEN_IP', '127.0.0.1'),
-    'listen_port'    => env('LARAVELS_LISTEN_PORT', 5200),
-    'enable_gzip'    => env('LARAVELS_ENABLE_GZIP', false),
-    'server'         => env('LARAVELS_SERVER', 'LaravelS'),
-    'handle_static'  => env('LARAVELS_HANDLE_STATIC', false),
-    'inotify_reload' => [
+    'listen_ip'          => env('LARAVELS_LISTEN_IP', '127.0.0.1'),
+    'listen_port'        => env('LARAVELS_LISTEN_PORT', 5200),
+    'enable_gzip'        => env('LARAVELS_ENABLE_GZIP', false),
+    'server'             => env('LARAVELS_SERVER', 'LaravelS'),
+    'handle_static'      => env('LARAVELS_HANDLE_STATIC', false),
+    'inotify_reload'     => [
         'enable'     => env('LARAVELS_INOTIFY_RELOAD', false),
         'file_types' => ['.php'],
         'log'        => true,
     ],
-    'websocket'      => [
+    'websocket'          => [
         'enable' => false,
         //'handler' => XxxWebsocketHandler::class,
     ],
-    'timer'          => [
+    'timer'              => [
         'enable' => false,
         'jobs'   => [
             // Enable LaravelScheduleJob to run `php artisan schedule:run` every 1 minute, replace Linux Crontab
@@ -26,11 +26,13 @@ return [
             //XxxCronJob::class,
         ],
     ],
-    'events'         => [
+    'events'             => [
     ],
-    'swoole_tables'  => [
+    'swoole_tables'      => [
     ],
-    'swoole'         => [
+    'register_providers' => [
+    ],
+    'swoole'             => [
         'daemonize'          => env('LARAVELS_DAEMONIZE', true),
         'dispatch_mode'      => 1,
         'reactor_num'        => function_exists('\swoole_cpu_num') ? \swoole_cpu_num() * 2 : 4,

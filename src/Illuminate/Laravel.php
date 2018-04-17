@@ -178,6 +178,21 @@ class Laravel
         return $rsp;
     }
 
+    public function reRegisterServiceProvider($providerCls, array $clearFacades = [])
+    {
+        if (class_exists($providerCls, false)) {
+            foreach ($clearFacades as $facade) {
+                Facade::clearResolvedInstance($facade);
+            }
+            $provider = $this->app->register($providerCls, [], true);
+            if (!$this->conf['isLumen']) {
+                if (method_exists($provider, 'boot')) {
+                    $provider->boot();
+                }
+            }
+        }
+    }
+
     public function cleanRequest(IlluminateRequest $request)
     {
         // Clean laravel session
@@ -203,28 +218,20 @@ class Laravel
         }
 
         // Re-register some singleton providers
-        if (class_exists('\Illuminate\Auth\AuthServiceProvider', false)) {
-            $this->app->register('\Illuminate\Auth\AuthServiceProvider', [], true);
-            Facade::clearResolvedInstance('auth');
-            Facade::clearResolvedInstance('auth.driver');
-
-            // for jwt auth
-            if (class_exists('\Tymon\JWTAuth\Providers\LaravelServiceProvider', false)) {
-                $this->app->register('\Tymon\JWTAuth\Providers\LaravelServiceProvider', [], true)->boot();
-            }
-            if (class_exists('\Tymon\JWTAuth\Providers\LumenServiceProvider', false)) {
-                $this->app->register('\Tymon\JWTAuth\Providers\LumenServiceProvider', [], true)->boot();
-            }
-
-            // for passport
-            if (class_exists('\Laravel\Passport\PassportServiceProvider', false)) {
-                $this->app->register('\Laravel\Passport\PassportServiceProvider', [], true)->boot();
-            }
+        foreach ($this->conf['register_providers'] as $provider) {
+            $this->reRegisterServiceProvider($provider);
         }
-        if (class_exists('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', false)) {
-            Facade::clearResolvedInstance('auth.password');
-            $this->app->register('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', [], true);
-        }
+
+        // Re-register auth
+        $this->reRegisterServiceProvider('\Illuminate\Auth\AuthServiceProvider', ['auth', 'auth.driver']);
+        $this->reRegisterServiceProvider('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', ['auth.password']);
+
+        // Re-register jwt auth
+        $this->reRegisterServiceProvider('\Tymon\JWTAuth\Providers\LaravelServiceProvider');
+        $this->reRegisterServiceProvider('\Tymon\JWTAuth\Providers\LumenServiceProvider');
+
+        // Re-register passport
+        $this->reRegisterServiceProvider('\Laravel\Passport\PassportServiceProvider');
 
         // Clear request
         $this->app->forgetInstance('request');
