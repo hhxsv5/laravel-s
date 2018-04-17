@@ -20,9 +20,9 @@
 
 - `websocket.handler`: `string` The class name for Websocket handler, needs to implement interface `WebsocketHandlerInterface`, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server)
 
-- `events`：`array` The customized asynchronous event list of listener binding, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#customized-asynchronous-events)
+- `events`: `array` The customized asynchronous event list of listener binding, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#customized-asynchronous-events)
 
-- `swoole_tables`：`array` The defined of `swoole_table` list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#use-swoole_table)
+- `swoole_tables`: `array` The defined of `swoole_table` list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#use-swoole_table)
 
 - `register_providers`: `array` The `Service Provider` list, will be re-registered `every request`, and run method `boot()` if it exist.
 
