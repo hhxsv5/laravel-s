@@ -46,7 +46,8 @@ class LaravelSCommand extends Command
     protected function loadConfigManually()
     {
         // Load configuration laravel.php manually for Lumen
-        if ($this->isLumen && file_exists(base_path('config/laravels.php'))) {
+        $basePath = config('laravels.laravel_base_path') ?: base_path();
+        if ($this->isLumen && file_exists($basePath . '/config/laravels.php')) {
             $this->getLaravel()->configure('laravels');
         }
     }
@@ -205,7 +206,8 @@ EOS;
 
     protected function publish()
     {
-        $to = base_path('config/laravels.php');
+        $basePath = config('laravels.laravel_base_path') ?: base_path();
+        $to = $basePath . '/config/laravels.php';
         if (file_exists($to)) {
             $choice = $this->anticipate($to . ' already exists, do you want to override it ? Y/N', ['Y', 'N'], 'N');
             if (!$choice || strtoupper($choice) !== 'Y') {
@@ -238,9 +240,9 @@ EOS;
 
         $files->copy($from, $to);
 
-        $from = str_replace(base_path(), '', realpath($from));
+        $from = str_replace($basePath, '', realpath($from));
 
-        $to = str_replace(base_path(), '', realpath($to));
+        $to = str_replace($basePath, '', realpath($to));
 
         $this->line('<info>Copied File</info> <comment>[' . $from . ']</comment> <info>To</info> <comment>[' . $to . ']</comment>');
     }
