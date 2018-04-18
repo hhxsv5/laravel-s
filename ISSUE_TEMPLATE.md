@@ -1,21 +1,21 @@
-1. Tell us your PHP version(`php -v`) ?
+1. Tell us your PHP version(`php -v`)
 
-`Todo`
+`TODO`
 
-2. Tell us your Swoole version(`php --ri swoole`) ?
+2. Tell us your Swoole version(`php --ri swoole`)
 
-`Todo`
+`TODO`
 
-3. Tell us your `Laravel`/`Lumen` version(check composer.lock) ?
+3. Tell us your `Laravel`/`Lumen` version(check composer.lock)
 
-`Todo`
+`TODO`
 
 4. Detail description about this issue(error/log)
 
-`Todo`
+`TODO`
 
 5. Give us a `reproducible` code block
 
 ```PHP
-//Todo: Your code
+//TODO: Your code
 ```
