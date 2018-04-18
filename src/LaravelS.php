@@ -151,10 +151,11 @@ class LaravelS extends Server
                 $this->handleDynamicResource($laravelRequest, $response);
             }
         } catch (\Exception $e) {
-            $this->log(sprintf('onRequest: %s:%s, [%d]%s%s%s', $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), PHP_EOL, $e->getTraceAsString()), 'ERROR');
+            $error = sprintf('onRequest: %s:%s, [%d] "%s"%s%s', $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), '<br>', $e->getTraceAsString());
+            $this->log($error, 'ERROR');
             try {
                 $response->status(500);
-                $response->end('Oops! An unexpected error occurred, please take a look the Swoole log.');
+                $response->end('Oops! An unexpected error occurred: ' . $error);
             } catch (\Exception $e) {
                 // Catch: zm_deactivate_swoole: Fatal error: Uncaught exception 'ErrorException' with message 'swoole_http_response::status(): http client#2 is not exist.
             }
