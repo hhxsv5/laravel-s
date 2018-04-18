@@ -40,12 +40,6 @@ class Laravel
         $this->createApp();
         $this->createKernel();
         $this->setLaravel();
-
-        if ($this->conf['isLumen']) {
-            $reflect = new \ReflectionObject($this->app);
-            $reflect->getProperty('middleware')->setAccessible(true);
-            $reflect->getMethod('callTerminableMiddleware')->setAccessible(true);
-        }
     }
 
     protected function autoload()
@@ -110,8 +104,14 @@ class Laravel
             } else {
                 $content = (string)$response;
             }
-            if (count($this->app->middleware) > 0) {
-                $this->app->callTerminableMiddleware($response);
+
+            $reflect = new \ReflectionObject($this->app);
+            $middleware = $reflect->getProperty('middleware');
+            $middleware->setAccessible(true);
+            if (count($middleware->getValue($this->app)) > 0) {
+                $callTerminableMiddleware = $reflect->getMethod('callTerminableMiddleware');
+                $callTerminableMiddleware->setAccessible(true);
+                $callTerminableMiddleware->invoke($this->app, $response);
             }
         } else {
             $response = $this->laravelKernel->handle($request);
