@@ -9,7 +9,7 @@ class LaravelSCommand extends Command
 {
     protected $signature = 'laravels';
 
-    protected $description = 'LaravelS Console Tool';
+    protected $description = 'LaravelS console tool';
 
     protected $actions;
 
@@ -116,7 +116,8 @@ EOS;
             $this->error('LaravelS: popen ' . $cmd . ' failed');
             return;
         }
-        $pidFile = config('laravels.swoole.pid_file');
+
+        $pidFile = empty($svrConf['swoole']['pid_file']) ? storage_path('laravels.pid') : $svrConf['swoole']['pid_file'];
 
         // Make sure that master process started
         $time = 0;
@@ -146,7 +147,7 @@ EOS;
 
     protected function stop()
     {
-        $pidFile = config('laravels.swoole.pid_file');
+        $pidFile = config('laravels.swoole.pid_file') ?: storage_path('laravels.pid');
         if (file_exists($pidFile)) {
             $pid = (int)file_get_contents($pidFile);
             if ($this->killProcess($pid, 0)) {
@@ -184,7 +185,7 @@ EOS;
 
     protected function reload()
     {
-        $pidFile = config('laravels.swoole.pid_file');
+        $pidFile = config('laravels.swoole.pid_file') ?: storage_path('laravels.pid');
         if (!file_exists($pidFile)) {
             $this->error('LaravelS: it seems that LaravelS is not running.');
             return;
