@@ -6,7 +6,7 @@
 
 `TODO`
 
-3. Tell us your `Laravel`/`Lumen` version(check composer.lock)
+3. Tell us your `Laravel`/`Lumen` version(check composer.json & composer.lock)
 
 `TODO`
 
