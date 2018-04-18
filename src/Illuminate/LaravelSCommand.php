@@ -76,11 +76,14 @@ EOS;
         $this->outputLogo();
 
         $svrConf = config('laravels');
+
+        $basePath = $svrConf['swoole']['laravels_base_path'] ?: base_path();
+
         if (empty($svrConf['swoole']['document_root'])) {
-            $svrConf['swoole']['document_root'] = base_path('public');
+            $svrConf['swoole']['document_root'] = $basePath ? $basePath . '/public' : base_path('public');
         }
         if (empty($svrConf['process_prefix'])) {
-            $svrConf['process_prefix'] = base_path();
+            $svrConf['process_prefix'] = $basePath;
         }
         if (!empty($svrConf['events'])) {
             if (empty($svrConf['swoole']['task_worker_num']) || $svrConf['swoole']['task_worker_num'] <= 0) {
@@ -90,7 +93,7 @@ EOS;
         }
 
         $laravelConf = [
-            'rootPath'           => base_path(),
+            'rootPath'           => $basePath,
             'staticPath'         => $svrConf['swoole']['document_root'],
             'register_providers' => array_unique((array)array_get($svrConf, 'register_providers', [])),
             'isLumen'            => $this->isLumen,
