@@ -53,7 +53,7 @@ return [
         'reload_async'       => true,
         'max_wait_time'      => 60,
         'enable_reuse_port'  => true,
-        'laravels_base_path' => env('LARAVELS_BASE_PATH', ''),
+        'laravel_base_path'  => env('LARAVEL_BASE_PATH', ''),
 
         /**
          * More settings of Swoole

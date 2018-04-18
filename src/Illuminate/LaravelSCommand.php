@@ -77,10 +77,10 @@ EOS;
 
         $svrConf = config('laravels');
 
-        $basePath = $svrConf['swoole']['laravels_base_path'] ?: base_path();
+        $basePath = $svrConf['swoole']['laravel_base_path'] ?: base_path();
 
         if (empty($svrConf['swoole']['document_root'])) {
-            $svrConf['swoole']['document_root'] = $basePath ? $basePath . '/public' : base_path('public');
+            $svrConf['swoole']['document_root'] = $basePath . '/public';
         }
         if (empty($svrConf['process_prefix'])) {
             $svrConf['process_prefix'] = $basePath;
