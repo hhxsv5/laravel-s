@@ -9,6 +9,7 @@ return [
     'enable_gzip'        => env('LARAVELS_ENABLE_GZIP', false),
     'server'             => env('LARAVELS_SERVER', 'LaravelS'),
     'handle_static'      => env('LARAVELS_HANDLE_STATIC', false),
+    'laravel_base_path'  => env('LARAVEL_BASE_PATH', base_path()),
     'inotify_reload'     => [
         'enable'     => env('LARAVELS_INOTIFY_RELOAD', false),
         'file_types' => ['.php'],
@@ -53,7 +54,6 @@ return [
         'reload_async'       => true,
         'max_wait_time'      => 60,
         'enable_reuse_port'  => true,
-        'laravel_base_path'  => env('LARAVEL_BASE_PATH', base_path()),
 
         /**
          * More settings of Swoole

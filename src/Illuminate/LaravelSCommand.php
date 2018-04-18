@@ -77,8 +77,7 @@ EOS;
         $this->outputLogo();
 
         $svrConf = config('laravels');
-
-        $basePath = $svrConf['swoole']['laravel_base_path'] ?: base_path();
+        $basePath = empty($svrConf['laravel_base_path']) ? base_path() : $svrConf['laravel_base_path'];
 
         if (empty($svrConf['swoole']['document_root'])) {
             $svrConf['swoole']['document_root'] = $basePath . '/public';
