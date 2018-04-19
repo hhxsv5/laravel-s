@@ -120,6 +120,10 @@ server {
     location / {
         try_files $uri @laravels;
     }
+    # 当请求PHP文件时直接响应404，防止暴露public/*.php
+    #location ~* \.php$ {
+    #    return 404;
+    #}
     location @laravels {
         proxy_http_version 1.1;
         # proxy_connect_timeout 60s;
