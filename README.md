@@ -554,7 +554,7 @@ public function json()
 }
 ```
 
-- The database connection will be `memory resident`, recommend to enable `persistent connection`.
+- The database connection will be `memory resident`, reconnect automatically after disconnect. Recommend to enable `persistent connection`.
 ```PHP
 // config/database.php
 //...
