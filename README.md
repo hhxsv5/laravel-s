@@ -554,6 +554,31 @@ public function json()
 }
 ```
 
+- The database connection will be `memory resident`, recommend to enable `persistent connection`.
+```PHP
+// config/database.php
+//...
+'connections' => [
+    'my_conn' => [
+        'driver'    => 'mysql',
+        'host'      => env('DB_MY_CONN_HOST', 'localhost'),
+        'port'      => env('DB_MY_CONN_PORT', 3306),
+        'database'  => env('DB_MY_CONN_DATABASE', 'forge'),
+        'username'  => env('DB_MY_CONN_USERNAME', 'forge'),
+        'password'  => env('DB_MY_CONN_PASSWORD', ''),
+        'charset'   => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix'    => '',
+        'strict'    => false,
+        'options'   => [
+            // Enable persistent connection
+            \PDO::ATTR_PERSISTENT => true,
+        ],
+        //...
+],
+//...
+``
+
 - `global`, `static` variables which you declared are need to destroy(reset) manually.
 
 - Infinitely appending element into `static`/`global` variable will lead to memory leak.

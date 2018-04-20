@@ -553,6 +553,31 @@ public function json()
 }
 ```
 
+- 数据库连接将被常驻内存，建议开启`持久连接`
+```PHP
+// config/database.php
+//...
+'connections' => [
+    'my_conn' => [
+        'driver'    => 'mysql',
+        'host'      => env('DB_MY_CONN_HOST', 'localhost'),
+        'port'      => env('DB_MY_CONN_PORT', 3306),
+        'database'  => env('DB_MY_CONN_DATABASE', 'forge'),
+        'username'  => env('DB_MY_CONN_USERNAME', 'forge'),
+        'password'  => env('DB_MY_CONN_PASSWORD', ''),
+        'charset'   => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix'    => '',
+        'strict'    => false,
+        'options'   => [
+            // 开启持久连接
+            \PDO::ATTR_PERSISTENT => true,
+        ],
+        //...
+],
+//...
+``
+
 - 你声明的全局、静态变量必须手动清理或重置。
 
 - 无限追加元素到静态或全局变量中，将导致内存爆满。
