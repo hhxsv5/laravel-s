@@ -577,7 +577,7 @@ public function json()
         //...
 ],
 //...
-``
+```
 
 - `global`, `static` variables which you declared are need to destroy(reset) manually.
 
