@@ -555,7 +555,7 @@ public function json()
 ```
 
 - The various `singleton connections` will be `memory resident`, recommend to enable `persistent connection`.
-1. Database connection, `reconnect automatically` after disconnect.
+1. Database connection, it `will` reconnect automatically `immediately` after disconnect.
 ```PHP
 // config/database.php
 //...
@@ -579,7 +579,7 @@ public function json()
 ],
 //...
 ```
-2. Redis connection, `DO NOT reconnect automatically` after disconnect, and will throw an exception about lost connection, reconnect next time. You need to make sure that `SELECT DB` correctly before operating Redis every time.
+2. Redis connection, it `won't` reconnect automatically `immediately` after disconnect, and will throw an exception about lost connection, reconnect next time. You need to make sure that `SELECT DB` correctly before operating Redis every time.
 ```PHP
 // config/database.php
 'redis' => [

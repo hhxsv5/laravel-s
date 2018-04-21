@@ -554,7 +554,7 @@ public function json()
 ```
 
 - 各种`单例的连接`将被常驻内存，建议开启`持久连接`。
-1. 数据库连接，连接关闭后会自动重连
+1. 数据库连接，连接断开后会自动重连
 ```PHP
 // config/database.php
 'connections' => [
@@ -577,7 +577,7 @@ public function json()
 ],
 //...
 ```
-2. Redis连接，连接关闭后`不会`自动重连，会抛出一个关于连接断开的异常，下次会自动重连。需确保每次操作Redis前正确的`SELECT DB`。
+2. Redis连接，连接断开后`不会立即`自动重连，会抛出一个关于连接断开的异常，下次会自动重连。需确保每次操作Redis前正确的`SELECT DB`。
 ```PHP
 // config/database.php
 'redis' => [
