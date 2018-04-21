@@ -553,10 +553,10 @@ public function json()
 }
 ```
 
-- 数据库连接将被常驻内存，连接关闭后会自动重连，建议开启`持久连接`。
+- 各种`单例的连接`将被常驻内存，建议开启`持久连接`。
+1. 数据库连接，连接关闭后会自动重连
 ```PHP
 // config/database.php
-//...
 'connections' => [
     'my_conn' => [
         'driver'    => 'mysql',
@@ -575,6 +575,20 @@ public function json()
         ],
         //...
 ],
+//...
+```
+2. Redis连接，连接关闭后`不会`自动重连，会抛出一个关于连接断开的异常，下次会自动重连。需确保每次操作Redis前正确的`SELECT DB`。
+```PHP
+// config/database.php
+'redis' => [
+        'default' => [
+            'host'       => env('REDIS_HOST', 'localhost'),
+            'password'   => env('REDIS_PASSWORD', null),
+            'port'       => env('REDIS_PORT', 6379),
+            'database'   => 0,
+            'persistent' => true, // 开启持久连接
+        ],
+    ],
 //...
 ```
 
