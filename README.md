@@ -448,7 +448,7 @@ class TestCronJob extends CronJob
 }
 ```
 
-2.bind cron job.
+2.Bind cron job.
 ```PHP
 // Bind cron jobs in file "config/laravels.php"
 [
@@ -464,6 +464,8 @@ class TestCronJob extends CronJob
     // ...
 ];
 ```
+
+3.Note: it will launch multiple timers when build the server cluster, so you need to make sure that launch one timer only to avoid running repetitive task.
 
 ## Get the instance of `swoole_server` in your project
 

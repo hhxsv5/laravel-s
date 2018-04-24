@@ -464,6 +464,8 @@ class TestCronJob extends CronJob
 ];
 ```
 
+3.注意在构建服务器集群时，会启动多个`定时器`，要确保只启动一个定期器，避免重复执行定时任务。
+
 ## 在你的项目中使用`swoole_server`实例
 
 ```PHP
