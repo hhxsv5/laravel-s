@@ -264,7 +264,8 @@ server {
     location / {
         try_files $uri @laravels;
     }
-    #Javascript: var ws = new WebSocket("ws://laravels.com/ws");
+    # Http和Websocket共存，Nginx通过location区分
+    # Javascript: var ws = new WebSocket("ws://laravels.com/ws");
     location =/ws {
         proxy_http_version 1.1;
         # proxy_connect_timeout 60s;
