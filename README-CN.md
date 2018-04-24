@@ -103,7 +103,6 @@ gzip_comp_level 2;
 gzip_types text/plain text/css text/javascript application/json application/javascript application/x-javascript application/xml application/x-httpd-php image/jpeg image/gif image/png font/ttf font/otf image/svg+xml;
 gzip_vary on;
 gzip_disable "msie6";
-
 upstream laravels {
     server 192.168.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
     #server 192.168.0.2:5200 weight=3 max_fails=3 fail_timeout=30s;
@@ -249,16 +248,14 @@ map $http_upgrade $connection_upgrade {
     default upgrade;
     ''      close;
 }
-
-upstream laravels-ws {
+upstream laravels {
     server 192.168.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
     #server 192.168.0.2:5200 weight=3 max_fails=3 fail_timeout=30s;
     #server 192.168.0.3:5200 backup;
 }
-
 server {
     listen 80;
-    server_name laravels-ws.com;
+    server_name laravels.com;
     root /xxxpath/laravel-s-test/public;
     access_log /yyypath/log/nginx/$server_name.access.log  main;
     autoindex off;
@@ -267,7 +264,8 @@ server {
     location / {
         try_files $uri @laravels;
     }
-    location @laravels {
+    #Javascript: var ws = new WebSocket("ws://laravels.com/ws");
+    location =/ws {
         proxy_http_version 1.1;
         # proxy_connect_timeout 60s;
         # proxy_send_timeout 60s;
@@ -279,7 +277,18 @@ server {
         proxy_set_header Host $host;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
-        proxy_pass http://laravels-ws;
+        proxy_pass http://laravels;
+    }
+    location @laravels {
+        proxy_http_version 1.1;
+        # proxy_connect_timeout 60s;
+        # proxy_send_timeout 60s;
+        # proxy_read_timeout 60s;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Real-PORT $remote_port;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_pass http://laravels;
     }
 }
 ```
