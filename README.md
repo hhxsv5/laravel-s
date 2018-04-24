@@ -264,6 +264,10 @@ server {
     location / {
         try_files $uri @laravels;
     }
+    # Response 404 directly when request the PHP file, to avoid exposing public/*.php
+    #location ~* \.php$ {
+    #    return 404;
+    #}
     # Http and Websocket are concomitant, Nginx identifies them by "location"
     # Javascript: var ws = new WebSocket("ws://laravels.com/ws");
     location =/ws {
