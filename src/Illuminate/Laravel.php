@@ -25,7 +25,7 @@ class Laravel
     /**
      * @var array $snapshots
      */
-    protected $snapshots;
+    protected $snapshots = [];
 
     protected $conf = [];
 
@@ -100,6 +100,7 @@ class Laravel
 
     protected function saveSnapshots()
     {
+        $this->snapshots = [];
         foreach (self::$snapshotKeys as $key) {
             if (is_object($this->snapshots[$key])) {
                 $this->snapshots[$key] = clone $this->app[$key];
