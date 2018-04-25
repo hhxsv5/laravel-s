@@ -97,7 +97,7 @@ class Inotify
     public function start()
     {
         swoole_event_add(/** @scrutinizer ignore-type */$this->fd, function ($fp) {
-            $events = inotify_read($this->fd);
+            $events = inotify_read($fp);
             foreach ($events as $event) {
                 if ($event['mask'] == IN_IGNORED) {
                     continue;
