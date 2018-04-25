@@ -18,7 +18,7 @@ class Laravel
      */
     protected $laravelKernel;
 
-    protected static $snapshotKeys = ['config'];
+    protected static $snapshotKeys = ['config', 'cookie'];
 
     /**
      * @var array $snapshots
@@ -119,6 +119,7 @@ class Laravel
             } else {
                 $this->app[$key] = $value;
             }
+            Facade::clearResolvedInstance($key);
         }
     }
 
@@ -246,17 +247,6 @@ class Laravel
                 $session->flush();
             }
             // TODO: clear session for other versions
-        }
-
-        // Clean laravel cookie queue
-        if (isset($this->app['cookie'])) {
-            /**
-             * @var \Illuminate\Contracts\Cookie\QueueingFactory $cookies
-             */
-            $cookies = $this->app['cookie'];
-            foreach ($cookies->getQueuedCookies() as $name => $cookie) {
-                $cookies->unqueue($name);
-            }
         }
 
         // Re-register some singleton providers
