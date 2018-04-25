@@ -33,16 +33,17 @@ class Request
             $key = str_replace('-', '_', $key);
             $server['http_' . $key] = $value;
         }
-        // Fix client real-ip
-        if (isset($this->swooleRequest->header['x-real-ip'])) {
-            $server['REMOTE_ADDR'] = (string)$this->swooleRequest->header['x-real-ip'];
-        }
-        // Fix client real-port
-        if (isset($this->swooleRequest->header['x-real-port'])) {
-            $server['REMOTE_PORT'] = (int)$this->swooleRequest->header['x-real-port'];
-        }
         $_SERVER = array_merge($rawServer, array_change_key_case($server, CASE_UPPER));
         $_ENV = $rawEnv;
+
+        // Fix client real-ip
+        if (isset($headers['x-real-ip'])) {
+            $_SERVER['REMOTE_ADDR'] = (string)$headers['x-real-ip'];
+        }
+        // Fix client real-port
+        if (isset($headers['x-real-port'])) {
+            $_SERVER['REMOTE_PORT'] = (int)$headers['x-real-port'];
+        }
 
         // Fix argv & argc
         if (!isset($_SERVER['argv'])) {
