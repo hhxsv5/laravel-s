@@ -214,7 +214,7 @@ class Server
     public function onFinish(\swoole_http_server $server, $taskId, $data)
     {
         if ($data instanceof Task) {
-            $data->finish();
+            $data->/** @scrutinizer ignore-call */finish();
         }
     }
 

@@ -74,7 +74,7 @@ class Inotify
     protected function clearWatch()
     {
         foreach ($this->wdPath as $wd => $path) {
-            @inotify_rm_watch($this->fd, $wd);
+            /** @scrutinizer ignore-unhandled */@inotify_rm_watch($this->fd, $wd);
         }
         $this->wdPath = [];
         $this->pathWd = [];
@@ -96,7 +96,7 @@ class Inotify
 
     public function start()
     {
-        swoole_event_add($this->fd, function ($fp) {
+        swoole_event_add(/** @scrutinizer ignore-type */$this->fd, function ($fp) {
             $events = inotify_read($this->fd);
             foreach ($events as $event) {
                 if ($event['mask'] == IN_IGNORED) {
@@ -125,7 +125,7 @@ class Inotify
 
     public function stop()
     {
-        swoole_event_del($this->fd);
+        swoole_event_del(/** @scrutinizer ignore-type */$this->fd);
         fclose($this->fd);
     }
 
