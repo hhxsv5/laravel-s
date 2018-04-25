@@ -114,12 +114,6 @@ class Inotify
 
                 swoole_timer_after(100, function () use ($event) {
                     call_user_func_array($this->watchHandler, [$event]);
-
-//                    // Clear watch to avoid multiple events
-//                    $this->clearWatch();
-//                    // Watch again
-//                    $this->watch();
-
                     $this->doing = false;
                 });
                 $this->doing = true;
