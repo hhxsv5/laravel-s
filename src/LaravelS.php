@@ -77,8 +77,7 @@ class LaravelS extends Server
 
         $startTimer = function () {
             $this->setProcessTitle(sprintf('%s laravels: timer process', $this->conf['process_prefix']));
-            $laravel = $this->initLaravel();
-            $laravel->consoleKernelBootstrap();
+            $this->initLaravel();
             foreach ($this->conf['timer']['jobs'] as $jobClass) {
                 $job = new $jobClass();
                 if (!($job instanceof CronJob)) {
@@ -99,27 +98,12 @@ class LaravelS extends Server
         $this->swoole->addProcess($timerProcess);
     }
 
-    protected function getWebsocketHandler()
-    {
-        $this->laravel->consoleKernelBootstrap();
-        return parent::getWebsocketHandler();
-    }
-
     protected function initLaravel()
     {
         $laravel = new Laravel($this->laravelConf);
         $laravel->prepareLaravel();
         $laravel->bindSwoole($this->swoole);
         return $laravel;
-    }
-
-    public function onTask(\swoole_http_server $server, $taskId, $srcWorkerId, $data)
-    {
-        $this->laravel->consoleKernelBootstrap();
-        $ret = parent::onTask($server, $taskId, $srcWorkerId, $data);
-        if ($ret !== null) {
-            return $ret;
-        }
     }
 
     public function onWorkerStart(\swoole_http_server $server, $workerId)

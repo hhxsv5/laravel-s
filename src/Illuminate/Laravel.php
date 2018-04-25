@@ -3,6 +3,7 @@
 namespace Hhxsv5\LaravelS\Illuminate;
 
 
+use Illuminate\Config\Repository;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 use Illuminate\Http\Request as IlluminateRequest;
@@ -18,6 +19,13 @@ class Laravel
      * @var HttpKernel $laravelKernel
      */
     protected $laravelKernel;
+
+    protected static $snapshotKeys = ['config'];
+
+    /**
+     * @var array $snapshots
+     */
+    protected $snapshots;
 
     protected $conf = [];
 
@@ -40,6 +48,8 @@ class Laravel
         $this->createApp();
         $this->createKernel();
         $this->setLaravel();
+        $this->consoleKernelBootstrap();
+        $this->saveSnapshots();
     }
 
     protected function autoload()
@@ -77,12 +87,7 @@ class Laravel
         $this->rawGlobals['_ENV'] = array_merge($_ENV, $env);
     }
 
-    public function getRawGlobals()
-    {
-        return $this->rawGlobals;
-    }
-
-    public function consoleKernelBootstrap()
+    protected function consoleKernelBootstrap()
     {
         if ($this->conf['isLumen']) {
             if (Facade::getFacadeApplication() === null) {
@@ -93,8 +98,29 @@ class Laravel
         }
     }
 
+    protected function saveSnapshots()
+    {
+        foreach (self::$snapshotKeys as $key) {
+            $this->snapshots[$key] = clone $this->app[$key];
+        }
+    }
+
+    protected function applySnapshots()
+    {
+        foreach (self::$snapshotKeys as $key) {
+            $this->app[$key] = clone $this->snapshots[$key];
+        }
+    }
+
+    public function getRawGlobals()
+    {
+        return $this->rawGlobals;
+    }
+
     public function handleDynamic(IlluminateRequest $request)
     {
+        $this->applySnapshots();
+
         ob_start();
 
         if ($this->conf['isLumen']) {
