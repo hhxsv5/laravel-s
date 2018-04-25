@@ -110,14 +110,10 @@ class LaravelS extends Server
     {
         parent::onWorkerStart($server, $workerId);
 
-        // file_put_contents('laravels.log', 'Laravels:onWorkerStart:start already included files ' . json_encode(get_included_files(), JSON_UNESCAPED_SLASHES) . PHP_EOL, FILE_APPEND);
-
         // To implement gracefully reload
         // Delay to create Laravel
         // Delay to include Laravel's autoload.php
         $this->laravel = $this->initLaravel();
-
-        // file_put_contents('laravels.log', 'Laravels:onWorkerStart:end already included files ' . json_encode(get_included_files(), JSON_UNESCAPED_SLASHES) . PHP_EOL, FILE_APPEND);
     }
 
     public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
