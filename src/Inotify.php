@@ -4,9 +4,6 @@ namespace Hhxsv5\LaravelS;
 
 class Inotify
 {
-    /**
-     * @var int|resource
-     */
     private $fd;
     private $watchPath;
     private $watchMask;
