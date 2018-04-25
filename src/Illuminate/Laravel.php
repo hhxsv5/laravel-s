@@ -101,14 +101,22 @@ class Laravel
     protected function saveSnapshots()
     {
         foreach (self::$snapshotKeys as $key) {
-            $this->snapshots[$key] = clone $this->app[$key];
+            if (is_object($this->snapshots[$key])) {
+                $this->snapshots[$key] = clone $this->app[$key];
+            } else {
+                $this->snapshots[$key] = $this->app[$key];
+            }
         }
     }
 
     protected function applySnapshots()
     {
-        foreach (self::$snapshotKeys as $key) {
-            $this->app[$key] = clone $this->snapshots[$key];
+        foreach ($this->snapshots as $key => $value) {
+            if (is_object($value)) {
+                $this->app[$key] = clone $value;
+            } else {
+                $this->app[$key] = $value;
+            }
         }
     }
 
