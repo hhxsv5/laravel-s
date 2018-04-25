@@ -2,8 +2,6 @@
 
 namespace Hhxsv5\LaravelS\Illuminate;
 
-
-use Illuminate\Config\Repository;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 use Illuminate\Http\Request as IlluminateRequest;
@@ -102,10 +100,13 @@ class Laravel
     {
         $this->snapshots = [];
         foreach (self::$snapshotKeys as $key) {
-            if (is_object($this->snapshots[$key])) {
-                $this->snapshots[$key] = clone $this->app[$key];
-            } else {
-                $this->snapshots[$key] = $this->app[$key];
+            if (isset($this->app[$key])) {
+                $t = &$this->app[$key];
+                if (is_object($t)) {
+                    $this->snapshots[$key] = clone $t;
+                } else {
+                    $this->snapshots[$key] = $t;
+                }
             }
         }
     }
