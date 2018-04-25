@@ -101,7 +101,7 @@ class Laravel
         $this->snapshots = [];
         foreach (self::$snapshotKeys as $key) {
             if (isset($this->app[$key])) {
-                $t = &$this->app[$key];
+                $t =& $this->app[$key];
                 if (is_object($t)) {
                     $this->snapshots[$key] = clone $t;
                 } else {
