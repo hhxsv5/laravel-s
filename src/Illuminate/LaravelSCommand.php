@@ -77,7 +77,7 @@ EOS;
         $this->outputLogo();
 
         $svrConf = config('laravels');
-        $basePath = empty($svrConf['laravel_base_path']) ? base_path() : $svrConf['laravel_base_path'];
+        $basePath = array_get($svrConf, 'laravel_base_path', base_path());
 
         if (empty($svrConf['swoole']['document_root'])) {
             $svrConf['swoole']['document_root'] = $basePath . '/public';
@@ -93,12 +93,12 @@ EOS;
         }
 
         $laravelConf = [
-            'rootPath'           => $basePath,
-            'staticPath'         => $svrConf['swoole']['document_root'],
-            'register_providers' => array_unique((array)array_get($svrConf, 'register_providers', [])),
-            'isLumen'            => $this->isLumen,
-            '_SERVER'            => $_SERVER,
-            '_ENV'               => $_ENV,
+            'rootPath'          => $basePath,
+            'staticPath'        => $svrConf['swoole']['document_root'],
+            'registerProviders' => array_unique((array)array_get($svrConf, 'register_providers', [])),
+            'isLumen'           => $this->isLumen,
+            '_SERVER'           => $_SERVER,
+            '_ENV'              => $_ENV,
         ];
 
         if (file_exists($svrConf['swoole']['pid_file'])) {

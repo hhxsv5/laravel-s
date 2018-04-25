@@ -224,7 +224,7 @@ class Laravel
         }
 
         // Re-register some singleton providers
-        foreach ($this->conf['register_providers'] as $provider) {
+        foreach ($this->conf['registerProviders'] as $provider) {
             $this->reRegisterServiceProvider($provider);
         }
 
