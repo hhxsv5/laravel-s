@@ -1,4 +1,13 @@
 # LaravelS - 站在巨人的肩膀上
+```
+ _                               _  _____ 
+| |                             | |/ ____|
+| |     __ _ _ __ __ ___   _____| | (___  
+| |    / _` | '__/ _` \ \ / / _ \ |\___ \ 
+| |___| (_| | | | (_| |\ V /  __/ |____) |
+|______\__,_|_|  \__,_| \_/ \___|_|_____/ 
+                                           
+```
 > 🚀 基于`Swoole`加速Laravel/Lumen，"S"代表`Swoole`，速度，高性能。
 
 [![Latest Stable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/stable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
