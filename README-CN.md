@@ -1,5 +1,5 @@
 # LaravelS - 站在巨人的肩膀上
-> 🚀 基于`Swoole`加速`Laravel/Lumen`，'S'代表`Swoole`，速度，高性能。
+> 🚀 基于`Swoole`加速Laravel/Lumen，'S'代表`Swoole`，速度，高性能。
 
 [![Latest Stable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/stable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
 [![Latest Unstable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/unstable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
