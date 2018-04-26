@@ -1,5 +1,5 @@
 # LaravelS - standing on the shoulders of giants
-> 🚀 Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.
+> 🚀 Speed up `Laravel/Lumen` by `Swoole`, 'S' means `Swoole`, Speed, High performance.
 
 [![Latest Stable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/stable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
 [![Latest Unstable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/unstable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
