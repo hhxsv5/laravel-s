@@ -36,13 +36,23 @@ class Request
         $_SERVER = array_merge($rawServer, array_change_key_case($server, CASE_UPPER));
         $_ENV = $rawEnv;
 
-        // Fix client real-ip
-        if (isset($headers['x-real-ip'])) {
-            $_SERVER['REMOTE_ADDR'] = (string)$headers['x-real-ip'];
+        // Fix client && server's info
+        static $serverHeaderMapping = [
+            'REMOTE_ADDR'     => 'x-real-ip',
+            'REMOTE_PORT'     => 'x-real-port',
+            'SERVER_PROTOCOL' => 'server-protocol',
+            'SERVER_NAME'     => 'server-name',
+            'SERVER_ADDR'     => 'server-addr',
+            'SERVER_PORT'     => 'server-port',
+            'REQUEST_SCHEME'  => 'scheme',
+        ];
+        foreach ($serverHeaderMapping as $serverKey => $headerKey) {
+            if (isset($headers[$headerKey])) {
+                $_SERVER[$serverKey] = $headers[$headerKey];
+            }
         }
-        // Fix client real-port
-        if (isset($headers['x-real-port'])) {
-            $_SERVER['REMOTE_PORT'] = (int)$headers['x-real-port'];
+        if (isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] === 'https') {
+            $_SERVER['HTTPS'] = 'on';
         }
 
         // Fix argv & argc
