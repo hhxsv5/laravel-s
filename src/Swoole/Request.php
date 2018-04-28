@@ -49,9 +49,9 @@ class Request
                 $key = str_replace('-', '_', $key);
                 $server['http_' . $key] = $value;
             }
-
         }
-        $_SERVER = array_merge($_SERVER, array_change_key_case($server, CASE_UPPER));
+        $server = array_change_key_case($server, CASE_UPPER);
+        $_SERVER = array_merge($_SERVER, $server);
         if (isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] === 'https') {
             $_SERVER['HTTPS'] = 'on';
         }
