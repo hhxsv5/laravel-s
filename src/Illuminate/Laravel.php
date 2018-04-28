@@ -2,11 +2,14 @@
 
 namespace Hhxsv5\LaravelS\Illuminate;
 
+use Hhxsv5\LaravelS\Illuminate\Database\ConnectionFactory;
+use Hhxsv5\LaravelS\Illuminate\Database\DatabaseManager;
+use Illuminate\Support\Facades\Facade;
+use Illuminate\Http\Request as IlluminateRequest;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
-use Illuminate\Http\Request as IlluminateRequest;
-use Illuminate\Support\Facades\Facade;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Hhxsv5\LaravelS\Illuminate\Database\DatabaseServiceProvider;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Laravel
@@ -47,6 +50,7 @@ class Laravel
         $this->createKernel();
         $this->setLaravel();
         $this->consoleKernelBootstrap();
+        $this->registerServiceProviders();
         $this->saveSnapshots();
     }
 
@@ -221,9 +225,14 @@ class Laravel
         return $rsp;
     }
 
-    public function reRegisterServiceProvider($providerCls, array $clearFacades = [])
+    protected function registerServiceProviders()
     {
-        if (class_exists($providerCls, false)) {
+        $this->reRegisterServiceProvider(DatabaseServiceProvider::class, ['db', 'db.factory', 'db.connection'], true);
+    }
+
+    public function reRegisterServiceProvider($providerCls, array $clearFacades = [], $force = false)
+    {
+        if (class_exists($providerCls, false) || $force) {
             foreach ($clearFacades as $facade) {
                 Facade::clearResolvedInstance($facade);
             }
