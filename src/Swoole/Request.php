@@ -44,7 +44,7 @@ class Request
         foreach ($headers as $key => $value) {
             // Fix client && server's info
             if (isset($headerServerMapping[$key])) {
-                $_SERVER[$headerServerMapping[$key]] = $value;
+                $server[$headerServerMapping[$key]] = $value;
             } else {
                 $key = str_replace('-', '_', $key);
                 $server['http_' . $key] = $value;
