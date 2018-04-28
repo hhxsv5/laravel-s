@@ -29,28 +29,29 @@ class Request
         $_FILES = isset($this->swooleRequest->files) ? $this->swooleRequest->files : [];
         $_REQUEST = [];
 
-        foreach ($headers as $key => $value) {
-            $key = str_replace('-', '_', $key);
-            $server['http_' . $key] = $value;
-        }
-        $_SERVER = array_merge($rawServer, array_change_key_case($server, CASE_UPPER));
-        $_ENV = $rawEnv;
-
-        // Fix client && server's info
-        static $serverHeaderMapping = [
-            'REMOTE_ADDR'     => 'x-real-ip',
-            'REMOTE_PORT'     => 'x-real-port',
-            'SERVER_PROTOCOL' => 'server-protocol',
-            'SERVER_NAME'     => 'server-name',
-            'SERVER_ADDR'     => 'server-addr',
-            'SERVER_PORT'     => 'server-port',
-            'REQUEST_SCHEME'  => 'scheme',
+        static $headerServerMapping = [
+            'x-real-ip'       => 'REMOTE_ADDR',
+            'x-real-port'     => 'REMOTE_PORT',
+            'server-protocol' => 'SERVER_PROTOCOL',
+            'server-name'     => 'SERVER_NAME',
+            'server-addr'     => 'SERVER_ADDR',
+            'server-port'     => 'SERVER_PORT',
+            'scheme'          => 'REQUEST_SCHEME',
         ];
-        foreach ($serverHeaderMapping as $serverKey => $headerKey) {
-            if (isset($headers[$headerKey])) {
-                $_SERVER[$serverKey] = $headers[$headerKey];
+
+        $_ENV = $rawEnv;
+        $_SERVER = $rawServer;
+        foreach ($headers as $key => $value) {
+            // Fix client && server's info
+            if (isset($headerServerMapping[$key])) {
+                $_SERVER[$headerServerMapping[$key]] = $value;
+            } else {
+                $key = str_replace('-', '_', $key);
+                $server['http_' . $key] = $value;
             }
+
         }
+        $_SERVER = array_merge($_SERVER, array_change_key_case($server, CASE_UPPER));
         if (isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] === 'https') {
             $_SERVER['HTTPS'] = 'on';
         }
