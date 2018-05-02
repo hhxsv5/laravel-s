@@ -241,12 +241,7 @@ class Laravel
             foreach ($clearFacades as $facade) {
                 Facade::clearResolvedInstance($facade);
             }
-            $provider = $this->app->register($providerCls, [], true);
-            if (!$this->conf['isLumen']) {
-                if (method_exists($provider, 'boot')) {
-                    $this->app->call([$provider, 'boot']);
-                }
-            }
+            $this->app->register($providerCls, [], true);
         }
     }
 
