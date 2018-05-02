@@ -258,11 +258,6 @@ class Laravel
             // TODO: clear session for other versions
         }
 
-        // Re-register some singleton providers
-        foreach ($this->conf['registerProviders'] as $provider) {
-            $this->reRegisterServiceProvider($provider);
-        }
-
         // Re-register auth
         $this->reRegisterServiceProvider('\Illuminate\Auth\AuthServiceProvider', ['auth', 'auth.driver']);
         $this->reRegisterServiceProvider('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', ['auth.password']);
@@ -273,6 +268,11 @@ class Laravel
 
         // Re-register passport
         $this->reRegisterServiceProvider('\Laravel\Passport\PassportServiceProvider');
+
+        // Re-register some singleton providers
+        foreach ($this->conf['registerProviders'] as $provider) {
+            $this->reRegisterServiceProvider($provider);
+        }
 
         // Clear request
         $this->app->forgetInstance('request');
