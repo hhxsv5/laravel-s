@@ -18,6 +18,11 @@ class Laravel
      */
     protected $laravelKernel;
 
+    /**
+     * @var \ReflectionObject $laravelReflect
+     */
+    protected $laravelReflect;
+
     protected static $snapshotKeys = ['config', 'cookie'];
 
     /**
@@ -101,13 +106,16 @@ class Laravel
         $this->snapshots = [];
         foreach (self::$snapshotKeys as $key) {
             if (isset($this->app[$key])) {
-                $t =& $this->app[$key];
-                if (is_object($t)) {
-                    $this->snapshots[$key] = clone $t;
+                if (is_object($this->app[$key])) {
+                    $this->snapshots[$key] = clone $this->app[$key];
                 } else {
-                    $this->snapshots[$key] = $t;
+                    $this->snapshots[$key] = $this->app[$key];
                 }
             }
+        }
+
+        if ($this->conf['isLumen']) {
+            $this->laravelReflect = new \ReflectionObject($this->app);
         }
     }
 
@@ -142,11 +150,10 @@ class Laravel
                 $content = (string)$response;
             }
 
-            $reflect = new \ReflectionObject($this->app);
-            $middleware = $reflect->getProperty('middleware');
+            $middleware = $this->laravelReflect->getProperty('middleware');
             $middleware->setAccessible(true);
-            if (count($middleware->getValue($this->app)) > 0) {
-                $callTerminableMiddleware = $reflect->getMethod('callTerminableMiddleware');
+            if (!empty($middleware->getValue($this->app))) {
+                $callTerminableMiddleware = $this->laravelReflect->getMethod('callTerminableMiddleware');
                 $callTerminableMiddleware->setAccessible(true);
                 $callTerminableMiddleware->invoke($this->app, $response);
             }
@@ -224,6 +231,13 @@ class Laravel
     public function reRegisterServiceProvider($providerCls, array $clearFacades = [])
     {
         if (class_exists($providerCls, false)) {
+            if ($this->conf['isLumen']) {
+                $loadedProviders = $this->laravelReflect->getProperty('loadedProviders');
+                $loadedProviders->setAccessible(true);
+                $oldLoadedProviders = $loadedProviders->getValue($this->app);
+                unset($oldLoadedProviders[get_class(new $providerCls($this->app))]);
+                $loadedProviders->setValue($this->app, $oldLoadedProviders);
+            }
             foreach ($clearFacades as $facade) {
                 Facade::clearResolvedInstance($facade);
             }
