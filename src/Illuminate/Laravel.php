@@ -244,7 +244,7 @@ class Laravel
             $provider = $this->app->register($providerCls, [], true);
             if (!$this->conf['isLumen']) {
                 if (method_exists($provider, 'boot')) {
-                    $provider->boot();
+                    $this->app->call([$provider, 'boot']);
                 }
             }
         }
