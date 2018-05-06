@@ -119,7 +119,6 @@ class LaravelS extends Server
     public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
     {
         try {
-            parent::onRequest($request, $response);
             $rawGlobals = $this->laravel->getRawGlobals();
             $server = isset($rawGlobals['_SERVER']) ? $rawGlobals['_SERVER'] : [];
             $env = isset($rawGlobals['_ENV']) ? $rawGlobals['_ENV'] : [];
