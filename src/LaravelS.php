@@ -131,14 +131,25 @@ class LaravelS extends Server
                 $this->handleDynamicResource($laravelRequest, $response);
             }
         } catch (\Exception $e) {
-            $error = sprintf('onRequest: %s:%s, [%d] "%s"%s%s', $e->getFile(), $e->getLine(), $e->getCode(), $e->getMessage(), '<br>', $e->getTraceAsString());
-            $this->log($error, 'ERROR');
-            try {
-                $response->status(500);
-                $response->end('Oops! An unexpected error occurred: ' . $error);
-            } catch (\Exception $e) {
-                // Catch: zm_deactivate_swoole: Fatal error: Uncaught exception 'ErrorException' with message 'swoole_http_response::status(): http client#2 is not exist.
-            }
+            $this->handleException($e, $response);
+        } catch (\Throwable $e) {
+            $this->handleException($e, $response);
+        }
+    }
+
+    /**
+     * @param \Exception|\Throwable $e
+     * @param \swoole_http_response $response
+     */
+    protected function handleException($e, \swoole_http_response $response)
+    {
+        $error = sprintf('onRequest: Uncaught exception "%s"([%d]%s) at %s:%s, %s%s', get_class($e), $e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine(), PHP_EOL, $e->getTraceAsString());
+        $this->log($error, 'ERROR');
+        try {
+            $response->status(500);
+            $response->end('Oops! An unexpected error occurred: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            // Catch: zm_deactivate_swoole: Fatal error: Uncaught exception 'ErrorException' with message 'swoole_http_response::status(): http client#2 is not exist.
         }
     }
 
