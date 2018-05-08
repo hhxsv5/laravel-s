@@ -1,4 +1,3 @@
-# LaravelS - 站在巨人的肩膀上
 ```
  _                               _  _____ 
 | |                             | |/ ____|
@@ -8,7 +7,7 @@
 |______\__,_|_|  \__,_| \_/ \___|_|_____/ 
                                            
 ```
-> 🚀 基于`Swoole`加速Laravel/Lumen，"S"代表`Swoole`，速度，高性能。
+> 🚀 基于`Swoole`加速Laravel/Lumen。
 
 [![Latest Stable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/stable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
 [![Latest Unstable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/unstable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
@@ -22,8 +21,6 @@
 **[English Documentation](https://github.com/hhxsv5/laravel-s/blob/master/README.md)**  *QQ交流群：698480528*
 
 ## 特性
-
-- 高性能的Swoole
 
 - 内置Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%90%AF%E7%94%A8websocket%E6%9C%8D%E5%8A%A1%E5%99%A8)服务器
 
