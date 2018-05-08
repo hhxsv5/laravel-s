@@ -2,6 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
+use Hhxsv5\LaravelS\Swoole\Socket;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
@@ -17,10 +18,13 @@ class Server
 
     protected $enableWebsocket = false;
 
+    protected $attachedSockets;
+
     protected function __construct(array $conf)
     {
         $this->conf = $conf;
         $this->enableWebsocket = !empty($this->conf['websocket']['enable']);
+        $this->attachedSockets = empty($this->conf['sockets'])?[]:$this->conf['sockets'];
 
         $ip = isset($conf['listen_ip']) ? $conf['listen_ip'] : '127.0.0.1';
         $port = isset($conf['listen_port']) ? $conf['listen_port'] : 5200;
@@ -40,6 +44,7 @@ class Server
         $this->bindHttpEvent();
         $this->bindTaskEvent();
         $this->bindWebsocketEvent();
+        $this->bindAttachedSockets();
         $this->bindSwooleTables();
     }
 
@@ -103,6 +108,48 @@ class Server
         }
     }
 
+    protected function bindAttachedSockets(){
+        foreach ($this->attachedSockets as $socket){
+            $port = $this->swoole->addListener($socket['host'], $socket['port'], $socket['type']);
+            if($port!=false){
+                $port->set(empty($socket['settings'])?[]:$socket['settings']);
+                $handlerClass = $socket['handler'];
+                $port->on("Connect", function ($server, $fd, $reactorId) use ($port, $handlerClass){
+                    $handler = $this->getSocketHandler($port, $handlerClass);
+                    try{
+                        $handler->onConnect($server, $fd, $reactorId);
+                    }catch (\Exception $e){
+                        $this->logException($e);
+                    }
+                });
+                $port->on("Close", function($server, $fd, $reactorId) use ($port, $handlerClass){
+                    $handler = $this->getSocketHandler($port, $handlerClass);
+                    try{
+                        $handler->onClose($server, $fd, $reactorId);
+                    }catch (\Exception $e){
+                        $this->logException($e);
+                    }
+                });
+                $port->on("Receive", function($server, $fd, $reactorId, $data) use ($port, $handlerClass){
+                    $handler = $this->getSocketHandler($port, $handlerClass);
+                    try{
+                        $handler->onReceive($server, $fd, $reactorId, $data);
+                    }catch (\Exception $e){
+                        $this->logException($e);
+                    }
+                });
+                $port->on("Packet", function($server, $data,  $clientInfo) use ($port, $handlerClass){
+                    $handler = $this->getSocketHandler($port, $handlerClass);
+                    try{
+                        $handler->onPacket($server, $data,  $clientInfo);
+                    }catch (\Exception $e){
+                        $this->logException($e);
+                    }
+                });
+            }
+        }
+    }
+
     protected function getWebsocketHandler()
     {
         static $handler = null;
@@ -117,6 +164,21 @@ class Server
         }
         $handler = $t;
         return $handler;
+    }
+    
+    protected function getSocketHandler($port, $handlerClass){
+        static $handles = [];
+        $portHash = md5(spl_object_hash($port));
+        if(isset($handles[$portHash])){
+            return $handles[$portHash];
+        }
+        $t = new $handlerClass;
+        if(!($t instanceof Socket)){
+            throw new \Exception(sprintf('%s must extend the class %s', $handlerClass, Socket::class));
+        }
+        $t->setSwoolePort($port);
+        $handles[$portHash] = $t;
+        return $handles[$portHash];
     }
 
     protected function bindSwooleTables()

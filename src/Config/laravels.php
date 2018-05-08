@@ -19,6 +19,9 @@ return [
         'enable' => false,
         //'handler' => XxxWebsocketHandler::class,
     ],
+    'sockets' => [
+        // Set swoole.dispatch_mode down below to 2/4/5 so as to unblock `onConnect`/`onClose` event
+    ],
     'timer'              => [
         'enable' => false,
         'jobs'   => [
