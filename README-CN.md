@@ -642,6 +642,7 @@ public function onReceive($server, $fd, $reactorId, $data)
     //...
     'dispatch_mode' => 2,
     //...
+];
 ```
 
 ## 注意事项

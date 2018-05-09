@@ -575,7 +575,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 To make our main server capable of handling more types of connections other than just HTTP or Websocket, we introduced multiport protocol feature of Swoole into LaravelS and name it as `Socket`. As a result, you can now easily build TCP/UDP socket applications on top of Laravel.
 
-1. Create Socket Handler Class
+1. Create socket handler class
 
 > Be aware that the methods available to be called can vary between TCP and UDP. TCP(extends `TcpSocket`): onConnect, onClose, onReceive; UDP(extends `UdpSocket`): onReceive, onPacket
 
@@ -624,7 +624,7 @@ Edit file `config/laravels.php`:
             'type' => SWOOLE_SOCK_TCP, //Socket type
             'settings' => [ //Swoole settings available for `swoole_server_port`:
                  'open_eof_check' => true,
-                 'package_eof' => "\r\n", 
+                 'package_eof'    => "\r\n", 
              ], 
              'handler' => \App\Sockets\TestSocket::class
         ],
@@ -633,13 +633,14 @@ Edit file `config/laravels.php`:
 //...
 ```
 
-For TCP socket, events `onConnect` and `onClose` will be blocked when the dispatch_mode of Swoole is set to 1/3. So if you want to unblock these two events please set the `dispatch_mode` down below to 2/4/5:
+For TCP socket, events `onConnect` and `onClose` will be blocked when the `dispatch_mode` of Swoole is set to `1/3`. So if you want to unblock these two events please set the `dispatch_mode` below to 2/4/5:
 
 ```PHP
 'swoole'             => [
-        //...
-        'dispatch_mode'      => 2,
-        //...
+    //...
+    'dispatch_mode'      => 2,
+    //...
+];
 ```
 
 ## Important notices
