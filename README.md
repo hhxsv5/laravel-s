@@ -566,6 +566,79 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 }
 ```
 
+## Enable Sockets
+
+> For more information, please refer to [Swoole Server Addlistener](https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addlistener)
+
+To make our main server capable of handling more types of connections other than just HTTP or Websocket, we introduced multiport protocol feature of Swoole into LaravelS and name it as `Socket`. As a result, you can now easily build TCP/UDP socket applications on top of Laravel.
+
+1. Create Socket Handler Class
+
+> Be aware that the methods available to be called can vary between TCP and UDP. TCP(extends `TcpSocket`): onConnect, onClose, onReceive; UDP(extends `UdpSocket`): onReceive, onPacket
+
+```PHP
+namespace App\Sockets;
+use Hhxsv5\LaravelS\Swoole\Socket\TcpSocket;
+class TestSocket extends TcpSocket
+{
+    public function onConnect(\swoole_server $server, $fd, $reactorId)
+    {
+        echo 'onConnect:'.$fd.' with Reactor:'.$reactorId.PHP_EOL;
+    }
+    public function onClose(\swoole_server $server, $fd, $reactorId)
+    {
+        echo 'onClose:'.$fd.' with Reactor:'.$reactorId.PHP_EOL;
+    }
+    public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
+    {
+        echo 'onReceive:'.$data.PHP_EOL;
+        $server->send($fd, 'Hello There!');
+    }
+}
+```
+
+These connections share the same worker processes with your HTTP/Websocket connections. So it won't be a problem at all if you want to deliver tasks or use `swoole_table` or even Laravel components such as DB, Eloquent and many more.
+
+And also, if you want to get direct access to `swoole_server_port` object, it is injected into `Socket` class. So just do as follows:
+
+```PHP
+public function onReceive($server, $fd, $reactorId, $data)
+{
+    $port = $this->swoolePort; //There you go
+}
+```
+
+2. Register Sockets
+
+Edit file `config/laravels.php`:
+
+```PHP
+//...
+'sockets' => [
+        [
+            'host' => '0.0.0.0',
+            'port' => 5291,
+            'type' => SWOOLE_SOCK_TCP, //Socket type
+            'settings' => [ //Swoole settings available for `swoole_server_port`:
+                 'open_eof_check' => true,
+                 'package_eof' => "\r\n", 
+             ], 
+             'handler' => \App\Sockets\TestSocket::class
+        ],
+        //...more sockets
+    ],
+//...
+```
+
+For TCP socket, events `onConnect` and `onClose` will be blocked when the dispatch_mode of Swoole is set to 1/3. So if you want to unblock these two events please set the `dispatch_mode` down below to 2/4/5:
+
+```PHP
+'swoole'             => [
+        //...
+        'dispatch_mode'      => 2,
+        //...
+```
+
 ## Important notices
 
 - Get all info of request from `Illuminate\Http\Request` Object, compatible with $_SERVER/$_ENV/$_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST, `CANNOT USE` $_SESSION.

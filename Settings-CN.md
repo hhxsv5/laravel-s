@@ -22,6 +22,8 @@
 
 - `websocket.handler`：`string` Websocket逻辑处理的类名，需实现接口`WebsocketHandlerInterface`，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%90%AF%E7%94%A8websocket%E6%9C%8D%E5%8A%A1%E5%99%A8)
 
+- `sockets`: `array` 自定义的TCP/UDP多端口混合协议监听列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%e5%bc%80%e5%90%af%e5%a4%9a%e5%8d%8f%e8%ae%ae%e7%ab%af%e5%8f%a3%e6%9c%8d%e5%8a%a1)
+
 - `events`：`array` 自定义的异步事件和监听的绑定列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E5%BC%82%E6%AD%A5%E4%BA%8B%E4%BB%B6)
 
 - `swoole_tables`：`array` 定义的`swoole_table`列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E4%BD%BF%E7%94%A8swoole_table)
