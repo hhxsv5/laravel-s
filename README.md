@@ -24,6 +24,8 @@
 
 - Built-in Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server) server
 
+- [TCP/UDP Server](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-tcpudp-server)
+
 - Memory resident
 
 - [Asynchronous event listening](https://github.com/hhxsv5/laravel-s/blob/master/README.md#customized-asynchronous-events)
@@ -32,7 +34,6 @@
 
 - [Millisecond cron job](https://github.com/hhxsv5/laravel-s/blob/master/README.md#millisecond-cron-job)
 
-- [TCP/UDP Server](https://github.com/hhxsv5/laravel-s#enable-sockets)
 
 - Gracefully reload
 

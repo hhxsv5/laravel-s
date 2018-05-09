@@ -24,7 +24,7 @@
 
 - 内置Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%90%AF%E7%94%A8websocket%E6%9C%8D%E5%8A%A1%E5%99%A8)服务器
 
-- [TCP/UDP服务器](https://github.com/hhxsv5/laravel-s#enable-sockets)
+- [TCP/UDP服务器](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%BC%80%E5%90%AFtcpudp%E6%9C%8D%E5%8A%A1%E5%99%A8)
 
 - 常驻内存
 
