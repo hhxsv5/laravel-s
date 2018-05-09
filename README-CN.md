@@ -24,6 +24,8 @@
 
 - 内置Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%90%AF%E7%94%A8websocket%E6%9C%8D%E5%8A%A1%E5%99%A8)服务器
 
+- [TCP/UDP服务器](https://github.com/hhxsv5/laravel-s#enable-sockets)
+
 - 常驻内存
 
 - [异步的事件监听](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E5%BC%82%E6%AD%A5%E4%BA%8B%E4%BB%B6)
@@ -565,7 +567,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 }
 ```
 
-## 开启多协议端口服务
+## 开启TCP/UDP服务器
 
 > 更多的信息，请参考 [Swoole Server 增加监听的端口](https://wiki.swoole.com/wiki/page/16.html) 与 [监听多协议端口](https://wiki.swoole.com/wiki/page/525.html#entry_h2_3)
 
@@ -633,13 +635,13 @@ public function onReceive($server, $fd, $reactorId, $data)
 /
 查看`swoole_server_port`支持的[设置选项](https://wiki.swoole.com/wiki/page/526.html)
 
-对于TCP协议，`onConnect`与`onClose`两个事件回调在Swoole的dispatch_mode选项设为1/3时被屏蔽。如果需要用到这两者请将同配置文件下方的`dispatch_mode`设为2/4/5。具体相关信息请查看[这里](https://wiki.swoole.com/wiki/page/277.html)
+对于TCP协议，`onConnect`与`onClose`两个事件回调在Swoole的`dispatch_mode`选项设为`1/3`时被屏蔽。如果需要用到这两者请将同配置文件下方的`dispatch_mode`设为`2/4/5`。具体相关信息请查看[这里](https://wiki.swoole.com/wiki/page/277.html)
 
 ```PHP
-'swoole'             => [
-        //...
-        'dispatch_mode'      => 2,
-        //...
+'swoole'  => [
+    //...
+    'dispatch_mode' => 2,
+    //...
 ```
 
 ## 注意事项

@@ -32,6 +32,8 @@
 
 - [Millisecond cron job](https://github.com/hhxsv5/laravel-s/blob/master/README.md#millisecond-cron-job)
 
+- [TCP/UDP Server](https://github.com/hhxsv5/laravel-s#enable-sockets)
+
 - Gracefully reload
 
 - Automatically reload when code is modified
@@ -566,9 +568,9 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 }
 ```
 
-## Enable Sockets
+## Enable TCP/UDP Server
 
-> For more information, please refer to [Swoole Server Addlistener](https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addlistener)
+> For more information, please refer to [Swoole Server AddListener](https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addlistener)
 
 To make our main server capable of handling more types of connections other than just HTTP or Websocket, we introduced multiport protocol feature of Swoole into LaravelS and name it as `Socket`. As a result, you can now easily build TCP/UDP socket applications on top of Laravel.
 
