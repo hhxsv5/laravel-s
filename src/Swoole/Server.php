@@ -168,15 +168,14 @@ class Server
     
     protected function getSocketHandler($port, $handlerClass){
         static $handles = [];
-        $portHash = md5(spl_object_hash($port));
+        $portHash = spl_object_hash($port);
         if(isset($handles[$portHash])){
             return $handles[$portHash];
         }
-        $t = new $handlerClass;
+        $t = new $handlerClass($port);
         if(!($t instanceof Socket)){
             throw new \Exception(sprintf('%s must extend the class %s', $handlerClass, Socket::class));
         }
-        $t->setSwoolePort($port);
         $handles[$portHash] = $t;
         return $handles[$portHash];
     }

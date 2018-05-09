@@ -565,6 +565,87 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 }
 ```
 
+## 开启多协议端口服务
+
+> 更多的信息，请参考 [Swoole Server 增加监听的端口](https://wiki.swoole.com/wiki/page/16.html) 与 [监听多协议端口](https://wiki.swoole.com/wiki/page/525.html#entry_h2_3)
+
+为了使我们的主服务器能监听除HTTP和WebSocket外的更多协议，我们引入了Swoole的`多端口混合协议`的特性，在LaravelS中称为`Socket`。现在，TCP/UDP应用能很方便地在Laravel框架上被构建。
+
+1. 创建Socket处理类
+
+>请注意对TCP与UDP来说，有效的事件方法并不相同，请选择性重写。对TCP有效：onConnect、onClose、onReceive；对UDP有效：onReceive、onPacket
+
+```PHP
+namespace App\Sockets;
+use Hhxsv5\LaravelS\Swoole\Socket;
+class TestSocket extends Socket
+{
+    public function onConnect($server, $fd, $reactorId)
+    {
+        echo "onConnect:".$fd." with Reactor:".$reactorId."\n";
+    }
+    public function onClose($server, $fd, $reactorId)
+    {
+        echo "onClose:".$fd." with Reactor:".$reactorId."\n";
+    }
+    public function onReceive($server, $fd, $reactorId, $data)
+    {
+        echo "onReceive:".$data."\n";
+        $server->send($fd, "Hello There!");
+    }
+    public function onPacket($server, $data, $clientInfo)
+    {
+        echo "onPacket:".$data."\n";
+    }
+}
+```
+
+这些连接和同在主服务器上的其他HTTP/Websocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的异步任务分发，`swoole_table`或者其他Laravel提供的组件如`DB`、`Eloquent`等。
+
+并且，如果需要使用该协议端口的`swoole_server_port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可，其已被注入：
+
+```PHP
+public function onReceive($server, $fd, $reactorId, $data)
+{
+    $port = $this->swoolePort; //获得`swoole_server_port`对象
+}
+```
+
+2. 注册多协议端口服务
+
+编辑配置文件 `config/laravels.php`:
+
+```PHP
+//...
+'sockets' => [
+        [
+            'host' => '0.0.0.0',
+            'port' => 5291,
+            'type' => SWOOLE_SOCK_TCP, //嵌套字类型
+            'settings' => [ //对`swoole_server_port`有效的Swoole设置:
+                 'open_eof_check' => true,
+                 'package_eof' => "\r\n", 
+             ], 
+             'handler' => \App\Sockets\TestSocket::class
+        ],
+        //...可以注册多个不同协议不同端口的服务
+    ],
+//...
+```
+
+查看Swoole支持的[嵌套字类型](https://wiki.swoole.com/wiki/page/16.html#entry_h2_0)
+/
+查看`swoole_server_port`支持的[设置选项](https://wiki.swoole.com/wiki/page/526.html)
+
+对于TCP协议，`onConnect`与`onClose`两个事件回调在Swoole的dispatch_mode选项设为1/3时被屏蔽。如果需要用到这两者请将同配置文件下方的`dispatch_mode`设为2/4/5。具体相关信息请查看[这里](https://wiki.swoole.com/wiki/page/277.html)
+
+```PHP
+'swoole'             => [
+        //...
+        'dispatch_mode'      => 2,
+        //...
+```
+
 ## 注意事项
 
 - 推荐通过`Illuminate\Http\Request`对象来获取请求信息，兼容$_SERVER、$_ENV、$_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST，`不能使用`$_SESSION。

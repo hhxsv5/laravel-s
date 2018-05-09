@@ -1,22 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Dizy
- * Date: 2018/5/8
- * Time: 18:49
- */
 
 namespace Hhxsv5\LaravelS\Swoole;
 
-
-class Socket
+abstract class Socket implements SocketInterface
 {
+    /**
+     * @var  \swoole_server_port
+     */
     protected $swoolePort;
-    public function setSwoolePort($port){
+    public function __construct(\swoole_server_port $port)
+    {
         $this->swoolePort = $port;
     }
-    public function onConnect($server, $fd, $reactorId){}
-    public function onClose($server, $fd, $reactorId){}
-    public function onReceive($server, $fd, $reactorId, $data){}
-    public function onPacket($server, $data,  $clientInfo){}
+    public function onConnect(\swoole_server $server, $fd, $reactorId){}
+    public function onClose(\swoole_server $server, $fd, $reactorId){}
+    public function onReceive(\swoole_server $server, $fd, $reactorId, $data){}
+    public function onPacket(\swoole_server $server, $data,  $clientInfo){}
 }
