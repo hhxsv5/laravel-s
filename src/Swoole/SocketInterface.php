@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Dizy
- * Date: 2018/5/9
- * Time: 12:10
- */
 
 namespace Hhxsv5\LaravelS\Swoole;
-
 
 interface SocketInterface
 {
