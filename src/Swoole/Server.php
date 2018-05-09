@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
-use Hhxsv5\LaravelS\Swoole\Socket;
+use Hhxsv5\LaravelS\Swoole\Socket\SocketInterface;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
@@ -114,7 +114,7 @@ class Server
             if($port!=false){
                 $port->set(empty($socket['settings'])?[]:$socket['settings']);
                 $handlerClass = $socket['handler'];
-                $port->on("Connect", function ($server, $fd, $reactorId) use ($port, $handlerClass){
+                $port->on('Connect', function ($server, $fd, $reactorId) use ($port, $handlerClass){
                     $handler = $this->getSocketHandler($port, $handlerClass);
                     try{
                         $handler->onConnect($server, $fd, $reactorId);
@@ -122,7 +122,7 @@ class Server
                         $this->logException($e);
                     }
                 });
-                $port->on("Close", function($server, $fd, $reactorId) use ($port, $handlerClass){
+                $port->on('Close', function($server, $fd, $reactorId) use ($port, $handlerClass){
                     $handler = $this->getSocketHandler($port, $handlerClass);
                     try{
                         $handler->onClose($server, $fd, $reactorId);
@@ -130,7 +130,7 @@ class Server
                         $this->logException($e);
                     }
                 });
-                $port->on("Receive", function($server, $fd, $reactorId, $data) use ($port, $handlerClass){
+                $port->on('Receive', function($server, $fd, $reactorId, $data) use ($port, $handlerClass){
                     $handler = $this->getSocketHandler($port, $handlerClass);
                     try{
                         $handler->onReceive($server, $fd, $reactorId, $data);
@@ -138,7 +138,7 @@ class Server
                         $this->logException($e);
                     }
                 });
-                $port->on("Packet", function($server, $data,  $clientInfo) use ($port, $handlerClass){
+                $port->on('Packet', function($server, $data,  $clientInfo) use ($port, $handlerClass){
                     $handler = $this->getSocketHandler($port, $handlerClass);
                     try{
                         $handler->onPacket($server, $data,  $clientInfo);
@@ -173,8 +173,8 @@ class Server
             return $handles[$portHash];
         }
         $t = new $handlerClass($port);
-        if(!($t instanceof Socket)){
-            throw new \Exception(sprintf('%s must extend the class %s', $handlerClass, Socket::class));
+        if(!($t instanceof SocketInterface)){
+            throw new \Exception(sprintf('%s must implement the interface %s', $handlerClass, SocketInterface::class));
         }
         $handles[$portHash] = $t;
         return $handles[$portHash];

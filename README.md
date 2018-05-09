@@ -574,29 +574,25 @@ To make our main server capable of handling more types of connections other than
 
 1. Create Socket Handler Class
 
-> Be aware that the methods available to be called can vary between TCP and UDP. TCP: onConnect, onClose, onReceive; UDP: onReceive, onPacket
+> Be aware that the methods available to be called can vary between TCP and UDP. TCP(extends `TcpSocket`): onConnect, onClose, onReceive; UDP(extends `UdpSocket`): onReceive, onPacket
 
 ```PHP
 namespace App\Sockets;
-use Hhxsv5\LaravelS\Swoole\Socket;
-class TestSocket extends Socket
+use Hhxsv5\LaravelS\Swoole\Socket\TcpSocket;
+class TestSocket extends TcpSocket
 {
-    public function onConnect($server, $fd, $reactorId)
+    public function onConnect(\swoole_server $server, $fd, $reactorId)
     {
-        echo "onConnect:".$fd." with Reactor:".$reactorId."\n";
+        echo 'onConnect:'.$fd.' with Reactor:'.$reactorId.PHP_EOL;
     }
-    public function onClose($server, $fd, $reactorId)
+    public function onClose(\swoole_server $server, $fd, $reactorId)
     {
-        echo "onClose:".$fd." with Reactor:".$reactorId."\n";
+        echo 'onClose:'.$fd.' with Reactor:'.$reactorId.PHP_EOL;
     }
-    public function onReceive($server, $fd, $reactorId, $data)
+    public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
     {
-        echo "onReceive:".$data."\n";
-        $server->send($fd, "Hello There!");
-    }
-    public function onPacket($server, $data, $clientInfo)
-    {
-        echo "onPacket:".$data."\n";
+        echo 'onReceive:'.$data.PHP_EOL;
+        $server->send($fd, 'Hello There!');
     }
 }
 ```

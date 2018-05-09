@@ -573,29 +573,25 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 1. 创建Socket处理类
 
->请注意对TCP与UDP来说，有效的事件方法并不相同，请选择性重写。对TCP有效：onConnect、onClose、onReceive；对UDP有效：onReceive、onPacket
+>请注意对TCP与UDP来说，有效的事件方法并不相同，请选择性实现。对TCP有效(继承`TcpSocket`)：onConnect、onClose、onReceive；对UDP有效(继承`UdpSocket`)：onReceive、onPacket
 
 ```PHP
 namespace App\Sockets;
-use Hhxsv5\LaravelS\Swoole\Socket;
-class TestSocket extends Socket
+use Hhxsv5\LaravelS\Swoole\Socket\TcpSocket;
+class TestSocket extends TcpSocket
 {
-    public function onConnect($server, $fd, $reactorId)
+    public function onConnect(\swoole_server $server, $fd, $reactorId)
     {
-        echo "onConnect:".$fd." with Reactor:".$reactorId."\n";
+        echo 'onConnect:'.$fd.' with Reactor:'.$reactorId.PHP_EOL;
     }
-    public function onClose($server, $fd, $reactorId)
+    public function onClose(\swoole_server $server, $fd, $reactorId)
     {
-        echo "onClose:".$fd." with Reactor:".$reactorId."\n";
+        echo 'onClose:'.$fd.' with Reactor:'.$reactorId.PHP_EOL;
     }
-    public function onReceive($server, $fd, $reactorId, $data)
+    public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
     {
-        echo "onReceive:".$data."\n";
-        $server->send($fd, "Hello There!");
-    }
-    public function onPacket($server, $data, $clientInfo)
-    {
-        echo "onPacket:".$data."\n";
+        echo 'onReceive:'.$data.PHP_EOL;
+        $server->send($fd, 'Hello There!');
     }
 }
 ```
