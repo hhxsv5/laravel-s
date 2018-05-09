@@ -63,7 +63,7 @@ composer require "hhxsv5/laravel-s:~1.0" -vvv
 # Make sure that your composer.lock file is under the VCS
 ```
 
-2.Add service provider.
+2.Register service provider.
 
 - `Laravel`: in `config/app.php` file
 ```PHP

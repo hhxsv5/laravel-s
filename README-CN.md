@@ -62,7 +62,7 @@ composer require "hhxsv5/laravel-s:~1.0" -vvv
 # 确保你的composer.lock文件是在版本控制中
 ```
 
-2.添加Service Provider。
+2.注册Service Provider。
 
 - `Laravel`: 修改文件`config/app.php`
 ```PHP
