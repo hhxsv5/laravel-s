@@ -1,4 +1,3 @@
-# LaravelS - standing on the shoulders of giants
 ```
  _                               _  _____ 
 | |                             | |/ ____|
@@ -8,7 +7,7 @@
 |______\__,_|_|  \__,_| \_/ \___|_|_____/ 
                                            
 ```
-> 🚀 Speed up Laravel/Lumen by `Swoole`, "S" means `Swoole`, Speed, High performance.
+> 🚀 Speed up Laravel/Lumen by `Swoole`, let's fly.
 
 [![Latest Stable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/stable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
 [![Latest Unstable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/unstable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
@@ -22,8 +21,6 @@
 **[中文文档](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md)**
 
 ## Features
-
-- High performance Swoole
 
 - Built-in Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server) server
 
