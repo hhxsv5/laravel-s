@@ -571,7 +571,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 > 更多的信息，请参考 [Swoole Server 增加监听的端口](https://wiki.swoole.com/wiki/page/16.html) 与 [监听多协议端口](https://wiki.swoole.com/wiki/page/525.html#entry_h2_3)
 
-为了使我们的主服务器能监听除HTTP和WebSocket外的更多协议，我们引入了Swoole的`多端口混合协议`的特性，在LaravelS中称为`Socket`。现在，TCP/UDP应用能很方便地在Laravel框架上被构建。
+为了使我们的主服务器能监听除HTTP和Websocket外的更多协议，我们引入了Swoole的`多端口混合协议`的特性，在LaravelS中称为`Socket`。现在，TCP/UDP应用能很方便地在Laravel框架上被构建。
 
 1. 创建Socket处理类
 
@@ -598,9 +598,8 @@ class TestTcpSocket extends TcpSocket
 }
 ```
 
-这些连接和同在主服务器上的其他HTTP/Websocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的异步任务分发，`swoole_table`或者其他Laravel提供的组件如`DB`、`Eloquent`等。
-
-并且，如果需要使用该协议端口的`swoole_server_port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
+这些连接和主服务器上的HTTP/Websocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的`异步任务投递`、`swoole_table`、其他Laravel提供的组件如`DB`、`Eloquent`等。
+同时，如果需要使用该协议端口的`swoole_server_port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
 
 ```PHP
 public function onReceive(\swoole_server $server, $fd, $reactorId, $data)

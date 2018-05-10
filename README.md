@@ -573,7 +573,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 > For more information, please refer to [Swoole Server AddListener](https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addlistener)
 
-To make our main server capable of handling more types of connections other than just HTTP or Websocket, we introduced multiport protocol feature of Swoole into LaravelS and name it as `Socket`. As a result, you can now easily build TCP/UDP socket applications on top of Laravel.
+To make our main server capable of handling more types of connections other than just HTTP or Websocket, we introduced multiport protocol feature of Swoole into LaravelS and name it as `Socket`. Now, you can build TCP/UDP socket applications easily on top of Laravel.
 
 1. Create socket handler class
 
@@ -600,9 +600,8 @@ class TestTcpSocket extends TcpSocket
 }
 ```
 
-These connections share the same worker processes with your HTTP/Websocket connections. So it won't be a problem at all if you want to deliver tasks or use `swoole_table` or even Laravel components such as DB, Eloquent and many more.
-
-And also, you can access `swoole_server_port` object directly from `Socket` member `swoolePort`.
+These socket connections share the same worker processes with your HTTP/Websocket connections. So it won't be a problem at all if you want to deliver tasks, use `swoole_table`, even Laravel components such as DB, Eloquent and so on.
+At the same time, you can access `swoole_server_port` object directly from `Socket` member `swoolePort`.
 
 ```PHP
 public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
@@ -631,7 +630,7 @@ Edit file `config/laravels.php`:
 ],
 ```
 
-For TCP socket, events `onConnect` and `onClose` will be blocked when the `dispatch_mode` of Swoole is set to `1/3`. So if you want to unblock these two events please set the `dispatch_mode` below to 2/4/5:
+For TCP socket, events `onConnect` and `onClose` will be blocked when `dispatch_mode` of Swoole is set to `1/3`. So if you want to unblock these two events please set `dispatch_mode` to `2/4/5`.
 
 ```PHP
 'swoole' => [
