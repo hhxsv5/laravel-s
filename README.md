@@ -577,35 +577,35 @@ To make our main server capable of handling more types of connections other than
 
 1. Create socket handler class
 
-> Be aware that the methods available to be called can vary between TCP and UDP. TCP(extends `TcpSocket`): onConnect, onClose, onReceive; UDP(extends `UdpSocket`): onReceive, onPacket
-
 ```PHP
 namespace App\Sockets;
 use Hhxsv5\LaravelS\Swoole\Socket\TcpSocket;
-class TestSocket extends TcpSocket
+class TestTcpSocket extends TcpSocket
 {
     public function onConnect(\swoole_server $server, $fd, $reactorId)
     {
-        echo 'onConnect:'.$fd.' with Reactor:'.$reactorId.PHP_EOL;
+        \Log::info('New TCP connection', [$fd]);
+        $server->send($fd, 'Welcome to LaravelS.');
     }
     public function onClose(\swoole_server $server, $fd, $reactorId)
     {
-        echo 'onClose:'.$fd.' with Reactor:'.$reactorId.PHP_EOL;
+        \Log::info('New TCP connection', [$fd]);
+        $server->send($fd, 'Goodbye');
     }
     public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
     {
-        echo 'onReceive:'.$data.PHP_EOL;
-        $server->send($fd, 'Hello There!');
+        \Log::info('Received data', [$fd, $data]);
+        $server->send($fd, 'LaravelS: ' . $data);
     }
 }
 ```
 
 These connections share the same worker processes with your HTTP/Websocket connections. So it won't be a problem at all if you want to deliver tasks or use `swoole_table` or even Laravel components such as DB, Eloquent and many more.
 
-And also, if you want to get direct access to `swoole_server_port` object, it is injected into `Socket` class. So just do as follows:
+And also, you can access `swoole_server_port` object directly from `Socket` member `swoolePort`.
 
 ```PHP
-public function onReceive($server, $fd, $reactorId, $data)
+public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 {
     $port = $this->swoolePort; //There you go
 }
@@ -618,30 +618,30 @@ Edit file `config/laravels.php`:
 ```PHP
 //...
 'sockets' => [
-        [
-            'host' => '0.0.0.0',
-            'port' => 5291,
-            'type' => SWOOLE_SOCK_TCP, //Socket type
-            'settings' => [ //Swoole settings available for `swoole_server_port`:
-                 'open_eof_check' => true,
-                 'package_eof'    => "\r\n", 
-             ], 
-             'handler' => \App\Sockets\TestSocket::class
+    [
+        'host'     => '127.0.0.1',
+        'port'     => 5291,
+        'type'     => SWOOLE_SOCK_TCP,// Socket type: SWOOLE_SOCK_TCP/SWOOLE_SOCK_UDP
+        'settings' => [//Swoole settings：https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addlistener
+            'open_eof_check' => true,
+            'package_eof'    => "\r\n",
         ],
-        //...more sockets
+        'handler'  => \App\Sockets\TestTcpSocket::class,
     ],
-//...
+],
 ```
 
 For TCP socket, events `onConnect` and `onClose` will be blocked when the `dispatch_mode` of Swoole is set to `1/3`. So if you want to unblock these two events please set the `dispatch_mode` below to 2/4/5:
 
 ```PHP
-'swoole'             => [
+'swoole' => [
     //...
-    'dispatch_mode'      => 2,
+    'dispatch_mode' => 2,
     //...
 ];
 ```
+
+3. Test: `telnet 127.0.0.1 5291`.
 
 ## Important notices
 

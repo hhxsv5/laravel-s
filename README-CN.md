@@ -575,35 +575,35 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 1. 创建Socket处理类
 
->请注意对TCP与UDP来说，有效的事件方法并不相同，请选择性实现。对TCP有效(继承`TcpSocket`)：onConnect、onClose、onReceive；对UDP有效(继承`UdpSocket`)：onReceive、onPacket
-
 ```PHP
 namespace App\Sockets;
 use Hhxsv5\LaravelS\Swoole\Socket\TcpSocket;
-class TestSocket extends TcpSocket
+class TestTcpSocket extends TcpSocket
 {
     public function onConnect(\swoole_server $server, $fd, $reactorId)
     {
-        echo 'onConnect:'.$fd.' with Reactor:'.$reactorId.PHP_EOL;
+        \Log::info('New TCP connection', [$fd]);
+        $server->send($fd, 'Welcome to LaravelS.');
     }
     public function onClose(\swoole_server $server, $fd, $reactorId)
     {
-        echo 'onClose:'.$fd.' with Reactor:'.$reactorId.PHP_EOL;
+        \Log::info('New TCP connection', [$fd]);
+        $server->send($fd, 'Goodbye');
     }
     public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
     {
-        echo 'onReceive:'.$data.PHP_EOL;
-        $server->send($fd, 'Hello There!');
+        \Log::info('Received data', [$fd, $data]);
+        $server->send($fd, 'LaravelS: ' . $data);
     }
 }
 ```
 
 这些连接和同在主服务器上的其他HTTP/Websocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的异步任务分发，`swoole_table`或者其他Laravel提供的组件如`DB`、`Eloquent`等。
 
-并且，如果需要使用该协议端口的`swoole_server_port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可，其已被注入：
+并且，如果需要使用该协议端口的`swoole_server_port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
 
 ```PHP
-public function onReceive($server, $fd, $reactorId, $data)
+public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 {
     $port = $this->swoolePort; //获得`swoole_server_port`对象
 }
@@ -616,19 +616,17 @@ public function onReceive($server, $fd, $reactorId, $data)
 ```PHP
 //...
 'sockets' => [
-        [
-            'host' => '0.0.0.0',
-            'port' => 5291,
-            'type' => SWOOLE_SOCK_TCP, //嵌套字类型
-            'settings' => [ //对`swoole_server_port`有效的Swoole设置:
-                 'open_eof_check' => true,
-                 'package_eof' => "\r\n", 
-             ], 
-             'handler' => \App\Sockets\TestSocket::class
+    [
+        'host'     => '127.0.0.1',
+        'port'     => 5291,
+        'type'     => SWOOLE_SOCK_TCP,// 套接字类型:SWOOLE_SOCK_TCP/SWOOLE_SOCK_UDP
+        'settings' => [// Swoole配置项：https://wiki.swoole.com/wiki/page/526.html
+            'open_eof_check' => true,
+            'package_eof'    => "\r\n",
         ],
-        //...可以注册多个不同协议不同端口的服务
+        'handler'  => \App\Sockets\TestTcpSocket::class,
     ],
-//...
+],
 ```
 
 查看Swoole支持的[嵌套字类型](https://wiki.swoole.com/wiki/page/16.html#entry_h2_0)
@@ -638,12 +636,14 @@ public function onReceive($server, $fd, $reactorId, $data)
 对于TCP协议，`onConnect`与`onClose`两个事件回调在Swoole的`dispatch_mode`选项设为`1/3`时被屏蔽。如果需要用到这两者请将同配置文件下方的`dispatch_mode`设为`2/4/5`。具体相关信息请查看[这里](https://wiki.swoole.com/wiki/page/277.html)
 
 ```PHP
-'swoole'  => [
+'swoole' => [
     //...
     'dispatch_mode' => 2,
     //...
 ];
 ```
+
+3. 测试：`telnet 127.0.0.1 5291`。
 
 ## 注意事项
 
