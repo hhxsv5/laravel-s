@@ -621,7 +621,7 @@ Edit file `config/laravels.php`:
         'host'     => '127.0.0.1',
         'port'     => 5291,
         'type'     => SWOOLE_SOCK_TCP,// Socket type: SWOOLE_SOCK_TCP/SWOOLE_SOCK_UDP
-        'settings' => [//Swoole settings：https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addlistener
+        'settings' => [// Swoole settings：https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addlistener
             'open_eof_check' => true,
             'package_eof'    => "\r\n",
         ],
