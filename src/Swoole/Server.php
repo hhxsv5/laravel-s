@@ -112,42 +112,73 @@ class Server
     {
         foreach ($this->attachedSockets as $socket) {
             $port = $this->swoole->addListener($socket['host'], $socket['port'], $socket['type']);
-            if ($port != false) {
-                $port->set(empty($socket['settings']) ? [] : $socket['settings']);
-                $handlerClass = $socket['handler'];
-                $port->on('Connect', function ($server, $fd, $reactorId) use ($port, $handlerClass) {
-                    $handler = $this->getSocketHandler($port, $handlerClass);
+            if ($port === false) {
+                $error = sprintf('listen %s:%s failed: errno=%s', $socket['host'], $socket['port'], $this->swoole->getLastError());
+                $this->log($error, 'ERROR');
+                continue;
+            }
+
+            $port->set(empty($socket['settings']) ? [] : $socket['settings']);
+            $handlerClass = $socket['handler'];
+            $port->on('Connect', function ($server, $fd, $reactorId) use ($port, $handlerClass) {
+                $handler = $this->getSocketHandler($port, $handlerClass);
+                if (method_exists($handler, 'onConnect')) {
                     try {
                         $handler->onConnect($server, $fd, $reactorId);
                     } catch (\Exception $e) {
                         $this->logException($e);
                     }
-                });
-                $port->on('Close', function ($server, $fd, $reactorId) use ($port, $handlerClass) {
-                    $handler = $this->getSocketHandler($port, $handlerClass);
+                }
+            });
+            $port->on('Close', function ($server, $fd, $reactorId) use ($port, $handlerClass) {
+                $handler = $this->getSocketHandler($port, $handlerClass);
+                if (method_exists($handler, 'onClose')) {
                     try {
                         $handler->onClose($server, $fd, $reactorId);
                     } catch (\Exception $e) {
                         $this->logException($e);
                     }
-                });
-                $port->on('Receive', function ($server, $fd, $reactorId, $data) use ($port, $handlerClass) {
-                    $handler = $this->getSocketHandler($port, $handlerClass);
-                    try {
-                        $handler->onReceive($server, $fd, $reactorId, $data);
-                    } catch (\Exception $e) {
-                        $this->logException($e);
-                    }
-                });
-                $port->on('Packet', function ($server, $data, $clientInfo) use ($port, $handlerClass) {
-                    $handler = $this->getSocketHandler($port, $handlerClass);
+                }
+            });
+            $port->on('Receive', function ($server, $fd, $reactorId, $data) use ($port, $handlerClass) {
+                $handler = $this->getSocketHandler($port, $handlerClass);
+                try {
+                    $handler->onReceive($server, $fd, $reactorId, $data);
+                } catch (\Exception $e) {
+                    $this->logException($e);
+                }
+            });
+            $port->on('Packet', function ($server, $data, $clientInfo) use ($port, $handlerClass) {
+                $handler = $this->getSocketHandler($port, $handlerClass);
+                if (method_exists($handler, 'onPacket')) {
                     try {
                         $handler->onPacket($server, $data, $clientInfo);
                     } catch (\Exception $e) {
                         $this->logException($e);
                     }
-                });
-            }
+                }
+            });
+            $port->on('BufferFull', function ($server, $fd) use ($port, $handlerClass) {
+                $handler = $this->getSocketHandler($port, $handlerClass);
+                if (method_exists($handler, 'onBufferFull')) {
+                    try {
+                        $handler->onBufferFull($server, $fd);
+                    } catch (\Exception $e) {
+                        $this->logException($e);
+                    }
+                }
+            });
+            $port->on('BufferEmpty', function ($server, $fd) use ($port, $handlerClass) {
+                $handler = $this->getSocketHandler($port, $handlerClass);
+                if (method_exists($handler, 'onBufferEmpty')) {
+                    try {
+                        $handler->onBufferEmpty($server, $fd);
+                    } catch (\Exception $e) {
+                        $this->logException($e);
+                    }
+                }
+            });
+
         }
     }
 
