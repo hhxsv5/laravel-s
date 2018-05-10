@@ -2,7 +2,8 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
-use Hhxsv5\LaravelS\Swoole\Socket\PortInterface;
+use Hhxsv5\LaravelS\Swoole\Socket\TcpSocket;
+use Hhxsv5\LaravelS\Swoole\Socket\UdpSocket;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
@@ -200,17 +201,17 @@ class Server
 
     protected function getSocketHandler($port, $handlerClass)
     {
-        static $handles = [];
+        static $handlers = [];
         $portHash = spl_object_hash($port);
-        if (isset($handles[$portHash])) {
-            return $handles[$portHash];
+        if (isset($handlers[$portHash])) {
+            return $handlers[$portHash];
         }
         $t = new $handlerClass($port);
-        if (!($t instanceof PortInterface)) {
-            throw new \Exception(sprintf('%s must implement the interface %s', $handlerClass, PortInterface::class));
+        if (!($t instanceof TcpSocket) && !($t instanceof UdpSocket)) {
+            throw new \Exception(sprintf('%s must extend the abstract class TcpSocket/UdpSocket', get_class($t)));
         }
-        $handles[$portHash] = $t;
-        return $handles[$portHash];
+        $handlers[$portHash] = $t;
+        return $handlers[$portHash];
     }
 
     protected function bindSwooleTables()
