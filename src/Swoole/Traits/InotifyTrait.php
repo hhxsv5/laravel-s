@@ -6,8 +6,6 @@ use Hhxsv5\LaravelS\Inotify;
 
 trait InotifyTrait
 {
-    use ProcessTitleTrait;
-
     public function addInotifyProcess(\swoole_server $swoole, array $config)
     {
         if (empty($config['enable'])) {
