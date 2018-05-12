@@ -573,7 +573,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 > For more information, please refer to [Swoole Server AddListener](https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addlistener)
 
-To make our main server capable of handling more types of connections other than just HTTP or Websocket, we introduced multiport protocol feature of Swoole into LaravelS and name it as `Socket`. Now, you can build TCP/UDP socket applications easily on top of Laravel.
+To make our main server support more protocls not just HTTP and Websocket, we bring feature `multi-port protocol` of Swoole in LaravelS and name it `Socket`. Now, you can build TCP/UDP applications easily on top of Laravel.
 
 1. Create socket handler class, and extend `Hhxsv5\LaravelS\Swoole\Socket\{Tcp|Udp}Socket`.
 
@@ -600,8 +600,8 @@ class TestTcpSocket extends TcpSocket
 }
 ```
 
-These socket connections share the same worker processes with your HTTP/Websocket connections. So it won't be a problem at all if you want to deliver tasks, use `swoole_table`, even Laravel components such as DB, Eloquent and so on.
-At the same time, you can access `swoole_server_port` object directly from `Socket` member `swoolePort`.
+These `Socket` connections share the same worker processes with your `HTTP`/`Websocket` connections. So it won't be a problem at all if you want to deliver tasks, use `swoole_table`, even Laravel components such as DB, Eloquent and so on.
+At the same time, you can access `swoole_server_port` object directly by member property `swoolePort`.
 
 ```PHP
 public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
@@ -610,11 +610,10 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 }
 ```
 
-2. Register Sockets
-
-Edit file `config/laravels.php`:
+2. Register Sockets.
 
 ```PHP
+// Edit `config/laravels.php`
 //...
 'sockets' => [
     [
@@ -640,7 +639,7 @@ For TCP socket, events `onConnect` and `onClose` will be blocked when `dispatch_
 ];
 ```
 
-3. Test: 
+3. Test.
 
 - TCP: `telnet 127.0.0.1 5291`
 
