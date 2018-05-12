@@ -14,10 +14,5 @@ abstract class UdpSocket implements PortInterface, UdpInterface
         $this->swoolePort = $port;
     }
 
-    public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
-    {
-
-    }
-
     abstract public function onPacket(\swoole_server $server, $data, array $clientInfo);
 }
