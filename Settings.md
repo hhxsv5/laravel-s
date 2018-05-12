@@ -22,7 +22,7 @@
 
 - `websocket.handler`: `string` The class name for Websocket handler, needs to implement interface `WebsocketHandlerInterface`, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server)
 
-- `sockets`: `array` list of TCP/UDP multiport protocol listerners, refer to [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-tcpudp-server)
+- `sockets`: `array` The socket list for TCP/UDP, refer to [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-tcpudp-server)
 
 - `events`: `array` The customized asynchronous event list of listener binding, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#customized-asynchronous-events)
 

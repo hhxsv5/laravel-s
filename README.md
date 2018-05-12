@@ -640,7 +640,11 @@ For TCP socket, events `onConnect` and `onClose` will be blocked when `dispatch_
 ];
 ```
 
-3. Test: `telnet 127.0.0.1 5291`.
+3. Test: 
+
+- TCP: `telnet 127.0.0.1 5291`
+
+- UDP: `echo "Hello LaravelS" > /dev/udp/127.0.0.1/5291`
 
 ## Important notices
 
@@ -688,7 +692,8 @@ public function json()
             // Enable persistent connection
             \PDO::ATTR_PERSISTENT => true,
         ],
-        //...
+    ],
+    //...
 ],
 //...
 ```

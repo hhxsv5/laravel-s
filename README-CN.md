@@ -642,7 +642,11 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 ];
 ```
 
-3. 测试：`telnet 127.0.0.1 5291`。
+3. 测试： 
+
+- TCP：`telnet 127.0.0.1 5291`
+
+- UDP：`echo "Hello LaravelS" > /dev/udp/127.0.0.1/5291`
 
 ## 注意事项
 
@@ -689,7 +693,8 @@ public function json()
             // 开启持久连接
             \PDO::ATTR_PERSISTENT => true,
         ],
-        //...
+    ],
+    //...
 ],
 //...
 ```
