@@ -573,7 +573,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 > For more information, please refer to [Swoole Server AddListener](https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addlistener)
 
-To make our main server support more protocls not just HTTP and Websocket, we bring feature `multi-port protocol` of Swoole in LaravelS and name it `Socket`. Now, you can build TCP/UDP applications easily on top of Laravel.
+To make our main server support more protocols not just Http and Websocket, we bring the feature `multi-port mixed protocol` of Swoole in LaravelS and name it `Socket`. Now, you can build TCP/UDP applications easily on top of Laravel.
 
 1. Create socket handler class, and extend `Hhxsv5\LaravelS\Swoole\Socket\{Tcp|Udp}Socket`.
 
@@ -743,6 +743,10 @@ public function test(Request $req)
 1. Connection pool for MySQL/Redis.
 
 2. Wrap coroutine clients for MySQL/Redis/Http.
+
+## Alternatives
+
+- [swooletw/laravel-swoole](https://github.com/swooletw/laravel-swoole)
 
 ## License
 

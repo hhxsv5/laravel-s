@@ -571,7 +571,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 > 更多的信息，请参考 [Swoole Server 增加监听的端口](https://wiki.swoole.com/wiki/page/16.html)与[监听多协议端口](https://wiki.swoole.com/wiki/page/525.html#entry_h2_3)
 
-为了使我们的主服务器能支持除`HTTP`和`Websocket`外的更多协议，我们引入了`Swoole多端口混合协议`的特性，在LaravelS中称为`Socket`。现在，可以很方便地在`Laravel`上被构建`TCP/UDP`应用。
+为了使我们的主服务器能支持除`HTTP`和`Websocket`外的更多协议，我们引入了`Swoole`的`多端口混合协议`特性，在LaravelS中称为`Socket`。现在，可以很方便地在`Laravel`上被构建`TCP/UDP`应用。
 
 1. 创建Socket处理类，继承`Hhxsv5\LaravelS\Swoole\Socket\{Tcp|Udp}Socket`。
 
@@ -739,6 +739,10 @@ public function test(Request $req)
 1. 针对MySQL/Redis的连接池。
 
 2. 包装MySQL/Redis/Http的协程客户端。
+
+## 其他选择
+
+- [swooletw/laravel-swoole](https://github.com/swooletw/laravel-swoole)
 
 ## 打赏
 > 您的支持是我们坚持的最大动力。
