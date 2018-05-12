@@ -119,8 +119,9 @@ class Server
         foreach ($this->attachedSockets as $socket) {
             $port = $this->swoole->addListener($socket['host'], $socket['port'], $socket['type']);
             if (!($port instanceof \swoole_server_port)) {
-                $error = sprintf('listen %s:%s failed: errno=%s', $socket['host'], $socket['port'], $this->swoole->getLastError());
-                $this->log($error, 'ERROR');
+                $errno = method_exists($this->swoole, 'getLastError') ? $this->swoole->getLastError() : 'unknown';
+                $errstr = sprintf('listen %s:%s failed: errno=%s', $socket['host'], $socket['port'], $errno);
+                $this->log($errstr, 'ERROR');
                 continue;
             }
 
