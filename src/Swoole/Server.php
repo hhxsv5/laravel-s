@@ -120,6 +120,7 @@ class Server
             }
 
             $port->set(empty($socket['settings']) ? [] : $socket['settings']);
+
             $handlerClass = $socket['handler'];
             $port->on('Connect', function ($server, $fd, $reactorId) use ($port, $handlerClass) {
                 $handler = $this->getSocketHandler($port, $handlerClass);
@@ -199,7 +200,7 @@ class Server
         return $handler;
     }
 
-    protected function getSocketHandler($port, $handlerClass)
+    protected function getSocketHandler(\swoole_server_port $port, $handlerClass)
     {
         static $handlers = [];
         $portHash = spl_object_hash($port);
