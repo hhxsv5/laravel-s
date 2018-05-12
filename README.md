@@ -736,7 +736,7 @@ public function test(Request $req)
 }
 ```
 
-## [Known compatible issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues.md)
+- [Known compatible issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues.md)
 
 ## Todo list
 
