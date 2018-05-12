@@ -651,6 +651,8 @@ For TCP socket, events `onConnect` and `onClose` will be blocked when `dispatch_
 
 ## Important notices
 
+- [Known compatible issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues.md)
+
 - Get all info of request from `Illuminate\Http\Request` Object, compatible with $_SERVER/$_ENV/$_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST, `CANNOT USE` $_SESSION.
 
 ```PHP
@@ -735,8 +737,6 @@ public function test(Request $req)
     Test::$string .= $req->input('param2');
 }
 ```
-
-- [Known compatible issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues.md)
 
 ## Todo list
 

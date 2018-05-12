@@ -648,6 +648,8 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 
 ## 注意事项
 
+- [已知的兼容性问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues-CN.md)
+
 - 推荐通过`Illuminate\Http\Request`对象来获取请求信息，兼容$_SERVER、$_ENV、$_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST，`不能使用`$_SESSION。
 
 ```PHP
@@ -731,8 +733,6 @@ public function test(Request $req)
     Test::$string .= $req->input('param2');
 }
 ```
-
-- [已知的兼容性问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues-CN.md)
 
 ## 待办事项
 
