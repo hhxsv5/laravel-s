@@ -585,15 +585,19 @@ class TestTcpSocket extends TcpSocket
         \Log::info('New TCP connection', [$fd]);
         $server->send($fd, 'Welcome to LaravelS.');
     }
-    public function onClose(\swoole_server $server, $fd, $reactorId)
-    {
-        \Log::info('New TCP connection', [$fd]);
-        $server->send($fd, 'Goodbye');
-    }
     public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
     {
         \Log::info('Received data', [$fd, $data]);
         $server->send($fd, 'LaravelS: ' . $data);
+        if ($data === "quit\r\n") {
+            $server->send($fd, 'LaravelS: bye' . PHP_EOL);
+            $server->close($fd);
+        }
+    }
+    public function onClose(\swoole_server $server, $fd, $reactorId)
+    {
+        \Log::info('New TCP connection', [$fd]);
+        $server->send($fd, 'Goodbye');
     }
 }
 ```
