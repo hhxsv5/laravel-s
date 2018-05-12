@@ -57,22 +57,22 @@ class Laravel
 
     protected function autoload()
     {
-        $autoload = $this->conf['rootPath'] . '/bootstrap/autoload.php';
+        $autoload = $this->conf['root_path'] . '/bootstrap/autoload.php';
         if (file_exists($autoload)) {
             require_once $autoload;
         } else {
-            require_once $this->conf['rootPath'] . '/vendor/autoload.php';
+            require_once $this->conf['root_path'] . '/vendor/autoload.php';
         }
     }
 
     protected function createApp()
     {
-        $this->app = require $this->conf['rootPath'] . '/bootstrap/app.php';
+        $this->app = require $this->conf['root_path'] . '/bootstrap/app.php';
     }
 
     protected function createKernel()
     {
-        if (!$this->conf['isLumen']) {
+        if (!$this->conf['is_lumen']) {
             $this->laravelKernel = $this->app->make(HttpKernel::class);
         }
     }
@@ -80,7 +80,7 @@ class Laravel
     protected function setLaravel()
     {
         // Load configuration laravel.php manually for Lumen
-        if ($this->conf['isLumen'] && file_exists($this->conf['rootPath'] . '/config/laravels.php')) {
+        if ($this->conf['is_lumen'] && file_exists($this->conf['root_path'] . '/config/laravels.php')) {
             $this->app->configure('laravels');
         }
 
@@ -92,7 +92,7 @@ class Laravel
 
     protected function consoleKernelBootstrap()
     {
-        if ($this->conf['isLumen']) {
+        if ($this->conf['is_lumen']) {
             if (Facade::getFacadeApplication() === null) {
                 $this->app->withFacades();
             }
@@ -114,7 +114,7 @@ class Laravel
             }
         }
 
-        if ($this->conf['isLumen']) {
+        if ($this->conf['is_lumen']) {
             $this->laravelReflect = new \ReflectionObject($this->app);
         }
     }
@@ -142,7 +142,7 @@ class Laravel
 
         ob_start();
 
-        if ($this->conf['isLumen']) {
+        if ($this->conf['is_lumen']) {
             $response = $this->app->dispatch($request);
             if ($response instanceof SymfonyResponse) {
                 $content = $response->getContent();
@@ -180,7 +180,7 @@ class Laravel
             return false;
         }
 
-        $publicPath = $this->conf['staticPath'];
+        $publicPath = $this->conf['static_path'];
         $requestFile = $publicPath . $uri;
         if (is_file($requestFile)) {
             return $this->createStaticResponse($requestFile, $request->header('if-modified-since'));
@@ -231,7 +231,7 @@ class Laravel
     public function reRegisterServiceProvider($providerCls, array $clearFacades = [])
     {
         if (class_exists($providerCls, false)) {
-            if ($this->conf['isLumen']) {
+            if ($this->conf['is_lumen']) {
                 $loadedProviders = $this->laravelReflect->getProperty('loadedProviders');
                 $loadedProviders->setAccessible(true);
                 $oldLoadedProviders = $loadedProviders->getValue($this->app);
@@ -270,7 +270,7 @@ class Laravel
         $this->reRegisterServiceProvider('\Laravel\Passport\PassportServiceProvider');
 
         // Re-register some singleton providers
-        foreach ($this->conf['registerProviders'] as $provider) {
+        foreach ($this->conf['register_providers'] as $provider) {
             $this->reRegisterServiceProvider($provider);
         }
 

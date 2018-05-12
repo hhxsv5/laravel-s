@@ -7,9 +7,14 @@ use Hhxsv5\LaravelS\Swoole\Socket\UdpSocket;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
+use Hhxsv5\LaravelS\Swoole\Traits\LogTrait;
+use Hhxsv5\LaravelS\Swoole\Traits\ProcessTitleTrait;
 
 class Server
 {
+    use LogTrait;
+    use ProcessTitleTrait;
+
     protected $conf;
 
     /**
@@ -287,7 +292,7 @@ class Server
 
     public function onWorkerError(\swoole_http_server $server, $workerId, $workerPId, $exitCode, $signal)
     {
-
+        $this->log(sprintf('worker[%d] error: exitCode=%s, signal=%s', $workerId, $exitCode, $signal), 'ERROR');
     }
 
     public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
@@ -354,27 +359,5 @@ class Server
     public function run()
     {
         $this->swoole->start();
-    }
-
-    protected function setProcessTitle($title)
-    {
-        if (PHP_OS === 'Darwin') {
-            return;
-        }
-        if (function_exists('cli_set_process_title')) {
-            cli_set_process_title($title);
-        } elseif (function_exists('\swoole_set_process_name')) {
-            \swoole_set_process_name($title);
-        }
-    }
-
-    protected function logException(\Exception $e)
-    {
-        $this->log(sprintf('Uncaught exception \'%s\': [%d]%s called in %s:%d%s%s', get_class($e), $e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine(), PHP_EOL, $e->getTraceAsString()), 'ERROR');
-    }
-
-    protected function log($msg, $type = 'INFO')
-    {
-        echo sprintf('[%s] [%s] LaravelS: %s', date('Y-m-d H:i:s'), $type, $msg), PHP_EOL;
     }
 }

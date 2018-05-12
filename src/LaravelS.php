@@ -7,7 +7,8 @@ use Hhxsv5\LaravelS\Swoole\DynamicResponse;
 use Hhxsv5\LaravelS\Swoole\Request;
 use Hhxsv5\LaravelS\Swoole\Server;
 use Hhxsv5\LaravelS\Swoole\StaticResponse;
-use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
+use Hhxsv5\LaravelS\Swoole\Traits\InotifyTrait;
+use Hhxsv5\LaravelS\Swoole\Traits\TimerTrait;
 use Illuminate\Http\Request as IlluminateRequest;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -19,7 +20,8 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
  */
 class LaravelS extends Server
 {
-    protected static $s;
+    use TimerTrait;
+    use InotifyTrait;
 
     protected $laravelConf;
 
@@ -32,70 +34,15 @@ class LaravelS extends Server
     {
         parent::__construct($svrConf);
         $this->laravelConf = $laravelConf;
-        $this->addInotifyProcess();
-        $this->addTimerProcess();
-    }
 
-    protected function addInotifyProcess()
-    {
-        if (empty($this->conf['inotify_reload']['enable'])) {
-            return;
-        }
+        $timerCfg = isset($this->conf['timer']) ? $this->conf['timer'] : [];
+        $timerCfg['process_prefix'] = $svrConf['process_prefix'];
+        $this->addTimerProcess($this->swoole, $timerCfg);
 
-        if (!extension_loaded('inotify')) {
-            $this->log('require extension inotify', 'WARN');
-            return;
-        }
-
-        $log = !empty($this->conf['inotify_reload']['log']);
-        $fileTypes = isset($this->conf['inotify_reload']['file_types']) ? (array)$this->conf['inotify_reload']['file_types'] : [];
-        $autoReload = function () use ($fileTypes, $log) {
-            $this->setProcessTitle(sprintf('%s laravels: inotify process', $this->conf['process_prefix']));
-            $inotify = new Inotify($this->laravelConf['rootPath'], IN_CREATE | IN_MODIFY | IN_DELETE, function ($event) use ($log) {
-                $this->swoole->reload();
-                if ($log) {
-                    $this->log(sprintf('reloaded by inotify, file: %s', $event['name']));
-                }
-            });
-            $inotify->addFileTypes($fileTypes);
-            $inotify->watch();
-            if ($log) {
-                $this->log(sprintf('count of watched files by inotify: %d', $inotify->getWatchedFileCount()));
-            }
-            $inotify->start();
-        };
-
-        $inotifyProcess = new \swoole_process($autoReload, false, false);
-        $this->swoole->addProcess($inotifyProcess);
-    }
-
-    protected function addTimerProcess()
-    {
-        if (empty($this->conf['timer']['enable']) || empty($this->conf['timer']['jobs'])) {
-            return;
-        }
-
-        $startTimer = function () {
-            $this->setProcessTitle(sprintf('%s laravels: timer process', $this->conf['process_prefix']));
-            $this->initLaravel();
-            foreach ($this->conf['timer']['jobs'] as $jobClass) {
-                $job = new $jobClass();
-                if (!($job instanceof CronJob)) {
-                    throw new \Exception(sprintf('%s must implement the abstract class %s', get_class($job), CronJob::class));
-                }
-                $timerId = swoole_timer_tick($job->interval(), function () use ($job) {
-                    try {
-                        $job->run();
-                    } catch (\Exception $e) {
-                        $this->logException($e);
-                    }
-                });
-                $job->setTimerId($timerId);
-            }
-        };
-
-        $timerProcess = new \swoole_process($startTimer, false, false);
-        $this->swoole->addProcess($timerProcess);
+        $inotifyCfg = isset($this->conf['inotify_reload']) ? $this->conf['inotify_reload'] : [];
+        $inotifyCfg['root_path'] = $this->laravelConf['root_path'];
+        $inotifyCfg['process_prefix'] = $svrConf['process_prefix'];
+        $this->addInotifyProcess($this->swoole, $inotifyCfg);
     }
 
     protected function initLaravel()
