@@ -117,11 +117,8 @@ class Server
     protected function bindAttachedSockets()
     {
         foreach ($this->attachedSockets as $socket) {
-            /**
-             * @var \swoole_server_port $port
-             */
             $port = $this->swoole->addListener($socket['host'], $socket['port'], $socket['type']);
-            if ($port === false) {
+            if (!($port instanceof \swoole_server_port)) {
                 $error = sprintf('listen %s:%s failed: errno=%s', $socket['host'], $socket['port'], $this->swoole->getLastError());
                 $this->log($error, 'ERROR');
                 continue;
