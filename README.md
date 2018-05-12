@@ -575,7 +575,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 To make our main server capable of handling more types of connections other than just HTTP or Websocket, we introduced multiport protocol feature of Swoole into LaravelS and name it as `Socket`. Now, you can build TCP/UDP socket applications easily on top of Laravel.
 
-1. Create socket handler class
+1. Create socket handler class, and extend `Hhxsv5\LaravelS\Swoole\Socket\{Tcp|Udp}Socket`.
 
 ```PHP
 namespace App\Sockets;

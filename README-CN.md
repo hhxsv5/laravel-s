@@ -573,7 +573,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 为了使我们的主服务器能监听除HTTP和Websocket外的更多协议，我们引入了Swoole的`多端口混合协议`的特性，在LaravelS中称为`Socket`。现在，TCP/UDP应用能很方便地在Laravel框架上被构建。
 
-1. 创建Socket处理类
+1. 创建Socket处理类，继承`Hhxsv5\LaravelS\Swoole\Socket\{Tcp|Udp}Socket`。
 
 ```PHP
 namespace App\Sockets;
