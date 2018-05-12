@@ -24,7 +24,7 @@ class Server
 
     protected $enableWebsocket = false;
 
-    protected $attachedSockets;
+    protected $attachedSockets = [];
 
     protected function __construct(array $conf)
     {
@@ -185,7 +185,6 @@ class Server
                     }
                 }
             });
-
         }
     }
 
