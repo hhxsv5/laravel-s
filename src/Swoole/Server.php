@@ -149,10 +149,12 @@ class Server
             });
             $port->on('Receive', function ($server, $fd, $reactorId, $data) use ($port, $handlerClass) {
                 $handler = $this->getSocketHandler($port, $handlerClass);
-                try {
-                    $handler->onReceive($server, $fd, $reactorId, $data);
-                } catch (\Exception $e) {
-                    $this->logException($e);
+                if (method_exists($handler, 'onReceive')) {
+                    try {
+                        $handler->onReceive($server, $fd, $reactorId, $data);
+                    } catch (\Exception $e) {
+                        $this->logException($e);
+                    }
                 }
             });
             $port->on('Packet', function ($server, $data, $clientInfo) use ($port, $handlerClass) {
