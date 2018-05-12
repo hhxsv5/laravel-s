@@ -28,7 +28,7 @@ class LaravelS extends Server
      */
     protected $laravel;
 
-    protected function __construct(array $svrConf, array $laravelConf)
+    public function __construct(array $svrConf, array $laravelConf)
     {
         parent::__construct($svrConf);
         $this->laravelConf = $laravelConf;
@@ -179,33 +179,5 @@ class LaravelS extends Server
             (new DynamicResponse($swooleResponse, $laravelResponse))->send($this->conf['enable_gzip']);
         }
         return true;
-    }
-
-    private function __clone()
-    {
-
-    }
-
-    private function __sleep()
-    {
-        return [];
-    }
-
-    public function __wakeup()
-    {
-        self::$s = $this;
-    }
-
-    public function __destruct()
-    {
-
-    }
-
-    public static function getInstance(array $svrConf, array $laravelConf)
-    {
-        if (self::$s === null) {
-            self::$s = new static($svrConf, $laravelConf);
-        }
-        return self::$s;
     }
 }

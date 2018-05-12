@@ -14,4 +14,4 @@ spl_autoload_register(function ($class) {
     return false;
 });
 
-LaravelS::getInstance($cfg['svrConf'], $cfg['laravelConf'])->run();
+(new LaravelS($cfg['svrConf'], $cfg['laravelConf']))->run();
