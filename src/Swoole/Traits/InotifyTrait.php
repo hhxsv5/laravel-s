@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Swoole\Traits;
 
-use Hhxsv5\LaravelS\Inotify;
+use Hhxsv5\LaravelS\Swoole\Inotify;
 
 trait InotifyTrait
 {

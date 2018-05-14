@@ -1,6 +1,6 @@
 <?php
 
-namespace Hhxsv5\LaravelS;
+namespace Hhxsv5\LaravelS\Swoole;
 
 class Inotify
 {

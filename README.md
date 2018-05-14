@@ -34,12 +34,11 @@
 
 - [Millisecond cron job](https://github.com/hhxsv5/laravel-s/blob/master/README.md#millisecond-cron-job)
 
-
 - Gracefully reload
 
 - Automatically reload when code is modified
 
-- Support Laravel/Lumen, good compatibility
+- Support Laravel/Lumen both, good compatibility
 
 - Simple & Out of the box
 
