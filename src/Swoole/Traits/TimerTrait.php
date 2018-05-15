@@ -30,6 +30,15 @@ trait TimerTrait
                     }
                 });
                 $job->setTimerId($timerId);
+                if ($job->isImmediate()) {
+                    swoole_timer_after(1, function () use ($job) {
+                        try {
+                            $job->run();
+                        } catch (\Exception $e) {
+                            $this->logException($e);
+                        }
+                    });
+                }
             }
         };
 

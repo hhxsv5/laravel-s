@@ -468,6 +468,10 @@ class TestCronJob extends CronJob
     {
         return 1000;// 每1秒运行一次
     }
+    public function isImmediate()
+    {
+        return false;// 是否立即执行第一次，false则等待间隔时间后执行第一次
+    }
     public function run()
     {
         \Log::info(__METHOD__, ['start', $this->i, microtime(true)]);
