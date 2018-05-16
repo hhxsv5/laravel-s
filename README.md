@@ -469,6 +469,10 @@ class TestCronJob extends CronJob
     {
         return 1000;// Run every 1000ms
     }
+    public function isImmediate()
+    {
+        return false;// Whether to trigger `run` immediately after setting up
+    }
     public function run()
     {
         \Log::info(__METHOD__, ['start', $this->i, microtime(true)]);

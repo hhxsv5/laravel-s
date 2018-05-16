@@ -22,4 +22,12 @@ abstract class CronJob implements CronJobInterface
         }
     }
 
+    /**
+     * @return bool $isImmediate
+     */
+    public function isImmediate()
+    {
+        return false;
+    }
+
 }
