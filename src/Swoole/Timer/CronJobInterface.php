@@ -15,7 +15,7 @@ interface CronJobInterface
      * @return bool $isImmediate
      */
     public function isImmediate();
-    
+
     public function run();
 
     public function stop();

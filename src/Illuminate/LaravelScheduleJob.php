@@ -22,7 +22,7 @@ class LaravelScheduleJob extends CronJob
     {
         return false;
     }
-    
+
     public function run()
     {
         $this->artisan->call('schedule:run');
