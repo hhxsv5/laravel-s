@@ -262,10 +262,6 @@ class Laravel
         $this->reRegisterServiceProvider('\Illuminate\Auth\AuthServiceProvider', ['auth', 'auth.driver']);
         $this->reRegisterServiceProvider('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', ['auth.password']);
 
-        // Re-register jwt auth
-        $this->reRegisterServiceProvider('\Tymon\JWTAuth\Providers\LaravelServiceProvider');
-        $this->reRegisterServiceProvider('\Tymon\JWTAuth\Providers\LumenServiceProvider');
-
         // Re-register passport
         $this->reRegisterServiceProvider('\Laravel\Passport\PassportServiceProvider');
 
