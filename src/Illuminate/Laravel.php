@@ -23,7 +23,7 @@ class Laravel
      */
     protected $laravelReflect;
 
-    protected static $snapshotKeys = ['config', 'cookie'];
+    protected static $snapshotKeys = ['config', 'cookie', 'auth', 'auth.driver', 'auth.password'];
 
     /**
      * @var array $snapshots
@@ -259,8 +259,8 @@ class Laravel
         }
 
         // Re-register auth
-        $this->reRegisterServiceProvider('\Illuminate\Auth\AuthServiceProvider', ['auth', 'auth.driver']);
-        $this->reRegisterServiceProvider('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', ['auth.password']);
+        //$this->reRegisterServiceProvider('\Illuminate\Auth\AuthServiceProvider', ['auth', 'auth.driver']);
+        //$this->reRegisterServiceProvider('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', ['auth.password']);
 
         // Re-register passport
         $this->reRegisterServiceProvider('\Laravel\Passport\PassportServiceProvider');
