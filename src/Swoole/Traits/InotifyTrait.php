@@ -23,7 +23,7 @@ trait InotifyTrait
             $log = !empty($config['log']);
             $fileTypes = isset($config['file_types']) ? (array)$config['file_types'] : [];
             $this->setProcessTitle(sprintf('%s laravels: inotify process', $config['process_prefix']));
-            $inotify = new Inotify($config['root_path'], IN_CREATE | IN_MODIFY | IN_DELETE, function ($event) use ($swoole, $log) {
+            $inotify = new Inotify($config['root_path'], IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVE, function ($event) use ($swoole, $log) {
                 $swoole->reload();
                 if ($log) {
                     $this->log(sprintf('reloaded by inotify, file: %s', $event['name']));
