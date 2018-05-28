@@ -11,6 +11,14 @@
 });
 ```
 
+## Use package [barryvdh/laravel-debugbar](https://github.com/barryvdh/laravel-debugbar)
+> Not support `cli` mode officially, you need to remove the logic of `runningInConsole`, but there may be some other issues.
+
+```PHP
+// Search runningInConsole(), then annotate it
+$this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this->app->environment('testing');
+```
+
 ## Cannot call these functions
 
 - `flush`/`ob_flush`/`ob_end_flush`/`ob_implicit_flush`: `swoole_http_response` does not support `flush`.
