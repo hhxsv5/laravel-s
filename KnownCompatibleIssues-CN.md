@@ -11,6 +11,14 @@
 });
 ```
 
+## 使用包 [barryvdh/laravel-debugbar](https://github.com/barryvdh/laravel-debugbar)
+> 官方不支持`cli`模式，需手动注释掉此判断，但启用后不排除会有其他问题。
+
+```PHP
+// 搜索 runningInConsole()，并注释掉该判断
+$this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this->app->environment('testing');
+```
+
 ## 不能使用这些函数
 
 - `flush`/`ob_flush`/`ob_end_flush`/`ob_implicit_flush`：`swoole_http_response`不支持`flush`。

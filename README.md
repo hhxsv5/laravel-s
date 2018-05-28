@@ -1,4 +1,3 @@
-# LaravelS - standing on the shoulders of giants
 ```
  _                               _  _____ 
 | |                             | |/ ____|
@@ -8,14 +7,13 @@
 |______\__,_|_|  \__,_| \_/ \___|_|_____/ 
                                            
 ```
-> 🚀 Speed up Laravel/Lumen by `Swoole`, "S" means `Swoole`, Speed, High performance.
+> 🚀 Speed up Laravel/Lumen by `Swoole`, let's fly.
 
 [![Latest Stable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/stable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
 [![Latest Unstable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/unstable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
 [![Total Downloads](https://poser.pugx.org/hhxsv5/laravel-s/downloads.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
 [![License](https://poser.pugx.org/hhxsv5/laravel-s/license.svg)](https://github.com/hhxsv5/laravel-s/blob/master/LICENSE)
 [![Build Status](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/build.png?b=master)](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/build-status/master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/?branch=master)
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 <!-- [![Code Coverage](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/?branch=master) -->
 
@@ -23,9 +21,9 @@
 
 ## Features
 
-- High performance Swoole
-
 - Built-in Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server) server
+
+- [TCP/UDP Server](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-tcpudp-server)
 
 - Memory resident
 
@@ -39,7 +37,7 @@
 
 - Automatically reload when code is modified
 
-- Support Laravel/Lumen, good compatibility
+- Support Laravel/Lumen both, good compatibility
 
 - Simple & Out of the box
 
@@ -63,7 +61,7 @@ composer require "hhxsv5/laravel-s:~1.0" -vvv
 # Make sure that your composer.lock file is under the VCS
 ```
 
-2.Add service provider.
+2.Register service provider.
 
 - `Laravel`: in `config/app.php` file
 ```PHP
@@ -141,7 +139,12 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Real-PORT $remote_port;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
+        proxy_set_header Scheme $scheme;
+        proxy_set_header Server-Protocol $server_protocol;
+        proxy_set_header Server-Name $server_name;
+        proxy_set_header Server-Addr $server_addr;
+        proxy_set_header Server-Port $server_port;
         proxy_pass http://laravels;
     }
 }
@@ -288,7 +291,12 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Real-PORT $remote_port;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
+        proxy_set_header Scheme $scheme;
+        proxy_set_header Server-Protocol $server_protocol;
+        proxy_set_header Server-Name $server_name;
+        proxy_set_header Server-Addr $server_addr;
+        proxy_set_header Server-Port $server_port;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
         proxy_pass http://laravels;
@@ -301,7 +309,12 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Real-PORT $remote_port;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
+        proxy_set_header Scheme $scheme;
+        proxy_set_header Server-Protocol $server_protocol;
+        proxy_set_header Server-Name $server_name;
+        proxy_set_header Server-Addr $server_addr;
+        proxy_set_header Server-Port $server_port;
         proxy_pass http://laravels;
     }
 }
@@ -455,6 +468,10 @@ class TestCronJob extends CronJob
     {
         return 1000;// Run every 1000ms
     }
+    public function isImmediate()
+    {
+        return false;// Whether to trigger `run` immediately after setting up
+    }
     public function run()
     {
         \Log::info(__METHOD__, ['start', $this->i, microtime(true)]);
@@ -554,7 +571,89 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 }
 ```
 
+## Enable TCP/UDP Server
+
+> For more information, please refer to [Swoole Server AddListener](https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addlistener)
+
+To make our main server support more protocols not just Http and Websocket, we bring the feature `multi-port mixed protocol` of Swoole in LaravelS and name it `Socket`. Now, you can build TCP/UDP applications easily on top of Laravel.
+
+1. Create socket handler class, and extend `Hhxsv5\LaravelS\Swoole\Socket\{Tcp|Udp}Socket`.
+
+```PHP
+namespace App\Sockets;
+use Hhxsv5\LaravelS\Swoole\Socket\TcpSocket;
+class TestTcpSocket extends TcpSocket
+{
+    public function onConnect(\swoole_server $server, $fd, $reactorId)
+    {
+        \Log::info('New TCP connection', [$fd]);
+        $server->send($fd, 'Welcome to LaravelS.');
+    }
+    public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
+    {
+        \Log::info('Received data', [$fd, $data]);
+        $server->send($fd, 'LaravelS: ' . $data);
+        if ($data === "quit\r\n") {
+            $server->send($fd, 'LaravelS: bye' . PHP_EOL);
+            $server->close($fd);
+        }
+    }
+    public function onClose(\swoole_server $server, $fd, $reactorId)
+    {
+        \Log::info('New TCP connection', [$fd]);
+        $server->send($fd, 'Goodbye');
+    }
+}
+```
+
+These `Socket` connections share the same worker processes with your `HTTP`/`Websocket` connections. So it won't be a problem at all if you want to deliver tasks, use `swoole_table`, even Laravel components such as DB, Eloquent and so on.
+At the same time, you can access `swoole_server_port` object directly by member property `swoolePort`.
+
+```PHP
+public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
+{
+    $port = $this->swoolePort; //There you go
+}
+```
+
+2. Register Sockets.
+
+```PHP
+// Edit `config/laravels.php`
+//...
+'sockets' => [
+    [
+        'host'     => '127.0.0.1',
+        'port'     => 5291,
+        'type'     => SWOOLE_SOCK_TCP,// Socket type: SWOOLE_SOCK_TCP/SWOOLE_SOCK_UDP
+        'settings' => [// Swoole settings：https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addlistener
+            'open_eof_check' => true,
+            'package_eof'    => "\r\n",
+        ],
+        'handler'  => \App\Sockets\TestTcpSocket::class,
+    ],
+],
+```
+
+For TCP socket, events `onConnect` and `onClose` will be blocked when `dispatch_mode` of Swoole is set to `1/3`. So if you want to unblock these two events please set `dispatch_mode` to `2/4/5`.
+
+```PHP
+'swoole' => [
+    //...
+    'dispatch_mode' => 2,
+    //...
+];
+```
+
+3. Test.
+
+- TCP: `telnet 127.0.0.1 5291`
+
+- UDP: `echo "Hello LaravelS" > /dev/udp/127.0.0.1/5291`
+
 ## Important notices
+
+- [Known compatible issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues.md)
 
 - Get all info of request from `Illuminate\Http\Request` Object, compatible with $_SERVER/$_ENV/$_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST, `CANNOT USE` $_SESSION.
 
@@ -600,7 +699,8 @@ public function json()
             // Enable persistent connection
             \PDO::ATTR_PERSISTENT => true,
         ],
-        //...
+    ],
+    //...
 ],
 //...
 ```
@@ -640,13 +740,15 @@ public function test(Request $req)
 }
 ```
 
-## [Known compatible issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues.md)
-
 ## Todo list
 
 1. Connection pool for MySQL/Redis.
 
 2. Wrap coroutine clients for MySQL/Redis/Http.
+
+## Alternatives
+
+- [swooletw/laravel-swoole](https://github.com/swooletw/laravel-swoole)
 
 ## License
 

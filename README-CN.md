@@ -1,4 +1,3 @@
-# LaravelS - 站在巨人的肩膀上
 ```
  _                               _  _____ 
 | |                             | |/ ____|
@@ -8,14 +7,13 @@
 |______\__,_|_|  \__,_| \_/ \___|_|_____/ 
                                            
 ```
-> 🚀 基于`Swoole`加速Laravel/Lumen，"S"代表`Swoole`，速度，高性能。
+> 🚀 基于`Swoole`加速Laravel/Lumen，`Swoole`带你飞。
 
 [![Latest Stable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/stable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
 [![Latest Unstable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/unstable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
 [![Total Downloads](https://poser.pugx.org/hhxsv5/laravel-s/downloads.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
 [![License](https://poser.pugx.org/hhxsv5/laravel-s/license.svg)](https://github.com/hhxsv5/laravel-s/blob/master/LICENSE)
 [![Build Status](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/build.png?b=master)](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/build-status/master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/?branch=master)
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 <!-- [![Code Coverage](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/?branch=master) -->
 
@@ -23,9 +21,9 @@
 
 ## 特性
 
-- 高性能的Swoole
-
 - 内置Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%90%AF%E7%94%A8websocket%E6%9C%8D%E5%8A%A1%E5%99%A8)服务器
+
+- [TCP/UDP服务器](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%BC%80%E5%90%AFtcpudp%E6%9C%8D%E5%8A%A1%E5%99%A8)
 
 - 常驻内存
 
@@ -63,7 +61,7 @@ composer require "hhxsv5/laravel-s:~1.0" -vvv
 # 确保你的composer.lock文件是在版本控制中
 ```
 
-2.添加Service Provider。
+2.注册Service Provider。
 
 - `Laravel`: 修改文件`config/app.php`
 ```PHP
@@ -141,7 +139,12 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Real-PORT $remote_port;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
+        proxy_set_header Scheme $scheme;
+        proxy_set_header Server-Protocol $server_protocol;
+        proxy_set_header Server-Name $server_name;
+        proxy_set_header Server-Addr $server_addr;
+        proxy_set_header Server-Port $server_port;
         proxy_pass http://laravels;
     }
 }
@@ -288,7 +291,12 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Real-PORT $remote_port;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
+        proxy_set_header Scheme $scheme;
+        proxy_set_header Server-Protocol $server_protocol;
+        proxy_set_header Server-Name $server_name;
+        proxy_set_header Server-Addr $server_addr;
+        proxy_set_header Server-Port $server_port;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
         proxy_pass http://laravels;
@@ -301,7 +309,12 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Real-PORT $remote_port;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
+        proxy_set_header Scheme $scheme;
+        proxy_set_header Server-Protocol $server_protocol;
+        proxy_set_header Server-Name $server_name;
+        proxy_set_header Server-Addr $server_addr;
+        proxy_set_header Server-Port $server_port;
         proxy_pass http://laravels;
     }
 }
@@ -454,6 +467,10 @@ class TestCronJob extends CronJob
     {
         return 1000;// 每1秒运行一次
     }
+    public function isImmediate()
+    {
+        return false;// 是否立即执行第一次，false则等待间隔时间后执行第一次
+    }
     public function run()
     {
         \Log::info(__METHOD__, ['start', $this->i, microtime(true)]);
@@ -553,7 +570,88 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 }
 ```
 
+## 开启TCP/UDP服务器
+
+> 更多的信息，请参考 [Swoole Server 增加监听的端口](https://wiki.swoole.com/wiki/page/16.html)与[监听多协议端口](https://wiki.swoole.com/wiki/page/525.html#entry_h2_3)
+
+为了使我们的主服务器能支持除`HTTP`和`Websocket`外的更多协议，我们引入了`Swoole`的`多端口混合协议`特性，在LaravelS中称为`Socket`。现在，可以很方便地在`Laravel`上被构建`TCP/UDP`应用。
+
+1. 创建Socket处理类，继承`Hhxsv5\LaravelS\Swoole\Socket\{Tcp|Udp}Socket`。
+
+```PHP
+namespace App\Sockets;
+use Hhxsv5\LaravelS\Swoole\Socket\TcpSocket;
+class TestTcpSocket extends TcpSocket
+{
+    public function onConnect(\swoole_server $server, $fd, $reactorId)
+    {
+        \Log::info('New TCP connection', [$fd]);
+        $server->send($fd, 'Welcome to LaravelS.');
+    }
+    public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
+    {
+        \Log::info('Received data', [$fd, $data]);
+        $server->send($fd, 'LaravelS: ' . $data);
+        if ($data === "quit\r\n") {
+            $server->send($fd, 'LaravelS: bye' . PHP_EOL);
+            $server->close($fd);
+        }
+    }
+    public function onClose(\swoole_server $server, $fd, $reactorId)
+    {
+        \Log::info('New TCP connection', [$fd]);
+        $server->send($fd, 'Goodbye');
+    }
+}
+```
+
+这些连接和主服务器上的HTTP/Websocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的`异步任务投递`、`swoole_table`、Laravel提供的组件如`DB`、`Eloquent`等。同时，如果需要使用该协议端口的`swoole_server_port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
+
+```PHP
+public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
+{
+    $port = $this->swoolePort; //获得`swoole_server_port`对象
+}
+```
+
+2. 注册套接字。
+
+```PHP
+// 修改文件 config/laravels.php
+// ...
+'sockets' => [
+    [
+        'host'     => '127.0.0.1',
+        'port'     => 5291,
+        'type'     => SWOOLE_SOCK_TCP,// 支持的嵌套字类型：https://wiki.swoole.com/wiki/page/16.html#entry_h2_0
+        'settings' => [// Swoole可用的配置项：https://wiki.swoole.com/wiki/page/526.html
+            'open_eof_check' => true,
+            'package_eof'    => "\r\n",
+        ],
+        'handler'  => \App\Sockets\TestTcpSocket::class,
+    ],
+],
+```
+
+对于TCP协议，`dispatch_mode`选项设为`1/3`时，底层会屏蔽`onConnect`/`onClose`事件，原因是这两种模式下无法保证`onConnect`/`onClose`/`onReceive`的顺序。如果需要用到这两个事件，请将`dispatch_mode`改为`2/4/5`，[参考](https://wiki.swoole.com/wiki/page/277.html)。
+
+```PHP
+'swoole' => [
+    //...
+    'dispatch_mode' => 2,
+    //...
+];
+```
+
+3. 测试。
+
+- TCP：`telnet 127.0.0.1 5291`
+
+- UDP：`echo "Hello LaravelS" > /dev/udp/127.0.0.1/5291`
+
 ## 注意事项
+
+- [已知的兼容性问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues-CN.md)
 
 - 推荐通过`Illuminate\Http\Request`对象来获取请求信息，兼容$_SERVER、$_ENV、$_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST，`不能使用`$_SESSION。
 
@@ -598,7 +696,8 @@ public function json()
             // 开启持久连接
             \PDO::ATTR_PERSISTENT => true,
         ],
-        //...
+    ],
+    //...
 ],
 //...
 ```
@@ -638,13 +737,15 @@ public function test(Request $req)
 }
 ```
 
-## [已知的兼容性问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues-CN.md)
-
 ## 待办事项
 
 1. 针对MySQL/Redis的连接池。
 
 2. 包装MySQL/Redis/Http的协程客户端。
+
+## 其他选择
+
+- [swooletw/laravel-swoole](https://github.com/swooletw/laravel-swoole)
 
 ## 打赏
 > 您的支持是我们坚持的最大动力。
@@ -659,6 +760,7 @@ public function test(Request $req)
 | `魂之挽歌` | 100元 |
 | `小南瓜` | 10.01元 |
 | `*丁智` | 16.66元 |
+| `匿名` | 20元 |
 
 ## License
 

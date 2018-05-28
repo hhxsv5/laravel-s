@@ -93,12 +93,12 @@ EOS;
         }
 
         $laravelConf = [
-            'rootPath'          => $basePath,
-            'staticPath'        => $svrConf['swoole']['document_root'],
-            'registerProviders' => array_unique((array)array_get($svrConf, 'register_providers', [])),
-            'isLumen'           => $this->isLumen,
-            '_SERVER'           => $_SERVER,
-            '_ENV'              => $_ENV,
+            'root_path'          => $basePath,
+            'static_path'        => $svrConf['swoole']['document_root'],
+            'register_providers' => array_unique((array)array_get($svrConf, 'register_providers', [])),
+            'is_lumen'           => $this->isLumen,
+            '_SERVER'            => $_SERVER,
+            '_ENV'               => $_ENV,
         ];
 
         if (file_exists($svrConf['swoole']['pid_file'])) {

@@ -21,7 +21,12 @@ class Laravel
      */
     protected $laravelKernel;
 
-    protected static $snapshotKeys = ['config', 'cookie'];
+    /**
+     * @var \ReflectionObject $laravelReflect
+     */
+    protected $laravelReflect;
+
+    protected static $snapshotKeys = ['config', 'cookie', 'auth', 'auth.password'];
 
     /**
      * @var array $snapshots
@@ -56,22 +61,22 @@ class Laravel
 
     protected function autoload()
     {
-        $autoload = $this->conf['rootPath'] . '/bootstrap/autoload.php';
+        $autoload = $this->conf['root_path'] . '/bootstrap/autoload.php';
         if (file_exists($autoload)) {
             require_once $autoload;
         } else {
-            require_once $this->conf['rootPath'] . '/vendor/autoload.php';
+            require_once $this->conf['root_path'] . '/vendor/autoload.php';
         }
     }
 
     protected function createApp()
     {
-        $this->app = require $this->conf['rootPath'] . '/bootstrap/app.php';
+        $this->app = require $this->conf['root_path'] . '/bootstrap/app.php';
     }
 
     protected function createKernel()
     {
-        if (!$this->conf['isLumen']) {
+        if (!$this->conf['is_lumen']) {
             $this->laravelKernel = $this->app->make(HttpKernel::class);
         }
     }
@@ -79,7 +84,7 @@ class Laravel
     protected function setLaravel()
     {
         // Load configuration laravel.php manually for Lumen
-        if ($this->conf['isLumen'] && file_exists($this->conf['rootPath'] . '/config/laravels.php')) {
+        if ($this->conf['is_lumen'] && file_exists($this->conf['root_path'] . '/config/laravels.php')) {
             $this->app->configure('laravels');
         }
 
@@ -91,7 +96,7 @@ class Laravel
 
     protected function consoleKernelBootstrap()
     {
-        if ($this->conf['isLumen']) {
+        if ($this->conf['is_lumen']) {
             if (Facade::getFacadeApplication() === null) {
                 $this->app->withFacades();
             }
@@ -105,13 +110,16 @@ class Laravel
         $this->snapshots = [];
         foreach (self::$snapshotKeys as $key) {
             if (isset($this->app[$key])) {
-                $t =& $this->app[$key];
-                if (is_object($t)) {
-                    $this->snapshots[$key] = clone $t;
+                if (is_object($this->app[$key])) {
+                    $this->snapshots[$key] = clone $this->app[$key];
                 } else {
-                    $this->snapshots[$key] = $t;
+                    $this->snapshots[$key] = $this->app[$key];
                 }
             }
+        }
+
+        if ($this->conf['is_lumen']) {
+            $this->laravelReflect = new \ReflectionObject($this->app);
         }
     }
 
@@ -138,7 +146,7 @@ class Laravel
 
         ob_start();
 
-        if ($this->conf['isLumen']) {
+        if ($this->conf['is_lumen']) {
             $response = $this->app->dispatch($request);
             if ($response instanceof SymfonyResponse) {
                 $content = $response->getContent();
@@ -146,11 +154,10 @@ class Laravel
                 $content = (string)$response;
             }
 
-            $reflect = new \ReflectionObject($this->app);
-            $middleware = $reflect->getProperty('middleware');
+            $middleware = $this->laravelReflect->getProperty('middleware');
             $middleware->setAccessible(true);
-            if (count($middleware->getValue($this->app)) > 0) {
-                $callTerminableMiddleware = $reflect->getMethod('callTerminableMiddleware');
+            if (!empty($middleware->getValue($this->app))) {
+                $callTerminableMiddleware = $this->laravelReflect->getMethod('callTerminableMiddleware');
                 $callTerminableMiddleware->setAccessible(true);
                 $callTerminableMiddleware->invoke($this->app, $response);
             }
@@ -177,7 +184,7 @@ class Laravel
             return false;
         }
 
-        $publicPath = $this->conf['staticPath'];
+        $publicPath = $this->conf['static_path'];
         $requestFile = $publicPath . $uri;
         if (is_file($requestFile)) {
             return $this->createStaticResponse($requestFile, $request->header('if-modified-since'));
@@ -233,15 +240,17 @@ class Laravel
     public function reRegisterServiceProvider($providerCls, array $clearFacades = [], $force = false)
     {
         if (class_exists($providerCls, false) || $force) {
+            if ($this->conf['is_lumen']) {
+                $loadedProviders = $this->laravelReflect->getProperty('loadedProviders');
+                $loadedProviders->setAccessible(true);
+                $oldLoadedProviders = $loadedProviders->getValue($this->app);
+                unset($oldLoadedProviders[get_class(new $providerCls($this->app))]);
+                $loadedProviders->setValue($this->app, $oldLoadedProviders);
+            }
             foreach ($clearFacades as $facade) {
                 Facade::clearResolvedInstance($facade);
             }
-            $provider = $this->app->register($providerCls, [], true);
-            if (!$this->conf['isLumen']) {
-                if (method_exists($provider, 'boot')) {
-                    $provider->boot();
-                }
-            }
+            $this->app->register($providerCls, [], true);
         }
     }
 
@@ -258,21 +267,17 @@ class Laravel
             // TODO: clear session for other versions
         }
 
-        // Re-register some singleton providers
-        foreach ($this->conf['registerProviders'] as $provider) {
-            $this->reRegisterServiceProvider($provider);
-        }
-
         // Re-register auth
-        $this->reRegisterServiceProvider('\Illuminate\Auth\AuthServiceProvider', ['auth', 'auth.driver']);
-        $this->reRegisterServiceProvider('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', ['auth.password']);
-
-        // Re-register jwt auth
-        $this->reRegisterServiceProvider('\Tymon\JWTAuth\Providers\LaravelServiceProvider');
-        $this->reRegisterServiceProvider('\Tymon\JWTAuth\Providers\LumenServiceProvider');
+        //$this->reRegisterServiceProvider('\Illuminate\Auth\AuthServiceProvider', ['auth', 'auth.driver']);
+        //$this->reRegisterServiceProvider('\Illuminate\Auth\Passwords\PasswordResetServiceProvider', ['auth.password']);
 
         // Re-register passport
         $this->reRegisterServiceProvider('\Laravel\Passport\PassportServiceProvider');
+
+        // Re-register some singleton providers
+        foreach ($this->conf['register_providers'] as $provider) {
+            $this->reRegisterServiceProvider($provider);
+        }
 
         // Clear request
         $this->app->forgetInstance('request');

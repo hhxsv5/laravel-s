@@ -18,6 +18,11 @@ class LaravelScheduleJob extends CronJob
         return 60 * 1000;// Run every 1 minute
     }
 
+    public function isImmediate()
+    {
+        return false;
+    }
+
     public function run()
     {
         $this->artisan->call('schedule:run');

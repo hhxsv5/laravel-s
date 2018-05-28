@@ -29,20 +29,31 @@ class Request
         $_FILES = isset($this->swooleRequest->files) ? $this->swooleRequest->files : [];
         $_REQUEST = [];
 
-        foreach ($headers as $key => $value) {
-            $key = str_replace('-', '_', $key);
-            $server['http_' . $key] = $value;
-        }
-        $_SERVER = array_merge($rawServer, array_change_key_case($server, CASE_UPPER));
-        $_ENV = $rawEnv;
+        static $headerServerMapping = [
+            'x-real-ip'       => 'REMOTE_ADDR',
+            'x-real-port'     => 'REMOTE_PORT',
+            'server-protocol' => 'SERVER_PROTOCOL',
+            'server-name'     => 'SERVER_NAME',
+            'server-addr'     => 'SERVER_ADDR',
+            'server-port'     => 'SERVER_PORT',
+            'scheme'          => 'REQUEST_SCHEME',
+        ];
 
-        // Fix client real-ip
-        if (isset($headers['x-real-ip'])) {
-            $_SERVER['REMOTE_ADDR'] = (string)$headers['x-real-ip'];
+        $_ENV = $rawEnv;
+        $_SERVER = $rawServer;
+        foreach ($headers as $key => $value) {
+            // Fix client && server's info
+            if (isset($headerServerMapping[$key])) {
+                $server[$headerServerMapping[$key]] = $value;
+            } else {
+                $key = str_replace('-', '_', $key);
+                $server['http_' . $key] = $value;
+            }
         }
-        // Fix client real-port
-        if (isset($headers['x-real-port'])) {
-            $_SERVER['REMOTE_PORT'] = (int)$headers['x-real-port'];
+        $server = array_change_key_case($server, CASE_UPPER);
+        $_SERVER = array_merge($_SERVER, $server);
+        if (isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] === 'https') {
+            $_SERVER['HTTPS'] = 'on';
         }
 
         // Fix argv & argc

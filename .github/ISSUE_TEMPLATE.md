@@ -14,7 +14,7 @@
 
 `TODO`
 
-5. Give us a `reproducible` code block
+5. Give us a `reproducible` code block and `steps`
 
 ```PHP
 //TODO: Your code
