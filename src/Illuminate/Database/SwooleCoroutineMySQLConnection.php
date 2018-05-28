@@ -27,19 +27,12 @@ class SwooleCoroutineMySQLConnection extends Connection
             if ($me->pretending()) {
                 return [];
             }
-
             $db = $this->getPdoForSelect($useReadPdo);
-            $query = 'SELECT count(*) AS AGGREGATE FROM doctor';
-
             $statement = $db->prepare($query);
             if ($statement === false) {
                 throw new QueryException($query, $bindings, new \Exception($db->error, $db->errno));
             }
-
-            var_dump('before execute');
             $result = $statement->execute($me->prepareBindings($bindings));
-            var_dump('after execute');
-
             return $result;
         });
     }
@@ -47,15 +40,10 @@ class SwooleCoroutineMySQLConnection extends Connection
     public function __construct($pdo, $database = '', $tablePrefix = '', array $config = [])
     {
         $this->pdo = $pdo;
-
         $this->database = $database;
-
         $this->tablePrefix = $tablePrefix;
-
         $this->config = $config;
-
         $this->useDefaultQueryGrammar();
-
         $this->useDefaultPostProcessor();
     }
 
@@ -88,9 +76,7 @@ class SwooleCoroutineMySQLConnection extends Connection
         if ($this->transactions == 1) {
             $this->pdo->query('COMMIT');
         }
-
         --$this->transactions;
-
         $this->fireConnectionEvent('committed');
     }
 

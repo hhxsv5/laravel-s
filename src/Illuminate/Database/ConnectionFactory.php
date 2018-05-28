@@ -21,7 +21,6 @@ class ConnectionFactory extends IlluminateConnectionFactory
 
     protected function createConnection($driver, $connection, $database, $prefix = '', array $config = [])
     {
-
         switch ($driver) {
             case 'sw-co-mysql':
                 return new SwooleCoroutineMySQLConnection($connection, $database, $prefix, $config);
