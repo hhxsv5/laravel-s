@@ -653,6 +653,13 @@ For TCP socket, events `onConnect` and `onClose` will be blocked when `dispatch_
 
 ## Important notices
 
+- `Singleton Issue`
+    - Under FPM mode, singleton instances will be instantiated and recycled in every request, request start=>instantiate instance=>request end=>recycled instance.
+    - Under Swoole Server, All singleton instances will be hold in memory, different lifetime from FPM, request start=>instantiate instance=>request end=>do not recycle singleton instance. So need developer to maintain status of singleton instances in ervery request.
+    - Common solutions:
+        1. `Reset` status of singleton instances by `Middleware`.
+        2. Re-register `ServiceProvider`, add `XxxServiceProvider` into `register_providers` of file `laravels.php`. So that reinitialize singleton instances in ervery request[Refer](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
+
 - [Known compatible issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues.md)
 
 - Get all info of request from `Illuminate\Http\Request` Object, compatible with $_SERVER/$_ENV/$_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST, `CANNOT USE` $_SESSION.
