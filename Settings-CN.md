@@ -36,6 +36,6 @@
         \Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
     ],
     //...
-```
+    ```
 
 - `swoole`：`array` 请参考[Swoole配置项](https://wiki.swoole.com/wiki/page/274.html)
