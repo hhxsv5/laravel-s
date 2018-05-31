@@ -23,7 +23,7 @@
 
 - Built-in Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server) server
 
-- [TCP/UDP Server](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-tcpudp-server)
+- [Multi-port mixed protocol](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-tcpudp-server)
 
 - Memory resident
 
@@ -571,7 +571,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 }
 ```
 
-## Enable TCP/UDP Server
+## Multi-port mixed protocol
 
 > For more information, please refer to [Swoole Server AddListener](https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addlistener)
 
