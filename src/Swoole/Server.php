@@ -23,14 +23,14 @@ class Server
      */
     protected $swoole;
 
-    protected $enableWebsocket = false;
+    protected $enableWebSocket = false;
 
     protected $attachedSockets = [];
 
     protected function __construct(array $conf)
     {
         $this->conf = $conf;
-        $this->enableWebsocket = !empty($this->conf['websocket']['enable']);
+        $this->enableWebSocket = !empty($this->conf['websocket']['enable']);
         $this->attachedSockets = empty($this->conf['sockets']) ? [] : $this->conf['sockets'];
 
         $ip = isset($conf['listen_ip']) ? $conf['listen_ip'] : '127.0.0.1';
@@ -38,7 +38,7 @@ class Server
         $settings = isset($conf['swoole']) ? $conf['swoole'] : [];
         $settings['enable_static_handler'] = !empty($conf['handle_static']);
 
-        $serverClass = $this->enableWebsocket ? \swoole_websocket_server::class : \swoole_http_server::class;
+        $serverClass = $this->enableWebSocket ? \swoole_websocket_server::class : \swoole_http_server::class;
         if (isset($settings['ssl_cert_file'], $settings['ssl_key_file'])) {
             $this->swoole = new $serverClass($ip, $port, \SWOOLE_PROCESS, \SWOOLE_SOCK_TCP | \SWOOLE_SSL);
         } else {
@@ -50,7 +50,7 @@ class Server
         $this->bindBaseEvent();
         $this->bindHttpEvent();
         $this->bindTaskEvent();
-        $this->bindWebsocketEvent();
+        $this->bindWebSocketEvent();
         $this->bindAttachedSockets();
         $this->bindSwooleTables();
     }
@@ -79,11 +79,11 @@ class Server
         }
     }
 
-    protected function bindWebsocketEvent()
+    protected function bindWebSocketEvent()
     {
-        if ($this->enableWebsocket) {
+        if ($this->enableWebSocket) {
             $this->swoole->on('Open', function (\swoole_websocket_server $server, \swoole_http_request $request) {
-                $handler = $this->getWebsocketHandler();
+                $handler = $this->getWebSocketHandler();
                 try {
                     $handler->onOpen($server, $request);
                 } catch (\Exception $e) {
@@ -92,7 +92,7 @@ class Server
             });
 
             $this->swoole->on('Message', function (\swoole_websocket_server $server, \swoole_websocket_frame $frame) {
-                $handler = $this->getWebsocketHandler();
+                $handler = $this->getWebSocketHandler();
                 try {
                     $handler->onMessage($server, $frame);
                 } catch (\Exception $e) {
@@ -103,7 +103,7 @@ class Server
             $this->swoole->on('Close', function (\swoole_websocket_server $server, $fd, $reactorId) {
                 $clientInfo = $server->getClientInfo($fd);
                 if (isset($clientInfo['websocket_status']) && $clientInfo['websocket_status'] === \WEBSOCKET_STATUS_FRAME) {
-                    $handler = $this->getWebsocketHandler();
+                    $handler = $this->getWebSocketHandler();
                     try {
                         $handler->onClose($server, $fd, $reactorId);
                     } catch (\Exception $e) {
@@ -158,7 +158,7 @@ class Server
         }
     }
 
-    protected function getWebsocketHandler()
+    protected function getWebSocketHandler()
     {
         static $handler = null;
         if ($handler !== null) {
