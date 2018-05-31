@@ -575,7 +575,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 > For more information, please refer to [Swoole Server AddListener](https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addlistener)
 
-To make our main server support more protocols not just Http and WebSocket, we bring the feature `multi-port mixed protocol` of Swoole in LaravelS and name it `Socket`. Now, you can build TCP/UDP applications easily on top of Laravel.
+To make our main server support more protocols not just Http and WebSocket, we bring the feature `multi-port mixed protocol` of Swoole in LaravelS and name it `Socket`. Now, you can build `TCP/UDP` applications easily on top of Laravel.
 
 1. Create socket handler class, and extend `Hhxsv5\LaravelS\Swoole\Socket\{TcpSocket|UdpSocket|Http|WebSocket}`.
 
@@ -651,14 +651,30 @@ For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_
 
 - UDP: `echo "Hello LaravelS" > /dev/udp/127.0.0.1/5291`
 
-4. Other protocols.
+4. Register example of other protocols.
+
+- UDP
+```PHP
+'sockets' => [
+    [
+       'host'     => '0.0.0.0',
+        'port'     => 5292,
+        'type'     => SWOOLE_SOCK_UDP,
+        'settings' => [
+            'open_eof_check' => true,
+            'package_eof'    => "\r\n",
+        ],
+        'handler'  => \App\Sockets\TestUdpSocket::class,
+    ],
+],
+```
 
 - Http
 ```PHP
 'sockets' => [
     [
        'host'     => '0.0.0.0',
-        'port'     => 5292,
+        'port'     => 5293,
         'type'     => SWOOLE_SOCK_TCP,
         'settings' => [
             'open_http_protocol' => true,
@@ -673,7 +689,7 @@ For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_
 'sockets' => [
     [
        'host'     => '0.0.0.0',
-        'port'     => 5293,
+        'port'     => 5294,
         'type'     => SWOOLE_SOCK_TCP,
         'settings' => [
             'open_http_protocol'      => true,

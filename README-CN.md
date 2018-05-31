@@ -574,7 +574,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 > 更多的信息，请参考 [Swoole Server增加监听的端口](https://wiki.swoole.com/wiki/page/16.html)与[多端口混合协议](https://wiki.swoole.com/wiki/page/525.html)
 
-为了使我们的主服务器能支持除`HTTP`和`WebSocket`外的更多协议，我们引入了`Swoole`的`多端口混合协议`特性，在LaravelS中称为`Socket`。现在，可以很方便地在`Laravel`上被构建`TCP/UDP/Http/WebSocket`应用。
+为了使我们的主服务器能支持除`HTTP`和`WebSocket`外的更多协议，我们引入了`Swoole`的`多端口混合协议`特性，在LaravelS中称为`Socket`。现在，可以很方便地在`Laravel`上被构建`TCP/UDP`应用。
 
 1. 创建Socket处理类，继承`Hhxsv5\LaravelS\Swoole\Socket\{TcpSocket|UdpSocket|Http|WebSocket}`
 
@@ -649,14 +649,30 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 
 - UDP：`echo "Hello LaravelS" > /dev/udp/127.0.0.1/5291`
 
-4. 其他协议。
+4. 其他协议的注册示例。
+
+- UDP
+```PHP
+'sockets' => [
+    [
+       'host'     => '0.0.0.0',
+        'port'     => 5292,
+        'type'     => SWOOLE_SOCK_UDP,
+        'settings' => [
+            'open_eof_check' => true,
+            'package_eof'    => "\r\n",
+        ],
+        'handler'  => \App\Sockets\TestUdpSocket::class,
+    ],
+],
+```
 
 - Http
 ```PHP
 'sockets' => [
     [
        'host'     => '0.0.0.0',
-        'port'     => 5292,
+        'port'     => 5293,
         'type'     => SWOOLE_SOCK_TCP,
         'settings' => [
             'open_http_protocol' => true,
@@ -671,7 +687,7 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 'sockets' => [
     [
        'host'     => '0.0.0.0',
-        'port'     => 5293,
+        'port'     => 5294,
         'type'     => SWOOLE_SOCK_TCP,
         'settings' => [
             'open_http_protocol'      => true,
