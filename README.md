@@ -649,7 +649,7 @@ For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_
 
 - TCP: `telnet 127.0.0.1 5291`
 
-- UDP: `echo "Hello LaravelS" > /dev/udp/127.0.0.1/5291`
+- UDP: `echo "Hello LaravelS" > /dev/udp/127.0.0.1/5292`
 
 4. Register example of other protocols.
 
