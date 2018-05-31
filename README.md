@@ -203,14 +203,14 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 ## Enable WebSocket server
 > The Listening address of WebSocket Sever is the same as Http Server.
 
-1.Create WebSocket Handler class, and implement interface `WebsocketHandlerInterface`.
+1.Create WebSocket Handler class, and implement interface `WebSocketHandlerInterface`.
 ```PHP
 namespace App\Services;
-use Hhxsv5\LaravelS\Swoole\WebsocketHandlerInterface;
+use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
 /**
  * @see https://www.swoole.co.uk/docs/modules/swoole-websocket-server
  */
-class WebsocketService implements WebsocketHandlerInterface
+class WebSocketService implements WebSocketHandlerInterface
 {
     // Declare constructor without parameters
     public function __construct()
@@ -240,7 +240,7 @@ class WebsocketService implements WebsocketHandlerInterface
 // ...
 'websocket'      => [
     'enable'  => true,
-    'handler' => \App\Services\WebsocketService::class,
+    'handler' => \App\Services\WebSocketService::class,
 ],
 'swoole'         => [
     //...

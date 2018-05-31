@@ -18,9 +18,9 @@
 
 - `inotify_reload.log`: `bool` Whether output the reload log, default `true`.
 
-- `websocket.enable`: `bool` Whether enable Websocket Server. The Listening address of Websocket Sever is the same as Http Server, default `false`.
+- `websocket.enable`: `bool` Whether enable WebSocket Server. The Listening address of WebSocket Sever is the same as Http Server, default `false`.
 
-- `websocket.handler`: `string` The class name for Websocket handler, needs to implement interface `WebsocketHandlerInterface`, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server)
+- `websocket.handler`: `string` The class name for WebSocket handler, needs to implement interface `WebSocketHandlerInterface`, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server)
 
 - `sockets`: `array` The socket list for TCP/UDP, refer to [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-tcpudp-server)
 

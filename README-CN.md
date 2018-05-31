@@ -202,14 +202,14 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 ## 启用WebSocket服务器
 > WebSocket服务器监听的IP和端口与Http服务器相同。
 
-1.创建WebSocket Handler类，并实现接口`WebsocketHandlerInterface`。
+1.创建WebSocket Handler类，并实现接口`WebSocketHandlerInterface`。
 ```PHP
 namespace App\Services;
-use Hhxsv5\LaravelS\Swoole\WebsocketHandlerInterface;
+use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
 /**
  * @see https://wiki.swoole.com/wiki/page/400.html
  */
-class WebsocketService implements WebsocketHandlerInterface
+class WebSocketService implements WebSocketHandlerInterface
 {
     // 声明没有参数的构造函数
     public function __construct()
@@ -239,7 +239,7 @@ class WebsocketService implements WebsocketHandlerInterface
 // ...
 'websocket'      => [
     'enable'  => true,
-    'handler' => \App\Services\WebsocketService::class,
+    'handler' => \App\Services\WebSocketService::class,
 ],
 'swoole'         => [
     //...

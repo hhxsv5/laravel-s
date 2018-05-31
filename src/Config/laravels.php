@@ -17,7 +17,7 @@ return [
     ],
     'websocket'          => [
         'enable' => false,
-        //'handler' => XxxWebsocketHandler::class,
+        //'handler' => XxxWebSocketHandler::class,
     ],
     'sockets'            => [
     ],

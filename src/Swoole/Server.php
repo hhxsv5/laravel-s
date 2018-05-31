@@ -167,8 +167,8 @@ class Server
 
         $handlerClass = $this->conf['websocket']['handler'];
         $t = new $handlerClass();
-        if (!($t instanceof WebsocketHandlerInterface)) {
-            throw new \Exception(sprintf('%s must implement the interface %s', get_class($t), WebsocketHandlerInterface::class));
+        if (!($t instanceof WebSocketHandlerInterface)) {
+            throw new \Exception(sprintf('%s must implement the interface %s', get_class($t), WebSocketHandlerInterface::class));
         }
         $handler = $t;
         return $handler;

@@ -18,9 +18,9 @@
 
 - `inotify_reload.log`：`bool` 是否输出Reload的日志，默认`true`。
 
-- `websocket.enable`：`bool` 是否启用Websocket服务器。启用后Websocket服务器监听的IP和端口与Http服务器相同，默认`false`。
+- `websocket.enable`：`bool` 是否启用WebSocket服务器。启用后WebSocket服务器监听的IP和端口与Http服务器相同，默认`false`。
 
-- `websocket.handler`：`string` Websocket逻辑处理的类名，需实现接口`WebsocketHandlerInterface`，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%90%AF%E7%94%A8websocket%E6%9C%8D%E5%8A%A1%E5%99%A8)
+- `websocket.handler`：`string` WebSocket逻辑处理的类名，需实现接口`WebSocketHandlerInterface`，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%90%AF%E7%94%A8websocket%E6%9C%8D%E5%8A%A1%E5%99%A8)
 
 - `sockets`: `array` 配置`TCP/UDP`套接字列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%BC%80%E5%90%AFtcpudp%E6%9C%8D%E5%8A%A1%E5%99%A8)
 
