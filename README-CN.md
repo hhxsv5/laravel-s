@@ -647,7 +647,7 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 
 - TCP：`telnet 127.0.0.1 5291`
 
-- UDP：`echo "Hello LaravelS" > /dev/udp/127.0.0.1/5292`
+- UDP：Linux下 `echo "Hello LaravelS" > /dev/udp/127.0.0.1/5292`
 
 4. 其他协议的注册示例。
 
