@@ -709,7 +709,7 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 
         1. 用一个`中间件`来`重置`单例对象的状态。
 
-        2. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
+        2. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
 - [已知的兼容性问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues-CN.md)
 
