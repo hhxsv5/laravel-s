@@ -218,7 +218,7 @@ class WebsocketService implements WebsocketHandlerInterface
     }
     public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
     {
-        \Log::info('New Websocket connection', [$request->fd]);
+        \Log::info('New WebSocket connection', [$request->fd]);
         $server->push($request->fd, 'Welcome to LaravelS');
         // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
     }
@@ -280,7 +280,7 @@ server {
     #location ~* \.php$ {
     #    return 404;
     #}
-    # Http and Websocket are concomitant, Nginx identifies them by "location"
+    # Http and WebSocket are concomitant, Nginx identifies them by "location"
     # Javascript: var ws = new WebSocket("ws://laravels.com/ws");
     location =/ws {
         proxy_http_version 1.1;
@@ -511,7 +511,7 @@ class TestCronJob extends CronJob
 
 ```PHP
 /**
- * $swoole is the instance of `swoole_websocket_server` if enable websocket server, otherwise `\swoole_http_server`
+ * $swoole is the instance of `swoole_websocket_server` if enable WebSocket server, otherwise `\swoole_http_server`
  * @var \swoole_http_server|\swoole_websocket_server $swoole
  */
 $swoole = app('swoole');
@@ -575,9 +575,9 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 > For more information, please refer to [Swoole Server AddListener](https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addlistener)
 
-To make our main server support more protocols not just Http and Websocket, we bring the feature `multi-port mixed protocol` of Swoole in LaravelS and name it `Socket`. Now, you can build TCP/UDP applications easily on top of Laravel.
+To make our main server support more protocols not just Http and WebSocket, we bring the feature `multi-port mixed protocol` of Swoole in LaravelS and name it `Socket`. Now, you can build TCP/UDP applications easily on top of Laravel.
 
-1. Create socket handler class, and extend `Hhxsv5\LaravelS\Swoole\Socket\{Tcp|Udp}Socket`.
+1. Create socket handler class, and extend `Hhxsv5\LaravelS\Swoole\Socket\{TcpSocket|UdpSocket|Http|WebSocket}`.
 
 ```PHP
 namespace App\Sockets;
@@ -606,7 +606,7 @@ class TestTcpSocket extends TcpSocket
 }
 ```
 
-These `Socket` connections share the same worker processes with your `HTTP`/`Websocket` connections. So it won't be a problem at all if you want to deliver tasks, use `swoole_table`, even Laravel components such as DB, Eloquent and so on.
+These `Socket` connections share the same worker processes with your `HTTP`/`WebSocket` connections. So it won't be a problem at all if you want to deliver tasks, use `swoole_table`, even Laravel components such as DB, Eloquent and so on.
 At the same time, you can access `swoole_server_port` object directly by member property `swoolePort`.
 
 ```PHP
@@ -635,7 +635,7 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 ],
 ```
 
-For TCP socket, events `onConnect` and `onClose` will be blocked when `dispatch_mode` of Swoole is set to `1/3`. So if you want to unblock these two events please set `dispatch_mode` to `2/4/5`.
+For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_mode` of Swoole is `1/3`, so if you want to unblock these two events please set `dispatch_mode` to `2/4/5`.
 
 ```PHP
 'swoole' => [
@@ -650,6 +650,39 @@ For TCP socket, events `onConnect` and `onClose` will be blocked when `dispatch_
 - TCP: `telnet 127.0.0.1 5291`
 
 - UDP: `echo "Hello LaravelS" > /dev/udp/127.0.0.1/5291`
+
+4. Other protocols.
+
+- Http
+```PHP
+'sockets' => [
+    [
+       'host'     => '0.0.0.0',
+        'port'     => 5292,
+        'type'     => SWOOLE_SOCK_TCP,
+        'settings' => [
+            'open_http_protocol' => true,
+        ],
+        'handler'  => \App\Sockets\TestHttp::class,
+    ],
+],
+```
+
+- WebSocket
+```PHP
+'sockets' => [
+    [
+       'host'     => '0.0.0.0',
+        'port'     => 5293,
+        'type'     => SWOOLE_SOCK_TCP,
+        'settings' => [
+            'open_http_protocol'      => true,
+            'open_websocket_protocol' => true,
+        ],
+        'handler'  => \App\Sockets\TestWebSocket::class,
+    ],
+],
+```
 
 ## Important notices
 

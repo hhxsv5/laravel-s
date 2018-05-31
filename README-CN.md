@@ -217,7 +217,7 @@ class WebsocketService implements WebsocketHandlerInterface
     }
     public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
     {
-        \Log::info('New Websocket connection', [$request->fd]);
+        \Log::info('New WebSocket connection', [$request->fd]);
         $server->push($request->fd, 'Welcome to LaravelS');
         // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
@@ -280,7 +280,7 @@ server {
     #location ~* \.php$ {
     #    return 404;
     #}
-    # Http和Websocket共存，Nginx通过location区分
+    # Http和WebSocket共存，Nginx通过location区分
     # Javascript: var ws = new WebSocket("ws://laravels.com/ws");
     location =/ws {
         proxy_http_version 1.1;
@@ -510,7 +510,7 @@ class TestCronJob extends CronJob
 
 ```PHP
 /**
- * 如果启用websocket server，$swoole是`swoole_websocket_server`的实例，否则是是`\swoole_http_server`的实例
+ * 如果启用WebSocket server，$swoole是`swoole_websocket_server`的实例，否则是是`\swoole_http_server`的实例
  * @var \swoole_http_server|\swoole_websocket_server $swoole
  */
 $swoole = app('swoole');
@@ -572,11 +572,11 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 ## 开启TCP/UDP服务器
 
-> 更多的信息，请参考 [Swoole Server 增加监听的端口](https://wiki.swoole.com/wiki/page/16.html)与[监听多协议端口](https://wiki.swoole.com/wiki/page/525.html#entry_h2_3)
+> 更多的信息，请参考 [Swoole Server增加监听的端口](https://wiki.swoole.com/wiki/page/16.html)与[多端口混合协议](https://wiki.swoole.com/wiki/page/525.html)
 
-为了使我们的主服务器能支持除`HTTP`和`Websocket`外的更多协议，我们引入了`Swoole`的`多端口混合协议`特性，在LaravelS中称为`Socket`。现在，可以很方便地在`Laravel`上被构建`TCP/UDP`应用。
+为了使我们的主服务器能支持除`HTTP`和`WebSocket`外的更多协议，我们引入了`Swoole`的`多端口混合协议`特性，在LaravelS中称为`Socket`。现在，可以很方便地在`Laravel`上被构建`TCP/UDP/Http/WebSocket`应用。
 
-1. 创建Socket处理类，继承`Hhxsv5\LaravelS\Swoole\Socket\{Tcp|Udp}Socket`。
+1. 创建Socket处理类，继承`Hhxsv5\LaravelS\Swoole\Socket\{TcpSocket|UdpSocket|Http|WebSocket}`
 
 ```PHP
 namespace App\Sockets;
@@ -605,7 +605,7 @@ class TestTcpSocket extends TcpSocket
 }
 ```
 
-这些连接和主服务器上的HTTP/Websocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的`异步任务投递`、`swoole_table`、Laravel提供的组件如`DB`、`Eloquent`等。同时，如果需要使用该协议端口的`swoole_server_port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
+这些连接和主服务器上的HTTP/WebSocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的`异步任务投递`、`swoole_table`、Laravel提供的组件如`DB`、`Eloquent`等。同时，如果需要使用该协议端口的`swoole_server_port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
 
 ```PHP
 public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
@@ -648,6 +648,39 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 - TCP：`telnet 127.0.0.1 5291`
 
 - UDP：`echo "Hello LaravelS" > /dev/udp/127.0.0.1/5291`
+
+4. 其他协议。
+
+- Http
+```PHP
+'sockets' => [
+    [
+       'host'     => '0.0.0.0',
+        'port'     => 5292,
+        'type'     => SWOOLE_SOCK_TCP,
+        'settings' => [
+            'open_http_protocol' => true,
+        ],
+        'handler'  => \App\Sockets\TestHttp::class,
+    ],
+],
+```
+
+- WebSocket
+```PHP
+'sockets' => [
+    [
+       'host'     => '0.0.0.0',
+        'port'     => 5293,
+        'type'     => SWOOLE_SOCK_TCP,
+        'settings' => [
+            'open_http_protocol'      => true,
+            'open_websocket_protocol' => true,
+        ],
+        'handler'  => \App\Sockets\TestWebSocket::class,
+    ],
+],
+```
 
 ## 注意事项
 
