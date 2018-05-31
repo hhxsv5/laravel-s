@@ -23,7 +23,7 @@
 
 - Built-in Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server) server
 
-- [Multi-port mixed protocol](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-tcpudp-server)
+- [Multi-port mixed protocol](https://github.com/hhxsv5/laravel-s/blob/master/README.md#multi-port-mixed-protocol)
 
 - Memory resident
 
