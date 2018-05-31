@@ -2,6 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
+use Hhxsv5\LaravelS\Swoole\Socket\PortInterface;
 use Hhxsv5\LaravelS\Swoole\Socket\TcpSocket;
 use Hhxsv5\LaravelS\Swoole\Socket\UdpSocket;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
@@ -128,66 +129,32 @@ class Server
             $port->set(empty($socket['settings']) ? [] : $socket['settings']);
 
             $handlerClass = $socket['handler'];
-            $port->on('Connect', function ($server, $fd, $reactorId) use ($port, $handlerClass) {
+            $eventHandler = function ($method, array $params) use ($port, $handlerClass) {
                 $handler = $this->getSocketHandler($port, $handlerClass);
-                if (method_exists($handler, 'onConnect')) {
+                if (method_exists($handler, $method)) {
                     try {
-                        $handler->onConnect($server, $fd, $reactorId);
+                        call_user_func_array([$handler, $method], $params);
                     } catch (\Exception $e) {
                         $this->logException($e);
                     }
                 }
-            });
-            $port->on('Close', function ($server, $fd, $reactorId) use ($port, $handlerClass) {
-                $handler = $this->getSocketHandler($port, $handlerClass);
-                if (method_exists($handler, 'onClose')) {
-                    try {
-                        $handler->onClose($server, $fd, $reactorId);
-                    } catch (\Exception $e) {
-                        $this->logException($e);
-                    }
-                }
-            });
-            $port->on('Receive', function ($server, $fd, $reactorId, $data) use ($port, $handlerClass) {
-                $handler = $this->getSocketHandler($port, $handlerClass);
-                if (method_exists($handler, 'onReceive')) {
-                    try {
-                        $handler->onReceive($server, $fd, $reactorId, $data);
-                    } catch (\Exception $e) {
-                        $this->logException($e);
-                    }
-                }
-            });
-            $port->on('Packet', function ($server, $data, $clientInfo) use ($port, $handlerClass) {
-                $handler = $this->getSocketHandler($port, $handlerClass);
-                if (method_exists($handler, 'onPacket')) {
-                    try {
-                        $handler->onPacket($server, $data, $clientInfo);
-                    } catch (\Exception $e) {
-                        $this->logException($e);
-                    }
-                }
-            });
-            $port->on('BufferFull', function ($server, $fd) use ($port, $handlerClass) {
-                $handler = $this->getSocketHandler($port, $handlerClass);
-                if (method_exists($handler, 'onBufferFull')) {
-                    try {
-                        $handler->onBufferFull($server, $fd);
-                    } catch (\Exception $e) {
-                        $this->logException($e);
-                    }
-                }
-            });
-            $port->on('BufferEmpty', function ($server, $fd) use ($port, $handlerClass) {
-                $handler = $this->getSocketHandler($port, $handlerClass);
-                if (method_exists($handler, 'onBufferEmpty')) {
-                    try {
-                        $handler->onBufferEmpty($server, $fd);
-                    } catch (\Exception $e) {
-                        $this->logException($e);
-                    }
-                }
-            });
+            };
+            static $events = [
+                'Open',
+                'Request',
+                'Message',
+                'Connect',
+                'Close',
+                'Receive',
+                'Packet',
+                'BufferFull',
+                'BufferEmpty',
+            ];
+            foreach ($events as $event) {
+                $port->on($event, function ($server, $request) use ($event, $eventHandler) {
+                    $eventHandler('on' . $event, func_get_args());
+                });
+            }
         }
     }
 
@@ -215,7 +182,7 @@ class Server
             return $handlers[$portHash];
         }
         $t = new $handlerClass($port);
-        if (!($t instanceof TcpSocket) && !($t instanceof UdpSocket)) {
+        if (!($t instanceof PortInterface)) {
             throw new \Exception(sprintf('%s must extend the abstract class TcpSocket/UdpSocket', get_class($t)));
         }
         $handlers[$portHash] = $t;
