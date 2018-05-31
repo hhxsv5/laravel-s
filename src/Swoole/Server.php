@@ -151,7 +151,7 @@ class Server
                 'BufferEmpty',
             ];
             foreach ($events as $event) {
-                $port->on($event, function ($server, $request) use ($event, $eventHandler) {
+                $port->on($event, function () use ($event, $eventHandler) {
                     $eventHandler('on' . $event, func_get_args());
                 });
             }
