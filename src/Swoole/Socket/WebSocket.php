@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Swoole\Socket;
 
-abstract class Websocket implements PortInterface, WebsocketInterface
+abstract class WebSocket implements PortInterface, WebSocketInterface
 {
     /**
      * @var  \swoole_server_port
