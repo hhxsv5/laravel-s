@@ -54,7 +54,6 @@ class LaravelS extends Server
         return $laravel;
     }
 
-
     protected function bindWebSocketEvent()
     {
         if ($this->enableWebSocket) {
@@ -67,6 +66,7 @@ class LaravelS extends Server
             };
 
             $this->swoole->on('Open', function (\swoole_websocket_server $server, \swoole_http_request $request) use ($eventHandler) {
+                // Start Laravel's lifetime, then support session ...middleware.
                 $laravelRequest = $this->convertRequest($request);
                 $this->laravel->bindRequest($laravelRequest);
                 $this->laravel->handleDynamic($laravelRequest);
