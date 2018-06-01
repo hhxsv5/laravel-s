@@ -105,7 +105,7 @@ class Laravel
         }
 
         $cfgPaths = [
-            // Framework configuration
+            // Framework default configuration
             $this->conf['root_path'] . '/vendor/laravel/lumen-framework/config/',
             // App configuration
             $this->conf['root_path'] . '/config/',
