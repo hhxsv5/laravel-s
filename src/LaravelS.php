@@ -54,6 +54,39 @@ class LaravelS extends Server
         return $laravel;
     }
 
+
+    protected function bindWebSocketEvent()
+    {
+        if ($this->enableWebSocket) {
+            $eventHandler = function ($method, array $params) {
+                try {
+                    call_user_func_array([$this->getWebSocketHandler(), $method], $params);
+                } catch (\Exception $e) {
+                    $this->logException($e);
+                }
+            };
+
+            $this->swoole->on('Open', function (\swoole_websocket_server $server, \swoole_http_request $request) use ($eventHandler) {
+                $laravelRequest = $this->convertRequest($request);
+                $this->laravel->bindRequest($laravelRequest);
+                $this->laravel->handleDynamic($laravelRequest);
+                $eventHandler('onOpen', func_get_args());
+            });
+
+            $this->swoole->on('Message', function () use ($eventHandler) {
+                $eventHandler('onMessage', func_get_args());
+            });
+
+            $this->swoole->on('Close', function (\swoole_websocket_server $server, $fd, $reactorId) use ($eventHandler) {
+                $clientInfo = $server->getClientInfo($fd);
+                if (isset($clientInfo['websocket_status']) && $clientInfo['websocket_status'] === \WEBSOCKET_STATUS_FRAME) {
+                    $eventHandler('onClose', func_get_args());
+                }
+                // else ignore the close event for http server
+            });
+        }
+    }
+
     public function onWorkerStart(\swoole_http_server $server, $workerId)
     {
         parent::onWorkerStart($server, $workerId);
@@ -64,13 +97,18 @@ class LaravelS extends Server
         $this->laravel = $this->initLaravel();
     }
 
+    protected function convertRequest(\swoole_http_request $request)
+    {
+        $rawGlobals = $this->laravel->getRawGlobals();
+        $server = isset($rawGlobals['_SERVER']) ? $rawGlobals['_SERVER'] : [];
+        $env = isset($rawGlobals['_ENV']) ? $rawGlobals['_ENV'] : [];
+        return (new Request($request))->toIlluminateRequest($server, $env);
+    }
+
     public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
     {
         try {
-            $rawGlobals = $this->laravel->getRawGlobals();
-            $server = isset($rawGlobals['_SERVER']) ? $rawGlobals['_SERVER'] : [];
-            $env = isset($rawGlobals['_ENV']) ? $rawGlobals['_ENV'] : [];
-            $laravelRequest = (new Request($request))->toIlluminateRequest($server, $env);
+            $laravelRequest = $this->convertRequest($request);
             $this->laravel->bindRequest($laravelRequest);
             $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
             $success = $this->handleStaticResource($laravelRequest, $response);
