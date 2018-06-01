@@ -3,8 +3,6 @@
 namespace Hhxsv5\LaravelS\Swoole;
 
 use Hhxsv5\LaravelS\Swoole\Socket\PortInterface;
-use Hhxsv5\LaravelS\Swoole\Socket\TcpSocket;
-use Hhxsv5\LaravelS\Swoole\Socket\UdpSocket;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
