@@ -217,7 +217,8 @@ class WebSocketService implements WebSocketHandlerInterface
     }
     public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
     {
-        \Log::info('New WebSocket connection', [$request->fd]);
+        // 在触发onOpen事件之前Laravel的生命周期已经完结，所以Laravel的Request、Session是可用的
+        \Log::info('New WebSocket connection', [$request->fd, request()->all(), session()->getId(), session('xxx')]);
         $server->push($request->fd, 'Welcome to LaravelS');
         // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
