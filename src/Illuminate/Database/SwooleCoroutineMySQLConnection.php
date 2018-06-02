@@ -27,13 +27,15 @@ class SwooleCoroutineMySQLConnection extends Connection
             if ($me->pretending()) {
                 return [];
             }
+            /**
+             * @var SwooleCoroutineMySQL $db
+             */
             $db = $this->getPdoForSelect($useReadPdo);
             $statement = $db->prepare($query);
             if ($statement === false) {
                 throw new QueryException($query, $bindings, new \Exception($db->error, $db->errno));
             }
-            $result = $statement->execute($me->prepareBindings($bindings));
-            return $result;
+            return $statement->execute($me->prepareBindings($bindings));
         });
     }
 
