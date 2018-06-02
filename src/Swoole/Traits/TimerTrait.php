@@ -7,6 +7,7 @@ use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 trait TimerTrait
 {
     use ProcessTitleTrait;
+    use LogTrait;
 
     public function addTimerProcess(\swoole_server $swoole, array $config)
     {

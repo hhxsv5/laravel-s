@@ -20,8 +20,13 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
  */
 class LaravelS extends Server
 {
+    /**
+     * Fix conflicts of traits
+     */
     use TimerTrait, InotifyTrait {
         TimerTrait::setProcessTitle insteadof InotifyTrait;
+        TimerTrait::log insteadof InotifyTrait;
+        TimerTrait::logException insteadof InotifyTrait;
     }
 
     protected $laravelConf;
