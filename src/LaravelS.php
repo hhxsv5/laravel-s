@@ -8,6 +8,9 @@ use Hhxsv5\LaravelS\Swoole\Request;
 use Hhxsv5\LaravelS\Swoole\Server;
 use Hhxsv5\LaravelS\Swoole\StaticResponse;
 use Hhxsv5\LaravelS\Swoole\Traits\InotifyTrait;
+use Hhxsv5\LaravelS\Swoole\Traits\LaravelTrait;
+use Hhxsv5\LaravelS\Swoole\Traits\LogTrait;
+use Hhxsv5\LaravelS\Swoole\Traits\ProcessTitleTrait;
 use Hhxsv5\LaravelS\Swoole\Traits\TimerTrait;
 use Illuminate\Http\Request as IlluminateRequest;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -23,10 +26,11 @@ class LaravelS extends Server
     /**
      * Fix conflicts of traits
      */
-    use TimerTrait, InotifyTrait {
-        TimerTrait::setProcessTitle insteadof InotifyTrait;
-        TimerTrait::log insteadof InotifyTrait;
-        TimerTrait::logException insteadof InotifyTrait;
+    use InotifyTrait, LaravelTrait, LogTrait, ProcessTitleTrait, TimerTrait {
+        LogTrait::log insteadof InotifyTrait, TimerTrait;
+        LogTrait::logException insteadof InotifyTrait, TimerTrait;
+        ProcessTitleTrait::setProcessTitle insteadof InotifyTrait, TimerTrait;
+        LaravelTrait::initLaravel insteadof TimerTrait;
     }
 
     protected $laravelConf;
@@ -43,20 +47,12 @@ class LaravelS extends Server
 
         $timerCfg = isset($this->conf['timer']) ? $this->conf['timer'] : [];
         $timerCfg['process_prefix'] = $svrConf['process_prefix'];
-        $this->addTimerProcess($this->swoole, $timerCfg);
+        $this->addTimerProcess($this->swoole, $timerCfg, $this->laravelConf);
 
         $inotifyCfg = isset($this->conf['inotify_reload']) ? $this->conf['inotify_reload'] : [];
         $inotifyCfg['root_path'] = $this->laravelConf['root_path'];
         $inotifyCfg['process_prefix'] = $svrConf['process_prefix'];
         $this->addInotifyProcess($this->swoole, $inotifyCfg);
-    }
-
-    protected function initLaravel()
-    {
-        $laravel = new Laravel($this->laravelConf);
-        $laravel->prepareLaravel();
-        $laravel->bindSwoole($this->swoole);
-        return $laravel;
     }
 
     protected function bindWebSocketEvent()
@@ -99,7 +95,7 @@ class LaravelS extends Server
         // To implement gracefully reload
         // Delay to create Laravel
         // Delay to include Laravel's autoload.php
-        $this->laravel = $this->initLaravel();
+        $this->laravel = $this->initLaravel($this->laravelConf, $this->swoole);
     }
 
     protected function convertRequest(\swoole_http_request $request)
