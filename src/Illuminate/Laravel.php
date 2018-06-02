@@ -52,8 +52,8 @@ class Laravel
         $this->createApp();
         $this->createKernel();
         $this->setLaravel();
-        $this->consoleKernelBootstrap();
         $this->loadAllConfigurations();
+        $this->consoleKernelBootstrap();
         $this->saveSnapshots();
     }
 
