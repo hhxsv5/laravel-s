@@ -59,9 +59,7 @@ class SwooleCoroutineMySQLConnector extends Connector implements ConnectorInterf
             'strict_type' => Arr::get($config, 'strict', false),
         ]);
         if (isset($config['timezone'])) {
-            $connection->prepare(
-                'set time_zone="' . $config['timezone'] . '"'
-            )->execute();
+            $connection->prepare('set time_zone="' . $config['timezone'] . '"')->execute();
         }
         if (isset($config['strict'])) {
             if ($config['strict']) {
