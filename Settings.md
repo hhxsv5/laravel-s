@@ -18,9 +18,9 @@
 
 - `inotify_reload.log`: `bool` Whether output the reload log, default `true`.
 
-- `websocket.enable`: `bool` Whether enable Websocket Server. The Listening address of Websocket Sever is the same as Http Server, default `false`.
+- `websocket.enable`: `bool` Whether enable WebSocket Server. The Listening address of WebSocket Sever is the same as Http Server, default `false`.
 
-- `websocket.handler`: `string` The class name for Websocket handler, needs to implement interface `WebsocketHandlerInterface`, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server)
+- `websocket.handler`: `string` The class name for WebSocket handler, needs to implement interface `WebSocketHandlerInterface`, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server)
 
 - `sockets`: `array` The socket list for TCP/UDP, refer to [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-tcpudp-server)
 
@@ -29,5 +29,13 @@
 - `swoole_tables`: `array` The defined of `swoole_table` list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#use-swoole_table)
 
 - `register_providers`: `array` The `Service Provider` list, will be re-registered `every request`, and run method `boot()` if it exists. Usually, be used to clear the `Service Provider` which registers `Singleton` instances.
+    ```PHP
+    //...
+    'register_providers' => [
+        //eg: re-register ServiceProvider of jwt
+        \Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+    ],
+    //...
+    ```
 
 - `swoole`: `array` refer [Swoole Configuration](https://www.swoole.co.uk/docs/modules/swoole-server/configuration)

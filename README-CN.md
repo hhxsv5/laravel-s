@@ -23,7 +23,7 @@
 
 - 内置Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%90%AF%E7%94%A8websocket%E6%9C%8D%E5%8A%A1%E5%99%A8)服务器
 
-- [TCP/UDP服务器](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%BC%80%E5%90%AFtcpudp%E6%9C%8D%E5%8A%A1%E5%99%A8)
+- [多端口混合协议](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%A4%9A%E7%AB%AF%E5%8F%A3%E6%B7%B7%E5%90%88%E5%8D%8F%E8%AE%AE)
 
 - 常驻内存
 
@@ -202,14 +202,14 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 ## 启用WebSocket服务器
 > WebSocket服务器监听的IP和端口与Http服务器相同。
 
-1.创建WebSocket Handler类，并实现接口`WebsocketHandlerInterface`。
+1.创建WebSocket Handler类，并实现接口`WebSocketHandlerInterface`。
 ```PHP
 namespace App\Services;
-use Hhxsv5\LaravelS\Swoole\WebsocketHandlerInterface;
+use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
 /**
  * @see https://wiki.swoole.com/wiki/page/400.html
  */
-class WebsocketService implements WebsocketHandlerInterface
+class WebSocketService implements WebSocketHandlerInterface
 {
     // 声明没有参数的构造函数
     public function __construct()
@@ -217,7 +217,8 @@ class WebsocketService implements WebsocketHandlerInterface
     }
     public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
     {
-        \Log::info('New Websocket connection', [$request->fd]);
+        // 在触发onOpen事件之前Laravel的生命周期已经完结，所以Laravel的Request、Session是可用的
+        \Log::info('New WebSocket connection', [$request->fd, request()->all(), session()->getId(), session('xxx')]);
         $server->push($request->fd, 'Welcome to LaravelS');
         // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
@@ -239,7 +240,7 @@ class WebsocketService implements WebsocketHandlerInterface
 // ...
 'websocket'      => [
     'enable'  => true,
-    'handler' => \App\Services\WebsocketService::class,
+    'handler' => \App\Services\WebSocketService::class,
 ],
 'swoole'         => [
     //...
@@ -280,7 +281,7 @@ server {
     #location ~* \.php$ {
     #    return 404;
     #}
-    # Http和Websocket共存，Nginx通过location区分
+    # Http和WebSocket共存，Nginx通过location区分
     # Javascript: var ws = new WebSocket("ws://laravels.com/ws");
     location =/ws {
         proxy_http_version 1.1;
@@ -510,7 +511,7 @@ class TestCronJob extends CronJob
 
 ```PHP
 /**
- * 如果启用websocket server，$swoole是`swoole_websocket_server`的实例，否则是是`\swoole_http_server`的实例
+ * 如果启用WebSocket server，$swoole是`swoole_websocket_server`的实例，否则是是`\swoole_http_server`的实例
  * @var \swoole_http_server|\swoole_websocket_server $swoole
  */
 $swoole = app('swoole');
@@ -570,13 +571,13 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 }
 ```
 
-## 开启TCP/UDP服务器
+## 多端口混合协议
 
-> 更多的信息，请参考 [Swoole Server 增加监听的端口](https://wiki.swoole.com/wiki/page/16.html)与[监听多协议端口](https://wiki.swoole.com/wiki/page/525.html#entry_h2_3)
+> 更多的信息，请参考[Swoole增加监听的端口](https://wiki.swoole.com/wiki/page/16.html)与[多端口混合协议](https://wiki.swoole.com/wiki/page/525.html)
 
-为了使我们的主服务器能支持除`HTTP`和`Websocket`外的更多协议，我们引入了`Swoole`的`多端口混合协议`特性，在LaravelS中称为`Socket`。现在，可以很方便地在`Laravel`上被构建`TCP/UDP`应用。
+为了使我们的主服务器能支持除`HTTP`和`WebSocket`外的更多协议，我们引入了`Swoole`的`多端口混合协议`特性，在LaravelS中称为`Socket`。现在，可以很方便地在`Laravel`上被构建`TCP/UDP`应用。
 
-1. 创建Socket处理类，继承`Hhxsv5\LaravelS\Swoole\Socket\{Tcp|Udp}Socket`。
+1. 创建Socket处理类，继承`Hhxsv5\LaravelS\Swoole\Socket\{TcpSocket|UdpSocket|Http|WebSocket}`
 
 ```PHP
 namespace App\Sockets;
@@ -605,7 +606,7 @@ class TestTcpSocket extends TcpSocket
 }
 ```
 
-这些连接和主服务器上的HTTP/Websocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的`异步任务投递`、`swoole_table`、Laravel提供的组件如`DB`、`Eloquent`等。同时，如果需要使用该协议端口的`swoole_server_port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
+这些连接和主服务器上的HTTP/WebSocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的`异步任务投递`、`swoole_table`、Laravel提供的组件如`DB`、`Eloquent`等。同时，如果需要使用该协议端口的`swoole_server_port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
 
 ```PHP
 public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
@@ -647,9 +648,69 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 
 - TCP：`telnet 127.0.0.1 5291`
 
-- UDP：`echo "Hello LaravelS" > /dev/udp/127.0.0.1/5291`
+- UDP：Linux下 `echo "Hello LaravelS" > /dev/udp/127.0.0.1/5292`
+
+4. 其他协议的注册示例。
+
+- UDP
+```PHP
+'sockets' => [
+    [
+       'host'     => '0.0.0.0',
+        'port'     => 5292,
+        'type'     => SWOOLE_SOCK_UDP,
+        'settings' => [
+            'open_eof_check' => true,
+            'package_eof'    => "\r\n",
+        ],
+        'handler'  => \App\Sockets\TestUdpSocket::class,
+    ],
+],
+```
+
+- Http
+```PHP
+'sockets' => [
+    [
+       'host'     => '0.0.0.0',
+        'port'     => 5293,
+        'type'     => SWOOLE_SOCK_TCP,
+        'settings' => [
+            'open_http_protocol' => true,
+        ],
+        'handler'  => \App\Sockets\TestHttp::class,
+    ],
+],
+```
+
+- WebSocket
+```PHP
+'sockets' => [
+    [
+       'host'     => '0.0.0.0',
+        'port'     => 5294,
+        'type'     => SWOOLE_SOCK_TCP,
+        'settings' => [
+            'open_http_protocol'      => true,
+            'open_websocket_protocol' => true,
+        ],
+        'handler'  => \App\Sockets\TestWebSocket::class,
+    ],
+],
+```
 
 ## 注意事项
+
+- `单例问题`
+    - 传统FPM下，单例模式的对象的生命周期仅在每次请求中，请求开始=>实例化单例=>请求结束后=>单例对象资源回收。
+
+    - Swoole Server下，所有单例对象会常驻于内存，这个时候单例对象的生命周期与FPM不同，请求开始=>实例化单例=>请求结束=>单例对象依旧保留，需要开发者自己维护单例的状态。
+
+    - 常见的解决方案：
+
+        1. 用一个`中间件`来`重置`单例对象的状态。
+
+        2. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
 - [已知的兼容性问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues-CN.md)
 
@@ -756,11 +817,12 @@ public function test(Request $req)
 
 | 支持者 | 金额 |
 | --- | --- |
-| `*思勇 efa***@gmail.com` | 18.88元 |
-| `魂之挽歌` | 100元 |
-| `小南瓜` | 10.01元 |
-| `*丁智` | 16.66元 |
-| `匿名` | 20元 |
+| *思勇 efa***@gmail.com | 18.88元 |
+| 魂之挽歌 | 100元 |
+| 小南瓜 | 10.01元 |
+| *丁智 | 16.66元 |
+| 匿名 | 20元 |
+| 匿名 | 20元 |
 
 ## License
 

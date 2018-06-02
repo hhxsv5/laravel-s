@@ -8,6 +8,9 @@ use Hhxsv5\LaravelS\Swoole\Request;
 use Hhxsv5\LaravelS\Swoole\Server;
 use Hhxsv5\LaravelS\Swoole\StaticResponse;
 use Hhxsv5\LaravelS\Swoole\Traits\InotifyTrait;
+use Hhxsv5\LaravelS\Swoole\Traits\LaravelTrait;
+use Hhxsv5\LaravelS\Swoole\Traits\LogTrait;
+use Hhxsv5\LaravelS\Swoole\Traits\ProcessTitleTrait;
 use Hhxsv5\LaravelS\Swoole\Traits\TimerTrait;
 use Illuminate\Http\Request as IlluminateRequest;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -20,8 +23,14 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
  */
 class LaravelS extends Server
 {
-    use TimerTrait, InotifyTrait {
-        TimerTrait::setProcessTitle insteadof InotifyTrait;
+    /**
+     * Fix conflicts of traits
+     */
+    use InotifyTrait, LaravelTrait, LogTrait, ProcessTitleTrait, TimerTrait {
+        LogTrait::log insteadof InotifyTrait, TimerTrait;
+        LogTrait::logException insteadof InotifyTrait, TimerTrait;
+        ProcessTitleTrait::setProcessTitle insteadof InotifyTrait, TimerTrait;
+        LaravelTrait::initLaravel insteadof TimerTrait;
     }
 
     protected $laravelConf;
@@ -38,7 +47,7 @@ class LaravelS extends Server
 
         $timerCfg = isset($this->conf['timer']) ? $this->conf['timer'] : [];
         $timerCfg['process_prefix'] = $svrConf['process_prefix'];
-        $this->addTimerProcess($this->swoole, $timerCfg);
+        $this->addTimerProcess($this->swoole, $timerCfg, $this->laravelConf);
 
         $inotifyCfg = isset($this->conf['inotify_reload']) ? $this->conf['inotify_reload'] : [];
         $inotifyCfg['root_path'] = $this->laravelConf['root_path'];
@@ -46,12 +55,37 @@ class LaravelS extends Server
         $this->addInotifyProcess($this->swoole, $inotifyCfg);
     }
 
-    protected function initLaravel()
+    protected function bindWebSocketEvent()
     {
-        $laravel = new Laravel($this->laravelConf);
-        $laravel->prepareLaravel();
-        $laravel->bindSwoole($this->swoole);
-        return $laravel;
+        if ($this->enableWebSocket) {
+            $eventHandler = function ($method, array $params) {
+                try {
+                    call_user_func_array([$this->getWebSocketHandler(), $method], $params);
+                } catch (\Exception $e) {
+                    $this->logException($e);
+                }
+            };
+
+            $this->swoole->on('Open', function (\swoole_websocket_server $server, \swoole_http_request $request) use ($eventHandler) {
+                // Start Laravel's lifetime, then support session ...middleware.
+                $laravelRequest = $this->convertRequest($request);
+                $this->laravel->bindRequest($laravelRequest);
+                $this->laravel->handleDynamic($laravelRequest);
+                $eventHandler('onOpen', func_get_args());
+            });
+
+            $this->swoole->on('Message', function () use ($eventHandler) {
+                $eventHandler('onMessage', func_get_args());
+            });
+
+            $this->swoole->on('Close', function (\swoole_websocket_server $server, $fd, $reactorId) use ($eventHandler) {
+                $clientInfo = $server->getClientInfo($fd);
+                if (isset($clientInfo['websocket_status']) && $clientInfo['websocket_status'] === \WEBSOCKET_STATUS_FRAME) {
+                    $eventHandler('onClose', func_get_args());
+                }
+                // else ignore the close event for http server
+            });
+        }
     }
 
     public function onWorkerStart(\swoole_http_server $server, $workerId)
@@ -61,16 +95,21 @@ class LaravelS extends Server
         // To implement gracefully reload
         // Delay to create Laravel
         // Delay to include Laravel's autoload.php
-        $this->laravel = $this->initLaravel();
+        $this->laravel = $this->initLaravel($this->laravelConf, $this->swoole);
+    }
+
+    protected function convertRequest(\swoole_http_request $request)
+    {
+        $rawGlobals = $this->laravel->getRawGlobals();
+        $server = isset($rawGlobals['_SERVER']) ? $rawGlobals['_SERVER'] : [];
+        $env = isset($rawGlobals['_ENV']) ? $rawGlobals['_ENV'] : [];
+        return (new Request($request))->toIlluminateRequest($server, $env);
     }
 
     public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
     {
         try {
-            $rawGlobals = $this->laravel->getRawGlobals();
-            $server = isset($rawGlobals['_SERVER']) ? $rawGlobals['_SERVER'] : [];
-            $env = isset($rawGlobals['_ENV']) ? $rawGlobals['_ENV'] : [];
-            $laravelRequest = (new Request($request))->toIlluminateRequest($server, $env);
+            $laravelRequest = $this->convertRequest($request);
             $this->laravel->bindRequest($laravelRequest);
             $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
             $success = $this->handleStaticResource($laravelRequest, $response);

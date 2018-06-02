@@ -2,8 +2,6 @@
 
 namespace Hhxsv5\LaravelS\Illuminate;
 
-use Hhxsv5\LaravelS\Illuminate\Database\ConnectionFactory;
-use Hhxsv5\LaravelS\Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Http\Request as IlluminateRequest;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
@@ -56,6 +54,7 @@ class Laravel
         $this->setLaravel();
         $this->consoleKernelBootstrap();
         $this->registerServiceProviders();
+        $this->loadAllConfigurations();
         $this->saveSnapshots();
     }
 
@@ -96,12 +95,33 @@ class Laravel
 
     protected function consoleKernelBootstrap()
     {
-        if ($this->conf['is_lumen']) {
-            if (Facade::getFacadeApplication() === null) {
-                $this->app->withFacades();
-            }
-        } else {
+        if (!$this->conf['is_lumen']) {
             $this->app->make(ConsoleKernel::class)->bootstrap();
+        }
+    }
+
+    public function loadAllConfigurations()
+    {
+        if (!$this->conf['is_lumen']) {
+            return;
+        }
+
+        $cfgPaths = [
+            // Framework default configuration
+            $this->conf['root_path'] . '/vendor/laravel/lumen-framework/config/',
+            // App configuration
+            $this->conf['root_path'] . '/config/',
+        ];
+        $keys = [];
+        foreach ($cfgPaths as $cfgPath) {
+            $configs = (array)glob($cfgPath . '*.php');
+            foreach ($configs as $config) {
+                $config = substr(basename($config), 0, -4);
+                $keys[$config] = $config;
+            }
+        }
+        foreach ($keys as $key) {
+            $this->app->configure($key);
         }
     }
 

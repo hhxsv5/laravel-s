@@ -48,7 +48,7 @@ class LaravelSCommand extends Command
         // Load configuration laravel.php manually for Lumen
         $basePath = config('laravels.laravel_base_path') ?: base_path();
         if ($this->isLumen && file_exists($basePath . '/config/laravels.php')) {
-            $this->getLaravel()->/** @scrutinizer ignore-call */configure('laravels');
+            $this->getLaravel()->configure('laravels');
         }
     }
 
@@ -224,7 +224,7 @@ EOS;
                 throw $e;
             }
         }
-        $from = __DIR__ . '/../Config/laravels.php';
+        $from = __DIR__ . '/../../config/laravels.php';
 
         $toDir = dirname($to);
 

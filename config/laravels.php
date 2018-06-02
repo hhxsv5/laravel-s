@@ -17,7 +17,7 @@ return [
     ],
     'websocket'          => [
         'enable' => false,
-        //'handler' => XxxWebsocketHandler::class,
+        //'handler' => XxxWebSocketHandler::class,
     ],
     'sockets'            => [
     ],
@@ -53,6 +53,7 @@ return [
         'document_root'      => base_path('public'),
         'buffer_output_size' => 16 * 1024 * 1024,
         'socket_buffer_size' => 128 * 1024 * 1024,
+        'package_max_length' => 4 * 1024 * 1024,
         'reload_async'       => true,
         'max_wait_time'      => 60,
         'enable_reuse_port'  => true,

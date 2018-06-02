@@ -2,8 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
-use Hhxsv5\LaravelS\Swoole\Socket\TcpSocket;
-use Hhxsv5\LaravelS\Swoole\Socket\UdpSocket;
+use Hhxsv5\LaravelS\Swoole\Socket\PortInterface;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
@@ -22,14 +21,14 @@ class Server
      */
     protected $swoole;
 
-    protected $enableWebsocket = false;
+    protected $enableWebSocket = false;
 
     protected $attachedSockets = [];
 
     protected function __construct(array $conf)
     {
         $this->conf = $conf;
-        $this->enableWebsocket = !empty($this->conf['websocket']['enable']);
+        $this->enableWebSocket = !empty($this->conf['websocket']['enable']);
         $this->attachedSockets = empty($this->conf['sockets']) ? [] : $this->conf['sockets'];
 
         $ip = isset($conf['listen_ip']) ? $conf['listen_ip'] : '127.0.0.1';
@@ -37,7 +36,7 @@ class Server
         $settings = isset($conf['swoole']) ? $conf['swoole'] : [];
         $settings['enable_static_handler'] = !empty($conf['handle_static']);
 
-        $serverClass = $this->enableWebsocket ? \swoole_websocket_server::class : \swoole_http_server::class;
+        $serverClass = $this->enableWebSocket ? \swoole_websocket_server::class : \swoole_http_server::class;
         if (isset($settings['ssl_cert_file'], $settings['ssl_key_file'])) {
             $this->swoole = new $serverClass($ip, $port, \SWOOLE_PROCESS, \SWOOLE_SOCK_TCP | \SWOOLE_SSL);
         } else {
@@ -49,7 +48,7 @@ class Server
         $this->bindBaseEvent();
         $this->bindHttpEvent();
         $this->bindTaskEvent();
-        $this->bindWebsocketEvent();
+        $this->bindWebSocketEvent();
         $this->bindAttachedSockets();
         $this->bindSwooleTables();
     }
@@ -78,36 +77,29 @@ class Server
         }
     }
 
-    protected function bindWebsocketEvent()
+    protected function bindWebSocketEvent()
     {
-        if ($this->enableWebsocket) {
-            $this->swoole->on('Open', function (\swoole_websocket_server $server, \swoole_http_request $request) {
-                $handler = $this->getWebsocketHandler();
+        if ($this->enableWebSocket) {
+            $eventHandler = function ($method, array $params) {
                 try {
-                    $handler->onOpen($server, $request);
+                    call_user_func_array([$this->getWebSocketHandler(), $method], $params);
                 } catch (\Exception $e) {
                     $this->logException($e);
                 }
+            };
+
+            $this->swoole->on('Open', function () use ($eventHandler) {
+                $eventHandler('onOpen', func_get_args());
             });
 
-            $this->swoole->on('Message', function (\swoole_websocket_server $server, \swoole_websocket_frame $frame) {
-                $handler = $this->getWebsocketHandler();
-                try {
-                    $handler->onMessage($server, $frame);
-                } catch (\Exception $e) {
-                    $this->logException($e);
-                }
+            $this->swoole->on('Message', function () use ($eventHandler) {
+                $eventHandler('onMessage', func_get_args());
             });
 
-            $this->swoole->on('Close', function (\swoole_websocket_server $server, $fd, $reactorId) {
+            $this->swoole->on('Close', function (\swoole_websocket_server $server, $fd, $reactorId) use ($eventHandler) {
                 $clientInfo = $server->getClientInfo($fd);
                 if (isset($clientInfo['websocket_status']) && $clientInfo['websocket_status'] === \WEBSOCKET_STATUS_FRAME) {
-                    $handler = $this->getWebsocketHandler();
-                    try {
-                        $handler->onClose($server, $fd, $reactorId);
-                    } catch (\Exception $e) {
-                        $this->logException($e);
-                    }
+                    $eventHandler('onClose', func_get_args());
                 }
                 // else ignore the close event for http server
             });
@@ -128,70 +120,36 @@ class Server
             $port->set(empty($socket['settings']) ? [] : $socket['settings']);
 
             $handlerClass = $socket['handler'];
-            $port->on('Connect', function ($server, $fd, $reactorId) use ($port, $handlerClass) {
+            $eventHandler = function ($method, array $params) use ($port, $handlerClass) {
                 $handler = $this->getSocketHandler($port, $handlerClass);
-                if (method_exists($handler, 'onConnect')) {
+                if (method_exists($handler, $method)) {
                     try {
-                        $handler->onConnect($server, $fd, $reactorId);
+                        call_user_func_array([$handler, $method], $params);
                     } catch (\Exception $e) {
                         $this->logException($e);
                     }
                 }
-            });
-            $port->on('Close', function ($server, $fd, $reactorId) use ($port, $handlerClass) {
-                $handler = $this->getSocketHandler($port, $handlerClass);
-                if (method_exists($handler, 'onClose')) {
-                    try {
-                        $handler->onClose($server, $fd, $reactorId);
-                    } catch (\Exception $e) {
-                        $this->logException($e);
-                    }
-                }
-            });
-            $port->on('Receive', function ($server, $fd, $reactorId, $data) use ($port, $handlerClass) {
-                $handler = $this->getSocketHandler($port, $handlerClass);
-                if (method_exists($handler, 'onReceive')) {
-                    try {
-                        $handler->onReceive($server, $fd, $reactorId, $data);
-                    } catch (\Exception $e) {
-                        $this->logException($e);
-                    }
-                }
-            });
-            $port->on('Packet', function ($server, $data, $clientInfo) use ($port, $handlerClass) {
-                $handler = $this->getSocketHandler($port, $handlerClass);
-                if (method_exists($handler, 'onPacket')) {
-                    try {
-                        $handler->onPacket($server, $data, $clientInfo);
-                    } catch (\Exception $e) {
-                        $this->logException($e);
-                    }
-                }
-            });
-            $port->on('BufferFull', function ($server, $fd) use ($port, $handlerClass) {
-                $handler = $this->getSocketHandler($port, $handlerClass);
-                if (method_exists($handler, 'onBufferFull')) {
-                    try {
-                        $handler->onBufferFull($server, $fd);
-                    } catch (\Exception $e) {
-                        $this->logException($e);
-                    }
-                }
-            });
-            $port->on('BufferEmpty', function ($server, $fd) use ($port, $handlerClass) {
-                $handler = $this->getSocketHandler($port, $handlerClass);
-                if (method_exists($handler, 'onBufferEmpty')) {
-                    try {
-                        $handler->onBufferEmpty($server, $fd);
-                    } catch (\Exception $e) {
-                        $this->logException($e);
-                    }
-                }
-            });
+            };
+            static $events = [
+                'Open',
+                'Request',
+                'Message',
+                'Connect',
+                'Close',
+                'Receive',
+                'Packet',
+                'BufferFull',
+                'BufferEmpty',
+            ];
+            foreach ($events as $event) {
+                $port->on($event, function () use ($event, $eventHandler) {
+                    $eventHandler('on' . $event, func_get_args());
+                });
+            }
         }
     }
 
-    protected function getWebsocketHandler()
+    protected function getWebSocketHandler()
     {
         static $handler = null;
         if ($handler !== null) {
@@ -200,8 +158,8 @@ class Server
 
         $handlerClass = $this->conf['websocket']['handler'];
         $t = new $handlerClass();
-        if (!($t instanceof WebsocketHandlerInterface)) {
-            throw new \Exception(sprintf('%s must implement the interface %s', get_class($t), WebsocketHandlerInterface::class));
+        if (!($t instanceof WebSocketHandlerInterface)) {
+            throw new \Exception(sprintf('%s must implement the interface %s', get_class($t), WebSocketHandlerInterface::class));
         }
         $handler = $t;
         return $handler;
@@ -215,7 +173,7 @@ class Server
             return $handlers[$portHash];
         }
         $t = new $handlerClass($port);
-        if (!($t instanceof TcpSocket) && !($t instanceof UdpSocket)) {
+        if (!($t instanceof PortInterface)) {
             throw new \Exception(sprintf('%s must extend the abstract class TcpSocket/UdpSocket', get_class($t)));
         }
         $handlers[$portHash] = $t;

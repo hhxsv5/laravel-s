@@ -7,6 +7,7 @@ use Hhxsv5\LaravelS\Swoole\Inotify;
 trait InotifyTrait
 {
     use ProcessTitleTrait;
+    use LogTrait;
 
     public function addInotifyProcess(\swoole_server $swoole, array $config)
     {
