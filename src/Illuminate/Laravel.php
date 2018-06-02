@@ -52,8 +52,8 @@ class Laravel
         $this->createApp();
         $this->createKernel();
         $this->setLaravel();
+        $this->loadAllConfigurations();
         $this->consoleKernelBootstrap();
-        $this->registerServiceProviders();
         $this->loadAllConfigurations();
         $this->saveSnapshots();
     }
@@ -250,11 +250,6 @@ class Laravel
         $rsp->setPrivate();
         $rsp->setExpires(new \DateTime(date('Y-m-d H:i:s', time() + $maxAge)));
         return $rsp;
-    }
-
-    protected function registerServiceProviders()
-    {
-        $this->reRegisterServiceProvider(DatabaseServiceProvider::class, ['db', 'db.factory', 'db.connection'], true);
     }
 
     public function reRegisterServiceProvider($providerCls, array $clearFacades = [], $force = false)
