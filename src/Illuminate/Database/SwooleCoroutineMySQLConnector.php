@@ -62,7 +62,7 @@ class SwooleCoroutineMySQLConnector extends Connector implements ConnectorInterf
         }
         if (isset($config['strict'])) {
             if ($config['strict']) {
-                $connection->prepare("set session sql_mode='STRICT_ALL_TABLES'")->execute();
+                $connection->prepare("set session sql_mode='STRICT_ALL_TABLES,ANSI_QUOTES'")->execute();
             } else {
                 $connection->prepare("set session sql_mode='ANSI_QUOTES'")->execute();
             }
