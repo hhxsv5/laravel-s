@@ -58,6 +58,18 @@ class SwooleCoroutineMySQLConnector extends Connector implements ConnectorInterf
             'charset'     => Arr::get($config, 'charset', 'utf8mb4'),
             'strict_type' => Arr::get($config, 'strict', false),
         ]);
+        if (isset($config['timezone'])) {
+            $connection->prepare(
+                'set time_zone="' . $config['timezone'] . '"'
+            )->execute();
+        }
+        if (isset($config['strict'])) {
+            if ($config['strict']) {
+                $connection->prepare("set session sql_mode='STRICT_ALL_TABLES'")->execute();
+            } else {
+                $connection->prepare("set session sql_mode='ANSI_QUOTES'")->execute();
+            }
+        }
         return $connection;
     }
 }

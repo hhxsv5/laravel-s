@@ -24,7 +24,7 @@ class Laravel
      */
     protected $laravelReflect;
 
-    protected static $snapshotKeys = ['config', 'cookie', 'auth', 'auth.password'];
+    protected static $snapshotKeys = ['config', 'cookie', 'auth', /*'auth.password'*/];
 
     /**
      * @var array $snapshots
