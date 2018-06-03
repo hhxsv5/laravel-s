@@ -25,6 +25,8 @@
 
 - [Multi-port mixed protocol](https://github.com/hhxsv5/laravel-s/blob/master/README.md#multi-port-mixed-protocol)
 
+- [Coroutine MySQL](https://github.com/hhxsv5/laravel-s/blob/master/README.md#coroutine-mysql)
+
 - Memory resident
 
 - [Asynchronous event listening](https://github.com/hhxsv5/laravel-s/blob/master/README.md#customized-asynchronous-events)
@@ -700,6 +702,47 @@ For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_
     ],
 ],
 ```
+
+## Coroutine MySQL
+
+> Support MySQL coroutine client for MySQL database.
+
+1.Requirements: `Swoole>=4.0`,(Support Laravel only now, Lumen will be supported later).
+
+2.Change the `driver` of `connections` to `sw-co-mysql` in file `config/database.php`.
+
+```PHP
+'connections' => [
+    //...
+    'mysql-test' => [
+        //'driver'    => 'mysql',
+        'driver'    => 'sw-co-mysql',
+        'host'      => env('DB_HOST', 'localhost'),
+        'port'      => env('DB_PORT', 3306),
+        'database'  => env('DB_DATABASE', 'forge'),
+        'username'  => env('DB_USERNAME', 'forge'),
+        'password'  => env('DB_PASSWORD', ''),
+        'charset'   => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix'    => '',
+        'strict'    => true,
+    ],
+    //...
+],
+```
+
+3.Replace `Illuminate\Database\DatabaseServiceProvider::class` of `providers` to `\Hhxsv5\LaravelS\Illuminate\Database\DatabaseServiceProvider::class` in file `config/app.php`.
+
+```PHP
+'providers' => [
+    //...
+    //Illuminate\Database\DatabaseServiceProvider::class,// Just annotate this line.
+    \Hhxsv5\LaravelS\Illuminate\Database\DatabaseServiceProvider::class,
+    //...
+],
+```
+
+4.Now, you just use `QueryBuilder` and ORM as usual. (Alpha stage, there should be some bugs, please give us your feedback).
 
 ## Important notices
 

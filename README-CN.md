@@ -25,6 +25,8 @@
 
 - [多端口混合协议](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%A4%9A%E7%AB%AF%E5%8F%A3%E6%B7%B7%E5%90%88%E5%8D%8F%E8%AE%AE)
 
+-[协程MySQL](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%8D%8F%E7%A8%8BMySQL)
+
 - 常驻内存
 
 - [异步的事件监听](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E5%BC%82%E6%AD%A5%E4%BA%8B%E4%BB%B6)
@@ -698,6 +700,48 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
     ],
 ],
 ```
+
+
+## 协程MySQL
+
+> 支持MySQL数据库的`协程`客户端。
+
+1.要求：`Swoole>=4.0`，（目前暂只支持Laravel，后续将支持Lumen）。
+
+2.修改`config/database.php`中`connections`的`driver`为`sw-co-mysql`。
+
+```PHP
+'connections' => [
+    //...
+    'mysql-test' => [
+        //'driver'    => 'mysql',
+        'driver'    => 'sw-co-mysql',
+        'host'      => env('DB_HOST', 'localhost'),
+        'port'      => env('DB_PORT', 3306),
+        'database'  => env('DB_DATABASE', 'forge'),
+        'username'  => env('DB_USERNAME', 'forge'),
+        'password'  => env('DB_PASSWORD', ''),
+        'charset'   => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix'    => '',
+        'strict'    => true,
+    ],
+    //...
+],
+```
+
+3.替换（注释掉之前的）`config/app.php`中`providers`的`Illuminate\Database\DatabaseServiceProvider::class`为`\Hhxsv5\LaravelS\Illuminate\Database\DatabaseServiceProvider::class`。
+
+```PHP
+'providers' => [
+    //...
+    //Illuminate\Database\DatabaseServiceProvider::class,// Just annotate this line.
+    \Hhxsv5\LaravelS\Illuminate\Database\DatabaseServiceProvider::class,
+    //...
+],
+```
+
+4.配置完成，查询构造器和ORM按正常的使用即可。目前测试不全，应该会有Bug，请大家多多反馈。
 
 ## 注意事项
 
