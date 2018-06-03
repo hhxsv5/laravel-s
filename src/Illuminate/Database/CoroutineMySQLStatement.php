@@ -2,14 +2,14 @@
 
 namespace Hhxsv5\LaravelS\Illuminate\Database;
 
-use Swoole\Coroutine\MySQL\Statement as CoroutineMySQLStatement;
+use Swoole\Coroutine\MySQL\Statement as SwooleStatement;
 
-class SwooleCoroutineMySQLStatement
+class CoroutineMySQLStatement
 {
     protected $statement;
     protected $result;
 
-    public function __construct(CoroutineMySQLStatement $statement)
+    public function __construct(SwooleStatement $statement)
     {
         $this->statement = $statement;
     }

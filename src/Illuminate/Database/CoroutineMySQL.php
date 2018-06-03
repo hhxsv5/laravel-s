@@ -3,15 +3,15 @@
 namespace Hhxsv5\LaravelS\Illuminate\Database;
 
 use Illuminate\Database\QueryException;
-use Swoole\Coroutine\MySQL as CoroutineMySQL;
+use Swoole\Coroutine\MySQL as SwooleMySQL;
 
-class SwooleCoroutineMySQL
+class CoroutineMySQL
 {
     protected $coMySQL;
 
     public function __construct()
     {
-        $this->coMySQL = new CoroutineMySQL();
+        $this->coMySQL = new SwooleMySQL();
     }
 
     public function connect(array $serverInfo)
@@ -25,7 +25,7 @@ class SwooleCoroutineMySQL
         if ($oldStatement === false) {
             throw new QueryException($sql, [], new \Exception($this->coMySQL->error, $this->coMySQL->errno));
         }
-        return new SwooleCoroutineMySQLStatement($oldStatement);
+        return new CoroutineMySQLStatement($oldStatement);
     }
 
     public function beginTransaction()
