@@ -2,10 +2,9 @@
 
 namespace Hhxsv5\LaravelS\Illuminate\Database;
 
-use Illuminate\Database\Connection;
-use Illuminate\Database\QueryException;
+use Illuminate\Database\MySqlConnection;
 
-class SwooleCoroutineMySQLConnection extends Connection
+class SwooleCoroutineMySQLConnection extends MySqlConnection
 {
     /**
      * The active swoole mysql connection.
@@ -21,24 +20,6 @@ class SwooleCoroutineMySQLConnection extends Connection
      */
     protected $readPdo;
 
-    public function select($query, $bindings = [], $useReadPdo = true)
-    {
-        return $this->run($query, $bindings, function ($me, $query, $bindings) use ($useReadPdo) {
-            if ($me->pretending()) {
-                return [];
-            }
-            /**
-             * @var SwooleCoroutineMySQL $db
-             */
-            $db = $this->getPdoForSelect($useReadPdo);
-            $statement = $db->prepare($query);
-            if ($statement === false) {
-                throw new QueryException($query, $bindings, new \Exception($db->error, $db->errno));
-            }
-            return $statement->execute($me->prepareBindings($bindings));
-        });
-    }
-
     public function __construct($pdo, $database = '', $tablePrefix = '', array $config = [])
     {
         $this->pdo = $pdo;
@@ -47,54 +28,6 @@ class SwooleCoroutineMySQLConnection extends Connection
         $this->config = $config;
         $this->useDefaultQueryGrammar();
         $this->useDefaultPostProcessor();
-    }
-
-    public function beginTransaction()
-    {
-        if ($this->transactions == 0) {
-            try {
-                $this->pdo->begin();
-            } catch (\Exception $e) {
-                if ($this->causedByLostConnection($e)) {
-                    $this->reconnect();
-                    $this->pdo->begin();
-                } else {
-                    throw $e;
-                }
-            }
-        } elseif ($this->transactions >= 1 && $this->queryGrammar->supportsSavepoints()) {
-            $this->pdo->query(
-                $this->queryGrammar->compileSavepoint('trans' . ($this->transactions + 1))
-            );
-        }
-
-        ++$this->transactions;
-
-        $this->fireConnectionEvent('beganTransaction');
-    }
-
-    public function commit()
-    {
-        if ($this->transactions == 1) {
-            $this->pdo->commit();
-        }
-        --$this->transactions;
-        $this->fireConnectionEvent('committed');
-    }
-
-    public function rollBack()
-    {
-        if ($this->transactions == 1) {
-            $this->pdo->rollback();
-        } elseif ($this->transactions > 1 && $this->queryGrammar->supportsSavepoints()) {
-            $this->pdo->query(
-                $this->queryGrammar->compileSavepointRollBack('trans' . $this->transactions)
-            );
-        }
-
-        $this->transactions = max(0, $this->transactions - 1);
-
-        $this->fireConnectionEvent('rollingBack');
     }
 
     public function getDriverName()

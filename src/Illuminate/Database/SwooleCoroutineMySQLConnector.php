@@ -2,7 +2,6 @@
 
 namespace Hhxsv5\LaravelS\Illuminate\Database;
 
-
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Connectors\Connector;
@@ -10,7 +9,6 @@ use Illuminate\Database\Connectors\ConnectorInterface;
 
 class SwooleCoroutineMySQLConnector extends Connector implements ConnectorInterface
 {
-
     /**
      * @param string $dsn
      * @param array $config
@@ -21,18 +19,17 @@ class SwooleCoroutineMySQLConnector extends Connector implements ConnectorInterf
     public function createConnection($dsn, array $config, array $options)
     {
         $username = Arr::get($config, 'username');
-
         $password = Arr::get($config, 'password');
 
         try {
-            $pdo = $this->connect($config);
+            $mysql = $this->connect($config);
         } catch (\Exception $e) {
-            $pdo = $this->tryAgainIfCausedByLostConnection(
+            $mysql = $this->tryAgainIfCausedByLostConnection(
                 $e, $dsn, $username, $password, $config
             );
         }
 
-        return $pdo;
+        return $mysql;
     }
 
     protected function tryAgainIfCausedByLostConnection(Exception $e, $dsn, $username, $password, $options)

@@ -5,19 +5,56 @@ namespace Hhxsv5\LaravelS\Illuminate\Database;
 use Illuminate\Database\QueryException;
 use Swoole\Coroutine\MySQL as CoroutineMySQL;
 
-class SwooleCoroutineMySQL extends CoroutineMySQL
+class SwooleCoroutineMySQL
 {
-    public function lastInsertId()
+    protected $coMySQL;
+
+    public function __construct()
     {
-        return $this->insert_id;
+        $this->coMySQL = new CoroutineMySQL();
+    }
+
+    public function connect(array $serverInfo)
+    {
+        $this->coMySQL->connect($serverInfo);
     }
 
     public function prepare($sql)
     {
-        $oldStatement = parent::prepare($sql);
+        $oldStatement = $this->coMySQL->prepare($sql);
         if ($oldStatement === false) {
-            throw new QueryException($sql, [], new \Exception($this->error, $this->errno));
+            throw new QueryException($sql, [], new \Exception($this->coMySQL->error, $this->coMySQL->errno));
         }
         return new SwooleCoroutineMySQLStatement($oldStatement);
+    }
+
+    public function beginTransaction()
+    {
+        return $this->coMySQL->begin();
+    }
+
+    public function commit()
+    {
+        return $this->coMySQL->commit();
+    }
+
+    public function rollBack()
+    {
+        return $this->coMySQL->rollback();
+    }
+
+    public function query($sql, $timeout = 0.0)
+    {
+        return $this->coMySQL->query($sql, $timeout);
+    }
+
+    public function lastInsertId()
+    {
+        return $this->coMySQL->insert_id;
+    }
+
+    public function rowCount()
+    {
+        return $this->coMySQL->affected_rows;
     }
 }

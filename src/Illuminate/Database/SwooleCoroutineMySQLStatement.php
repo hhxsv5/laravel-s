@@ -7,6 +7,7 @@ use Swoole\Coroutine\MySQL\Statement as CoroutineMySQLStatement;
 class SwooleCoroutineMySQLStatement
 {
     protected $statement;
+    protected $result;
 
     public function __construct(CoroutineMySQLStatement $statement)
     {
@@ -20,11 +21,11 @@ class SwooleCoroutineMySQLStatement
 
     public function execute(array $params = [], $timeout = -1)
     {
-        return $this->statement->execute($params, $timeout);
+        $this->result = $this->statement->execute($params, $timeout);
     }
 
-    public function __get($name)
+    public function fetchAll()
     {
-        return $this->statement->$name;
+        return $this->result;
     }
 }
