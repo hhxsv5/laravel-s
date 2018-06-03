@@ -53,11 +53,11 @@ class SwooleCoroutineMySQLConnection extends Connection
     {
         if ($this->transactions == 0) {
             try {
-                $this->pdo->query('BEGIN');
+                $this->pdo->begin();
             } catch (\Exception $e) {
                 if ($this->causedByLostConnection($e)) {
                     $this->reconnect();
-                    $this->pdo->query('BEGIN');
+                    $this->pdo->begin();
                 } else {
                     throw $e;
                 }
@@ -76,7 +76,7 @@ class SwooleCoroutineMySQLConnection extends Connection
     public function commit()
     {
         if ($this->transactions == 1) {
-            $this->pdo->query('COMMIT');
+            $this->pdo->commit();
         }
         --$this->transactions;
         $this->fireConnectionEvent('committed');
@@ -85,7 +85,7 @@ class SwooleCoroutineMySQLConnection extends Connection
     public function rollBack()
     {
         if ($this->transactions == 1) {
-            $this->pdo->query('ROLLBACK');
+            $this->pdo->rollback();
         } elseif ($this->transactions > 1 && $this->queryGrammar->supportsSavepoints()) {
             $this->pdo->query(
                 $this->queryGrammar->compileSavepointRollBack('trans' . $this->transactions)
