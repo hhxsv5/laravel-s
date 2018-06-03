@@ -37,13 +37,12 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
         if ($this->causedByLostConnection($e)) {
             return $this->connect($options);
         }
-
         throw $e;
     }
 
     /**
      * @param array $config
-     * @return CoroutineMySQL|\PDO
+     * @return CoroutineMySQL
      * @throws StatementException
      */
     public function connect(array $config)
