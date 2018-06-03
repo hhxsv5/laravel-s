@@ -37,12 +37,12 @@ abstract class Task
     public static function deliver(self $task)
     {
         $deliver = function () use ($task) {
-            try {
-                $taskId = app('swoole')->task($task);
-                return $taskId !== false;
-            } catch (\Exception $e) {
-                return false;
-            }
+            /**
+             * @var \swoole_http_server $swoole
+             */
+            $swoole = app('swoole');
+            $taskId = $swoole->task($task);
+            return $taskId !== false;
         };
         if ($task->delay > 0) {
             swoole_timer_after($task->delay * 1000, $deliver);

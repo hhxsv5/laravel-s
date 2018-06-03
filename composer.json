@@ -6,13 +6,15 @@
     "issues": "https://github.com/hhxsv5/laravel-s/issues",
     "source": "https://github.com/hhxsv5/laravel-s"
   },
-  "description": "🚀 LaravelS: Speed up Laravel/Lumen by Swoole, 'S' means Swoole, Speed, High performance.",
+  "description": "🚀 LaravelS: speed up Laravel/Lumen by Swoole, let's fly.",
   "keywords": [
     "swoole",
     "LaravelS",
     "coroutine",
     "http server",
     "websocket server",
+    "tcp server",
+    "udp server",
     "async task",
     "async event",
     "inotify reload",

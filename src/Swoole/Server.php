@@ -2,12 +2,18 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
+use Hhxsv5\LaravelS\Swoole\Socket\PortInterface;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
+use Hhxsv5\LaravelS\Swoole\Traits\LogTrait;
+use Hhxsv5\LaravelS\Swoole\Traits\ProcessTitleTrait;
 
 class Server
 {
+    use LogTrait;
+    use ProcessTitleTrait;
+
     protected $conf;
 
     /**
@@ -15,19 +21,22 @@ class Server
      */
     protected $swoole;
 
-    protected $enableWebsocket = false;
+    protected $enableWebSocket = false;
+
+    protected $attachedSockets = [];
 
     protected function __construct(array $conf)
     {
         $this->conf = $conf;
-        $this->enableWebsocket = !empty($this->conf['websocket']['enable']);
+        $this->enableWebSocket = !empty($this->conf['websocket']['enable']);
+        $this->attachedSockets = empty($this->conf['sockets']) ? [] : $this->conf['sockets'];
 
-        $ip = isset($conf['listen_ip']) ? $conf['listen_ip'] : '0.0.0.0';
-        $port = isset($conf['listen_port']) ? $conf['listen_port'] : 8841;
+        $ip = isset($conf['listen_ip']) ? $conf['listen_ip'] : '127.0.0.1';
+        $port = isset($conf['listen_port']) ? $conf['listen_port'] : 5200;
         $settings = isset($conf['swoole']) ? $conf['swoole'] : [];
         $settings['enable_static_handler'] = !empty($conf['handle_static']);
 
-        $serverClass = $this->enableWebsocket ? \swoole_websocket_server::class : \swoole_http_server::class;
+        $serverClass = $this->enableWebSocket ? \swoole_websocket_server::class : \swoole_http_server::class;
         if (isset($settings['ssl_cert_file'], $settings['ssl_key_file'])) {
             $this->swoole = new $serverClass($ip, $port, \SWOOLE_PROCESS, \SWOOLE_SOCK_TCP | \SWOOLE_SSL);
         } else {
@@ -36,12 +45,15 @@ class Server
 
         $this->swoole->set($settings);
 
+        $this->bindBaseEvent();
         $this->bindHttpEvent();
         $this->bindTaskEvent();
-        $this->bindWebsocketEvent();
+        $this->bindWebSocketEvent();
+        $this->bindAttachedSockets();
+        $this->bindSwooleTables();
     }
 
-    protected function bindHttpEvent()
+    protected function bindBaseEvent()
     {
         $this->swoole->on('Start', [$this, 'onStart']);
         $this->swoole->on('Shutdown', [$this, 'onShutdown']);
@@ -49,10 +61,11 @@ class Server
         $this->swoole->on('ManagerStop', [$this, 'onManagerStop']);
         $this->swoole->on('WorkerStart', [$this, 'onWorkerStart']);
         $this->swoole->on('WorkerStop', [$this, 'onWorkerStop']);
-        if (version_compare(\swoole_version(), '1.9.17', '>=')) {
-            $this->swoole->on('WorkerExit', [$this, 'onWorkerExit']);
-        }
         $this->swoole->on('WorkerError', [$this, 'onWorkerError']);
+    }
+
+    protected function bindHttpEvent()
+    {
         $this->swoole->on('Request', [$this, 'onRequest']);
     }
 
@@ -64,39 +77,79 @@ class Server
         }
     }
 
-    protected function bindWebsocketEvent()
+    protected function bindWebSocketEvent()
     {
-        if ($this->enableWebsocket) {
-            $this->swoole->on('Open', function () {
-                $handler = $this->getWebsocketHandler();
+        if ($this->enableWebSocket) {
+            $eventHandler = function ($method, array $params) {
                 try {
-                    call_user_func_array([$handler, 'onOpen'], func_get_args());
+                    call_user_func_array([$this->getWebSocketHandler(), $method], $params);
                 } catch (\Exception $e) {
-                    // Do nothing to avoid 'zend_mm_heap corrupted'
+                    $this->logException($e);
                 }
+            };
+
+            $this->swoole->on('Open', function () use ($eventHandler) {
+                $eventHandler('onOpen', func_get_args());
             });
 
-            $this->swoole->on('Message', function () {
-                $handler = $this->getWebsocketHandler();
-                try {
-                    call_user_func_array([$handler, 'onMessage'], func_get_args());
-                } catch (\Exception $e) {
-                    // Do nothing to avoid 'zend_mm_heap corrupted'
-                }
+            $this->swoole->on('Message', function () use ($eventHandler) {
+                $eventHandler('onMessage', func_get_args());
             });
 
-            $this->swoole->on('Close', function () {
-                $handler = $this->getWebsocketHandler();
-                try {
-                    call_user_func_array([$handler, 'onClose'], func_get_args());
-                } catch (\Exception $e) {
-                    // Do nothing to avoid 'zend_mm_heap corrupted'
+            $this->swoole->on('Close', function (\swoole_websocket_server $server, $fd, $reactorId) use ($eventHandler) {
+                $clientInfo = $server->getClientInfo($fd);
+                if (isset($clientInfo['websocket_status']) && $clientInfo['websocket_status'] === \WEBSOCKET_STATUS_FRAME) {
+                    $eventHandler('onClose', func_get_args());
                 }
+                // else ignore the close event for http server
             });
         }
     }
 
-    protected function getWebsocketHandler()
+    protected function bindAttachedSockets()
+    {
+        foreach ($this->attachedSockets as $socket) {
+            $port = $this->swoole->addListener($socket['host'], $socket['port'], $socket['type']);
+            if (!($port instanceof \swoole_server_port)) {
+                $errno = method_exists($this->swoole, 'getLastError') ? $this->swoole->getLastError() : 'unknown';
+                $errstr = sprintf('listen %s:%s failed: errno=%s', $socket['host'], $socket['port'], $errno);
+                $this->log($errstr, 'ERROR');
+                continue;
+            }
+
+            $port->set(empty($socket['settings']) ? [] : $socket['settings']);
+
+            $handlerClass = $socket['handler'];
+            $eventHandler = function ($method, array $params) use ($port, $handlerClass) {
+                $handler = $this->getSocketHandler($port, $handlerClass);
+                if (method_exists($handler, $method)) {
+                    try {
+                        call_user_func_array([$handler, $method], $params);
+                    } catch (\Exception $e) {
+                        $this->logException($e);
+                    }
+                }
+            };
+            static $events = [
+                'Open',
+                'Request',
+                'Message',
+                'Connect',
+                'Close',
+                'Receive',
+                'Packet',
+                'BufferFull',
+                'BufferEmpty',
+            ];
+            foreach ($events as $event) {
+                $port->on($event, function () use ($event, $eventHandler) {
+                    $eventHandler('on' . $event, func_get_args());
+                });
+            }
+        }
+    }
+
+    protected function getWebSocketHandler()
     {
         static $handler = null;
         if ($handler !== null) {
@@ -105,11 +158,44 @@ class Server
 
         $handlerClass = $this->conf['websocket']['handler'];
         $t = new $handlerClass();
-        if (!($t instanceof WebsocketHandlerInterface)) {
-            throw new \Exception(sprintf('%s must implement the interface %s', get_class($handler), WebsocketHandlerInterface::class));
+        if (!($t instanceof WebSocketHandlerInterface)) {
+            throw new \Exception(sprintf('%s must implement the interface %s', get_class($t), WebSocketHandlerInterface::class));
         }
         $handler = $t;
         return $handler;
+    }
+
+    protected function getSocketHandler(\swoole_server_port $port, $handlerClass)
+    {
+        static $handlers = [];
+        $portHash = spl_object_hash($port);
+        if (isset($handlers[$portHash])) {
+            return $handlers[$portHash];
+        }
+        $t = new $handlerClass($port);
+        if (!($t instanceof PortInterface)) {
+            throw new \Exception(sprintf('%s must extend the abstract class TcpSocket/UdpSocket', get_class($t)));
+        }
+        $handlers[$portHash] = $t;
+        return $handlers[$portHash];
+    }
+
+    protected function bindSwooleTables()
+    {
+        $tables = isset($this->conf['swoole_tables']) ? (array)$this->conf['swoole_tables'] : [];
+        foreach ($tables as $name => $table) {
+            $t = new \swoole_table($table['size']);
+            foreach ($table['column'] as $column) {
+                if (isset($column['size'])) {
+                    $t->column($column['name'], $column['type'], $column['size']);
+                } else {
+                    $t->column($column['name'], $column['type']);
+                }
+            }
+            $t->create();
+            $name .= 'Table'; // Avoid naming conflicts
+            $this->swoole->$name = $t;
+        }
     }
 
     public function onStart(\swoole_http_server $server)
@@ -164,14 +250,9 @@ class Server
 
     }
 
-    public function onWorkerExit(\swoole_http_server $server, $workerId)
-    {
-
-    }
-
     public function onWorkerError(\swoole_http_server $server, $workerId, $workerPId, $exitCode, $signal)
     {
-
+        $this->log(sprintf('worker[%d] error: exitCode=%s, signal=%s', $workerId, $exitCode, $signal), 'ERROR');
     }
 
     public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
@@ -194,7 +275,8 @@ class Server
     public function onFinish(\swoole_http_server $server, $taskId, $data)
     {
         if ($data instanceof Task) {
-            $data->finish();
+            $data->/** @scrutinizer ignore-call */
+            finish();
         }
     }
 
@@ -206,19 +288,22 @@ class Server
         }
 
         $listenerClasses = $this->conf['events'][$eventClass];
-        try {
-            if (!is_array($listenerClasses)) {
-                $listenerClasses = (array)$listenerClasses;
+        if (!is_array($listenerClasses)) {
+            $listenerClasses = (array)$listenerClasses;
+        }
+        foreach ($listenerClasses as $listenerClass) {
+            /**
+             * @var Listener $listener
+             */
+            $listener = new $listenerClass();
+            if (!($listener instanceof Listener)) {
+                throw new \Exception(sprintf('%s must extend the abstract class %s', $listenerClass, Listener::class));
             }
-            foreach ($listenerClasses as $listenerClass) {
-                /**
-                 * @var Listener $listener
-                 */
-                $listener = new $listenerClass();
+            try {
                 $listener->handle($event);
+            } catch (\Exception $e) {
+                $this->logException($e);
             }
-        } catch (\Exception $e) {
-            // Do nothing to avoid 'zend_mm_heap corrupted'
         }
     }
 
@@ -227,7 +312,7 @@ class Server
         try {
             $task->handle();
         } catch (\Exception $e) {
-            // Do nothing to avoid 'zend_mm_heap corrupted'
+            $this->logException($e);
         }
     }
 
@@ -235,17 +320,4 @@ class Server
     {
         $this->swoole->start();
     }
-
-    protected function setProcessTitle($title)
-    {
-        if (PHP_OS === 'Darwin') {
-            return;
-        }
-        if (function_exists('cli_set_process_title')) {
-            cli_set_process_title($title);
-        } elseif (function_exists('\swoole_set_process_name')) {
-            \swoole_set_process_name($title);
-        }
-    }
-
 }

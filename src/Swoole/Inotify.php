@@ -1,6 +1,6 @@
 <?php
 
-namespace Hhxsv5\LaravelS;
+namespace Hhxsv5\LaravelS\Swoole;
 
 class Inotify
 {
@@ -42,6 +42,9 @@ class Inotify
     protected function _watch($path)
     {
         $wd = inotify_add_watch($this->fd, $path, $this->watchMask);
+        if ($wd === false) {
+            return false;
+        }
         $this->bind($wd, $path);
 
         if (is_dir($path)) {
@@ -58,6 +61,9 @@ class Inotify
                 $fileType = strrchr($file, '.');
                 if (isset($this->fileTypes[$fileType])) {
                     $wd = inotify_add_watch($this->fd, $file, $this->watchMask);
+                    if ($wd === false) {
+                        return false;
+                    }
                     $this->bind($wd, $file);
                 }
             }
@@ -68,7 +74,7 @@ class Inotify
     protected function clearWatch()
     {
         foreach ($this->wdPath as $wd => $path) {
-            @inotify_rm_watch($this->fd, $wd);
+            /** @scrutinizer ignore-unhandled */@inotify_rm_watch($this->fd, $wd);
         }
         $this->wdPath = [];
         $this->pathWd = [];
@@ -90,8 +96,8 @@ class Inotify
 
     public function start()
     {
-        swoole_event_add($this->fd, function ($fp) {
-            $events = inotify_read($this->fd);
+        swoole_event_add(/** @scrutinizer ignore-type */$this->fd, function ($fp) {
+            $events = inotify_read($fp);
             foreach ($events as $event) {
                 if ($event['mask'] == IN_IGNORED) {
                     continue;
@@ -108,12 +114,6 @@ class Inotify
 
                 swoole_timer_after(100, function () use ($event) {
                     call_user_func_array($this->watchHandler, [$event]);
-
-//                    // Clear watch to avoid multiple events
-//                    $this->clearWatch();
-//                    // Watch again
-//                    $this->watch();
-
                     $this->doing = false;
                 });
                 $this->doing = true;
@@ -125,7 +125,7 @@ class Inotify
 
     public function stop()
     {
-        swoole_event_del($this->fd);
+        swoole_event_del(/** @scrutinizer ignore-type */$this->fd);
         fclose($this->fd);
     }
 

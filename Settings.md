@@ -10,16 +10,32 @@
 
 - `handle_static`: `bool` Whether handle the static resource by LaravelS(Require `Swoole >= 1.7.21`, Handle by Swoole if `Swoole >= 1.9.17`), default `false`, Suggest that Nginx handles the statics and LaravelS handles the dynamics. The default path of static resource is `base_path('public')`, you can modify `swoole.document_root` to change it.
 
-- `inotify_reload.enable`: `bool` Whether enable the `Inotify Reload` to reload all worker processes when your code is modified, depend on [inotify](http://pecl.php.net/package/inotify), use `php --ri inotify` to check whether the available. default `false`, `recommend to enable in development environment only`.
+- `laravel_base_path`: `string` The basic path of `Laravel/Lumen`, default `base_path()`, be used for `symbolic link`.
+
+- `inotify_reload.enable`: `bool` Whether enable the `Inotify Reload` to reload all worker processes when your code is modified, depend on [inotify](http://pecl.php.net/package/inotify), use `php --ri inotify` to check whether the available. default `false`, `recommend to enable in development environment only`, change [Watchers Limit](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues.md#inotify-reached-the-watchers-limit).
  
 - `inotify_reload.file_types`: `array` The file types which `Inotify` watched, default `['.php']`.
 
 - `inotify_reload.log`: `bool` Whether output the reload log, default `true`.
 
-- `websocket.enable`: `bool` Whether enable Websocket Server. The Listening address of Websocket Sever is the same as Http Server, default `false`.
+- `websocket.enable`: `bool` Whether enable WebSocket Server. The Listening address of WebSocket Sever is the same as Http Server, default `false`.
 
-- `websocket.handler`: `string` The class name for Websocket handler, needs to implement interface `WebsocketHandlerInterface`, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server)
+- `websocket.handler`: `string` The class name for WebSocket handler, needs to implement interface `WebSocketHandlerInterface`, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server)
+
+- `sockets`: `array` The socket list for TCP/UDP, refer to [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-tcpudp-server)
+
+- `events`: `array` The customized asynchronous event list of listener binding, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#customized-asynchronous-events)
+
+- `swoole_tables`: `array` The defined of `swoole_table` list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#use-swoole_table)
+
+- `register_providers`: `array` The `Service Provider` list, will be re-registered `every request`, and run method `boot()` if it exists. Usually, be used to clear the `Service Provider` which registers `Singleton` instances.
+    ```PHP
+    //...
+    'register_providers' => [
+        //eg: re-register ServiceProvider of jwt
+        \Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+    ],
+    //...
+    ```
 
 - `swoole`: `array` refer [Swoole Configuration](https://www.swoole.co.uk/docs/modules/swoole-server/configuration)
-
-- `events`：`array` The customized asynchronous event list of listener binding, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#customized-asynchronous-events)
