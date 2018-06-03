@@ -706,7 +706,7 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 
 > 支持MySQL数据库的`协程`客户端。
 
-1.要求：`Swoole>=4.0`，`Laravel=5.1`，后续将支持Lumen。
+1.要求：`Swoole>=4.0`，`Laravel>=5.1`，后续将支持Lumen。
 
 2.修改`config/database.php`MySQL连接的`driver`为`sw-co-mysql`。
 
