@@ -741,7 +741,7 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 ],
 ```
 
-4.配置完成，查询构造器和ORM按正常的使用即可。目前在Alpha阶段，应该会有Bug，请大家多多反馈。
+4.配置完成，`查询构造器`和`ORM`按正常的使用即可。目前在Alpha阶段，应该会有Bug，请大家多多反馈。
 
 ## 注意事项
 

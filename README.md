@@ -742,7 +742,7 @@ For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_
 ],
 ```
 
-4.Now, you just use `QueryBuilder` and ORM as usual. (Alpha stage, there should be some bugs, please give us your feedback).
+4.Now, you just use `QueryBuilder` and `ORM` as usual. (Alpha stage, there should be some bugs, please give us your feedback).
 
 ## Important notices
 
