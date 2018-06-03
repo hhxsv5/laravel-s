@@ -35,4 +35,9 @@ class CoroutineMySQLConnection extends MySqlConnection
         return 'Swoole Coroutine MySQL';
     }
 
+    protected function prepared($statement)
+    {
+        //TODO
+        return $statement;
+    }
 }

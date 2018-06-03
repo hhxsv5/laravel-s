@@ -57,4 +57,10 @@ class CoroutineMySQL
     {
         return $this->coMySQL->affected_rows;
     }
+
+    public function quote($string)
+    {
+        //TODO
+        return $string;
+    }
 }

@@ -34,7 +34,7 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
         return $mysql;
     }
 
-    protected function tryAgainIfCausedByLostConnection(Exception $e, $dsn, $username, $password, $options)
+    protected function tryAgainIfCausedByLostConnection($e, $dsn, $username, $password, $options)
     {
         if ($this->causedByLostConnection($e)) {
             return $this->connect($options);
