@@ -846,7 +846,7 @@ public function test(Request $req)
 
 1. 针对MySQL/Redis的连接池。
 
-2. 包装MySQL/Redis/Http的协程客户端。
+2. 包装MySQL(Alpha阶段)/Redis/Http的协程客户端。
 
 ## 其他选择
 
