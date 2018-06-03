@@ -705,11 +705,11 @@ For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_
 
 ## Coroutine MySQL
 
-> Support MySQL coroutine client for MySQL database.
+> Support coroutine client for MySQL database.
 
-1.Requirements: `Swoole>=4.0`,(Support Laravel only now, Lumen will be supported later).
+1.Requirements: `Swoole>=4.0`, `Laravel>=5.1`(Lumen will be supported later)
 
-2.Change the `driver` of `connections` to `sw-co-mysql` in file `config/database.php`.
+2.Change the `driver` of MySQL connection to `sw-co-mysql` in file `config/database.php`.
 
 ```PHP
 'connections' => [

@@ -706,9 +706,9 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 
 > 支持MySQL数据库的`协程`客户端。
 
-1.要求：`Swoole>=4.0`，（目前暂只支持Laravel，后续将支持Lumen）。
+1.要求：`Swoole>=4.0`，`Laravel>=5.1`，后续将支持Lumen。
 
-2.修改`config/database.php`中`connections`的`driver`为`sw-co-mysql`。
+2.修改`config/database.php`MySQL连接的`driver`为`sw-co-mysql`。
 
 ```PHP
 'connections' => [
@@ -741,7 +741,7 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 ],
 ```
 
-4.配置完成，查询构造器和ORM按正常的使用即可。目前测试不全，应该会有Bug，请大家多多反馈。
+4.配置完成，查询构造器和ORM按正常的使用即可。目前在Alpha阶段，应该会有Bug，请大家多多反馈。
 
 ## 注意事项
 
