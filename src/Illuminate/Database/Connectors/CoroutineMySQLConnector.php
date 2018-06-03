@@ -1,11 +1,13 @@
 <?php
 
-namespace Hhxsv5\LaravelS\Illuminate\Database;
+namespace Hhxsv5\LaravelS\Illuminate\Database\Connectors;
 
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Connectors\Connector;
 use Illuminate\Database\Connectors\ConnectorInterface;
+use Hhxsv5\LaravelS\Illuminate\Database\CoroutineMySQL;
+use Hhxsv5\LaravelS\Illuminate\Database\StatementException;
 
 class CoroutineMySQLConnector extends Connector implements ConnectorInterface
 {

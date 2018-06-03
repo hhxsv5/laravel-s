@@ -2,6 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Illuminate\Database;
 
+use Hhxsv5\LaravelS\Illuminate\Database\Connectors\CoroutineMySQLConnector;
 use Illuminate\Database\Connectors\ConnectionFactory as IlluminateConnectionFactory;
 
 class ConnectionFactory extends IlluminateConnectionFactory
@@ -14,7 +15,7 @@ class ConnectionFactory extends IlluminateConnectionFactory
 
         switch ($config['driver']) {
             case 'sw-co-mysql':
-                return new CoroutineMySQLConnector;
+                return new CoroutineMySQLConnector();
         }
         return parent::createConnector($config);
     }
