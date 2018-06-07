@@ -338,6 +338,5 @@ class Laravel
         if (!empty($this->app['session'])) {
             $this->app['session']->save();
         }
-
     }
 }
