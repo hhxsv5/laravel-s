@@ -19,6 +19,13 @@
 $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this->app->environment('testing');
 ```
 
+## Use package [laracasts/flash](https://github.com/laracasts/flash)
+> Flash messages are held in memory all the time. Appending to `$messages` when call flash() every time, leads to the multiple messages. There are two solutions.
+
+1.Reset `$messages` by Front-end middleware `app('flash')->messages = [];`.
+
+2.Re-register `FlashServiceProvider` after handling request, Refer [register_providers](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
+
 ## Cannot call these functions
 
 - `flush`/`ob_flush`/`ob_end_flush`/`ob_implicit_flush`: `swoole_http_response` does not support `flush`.

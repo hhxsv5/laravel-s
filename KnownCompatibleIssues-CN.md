@@ -19,6 +19,13 @@
 $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this->app->environment('testing');
 ```
 
+## 使用包 [laracasts/flash](https://github.com/laracasts/flash)
+> 常驻内存后，每次调用flash会追加消息提醒，导致叠加展示消息提醒。有以下两个方案。
+
+1.通过前置中间件在每次请求处理前重置$messages `app('flash')->messages = [];`。
+
+2.每次请求处理后重新注册`FlashServiceProvider`，配置[register_providers](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
+
 ## 不能使用这些函数
 
 - `flush`/`ob_flush`/`ob_end_flush`/`ob_implicit_flush`：`swoole_http_response`不支持`flush`。

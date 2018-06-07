@@ -750,7 +750,7 @@ For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_
 
     - Under FPM mode, singleton instances will be instantiated and recycled in every request, request start=>instantiate instance=>request end=>recycled instance.
 
-    - Under Swoole Server, All singleton instances will be hold in memory, different lifetime from FPM, request start=>instantiate instance=>request end=>do not recycle singleton instance. So need developer to maintain status of singleton instances in ervery request.
+    - Under Swoole Server, All singleton instances will be held in memory, different lifetime from FPM, request start=>instantiate instance=>request end=>do not recycle singleton instance. So need developer to maintain status of singleton instances in ervery request.
 
     - Common solutions:
 
