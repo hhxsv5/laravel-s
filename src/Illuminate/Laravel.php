@@ -325,20 +325,18 @@ class Laravel
 
     public function resetSession()
     {
-        $session = $this->make('session');
-        if (!empty($session)) {
-            $reflection = new \ReflectionObject($session);
+        if (!empty($this->app['session'])) {
+            $reflection = new \ReflectionObject($this->app['session']);
             $drivers = $reflection->getProperty('drivers');
             $drivers->setAccessible(true);
-            $drivers->setValue($session, []);
+            $drivers->setValue($this->app['session'], []);
         }
     }
 
     public function saveSession()
     {
-        $session = $this->make('session');
-        if (!empty($session)) {
-            $session->save();
+        if (!empty($this->app['session'])) {
+            $this->app['session']->save();
         }
 
     }
