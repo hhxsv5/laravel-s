@@ -322,4 +322,15 @@ class Laravel
     {
         return $this->app->make($abstract, $parameters);
     }
+
+    public function resetSession()
+    {
+        $session = $this->make('session');
+        if (!empty($session)) {
+            $reflection = new \ReflectionObject($session);
+            $drivers = $reflection->getProperty('drivers');
+            $drivers->setAccessible(true);
+            $drivers->setValue($session, []);
+        }
+    }
 }
