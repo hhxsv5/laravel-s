@@ -333,4 +333,13 @@ class Laravel
             $drivers->setValue($session, []);
         }
     }
+
+    public function saveSession()
+    {
+        $session = $this->make('session');
+        if (!empty($session)) {
+            $session->save();
+        }
+
+    }
 }

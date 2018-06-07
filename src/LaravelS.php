@@ -73,6 +73,7 @@ class LaravelS extends Server
                 $this->laravel->bindRequest($laravelRequest);
                 $this->laravel->handleDynamic($laravelRequest);
                 $eventHandler('onOpen', func_get_args());
+                $this->laravel->saveSession();
             });
 
             $this->swoole->on('Message', function () use ($eventHandler) {
