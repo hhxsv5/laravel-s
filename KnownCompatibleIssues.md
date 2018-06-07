@@ -22,7 +22,7 @@ $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this
 ## Use package [laracasts/flash](https://github.com/laracasts/flash)
 > Flash messages are held in memory all the time. Appending to `$messages` when call flash() every time, leads to the multiple messages. There are two solutions.
 
-1.Reset `$messages` by middleware `app('flash')->messages = collect();`.
+1.Reset `$messages` by middleware `app('flash')->clear();`.
 
 2.Re-register `FlashServiceProvider` after handling request, Refer [register_providers](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
