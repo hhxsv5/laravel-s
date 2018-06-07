@@ -28,6 +28,7 @@ class Request
         $headers = isset($this->swooleRequest->header) ? $this->swooleRequest->header : [];
         $_FILES = isset($this->swooleRequest->files) ? $this->swooleRequest->files : [];
         $_REQUEST = [];
+        $_SESSION = [];
 
         static $headerServerMapping = [
             'x-real-ip'       => 'REMOTE_ADDR',
