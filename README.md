@@ -754,7 +754,7 @@ For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_
 
 ## Custom process
 
-> Supports developers to create special work processes for monitoring, reporting, or other special tasks. Refer[addProcess](https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addprocess).
+> Support developers to create special work processes for monitoring, reporting, or other special tasks. Refer[addProcess](https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addprocess).
 
 1. Create Proccess class, implements CustomProcessInterface.
 
