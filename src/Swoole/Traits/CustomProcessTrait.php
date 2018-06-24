@@ -2,6 +2,8 @@
 
 namespace Hhxsv5\LaravelS\Swoole\Traits;
 
+use Hhxsv5\LaravelS\Swoole\Process\CustomProcessInterface;
+
 trait CustomProcessTrait
 {
     use ProcessTitleTrait;
@@ -9,19 +11,20 @@ trait CustomProcessTrait
 
     public function addCustomProcesses(\swoole_server $swoole, $processPrefix, array $processes, array $laravelConfig)
     {
+        $this->initLaravel($laravelConfig, $swoole);
+
+        /**
+         * @var []CustomProcessInterface $processList
+         */
         $processList = [];
         foreach ($processes as $process) {
             $processHandler = function () use ($swoole, $processPrefix, $process, $laravelConfig) {
-                $name = isset($process['name']) ? $process['name'] : 'custom';
+                $name = $process::getName() ?: 'custom';
                 $this->setProcessTitle(sprintf('%s laravels: %s process', $processPrefix, $name));
                 $this->initLaravel($laravelConfig, $swoole);
-                if (function_exists('\Swoole\Coroutine::call_user_func_array')) {
-                    \Swoole\Coroutine::call_user_func_array($process['callback'], [$swoole, $process]);
-                } else {
-                    call_user_func_array($process['callback'], [$swoole, $process]);
-                }
+                $process::callback($swoole);
             };
-            $customProcess = new \swoole_process($processHandler, $process['redirect_stdin_stdout'], $process['pipe_type']);
+            $customProcess = new \swoole_process($processHandler, $process::isRedirectStdinStdout(), $process::getPipeType());
             if ($swoole->addProcess($customProcess)) {
                 $processList[] = $customProcess;
             }
