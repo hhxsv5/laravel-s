@@ -61,7 +61,7 @@
 
 ```Bash
 # Run in the root path of your Laravel/Lumen project.
-composer require "hhxsv5/laravel-s:~1.0" -vvv
+composer require "hhxsv5/laravel-s:~2.0" -vvv
 # Make sure that your composer.lock file is under the VCS
 ```
 
