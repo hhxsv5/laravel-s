@@ -15,7 +15,7 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
      * @param array $config
      * @param array $options
      * @return CoroutineMySQL
-     * @throws Exception
+     * @throws \Throwable
      */
     public function createConnection($dsn, array $config, array $options)
     {
@@ -33,7 +33,16 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
         return $mysql;
     }
 
-    protected function tryAgainIfCausedByLostConnection(Exception $e, $dsn, $username, $password, $options)
+    /**
+     * @param \Throwable $e
+     * @param string $dsn
+     * @param string $username
+     * @param string $password
+     * @param array $options
+     * @return CoroutineMySQL
+     * @throws \Throwable
+     */
+    protected function tryAgainIfCausedByLostConnection(\Throwable $e, $dsn, $username, $password, $options)
     {
         if ($this->causedByLostConnection($e)) {
             return $this->connect($options);
