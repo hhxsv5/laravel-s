@@ -20,7 +20,7 @@ class ConnectionFactory extends IlluminateConnectionFactory
         return parent::createConnector($config);
     }
 
-    protected function createConnection($driver, $connection, $database, $prefix = '', array $config = [])
+    protected function createConnection($driver, \PDO $connection, $database, $prefix = '', array $config = [])
     {
         switch ($driver) {
             case 'sw-co-mysql':

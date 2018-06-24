@@ -5,7 +5,7 @@ namespace Hhxsv5\LaravelS\Illuminate\Database;
 use Illuminate\Database\QueryException;
 use Swoole\Coroutine\MySQL as SwooleMySQL;
 
-class CoroutineMySQL
+class CoroutineMySQL extends \PDO
 {
     protected $coMySQL;
 
@@ -19,11 +19,11 @@ class CoroutineMySQL
         $this->coMySQL->connect($serverInfo);
     }
 
-    public function prepare($sql)
+    public function prepare($statement, $options = null)
     {
-        $oldStatement = $this->coMySQL->prepare($sql);
+        $oldStatement = $this->coMySQL->prepare($statement);
         if ($oldStatement === false) {
-            throw new QueryException($sql, [], new \Exception($this->coMySQL->error, $this->coMySQL->errno));
+            throw new QueryException($statement, [], new \Exception($this->coMySQL->error, $this->coMySQL->errno));
         }
         return new CoroutineMySQLStatement($oldStatement);
     }
@@ -43,12 +43,12 @@ class CoroutineMySQL
         return $this->coMySQL->rollback();
     }
 
-    public function query($sql, $timeout = 0.0)
+    public function query($statement, $mode = \PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null, array $ctorargs = [])
     {
-        return $this->coMySQL->query($sql, $timeout);
+        return $this->coMySQL->query($statement, array_get($ctorargs, 'timeout', 0.0));
     }
 
-    public function lastInsertId()
+    public function lastInsertId($name = null)
     {
         return $this->coMySQL->insert_id;
     }
@@ -58,7 +58,7 @@ class CoroutineMySQL
         return $this->coMySQL->affected_rows;
     }
 
-    public function quote($string)
+    public function quote($string, $parameter_type = \PDO::PARAM_STR)
     {
         //TODO
         return $string;

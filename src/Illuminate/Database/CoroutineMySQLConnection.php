@@ -20,24 +20,14 @@ class CoroutineMySQLConnection extends MySqlConnection
      */
     protected $readPdo;
 
-    public function __construct($pdo, $database = '', $tablePrefix = '', array $config = [])
-    {
-        $this->pdo = $pdo;
-        $this->database = $database;
-        $this->tablePrefix = $tablePrefix;
-        $this->config = $config;
-        $this->useDefaultQueryGrammar();
-        $this->useDefaultPostProcessor();
-    }
-
     public function getDriverName()
     {
         return 'Swoole Coroutine MySQL';
     }
-
-    protected function prepared($statement)
-    {
-        //TODO
-        return $statement;
-    }
+//
+//    protected function prepared($statement)
+//    {
+//        //TODO
+//        return $statement;
+//    }
 }

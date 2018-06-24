@@ -7,7 +7,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Database\Connectors\Connector;
 use Illuminate\Database\Connectors\ConnectorInterface;
 use Hhxsv5\LaravelS\Illuminate\Database\CoroutineMySQL;
-use Hhxsv5\LaravelS\Illuminate\Database\StatementException;
 
 class CoroutineMySQLConnector extends Connector implements ConnectorInterface
 {
@@ -34,7 +33,7 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
         return $mysql;
     }
 
-    protected function tryAgainIfCausedByLostConnection($e, $dsn, $username, $password, $options)
+    protected function tryAgainIfCausedByLostConnection(Exception $e, $dsn, $username, $password, $options)
     {
         if ($this->causedByLostConnection($e)) {
             return $this->connect($options);
@@ -45,7 +44,6 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
     /**
      * @param array $config
      * @return CoroutineMySQL
-     * @throws StatementException
      */
     public function connect(array $config)
     {
