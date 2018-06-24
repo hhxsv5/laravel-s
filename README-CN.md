@@ -779,7 +779,7 @@ class TestProcess implements CustomProcessInterface
     }
     public static function callback(\swoole_server $swoole)
     {
-        // 进程运行的代码
+        // 进程运行的代码，不能退出，一旦退出Manager进程会自动再次创建该进程。
         \Log::info(__METHOD__, [posix_getpid(), $swoole->stats()]);
         while (true) {
             sleep(1);

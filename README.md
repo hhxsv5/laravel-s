@@ -780,7 +780,7 @@ class TestProcess implements CustomProcessInterface
     }
     public static function callback(\swoole_server $swoole)
     {
-        // The callback method of process
+        // The callback method cannot exit. Once exited, Manager process will automatically create the process 
         \Log::info(__METHOD__, [posix_getpid(), $swoole->stats()]);
         while (true) {
             sleep(1);
