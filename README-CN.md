@@ -799,7 +799,7 @@ class TestProcess implements CustomProcessInterface
 ],
 ```
 
-3. 注意：Process::callback()方法不能退出，一旦退出Manager进程会自动再次创建该进程。
+3. 注意：TestProcess::callback()方法不能退出，一旦退出Manager进程会自动再次创建该进程。
 
 ## 注意事项
 

@@ -800,7 +800,7 @@ class TestProcess implements CustomProcessInterface
 ],
 ```
 
-3. Attention：Process::callback() cannot exit. Once exited, Manager process will automatically create the process again.
+3. Attention：TestProcess::callback() cannot exit. Once exited, Manager process will automatically create the process again.
 
 ## Important notices
 
