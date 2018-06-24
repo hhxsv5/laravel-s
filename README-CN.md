@@ -27,6 +27,8 @@
 
 - [协程MySQL](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%8D%8F%E7%A8%8Bmysql)
 
+- [自定义进程](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%9B%E7%A8%8B)
+
 - 常驻内存
 
 - [异步的事件监听](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E5%BC%82%E6%AD%A5%E4%BA%8B%E4%BB%B6)
@@ -747,7 +749,57 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 ],
 ```
 
-4.配置完成，`查询构造器`和`ORM`按正常的使用即可。目前在Alpha阶段，应该会有Bug，请大家多多反馈。
+4.配置完成，`查询构造器`和`ORM`按正常的使用即可。
+
+## 自定义进程
+
+> 支持开发者创建一些特殊的工作进程，用于监控、上报或者其他特殊的任务，参考[addProcess](https://wiki.swoole.com/wiki/page/214.html)。
+
+1. 创建Proccess类，实现CustomProcessInterface接口。
+
+```PHP
+namespace App\Processes;
+use Hhxsv5\LaravelS\Swoole\Process\CustomProcessInterface;
+class TestProcess implements CustomProcessInterface
+{
+    public static function getName()
+    {
+        // 进程名称
+        return 'test';
+    }
+    public static function isRedirectStdinStdout()
+    {
+        // 是否重定向输入输出
+        return false;
+    }
+    public static function getPipeType()
+    {
+        // 管道类型：0不创建管道，1创建SOCK_STREAM类型管道，2创建SOCK_DGRAM类型管道
+        return 0;
+    }
+    public static function callback(\swoole_server $swoole)
+    {
+        // 进程运行的代码
+        \Log::info(__METHOD__, [posix_getpid(), $swoole->stats()]);
+        while (true) {
+            sleep(1);
+            \Log::info('Do something');
+        }
+    }
+}
+```
+
+2. 注册Process。
+
+```PHP
+// 修改文件 config/laravels.php
+// ...
+'processes' => [
+    \App\Processes\TestProcess::class,
+],
+```
+
+3. 注意：Process::callback()方法不能退出，一旦退出Manager进程会自动再次创建该进程。
 
 ## 注意事项
 

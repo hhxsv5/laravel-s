@@ -27,6 +27,8 @@
 
 - [Coroutine MySQL](https://github.com/hhxsv5/laravel-s/blob/master/README.md#coroutine-mysql)
 
+- [Custom process](https://github.com/hhxsv5/laravel-s/blob/master/README.md#custom-process)
+
 - Memory resident
 
 - [Asynchronous event listening](https://github.com/hhxsv5/laravel-s/blob/master/README.md#customized-asynchronous-events)
@@ -748,7 +750,57 @@ For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_
 ],
 ```
 
-4.Now, you just use `QueryBuilder` and `ORM` as usual. (Alpha stage, there should be some bugs, please give us your feedback).
+4.Now, you just use `QueryBuilder` and `ORM` as usual.
+
+## Custom process
+
+> Supports developers to create special work processes for monitoring, reporting, or other special tasks. Refer[addProcess](https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addprocess).
+
+1. Create Proccess class, implements CustomProcessInterface.
+
+```PHP
+namespace App\Processes;
+use Hhxsv5\LaravelS\Swoole\Process\CustomProcessInterface;
+class TestProcess implements CustomProcessInterface
+{
+    public static function getName()
+    {
+        // The name of process
+        return 'test';
+    }
+    public static function isRedirectStdinStdout()
+    {
+        // Whether redirect stdin/stdout
+        return false;
+    }
+    public static function getPipeType()
+    {
+        // The type of pipeline: 0 no pipeline, 1 \SOCK_STREAM, 2 \SOCK_DGRAM
+        return 0;
+    }
+    public static function callback(\swoole_server $swoole)
+    {
+        // The callback method of process
+        \Log::info(__METHOD__, [posix_getpid(), $swoole->stats()]);
+        while (true) {
+            sleep(1);
+            \Log::info('Do something');
+        }
+    }
+}
+```
+
+2. Register Process.
+
+```PHP
+// Edit `config/laravels.php`
+// ...
+'processes' => [
+    \App\Processes\TestProcess::class,
+],
+```
+
+3. Attention：Process::callback() cannot exit. Once exited, Manager process will automatically create the process again.
 
 ## Important notices
 
