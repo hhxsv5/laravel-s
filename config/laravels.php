@@ -6,6 +6,7 @@
 return [
     'listen_ip'          => env('LARAVELS_LISTEN_IP', '127.0.0.1'),
     'listen_port'        => env('LARAVELS_LISTEN_PORT', 5200),
+    'socket_type'        => env('LARAVELS_SOCKET_TYPE', \SWOOLE_SOCK_TCP),
     'enable_gzip'        => env('LARAVELS_ENABLE_GZIP', false),
     'server'             => env('LARAVELS_SERVER', 'LaravelS'),
     'handle_static'      => env('LARAVELS_HANDLE_STATIC', false),
