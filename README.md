@@ -907,7 +907,7 @@ public function test(Request $req)
 
 1. Connection pool for MySQL/Redis.
 
-2. Wrap coroutine clients for MySQL(alpha stage)/Redis/Http.
+2. Wrap coroutine clients for Redis/Http.
 
 ## Alternatives
 
