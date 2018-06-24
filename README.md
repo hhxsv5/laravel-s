@@ -115,6 +115,7 @@ gzip_disable "msie6";
 upstream laravels {
     server 192.168.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
     #server 192.168.0.2:5200 weight=3 max_fails=3 fail_timeout=30s;
+    #server unix:/xxxpath/laravel-s-test/storage/laravels.sock weight=5 max_fails=3 fail_timeout=30s;
     #server 192.168.0.3:5200 backup;
 }
 server {
