@@ -790,7 +790,7 @@ class TestProcess implements CustomProcessInterface
 }
 ```
 
-2. Register Process.
+2. Register TestProcess.
 
 ```PHP
 // Edit `config/laravels.php`

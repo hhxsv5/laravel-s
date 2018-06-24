@@ -789,7 +789,7 @@ class TestProcess implements CustomProcessInterface
 }
 ```
 
-2. 注册Process。
+2. 注册TestProcess。
 
 ```PHP
 // 修改文件 config/laravels.php
