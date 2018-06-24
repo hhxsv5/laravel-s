@@ -4,7 +4,7 @@
 
 - `listen_port`：`int` 监听的端口，如果端口小于1024则需要`root`权限，default `5200`。
 
-- `socket_type`: 默认 `SWOOLE_SOCK_TCP`.  如果设置为 `SWOOLE_SOCK_UNIX_STREAM`的话，指定 `listen_ip` 一个可写路径
+- `socket_type`：默认`SWOOLE_SOCK_TCP`。通常情况下，无需关心这个配置。若需Nginx代理至`UnixSocket Stream`文件，则需修改为`SWOOLE_SOCK_UNIX_STREAM`，此时`listen_ip`则是`UnixSocket Stream`文件的路径。
 
 - `enable_gzip`：`bool` 当通过LaravelS响应数据时，是否启用gzip压缩响应的内容，依赖库[zlib](https://zlib.net/)，通过命令`php --ri swoole|grep zlib`检查gzip是否可用。如果开启则会自动加上头部`Content-Encoding`，默认`false`。如果存在代理服务器（例如Nginx），建议代理服务器开启gzip，LaravelS关闭gzip，避免重复gzip压缩。
 

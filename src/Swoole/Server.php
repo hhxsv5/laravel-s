@@ -17,7 +17,7 @@ class Server
     protected $conf;
 
     /**
-     * @var \swoole_http_server
+     * @var \swoole_http_server|\swoole_websocket_server
      */
     protected $swoole;
 
@@ -36,9 +36,9 @@ class Server
         $socketType = isset($conf['socket_type']) ? $conf['socket_type'] : \SWOOLE_SOCK_TCP;
 
         if ($socketType === \SWOOLE_SOCK_UNIX_STREAM) {
-            $dir = dirname($ip);
-            if (!file_exists($dir)) {
-                throw new \Exception(sprintf('The directory %s is not exists', $dir));
+            $socketDir = dirname($ip);
+            if (!file_exists($socketDir)) {
+                mkdir($socketDir);
             }
         }
 

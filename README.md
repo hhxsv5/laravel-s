@@ -113,10 +113,12 @@ gzip_types text/plain text/css text/javascript application/json application/java
 gzip_vary on;
 gzip_disable "msie6";
 upstream laravels {
-    server 192.168.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
-    #server 192.168.0.2:5200 weight=3 max_fails=3 fail_timeout=30s;
+    # By ip:port
+    server 127.0.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
+    # By UnixSocket Stream file
     #server unix:/xxxpath/laravel-s-test/storage/laravels.sock weight=5 max_fails=3 fail_timeout=30s;
-    #server 192.168.0.3:5200 backup;
+    #server 192.168.1.1:5200 weight=3 max_fails=3 fail_timeout=30s;
+    #server 192.168.1.2:5200 backup;
 }
 server {
     listen 80;
@@ -265,9 +267,12 @@ map $http_upgrade $connection_upgrade {
     ''      close;
 }
 upstream laravels {
-    server 192.168.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
-    #server 192.168.0.2:5200 weight=3 max_fails=3 fail_timeout=30s;
-    #server 192.168.0.3:5200 backup;
+    # By ip:port
+    server 127.0.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
+    # By UnixSocket Stream file
+    #server unix:/xxxpath/laravel-s-test/storage/laravels.sock weight=5 max_fails=3 fail_timeout=30s;
+    #server 192.168.1.1:5200 weight=3 max_fails=3 fail_timeout=30s;
+    #server 192.168.1.2:5200 backup;
 }
 server {
     listen 80;
