@@ -22,6 +22,9 @@ return [
     ],
     'sockets'            => [
     ],
+    'processes'          => [
+
+    ],
     'timer'              => [
         'enable' => false,
         'jobs'   => [

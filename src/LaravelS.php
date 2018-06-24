@@ -7,6 +7,7 @@ use Hhxsv5\LaravelS\Swoole\DynamicResponse;
 use Hhxsv5\LaravelS\Swoole\Request;
 use Hhxsv5\LaravelS\Swoole\Server;
 use Hhxsv5\LaravelS\Swoole\StaticResponse;
+use Hhxsv5\LaravelS\Swoole\Traits\CustomProcessTrait;
 use Hhxsv5\LaravelS\Swoole\Traits\InotifyTrait;
 use Hhxsv5\LaravelS\Swoole\Traits\LaravelTrait;
 use Hhxsv5\LaravelS\Swoole\Traits\LogTrait;
@@ -26,11 +27,11 @@ class LaravelS extends Server
     /**
      * Fix conflicts of traits
      */
-    use InotifyTrait, LaravelTrait, LogTrait, ProcessTitleTrait, TimerTrait {
+    use InotifyTrait, LaravelTrait, LogTrait, ProcessTitleTrait, TimerTrait, CustomProcessTrait {
         LogTrait::log insteadof InotifyTrait, TimerTrait;
         LogTrait::logException insteadof InotifyTrait, TimerTrait;
-        ProcessTitleTrait::setProcessTitle insteadof InotifyTrait, TimerTrait;
-        LaravelTrait::initLaravel insteadof TimerTrait;
+        ProcessTitleTrait::setProcessTitle insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
+        LaravelTrait::initLaravel insteadof TimerTrait, CustomProcessTrait;
     }
 
     protected $laravelConf;
@@ -53,6 +54,9 @@ class LaravelS extends Server
         $inotifyCfg['root_path'] = $this->laravelConf['root_path'];
         $inotifyCfg['process_prefix'] = $svrConf['process_prefix'];
         $this->addInotifyProcess($this->swoole, $inotifyCfg);
+
+        $processes = isset($this->conf['processes']) ? $this->conf['processes'] : [];
+        $this->addCustomProcesses($this->swoole, $svrConf['process_prefix'], $processes, $this->laravelConf);
     }
 
     protected function bindWebSocketEvent()
