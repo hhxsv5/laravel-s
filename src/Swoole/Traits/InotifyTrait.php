@@ -39,7 +39,9 @@ trait InotifyTrait
         };
 
         $inotifyProcess = new \swoole_process($autoReload, false, false);
-        $swoole->addProcess($inotifyProcess);
+        if ($swoole->addProcess($inotifyProcess)) {
+            return $inotifyProcess;
+        }
     }
 
 }

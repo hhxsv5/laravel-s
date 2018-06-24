@@ -45,7 +45,9 @@ trait TimerTrait
         };
 
         $timerProcess = new \swoole_process($startTimer, false, false);
-        $swoole->addProcess($timerProcess);
+        if ($swoole->addProcess($timerProcess)) {
+            return $timerProcess;
+        }
     }
 
 }

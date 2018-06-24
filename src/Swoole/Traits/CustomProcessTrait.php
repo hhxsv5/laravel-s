@@ -9,6 +9,7 @@ trait CustomProcessTrait
 
     public function addCustomProcesses(\swoole_server $swoole, $processPrefix, array $processes, array $laravelConfig)
     {
+        $processList = [];
         foreach ($processes as $process) {
             $processHandler = function () use ($swoole, $processPrefix, $process, $laravelConfig) {
                 $name = isset($process['name']) ? $process['name'] : 'custom';
@@ -21,8 +22,11 @@ trait CustomProcessTrait
                 }
             };
             $customProcess = new \swoole_process($processHandler, $process['redirect_stdin_stdout'], $process['pipe_type']);
-            $swoole->addProcess($customProcess);
+            if ($swoole->addProcess($customProcess)) {
+                $processList[] = $customProcess;
+            }
         }
+        return $processList;
     }
 
 }

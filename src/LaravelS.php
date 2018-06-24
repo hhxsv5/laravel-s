@@ -48,15 +48,15 @@ class LaravelS extends Server
 
         $timerCfg = isset($this->conf['timer']) ? $this->conf['timer'] : [];
         $timerCfg['process_prefix'] = $svrConf['process_prefix'];
-        $this->addTimerProcess($this->swoole, $timerCfg, $this->laravelConf);
+        $this->swoole->timerProcess = $this->addTimerProcess($this->swoole, $timerCfg, $this->laravelConf);
 
         $inotifyCfg = isset($this->conf['inotify_reload']) ? $this->conf['inotify_reload'] : [];
         $inotifyCfg['root_path'] = $this->laravelConf['root_path'];
         $inotifyCfg['process_prefix'] = $svrConf['process_prefix'];
-        $this->addInotifyProcess($this->swoole, $inotifyCfg);
+        $this->swoole->inotifyProcess = $this->addInotifyProcess($this->swoole, $inotifyCfg);
 
         $processes = isset($this->conf['processes']) ? $this->conf['processes'] : [];
-        $this->addCustomProcesses($this->swoole, $svrConf['process_prefix'], $processes, $this->laravelConf);
+        $this->swoole->customProcesses = $this->addCustomProcesses($this->swoole, $svrConf['process_prefix'], $processes, $this->laravelConf);
     }
 
     protected function bindWebSocketEvent()
