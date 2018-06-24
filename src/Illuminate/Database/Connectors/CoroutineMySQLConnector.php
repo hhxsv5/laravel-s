@@ -2,7 +2,6 @@
 
 namespace Hhxsv5\LaravelS\Illuminate\Database\Connectors;
 
-use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Connectors\Connector;
 use Illuminate\Database\Connectors\ConnectorInterface;
@@ -25,7 +24,7 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
         try {
             $mysql = $this->connect($config);
         } catch (\Exception $e) {
-            $mysql = $this->tryAgainIfCausedByLostConnection(
+            $mysql = $this->_tryAgainIfCausedByLostConnection(
                 $e, $dsn, $username, $password, $config
             );
         }
@@ -42,7 +41,7 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
      * @return CoroutineMySQL
      * @throws \Throwable
      */
-    protected function tryAgainIfCausedByLostConnection(\Throwable $e, $dsn, $username, $password, $options)
+    protected function _tryAgainIfCausedByLostConnection($e, $dsn, $username, $password, $options)
     {
         if ($this->causedByLostConnection($e)) {
             return $this->connect($options);
