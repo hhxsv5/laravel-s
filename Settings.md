@@ -24,7 +24,9 @@
 
 - `websocket.handler`: `string` The class name for WebSocket handler, needs to implement interface `WebSocketHandlerInterface`, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server)
 
-- `sockets`: `array` The socket list for TCP/UDP, refer to [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-tcpudp-server)
+- `sockets`: `array` The socket list for TCP/UDP, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-tcpudp-server)
+
+- `processes`: `array` The custom process list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#custom-process)
 
 - `events`: `array` The customized asynchronous event list of listener binding, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#customized-asynchronous-events)
 

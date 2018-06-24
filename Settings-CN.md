@@ -26,6 +26,8 @@
 
 - `sockets`: `array` 配置`TCP/UDP`套接字列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%BC%80%E5%90%AFtcpudp%E6%9C%8D%E5%8A%A1%E5%99%A8)
 
+- `processes`: `array` 配置自定义进程列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%9B%E7%A8%8B)
+
 - `events`：`array` 自定义的异步事件和监听的绑定列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E5%BC%82%E6%AD%A5%E4%BA%8B%E4%BB%B6)
 
 - `swoole_tables`：`array` 定义的`swoole_table`列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E4%BD%BF%E7%94%A8swoole_table)
