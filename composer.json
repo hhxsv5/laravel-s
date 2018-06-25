@@ -10,8 +10,6 @@
   "keywords": [
     "LaravelS",
     "swoole",
-    "laravel swoole",
-    "lumen swoole",
     "coroutine",
     "http server",
     "websocket server",
