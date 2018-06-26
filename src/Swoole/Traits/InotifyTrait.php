@@ -16,20 +16,26 @@ trait InotifyTrait
         }
 
         if (!extension_loaded('inotify')) {
-            $this->log('require extension inotify', 'WARN');
+            $this->log('Require extension inotify', 'WARN');
             return;
         }
 
-        $autoReload = function () use ($swoole, $config) {
+        $fileTypes = isset($config['file_types']) ? (array)$config['file_types'] : [];
+        if (empty($fileTypes)) {
+            $this->log('No file types to watch by inotify', 'WARN');
+            return;
+        }
+
+        $autoReload = function () use ($swoole, $config, $fileTypes) {
             $log = !empty($config['log']);
-            $fileTypes = isset($config['file_types']) ? (array)$config['file_types'] : [];
             $this->setProcessTitle(sprintf('%s laravels: inotify process', $config['process_prefix']));
-            $inotify = new Inotify($config['root_path'], IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVE, function ($event) use ($swoole, $log) {
-                $swoole->reload();
-                if ($log) {
-                    $this->log(sprintf('reloaded by inotify, file: %s', $event['name']));
-                }
-            });
+            $inotify = new Inotify($config['root_path'], IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVE,
+                function ($event) use ($swoole, $log) {
+                    $swoole->reload();
+                    if ($log) {
+                        $this->log(sprintf('reloaded by inotify, file: %s', $event['name']));
+                    }
+                });
             $inotify->addFileTypes($fileTypes);
             $inotify->watch();
             if ($log) {

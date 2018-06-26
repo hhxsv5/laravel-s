@@ -9,7 +9,7 @@ class Inotify
     private $watchMask;
     private $watchHandler;
     private $doing     = false;
-    private $fileTypes = ['.php' => true];
+    private $fileTypes = [];
     private $wdPath    = [];
     private $pathWd    = [];
 
