@@ -71,6 +71,9 @@ class Laravel
 
     protected function createApp()
     {
+        MimeTypeGuesser::reset();
+        MimeTypeGuesser::getInstance()->register(new GuessMimeType());
+
         $this->app = require $this->conf['root_path'] . '/bootstrap/app.php';
     }
 
@@ -250,7 +253,6 @@ class Laravel
         $rsp = new BinaryFileResponse($requestFile, $code);
 
         // prepare handle file headers
-        MimeTypeGuesser::getInstance()->register(new GuessMimeType());
         $rsp->prepare($request);
         $rsp->setLastModified(new \DateTime(date('Y-m-d H:i:s', $mtime)));
         $rsp->setMaxAge($maxAge);
