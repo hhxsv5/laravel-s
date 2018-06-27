@@ -50,3 +50,10 @@ $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this
 - Inotify limit is default `8192` for most `Linux`, but the amount of actual project may be more than it, then lead to watch fail.
 
 - Increase the amount of inotify watchers to `524288`: `echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p`, note: you need to enable `privileged` for `Docker`.
+
+## include/require与(include/require)_once
+> See Laruence's blog [Do NOT USE (include/require)_once](http://www.laruence.com/2012/09/12/2765.html)
+
+- To include the files about `class`/`interface`/`trait`/`function`, sugguest to use (include/require)_once. In other cases, use include/require.
+
+- In the multi-process mode, the child process inherits the parent process resource. Once the parent process includes a file that needs to be executed, the child process will directly return true when it uses require_once(), causing the file to fail to execute. Now, you need to use include/require.

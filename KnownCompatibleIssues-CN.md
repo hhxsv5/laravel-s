@@ -50,3 +50,10 @@ $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this
 - `Linux`中`Inotify`监听文件数默认上限一般是`8192`，实际项目的文件数+目录树很可能超过此上限，进而导致后续的监听失败。
 
 - 增加此上限到`524288`：`echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p`，注意`Docker`时需设置启用`privileged`。
+
+## 注意include/require与(include/require)_once
+> 看看鸟哥这篇文章[再一次, 不要使用(include/require)_once](http://www.laruence.com/2012/09/12/2765.html)
+
+- 引入`类`、`接口`、`trait`、`函数`时使用(include/require)_once，其他情况使用include/require。
+
+- 在多进程模式下，子进程会继承父进程资源，一旦父进程引入了某个需要被执行的文件，子进程再次`require_once()`时会直接返回`true`，导致该文件执行失败。此时，你应该使用include/require。
