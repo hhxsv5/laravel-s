@@ -2,12 +2,14 @@
 
 namespace Hhxsv5\LaravelS\Illuminate;
 
+use Hhxsv5\LaravelS\HttpFoundation\GuessMimeType;
+use Hhxsv5\LaravelS\Illuminate\Database\DatabaseServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Http\Request as IlluminateRequest;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Hhxsv5\LaravelS\Illuminate\Database\DatabaseServiceProvider;
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Laravel
@@ -206,13 +208,13 @@ class Laravel
         $publicPath = $this->conf['static_path'];
         $requestFile = $publicPath . $uri;
         if (is_file($requestFile)) {
-            return $this->createStaticResponse($requestFile, $request->header('if-modified-since'));
+            return $this->createStaticResponse($requestFile, $request);
         } elseif (is_dir($requestFile)) {
             $indexFile = $this->lookupIndex($requestFile);
             if ($indexFile === false) {
                 return false;
             } else {
-                return $this->createStaticResponse($indexFile, $request->header('if-modified-since'));
+                return $this->createStaticResponse($indexFile, $request);
             }
         } else {
             return false;
@@ -231,8 +233,10 @@ class Laravel
         return false;
     }
 
-    public function createStaticResponse($requestFile, $modifiedSince = null)
+    public function createStaticResponse($requestFile, IlluminateRequest $request)
     {
+        $modifiedSince = $request->header('if-modified-since');
+
         $code = SymfonyResponse::HTTP_OK;
         $mtime = filemtime($requestFile);
         if ($modifiedSince !== null) {
@@ -244,10 +248,15 @@ class Laravel
 
         $maxAge = 24 * 3600;
         $rsp = new BinaryFileResponse($requestFile, $code);
+
+        // prepare handle file headers
+        MimeTypeGuesser::getInstance()->register(new GuessMimeType());
+        $rsp->prepare($request);
         $rsp->setLastModified(new \DateTime(date('Y-m-d H:i:s', $mtime)));
         $rsp->setMaxAge($maxAge);
         $rsp->setPrivate();
         $rsp->setExpires(new \DateTime(date('Y-m-d H:i:s', time() + $maxAge)));
+
         return $rsp;
     }
 
