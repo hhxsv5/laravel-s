@@ -57,3 +57,43 @@ $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this
 - To include the files about `class`/`interface`/`trait`/`function`, sugguest to use (include/require)_once. In other cases, use include/require.
 
 - In the multi-process mode, the child process inherits the parent process resource. Once the parent process includes a file that needs to be executed, the child process will directly return true when it uses require_once(), causing the file to fail to execute. Now, you need to use include/require.
+
+## If `Swoole < 1.9.17`
+> After enabling `handle_static`, static resource files will be handled by `LaravelS`. Due to the PHP environment, `MimeTypeGuesser` may not correctly recognize `MimeType`. For example, Javascript and CSS files will be recognized as `text/plain`.
+
+Solutions:
+
+1.Upgrade Swoole to `1.9.17+`
+
+2.Register a custom MIME guesser.
+
+```PHP
+// MyGuessMimeType.php
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesserInterface;
+class MyGuessMimeType implements MimeTypeGuesserInterface
+{
+    protected static $map = [
+        'js'  => 'application/javascript',
+        'css' => 'text/css',
+    ];
+    public function guess($path)
+    {
+        $ext = pathinfo($path, PATHINFO_EXTENSION);
+        if (strlen($ext) > 0) {
+            return Arr::get(self::$map, $ext);
+        } else {
+            return null;
+        }
+    }
+}
+```
+
+```PHP
+// AppServiceProvider.php
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
+public function boot()
+{
+    MimeTypeGuesser::getInstance()->register(new MyGuessMimeType());
+}
+```
+

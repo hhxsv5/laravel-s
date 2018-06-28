@@ -59,10 +59,42 @@ $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this
 - 在多进程模式下，子进程会继承父进程资源，一旦父进程引入了某个需要被执行的文件，子进程再次`require_once()`时会直接返回`true`，导致该文件执行失败。此时，你应该使用include/require。
 
 
-## 对于swoole版本号小于 1.9.17 的环境
+## 对于`Swoole < 1.9.17`的环境
+> `handle_static`开启后，静态资源文件将由`LaravelS`组件处理。由于PHP环境的原因，可能会导致`MimeTypeGuesser`无法正确识别`MimeType`，比如会Javascript与CSS文件会被识别为`text/plain`。
 
-小于 1.9.17 静态资源文件将由LaravelS组件自己处理，由于php环境的一些原因可能识别不到静态资源的MimeType类型，比如会造成浏览器不识别css和js文件的情况。
+解决方案：
 
-- 尽量使用新版的swoole
-- 使用 \Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser::getInstance()->register(MimeTypeGuesserInterface $guesser); 手动添加自定义解析器。
+1.升级Swoole到`1.9.17+`
+
+2.注册自定义MIME猜测器
+
+```PHP
+// MyGuessMimeType.php
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesserInterface;
+class MyGuessMimeType implements MimeTypeGuesserInterface
+{
+    protected static $map = [
+        'js'  => 'application/javascript',
+        'css' => 'text/css',
+    ];
+    public function guess($path)
+    {
+        $ext = pathinfo($path, PATHINFO_EXTENSION);
+        if (strlen($ext) > 0) {
+            return Arr::get(self::$map, $ext);
+        } else {
+            return null;
+        }
+    }
+}
+```
+
+```PHP
+// AppServiceProvider.php
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
+public function boot()
+{
+    MimeTypeGuesser::getInstance()->register(new MyGuessMimeType());
+}
+```
 
