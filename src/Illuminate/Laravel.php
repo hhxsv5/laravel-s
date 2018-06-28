@@ -70,11 +70,6 @@ class Laravel
 
     protected function createApp()
     {
-        if ($this->conf['handle_static']) {
-            MimeTypeGuesser::reset();
-            MimeTypeGuesser::getInstance()->register(new GuessMimeType());
-        }
-
         $this->app = require $this->conf['root_path'] . '/bootstrap/app.php';
     }
 
