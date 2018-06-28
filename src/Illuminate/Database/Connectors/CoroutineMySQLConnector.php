@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Database\Connectors\Connector;
 use Illuminate\Database\Connectors\ConnectorInterface;
 use Hhxsv5\LaravelS\Illuminate\Database\CoroutineMySQL;
+use Illuminate\Support\Str;
 
 class CoroutineMySQLConnector extends Connector implements ConnectorInterface
 {
@@ -43,7 +44,7 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
      */
     protected function _tryAgainIfCausedByLostConnection($e, $dsn, $username, $password, $options)
     {
-        if ($this->causedByLostConnection($e)) {
+        if ($this->causedByLostConnection($e) || Str::contains($e->getMessage(), 'is closed')) {
             return $this->connect($options);
         }
         throw $e;
