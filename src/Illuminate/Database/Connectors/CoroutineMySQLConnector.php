@@ -19,15 +19,10 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
      */
     public function createConnection($dsn, array $config, array $options)
     {
-        $username = Arr::get($config, 'username');
-        $password = Arr::get($config, 'password');
-
         try {
             $mysql = $this->connect($config);
         } catch (\Exception $e) {
-            $mysql = $this->_tryAgainIfCausedByLostConnection(
-                $e, $dsn, $username, $password, $config
-            );
+            $mysql = $this->_tryAgainIfCausedByLostConnection($e, $config);
         }
 
         return $mysql;
@@ -35,17 +30,14 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
 
     /**
      * @param \Throwable $e
-     * @param string $dsn
-     * @param string $username
-     * @param string $password
-     * @param array $options
+     * @param array $config
      * @return CoroutineMySQL
      * @throws \Throwable
      */
-    protected function _tryAgainIfCausedByLostConnection($e, $dsn, $username, $password, $options)
+    protected function _tryAgainIfCausedByLostConnection($e, array $config)
     {
         if ($this->causedByLostConnection($e) || Str::contains($e->getMessage(), 'is closed')) {
-            return $this->connect($options);
+            return $this->connect($config);
         }
         throw $e;
     }
