@@ -57,3 +57,12 @@ $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this
 - 引入`类`、`接口`、`trait`、`函数`时使用(include/require)_once，其他情况使用include/require。
 
 - 在多进程模式下，子进程会继承父进程资源，一旦父进程引入了某个需要被执行的文件，子进程再次`require_once()`时会直接返回`true`，导致该文件执行失败。此时，你应该使用include/require。
+
+
+## 对于swoole版本号小于 1.9.17 的环境
+
+小于 1.9.17 静态资源文件将由LaravelS组件自己处理，由于php环境的一些原因可能识别不到静态资源的MimeType类型，比如会造成浏览器不识别css和js文件的情况。
+
+- 尽量使用新版的swoole
+- 使用 \Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser::getInstance()->register(MimeTypeGuesserInterface $guesser); 手动添加自定义解析器。
+
