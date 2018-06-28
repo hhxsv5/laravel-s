@@ -2,13 +2,11 @@
 
 namespace Hhxsv5\LaravelS\Illuminate;
 
-use Hhxsv5\LaravelS\HttpFoundation\GuessMimeType;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Http\Request as IlluminateRequest;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Laravel
@@ -237,7 +235,6 @@ class Laravel
         $response = new BinaryFileResponse($requestFile);
         $response->prepare($request);
         $response->isNotModified($request);
-
         return $response;
     }
 
