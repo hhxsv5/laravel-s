@@ -60,7 +60,7 @@ $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this
 
 
 ## 对于`Swoole < 1.9.17`的环境
-> `handle_static`开启后，静态资源文件将由`LaravelS`组件处理。由于PHP环境的原因，可能会导致`MimeTypeGuesser`无法正确识别`MimeType`，比如会Javascript与CSS文件会被识别为`text/plain`。
+> 开启`handle_static`后，静态资源文件将由`LaravelS`组件处理。由于PHP环境的原因，可能会导致`MimeTypeGuesser`无法正确识别`MimeType`，比如会Javascript与CSS文件会被识别为`text/plain`。
 
 解决方案：
 
