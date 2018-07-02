@@ -5,7 +5,7 @@ namespace Hhxsv5\LaravelS\Illuminate\Database\Connectors;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Connectors\Connector;
 use Illuminate\Database\Connectors\ConnectorInterface;
-use Hhxsv5\LaravelS\Illuminate\Database\CoroutineMySQL;
+use Hhxsv5\LaravelS\Illuminate\Database\SwoolePDO;
 use Illuminate\Support\Str;
 
 class CoroutineMySQLConnector extends Connector implements ConnectorInterface
@@ -14,7 +14,7 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
      * @param string $dsn
      * @param array $config
      * @param array $options
-     * @return CoroutineMySQL
+     * @return SwoolePDO
      * @throws \Throwable
      */
     public function createConnection($dsn, array $config, array $options)
@@ -31,7 +31,7 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
     /**
      * @param \Throwable $e
      * @param array $config
-     * @return CoroutineMySQL
+     * @return SwoolePDO
      * @throws \Throwable
      */
     protected function _tryAgainIfCausedByLostConnection($e, array $config)
@@ -44,11 +44,11 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
 
     /**
      * @param array $config
-     * @return CoroutineMySQL
+     * @return SwoolePDO
      */
     public function connect(array $config)
     {
-        $connection = new CoroutineMySQL();
+        $connection = new SwoolePDO();
         $connection->connect([
             'host'        => Arr::get($config, 'host', '127.0.0.1'),
             'port'        => Arr::get($config, 'port', 3306),

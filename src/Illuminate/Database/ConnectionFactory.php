@@ -24,7 +24,7 @@ class ConnectionFactory extends IlluminateConnectionFactory
     {
         switch ($driver) {
             case 'sw-co-mysql':
-                return new CoroutineMySQLConnection($connection, $database, $prefix, $config);
+                return new SwooleMySQLConnection($connection, $database, $prefix, $config);
         }
         return parent::createConnection($driver, $connection, $database, $prefix, $config);
     }

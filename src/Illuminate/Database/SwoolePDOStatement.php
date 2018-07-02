@@ -4,7 +4,7 @@ namespace Hhxsv5\LaravelS\Illuminate\Database;
 
 use Swoole\Coroutine\MySQL\Statement as SwooleStatement;
 
-class CoroutineMySQLStatement extends \PDOStatement
+class SwoolePDOStatement extends \PDOStatement
 {
     protected $statement;
     protected $bindParams = [];

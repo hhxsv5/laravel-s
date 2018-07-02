@@ -4,19 +4,19 @@ namespace Hhxsv5\LaravelS\Illuminate\Database;
 
 use Illuminate\Database\MySqlConnection;
 
-class CoroutineMySQLConnection extends MySqlConnection
+class SwooleMySQLConnection extends MySqlConnection
 {
     /**
      * The active swoole mysql connection.
      *
-     * @var CoroutineMySQL
+     * @var SwoolePDO
      */
     protected $pdo;
 
     /**
      * The active swoole mysql used for reads.
      *
-     * @var CoroutineMySQL
+     * @var SwoolePDO
      */
     protected $readPdo;
 
@@ -24,10 +24,4 @@ class CoroutineMySQLConnection extends MySqlConnection
     {
         return 'Swoole Coroutine MySQL';
     }
-//
-//    protected function prepared($statement)
-//    {
-//        //TODO
-//        return $statement;
-//    }
 }

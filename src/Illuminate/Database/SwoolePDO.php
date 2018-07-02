@@ -5,7 +5,7 @@ namespace Hhxsv5\LaravelS\Illuminate\Database;
 use Illuminate\Database\QueryException;
 use Swoole\Coroutine\MySQL as SwooleMySQL;
 
-class CoroutineMySQL extends \PDO
+class SwoolePDO extends \PDO
 {
     protected $coMySQL;
 
@@ -25,7 +25,7 @@ class CoroutineMySQL extends \PDO
         if ($oldStatement === false) {
             throw new QueryException($statement, [], new \Exception($this->coMySQL->error, $this->coMySQL->errno));
         }
-        return new CoroutineMySQLStatement($oldStatement);
+        return new SwoolePDOStatement($oldStatement);
     }
 
     public function beginTransaction()
