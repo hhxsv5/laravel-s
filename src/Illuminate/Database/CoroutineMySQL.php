@@ -48,6 +48,11 @@ class CoroutineMySQL extends \PDO
         return $this->coMySQL->query($statement, array_get($ctorargs, 'timeout', 0.0));
     }
 
+    public function exec($statement)
+    {
+        return $this->coMySQL->query($statement);
+    }
+
     public function lastInsertId($name = null)
     {
         return $this->coMySQL->insert_id;
