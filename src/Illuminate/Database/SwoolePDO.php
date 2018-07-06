@@ -22,11 +22,11 @@ class SwoolePDO extends \PDO
 
     public function prepare($statement, $options = null)
     {
-        $oldStatement = $this->sm->prepare($statement);
-        if ($oldStatement === false) {
+        $swStatement = $this->sm->prepare($statement);
+        if ($swStatement === false) {
             throw new QueryException($statement, [], new \Exception($this->sm->error, $this->sm->errno));
         }
-        return new SwoolePDOStatement($oldStatement);
+        return new SwoolePDOStatement($swStatement);
     }
 
     public function beginTransaction()
@@ -54,7 +54,7 @@ class SwoolePDO extends \PDO
 
     public function exec($statement)
     {
-        return $this->sm->query($statement);
+        return $this->query($statement);
     }
 
     public function lastInsertId($name = null)
@@ -106,5 +106,10 @@ class SwoolePDO extends \PDO
     public static function getAvailableDrivers()
     {
         return ['mysql'];
+    }
+
+    public function __destruct()
+    {
+        $this->sm->close();
     }
 }

@@ -60,13 +60,13 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
             'strict_type' => Arr::get($config, 'strict', false),
         ]);
         if (isset($config['timezone'])) {
-            $connection->prepare('set time_zone="' . $config['timezone'] . '"')->execute();
+            $connection->query('set time_zone="' . $config['timezone'] . '"');
         }
         if (isset($config['strict'])) {
             if ($config['strict']) {
-                $connection->prepare("set session sql_mode='STRICT_ALL_TABLES,ANSI_QUOTES'")->execute();
+                $connection->query("set session sql_mode='STRICT_ALL_TABLES,ANSI_QUOTES'");
             } else {
-                $connection->prepare("set session sql_mode='ANSI_QUOTES'")->execute();
+                $connection->query("set session sql_mode='ANSI_QUOTES'");
             }
         }
         return $connection;

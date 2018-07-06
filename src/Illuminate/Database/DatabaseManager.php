@@ -10,4 +10,10 @@ class DatabaseManager extends IlluminateDatabaseManager
     {
         parent::__construct($app, $factory);
     }
+
+    public function connection($name = null)
+    {
+        $this->connections = [];
+        return parent::connection($name);
+    }
 }
