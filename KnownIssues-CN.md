@@ -20,11 +20,37 @@ $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this
 ```
 
 ## 使用包 [overtrue/wechat](https://github.com/overtrue/wechat)
-> 常驻内存后，每次调用flash()会追加消息提醒，导致叠加展示消息提醒。有以下两个方案。
+> easywechat包在laravel-s环境下,会出现异步通知回调失败的问题,原因是$app['request']是空的,给其赋值即可
 
-1.通过中间件在每次请求`处理前`或`处理后`重置$messages `app('flash')->clear();`。
+```PHP
+    //获取支付实例
+    protected function getPayment()
+    {
+        $config = config("wechat.payment.default");
+        $config = [
+            // 必要配置
+            'app_id'             => $config['app_id'],
+            'mch_id'             => $config['mch_id'],
+            'key'                => $config['key'],   // API 密钥
+            // 如需使用敏感接口（如退款、发送红包等）需要配置 API 证书路径(登录商户平台下载 API 证书)
+            'cert_path'          => '/home/wwwroot/yamecent/cert/apiclient_cert.pem', // XXX: 绝对路径！！！！
+            'key_path'           => '/home/wwwroot/yamecent/cert/apiclient_key.pem',      // XXX: 绝对路径！！！！
+            'notify_url'         => $config['notify_url'],
+        ];
+        return Factory::payment($config);
+    }
+    //回调通知
+    public function notify(Request $request)
+    {
+        $app = $this->getPayment();
+        $app['request'] = $request;//在原有代码添加这一行
+        $response = $app->handlePaidNotify(function ($message, $fail) use($id) {
+        //...
+        });
+        return $response;
+    }
+```
 
-2.每次请求处理后重新注册`FlashServiceProvider`，配置[register_providers](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
 ## 使用包 [laracasts/flash](https://github.com/laracasts/flash)
 > 常驻内存后，每次调用flash()会追加消息提醒，导致叠加展示消息提醒。有以下两个方案。
