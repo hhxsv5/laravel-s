@@ -19,13 +19,29 @@
 $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this->app->environment('testing');
 ```
 
+## 使用包 [overtrue/wechat](https://github.com/overtrue/wechat)
+> easywechat包在laravel-s环境下,会出现异步通知回调失败的问题,原因是$app['request']是空的,给其赋值即可
+
+```PHP
+    //回调通知
+    public function notify(Request $request)
+    {
+        $app = $this->getPayment();//获取支付实例
+        $app['request'] = $request;//在原有代码添加这一行,将当前请求赋值给$app['request']
+        $response = $app->handlePaidNotify(function ($message, $fail) use($id) {
+        //...
+        });
+        return $response;
+    }
+```
+
+
 ## 使用包 [laracasts/flash](https://github.com/laracasts/flash)
 > 常驻内存后，每次调用flash()会追加消息提醒，导致叠加展示消息提醒。有以下两个方案。
 
 1.通过中间件在每次请求`处理前`或`处理后`重置$messages `app('flash')->clear();`。
 
 2.每次请求处理后重新注册`FlashServiceProvider`，配置[register_providers](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
-
 ## 不能使用这些函数
 
 - `flush`/`ob_flush`/`ob_end_flush`/`ob_implicit_flush`：`swoole_http_response`不支持`flush`。
