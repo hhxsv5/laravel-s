@@ -24,10 +24,11 @@ class SwoolePDO extends \PDO
         $this->sm->connect($serverInfo);
 
         if ($this->sm->connected === false) {
-            throw new ConnectionException(
-                'Cannot connect to the database: ' . $this->sm->connect_error,
-                $this->sm->connect_errno
+            $msg = sprintf('Cannot connect to the database: %s',
+                $this->sm->connect_errno ? $this->sm->connect_error : $this->sm->error
             );
+            $code = $this->sm->connect_errno ?: $this->sm->errno;
+            throw new ConnectionException($msg, $code);
         }
 
     }
