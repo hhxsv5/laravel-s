@@ -19,18 +19,18 @@
 $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this->app->environment('testing');
 ```
 ## Use package [overtrue/wechat](https://github.com/overtrue/wechat)
-> The easywechat package in the laravel-s environment, the asynchronous notification callback failure problem, because $app['request'] is empty, give it a value
+> The asynchronous notification callback will be failing, because `$app['request']` is empty, give it a value.
 
 ```PHP
-    public function notify(Request $request)
-    {
-        $app = $this->getPayment();//Get payment instance
-        $app['request'] = $request;//Add this line to the original code and assign the current request instance to $app['request']
-        $response = $app->handlePaidNotify(function ($message, $fail) use($id) {
+public function notify(Request $request)
+{
+    $app = $this->getPayment();//Get payment instance
+    $app['request'] = $request;//Add this line to the original code and assign the current request instance to $app['request']
+    $response = $app->handlePaidNotify(function ($message, $fail) use($id) {
         //...
-        });
-        return $response;
-    }
+    });
+    return $response;
+}
 ```
 ## Use package [laracasts/flash](https://github.com/laracasts/flash)
 > Flash messages are held in memory all the time. Appending to `$messages` when call flash() every time, leads to the multiple messages. There are two solutions.

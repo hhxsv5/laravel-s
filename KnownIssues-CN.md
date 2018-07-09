@@ -20,19 +20,19 @@ $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this
 ```
 
 ## 使用包 [overtrue/wechat](https://github.com/overtrue/wechat)
-> easywechat包在laravel-s环境下,会出现异步通知回调失败的问题,原因是$app['request']是空的,给其赋值即可
+> easywechat包会出现异步通知回调失败的问题，原因是`$app['request']`是空的，给其赋值即可。
 
 ```PHP
-    //回调通知
-    public function notify(Request $request)
-    {
-        $app = $this->getPayment();//获取支付实例
-        $app['request'] = $request;//在原有代码添加这一行,将当前请求赋值给$app['request']
-        $response = $app->handlePaidNotify(function ($message, $fail) use($id) {
+//回调通知
+public function notify(Request $request)
+{
+    $app = $this->getPayment();//获取支付实例
+    $app['request'] = $request;//在原有代码添加这一行，将当前Request赋值给$app['request']
+    $response = $app->handlePaidNotify(function ($message, $fail) use($id) {
         //...
-        });
-        return $response;
-    }
+    });
+    return $response;
+}
 ```
 
 
