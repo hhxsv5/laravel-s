@@ -2,6 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Illuminate\Database;
 
+use Illuminate\Database\Connection;
 use Hhxsv5\LaravelS\Illuminate\Database\Connectors\CoroutineMySQLConnector;
 use Illuminate\Database\Connectors\ConnectionFactory as IlluminateConnectionFactory;
 
@@ -26,15 +27,20 @@ class ConnectionFactory extends IlluminateConnectionFactory
 
     protected function createSingleConnection(array $config)
     {
-        $swoolePdo = $this->createConnector($config)->connect($config);
-        return $this->createSwooleConnection($config['driver'], $swoolePdo, $config['database'], $config['prefix'], $config);
+        if (method_exists($this, 'createPdoResolver')) {
+            $pdo = $this->createPdoResolver($config);
+        } else {
+            $pdo = $this->createConnector($config)->connect($config);
+        }
+        return $this->createSwooleConnection($config['driver'], $pdo, $config['database'], $config['prefix'], $config);
     }
 
-    protected function createSwooleConnection($driver, SwoolePDO $connection, $database, $prefix = '', array $config = [])
+    protected function createSwooleConnection($driver, $connection, $database, $prefix = '', array $config = [])
     {
-        if ($this->container->bound($key = "db.connection.{$driver}")) {
-            return $this->container->make($key, [$connection, $database, $prefix, $config]);
+        if ($resolver = Connection::getResolver($driver)) {
+            return $resolver($connection, $database, $prefix, $config);
         }
+
         switch ($driver) {
             case 'sw-co-mysql':
                 return new SwooleMySQLConnection($connection, $database, $prefix, $config);
