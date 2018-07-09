@@ -15,16 +15,28 @@ class SwoolePDO extends \PDO
         $this->sm = new SwooleMySQL();
     }
 
+    /**
+     * @param array $serverInfo
+     * @throws ConnectionException
+     */
     public function connect(array $serverInfo)
     {
         $this->sm->connect($serverInfo);
+
+        if ($this->sm->connected === false) {
+            throw new ConnectionException(
+                'Cannot connect to the database: ' . $this->sm->connect_error,
+                $this->sm->connect_errno
+            );
+        }
+
     }
 
     public function prepare($statement, $options = null)
     {
         $swStatement = $this->sm->prepare($statement);
         if ($swStatement === false) {
-            throw new QueryException($statement, [], new \Exception($this->sm->error, $this->sm->errno));
+            throw new QueryException($statement, [], new StatementException($this->sm->error, $this->sm->errno));
         }
         return new SwoolePDOStatement($swStatement);
     }
