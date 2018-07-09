@@ -9,9 +9,9 @@
   "description": "🚀 LaravelS: speed up Laravel/Lumen by Swoole, let's fly.",
   "keywords": [
     "laravel-s",
+    "swoole",
     "laravel",
     "lumen",
-    "swoole",
     "async",
     "coroutine",
     "server",
