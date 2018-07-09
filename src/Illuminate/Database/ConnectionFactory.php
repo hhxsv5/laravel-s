@@ -37,8 +37,10 @@ class ConnectionFactory extends IlluminateConnectionFactory
 
     protected function createSwooleConnection($driver, $connection, $database, $prefix = '', array $config = [])
     {
-        if ($resolver = Connection::getResolver($driver)) {
-            return $resolver($connection, $database, $prefix, $config);
+        if (method_exists(Connection::class, 'getResolver')) {
+            if ($resolver = Connection::getResolver($driver)) {
+                return $resolver($connection, $database, $prefix, $config);
+            }
         }
 
         switch ($driver) {
