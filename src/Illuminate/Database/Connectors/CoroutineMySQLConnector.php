@@ -22,7 +22,7 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
         try {
             $mysql = $this->connect($config);
         } catch (\Exception $e) {
-            $mysql = $this->_tryAgainIfCausedByLostConnection($e, $config);
+            $mysql = $this->tryAgainIfCausedByLostConnectionForCoroutineMySQL($e, $config);
         }
 
         return $mysql;
@@ -34,9 +34,9 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
      * @return SwoolePDO
      * @throws \Throwable
      */
-    protected function _tryAgainIfCausedByLostConnection($e, array $config)
+    protected function tryAgainIfCausedByLostConnectionForCoroutineMySQL($e, array $config)
     {
-        if (parent::causedByLostConnection($e) || Str::contains($e->getMessage(), 'is closed')) {
+        if (parent::causedByLostConnection($e) || Str::contains($e->getMessage(), ['is closed'])) {
             return $this->connect($config);
         }
         throw $e;
