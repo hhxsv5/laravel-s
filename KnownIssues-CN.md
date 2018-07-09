@@ -23,27 +23,11 @@ $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this
 > easywechat包在laravel-s环境下,会出现异步通知回调失败的问题,原因是$app['request']是空的,给其赋值即可
 
 ```PHP
-    //获取支付实例
-    protected function getPayment()
-    {
-        $config = config("wechat.payment.default");
-        $config = [
-            // 必要配置
-            'app_id'             => $config['app_id'],
-            'mch_id'             => $config['mch_id'],
-            'key'                => $config['key'],   // API 密钥
-            // 如需使用敏感接口（如退款、发送红包等）需要配置 API 证书路径(登录商户平台下载 API 证书)
-            'cert_path'          => '/home/wwwroot/yamecent/cert/apiclient_cert.pem', // XXX: 绝对路径！！！！
-            'key_path'           => '/home/wwwroot/yamecent/cert/apiclient_key.pem',      // XXX: 绝对路径！！！！
-            'notify_url'         => $config['notify_url'],
-        ];
-        return Factory::payment($config);
-    }
     //回调通知
     public function notify(Request $request)
     {
-        $app = $this->getPayment();
-        $app['request'] = $request;//在原有代码添加这一行
+        $app = $this->getPayment();//获取支付实例
+        $app['request'] = $request;//在原有代码添加这一行,将当前请求赋值给$app['request']
         $response = $app->handlePaidNotify(function ($message, $fail) use($id) {
         //...
         });
