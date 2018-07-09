@@ -62,7 +62,11 @@ class SwoolePDO extends \PDO
 
     public function query($statement, $mode = \PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null, array $ctorargs = [])
     {
-        return $this->sm->query($statement, array_get($ctorargs, 'timeout', 0.0));
+        $result = $this->sm->query($statement, array_get($ctorargs, 'timeout', 0.0));
+        if ($result === false) {
+            throw new QueryException($statement, [], new \Exception($this->sm->error, $this->sm->errno));
+        }
+        return $result;
     }
 
     public function exec($statement)
