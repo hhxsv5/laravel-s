@@ -29,7 +29,7 @@ class SwooleMySQLConnection extends MySqlConnection
 
     protected function tryAgainIfCausedByLostConnection(QueryException $e, $query, $bindings, \Closure $callback)
     {
-        if ($this->causedByLostConnection($e->getPrevious()) || Str::contains($e->getMessage(), ['is closed'])) {
+        if ($this->causedByLostConnection($e->getPrevious()) || Str::contains($e->getMessage(), ['is closed', 'is not established'])) {
             $this->reconnect();
 
             return $this->runQueryCallback($query, $bindings, $callback);

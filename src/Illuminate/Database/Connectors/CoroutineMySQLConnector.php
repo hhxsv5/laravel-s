@@ -36,7 +36,7 @@ class CoroutineMySQLConnector extends Connector implements ConnectorInterface
      */
     protected function tryAgainIfCausedByLostConnectionForCoroutineMySQL($e, array $config)
     {
-        if (parent::causedByLostConnection($e) || Str::contains($e->getMessage(), ['is closed'])) {
+        if (parent::causedByLostConnection($e) || Str::contains($e->getMessage(), ['is closed', 'is not established'])) {
             return $this->connect($config);
         }
         throw $e;
