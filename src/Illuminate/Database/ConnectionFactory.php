@@ -41,6 +41,10 @@ class ConnectionFactory extends IlluminateConnectionFactory
             if ($resolver = Connection::getResolver($driver)) {
                 return $resolver($connection, $database, $prefix, $config);
             }
+        } else {
+            if ($this->container->bound($key = "db.connection.{$driver}")) {
+                return $this->container->make($key, [$connection, $database, $prefix, $config]);
+            }
         }
 
         switch ($driver) {
