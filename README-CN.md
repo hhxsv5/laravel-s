@@ -494,7 +494,7 @@ class TestCronJob extends CronJob
         if ($this->i >= 10) { // 运行10次后不再执行
             \Log::info(__METHOD__, ['stop', $this->i, microtime(true)]);
             $this->stop(); // 终止此任务
-            $ret = Task::deliver(new TestTask('task data'), true); // CronJob中也可以投递Task
+            $ret = Task::deliver(new TestTask('task data'), true); // CronJob中也可以投递Task，注意第二个参数传true
             var_dump($ret);
         }
         // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
