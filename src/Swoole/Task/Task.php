@@ -15,8 +15,6 @@ abstract class Task
      */
     protected $delay;
 
-    protected static $timerMode = false;
-
     public function delay($delay)
     {
         if ($delay <= 0) {
@@ -36,23 +34,21 @@ abstract class Task
 
     abstract public function handle();
 
-    public static function setTimerMode($isTimerMode = true)
+    public static function deliver(self $task, $bySendMessage = false)
     {
-        self::$timerMode = $isTimerMode;
-    }
-
-    public static function deliver(self $task)
-    {
-        $deliver = function () use ($task) {
+        $deliver = function () use ($task, $bySendMessage) {
             /**
              * @var \swoole_http_server $swoole
              */
             $swoole = app('swoole');
-            if (self::$timerMode) {
-                $workerNum = isset($swoole->setting['worker_num']) ? $swoole->setting['worker_num'] : 0;
+            if ($bySendMessage) {
                 $taskWorkerNum = isset($swoole->setting['task_worker_num']) ? $swoole->setting['task_worker_num'] : 0;
+                if ($taskWorkerNum === 0) {
+                    throw new \InvalidArgumentException('LaravelS: Asynchronous task needs to set task_worker_num > 0');
+                }
+                $workerNum = isset($swoole->setting['worker_num']) ? $swoole->setting['worker_num'] : 0;
                 $totalNum = $workerNum + $taskWorkerNum;
-                return $swoole->sendMessage($task, mt_rand(0, $totalNum - 1));
+                return $swoole->sendMessage($task, mt_rand($workerNum, $totalNum - 1));
             } else {
                 $taskId = $swoole->task($task);
                 return $taskId !== false;

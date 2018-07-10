@@ -71,6 +71,7 @@ class Server
         $this->swoole->on('WorkerStart', [$this, 'onWorkerStart']);
         $this->swoole->on('WorkerStop', [$this, 'onWorkerStop']);
         $this->swoole->on('WorkerError', [$this, 'onWorkerError']);
+        $this->swoole->on('PipeMessage', [$this, 'onPipeMessage']);
     }
 
     protected function bindHttpEvent()
@@ -83,7 +84,6 @@ class Server
         if (!empty($this->conf['swoole']['task_worker_num'])) {
             $this->swoole->on('Task', [$this, 'onTask']);
             $this->swoole->on('Finish', [$this, 'onFinish']);
-            $this->swoole->on('PipeMessage', [$this, 'onPipeMessage']);
         }
     }
 
