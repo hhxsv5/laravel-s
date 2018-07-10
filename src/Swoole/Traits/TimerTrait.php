@@ -2,6 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Swoole\Traits;
 
+use Hhxsv5\LaravelS\Swoole\Task\Task;
 use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 
 trait TimerTrait
@@ -19,6 +20,8 @@ trait TimerTrait
         $startTimer = function () use ($swoole, $config, $laravelConfig) {
             $this->setProcessTitle(sprintf('%s laravels: timer process', $config['process_prefix']));
             $this->initLaravel($laravelConfig, $swoole);
+            // Set flag to deliver task by sendMessage()
+            Task::setTimerMode(true);
             foreach ($config['jobs'] as $jobClass) {
                 $job = new $jobClass();
                 if (!($job instanceof CronJob)) {

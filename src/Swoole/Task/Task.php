@@ -15,6 +15,8 @@ abstract class Task
      */
     protected $delay;
 
+    protected static $timerMode = false;
+
     public function delay($delay)
     {
         if ($delay <= 0) {
@@ -34,6 +36,11 @@ abstract class Task
 
     abstract public function handle();
 
+    public static function setTimerMode($isTimerMode = true)
+    {
+        self::$timerMode = $isTimerMode;
+    }
+
     public static function deliver(self $task)
     {
         $deliver = function () use ($task) {
@@ -41,8 +48,15 @@ abstract class Task
              * @var \swoole_http_server $swoole
              */
             $swoole = app('swoole');
-            $taskId = $swoole->task($task);
-            return $taskId !== false;
+            if (self::$timerMode) {
+                $workerNum = isset($swoole->setting['worker_num']) ? $swoole->setting['worker_num'] : 0;
+                $taskWorkerNum = isset($swoole->setting['task_worker_num']) ? $swoole->setting['task_worker_num'] : 0;
+                $totalNum = $workerNum + $taskWorkerNum;
+                return $swoole->sendMessage($task, mt_rand(0, $totalNum - 1));
+            } else {
+                $taskId = $swoole->task($task);
+                return $taskId !== false;
+            }
         };
         if ($task->delay > 0) {
             swoole_timer_after($task->delay * 1000, $deliver);

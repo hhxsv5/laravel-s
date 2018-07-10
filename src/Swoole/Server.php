@@ -83,6 +83,7 @@ class Server
         if (!empty($this->conf['swoole']['task_worker_num'])) {
             $this->swoole->on('Task', [$this, 'onTask']);
             $this->swoole->on('Finish', [$this, 'onFinish']);
+            $this->swoole->on('PipeMessage', [$this, 'onPipeMessage']);
         }
     }
 
@@ -262,6 +263,11 @@ class Server
     public function onWorkerError(\swoole_http_server $server, $workerId, $workerPId, $exitCode, $signal)
     {
         $this->log(sprintf('worker[%d] error: exitCode=%s, signal=%s', $workerId, $exitCode, $signal), 'ERROR');
+    }
+
+    public function onPipeMessage(\swoole_http_server $server, $srcWorkerId, $message)
+    {
+        $this->onTask($server, uniqid('', true), $srcWorkerId, $message);
     }
 
     public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
