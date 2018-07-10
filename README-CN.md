@@ -466,6 +466,8 @@ var_dump($ret);//判断是否投递成功
 1.创建定时任务类。
 ```PHP
 namespace App\Jobs\Timer;
+use App\Tasks\TestTask;
+use Hhxsv5\LaravelS\Swoole\Task\Task;
 use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 class TestCronJob extends CronJob
 {
@@ -492,6 +494,8 @@ class TestCronJob extends CronJob
         if ($this->i >= 10) { // 运行10次后不再执行
             \Log::info(__METHOD__, ['stop', $this->i, microtime(true)]);
             $this->stop(); // 终止此任务
+            $ret = Task::deliver(new TestTask('task data'), true); // CronJob中也可以投递Task
+            var_dump($ret);
         }
         // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
@@ -712,7 +716,7 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 
 ## 协程MySQL
 
-> 支持MySQL数据库的`协程`客户端。
+> 支持MySQL数据库的`协程`客户端。注意：`目前客户端连接为单例，并发时存在问题，正在开发连接池已解决此问题。`
 
 1.要求：`Swoole>=4.0`，`Laravel>=5.1`（后续将支持Lumen）。
 

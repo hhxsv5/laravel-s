@@ -467,6 +467,8 @@ var_dump($ret);// Return true if sucess, otherwise false
 1.Create cron job class.
 ```PHP
 namespace App\Jobs\Timer;
+use App\Tasks\TestTask;
+use Hhxsv5\LaravelS\Swoole\Task\Task;
 use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 class TestCronJob extends CronJob
 {
@@ -490,9 +492,11 @@ class TestCronJob extends CronJob
         $this->i++;
         \Log::info(__METHOD__, ['end', $this->i, microtime(true)]);
 
-        if ($this->i >= 10) { // run 10 times only
+        if ($this->i >= 10) { // Run 10 times only
             \Log::info(__METHOD__, ['stop', $this->i, microtime(true)]);
-            $this->stop(); // stop this cron job
+            $this->stop(); // Stop this cron job
+            $ret = Task::deliver(new TestTask('task data'), true); // Deliver task in CronJob
+            var_dump($ret);
         }
         // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
     }
@@ -713,7 +717,7 @@ For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_
 
 ## Coroutine MySQL
 
-> Support coroutine client for MySQL database.
+> Support coroutine client for MySQL database. IMPORTANT: `There will be some issues when concurrent requests, because of the singleton connection of MySQL, we are working on the new feature connection pool to solve it.`
 
 1.Requirements: `Swoole>=4.0`, `Laravel>=5.1`(Lumen will be supported later).
 
