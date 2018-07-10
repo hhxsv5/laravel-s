@@ -6,7 +6,7 @@
     "issues": "https://github.com/hhxsv5/laravel-s/issues",
     "source": "https://github.com/hhxsv5/laravel-s"
   },
-  "description": "🚀 LaravelS is a glue that is used to quickly integrate Swoole into Laravel or Lumen and then give them better performance and more possibilities.",
+  "description": "🚀LaravelS is a glue that is used to quickly integrate Swoole into Laravel or Lumen and then give them better performance and more possibilities.",
   "keywords": [
     "laravel-s",
     "swoole",
