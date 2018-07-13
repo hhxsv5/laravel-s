@@ -42,6 +42,43 @@ public function notify(Request $request)
 1.通过中间件在每次请求`处理前`或`处理后`重置$messages `app('flash')->clear();`。
 
 2.每次请求处理后重新注册`FlashServiceProvider`，配置[register_providers](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
+
+## 单例的控制器
+
+1.错误用法。
+```PHP
+namespace App\Http\Controllers;
+class TestController extends Controller
+{
+    protected $userId;
+    public function __construct()
+    {
+        // 错误的用法：因控制器是单例，会常驻于内存，$userId只会被赋值一次，后续请求会误读取之前请求$userId
+        $this->userId = session('userId');
+    }
+    public function testAction()
+    {
+        // 读取$this->userId;
+    }
+}
+```
+
+2.正确用法。
+```PHP
+namespace App\Http\Controllers;
+class TestController extends Controller
+{
+    protected function getUserId()
+    {
+        return session('userId');
+    }
+    public function testAction()
+    {
+        // 通过调用$this->getUserId()读取$userId
+    }
+}
+```
+
 ## 不能使用这些函数
 
 - `flush`/`ob_flush`/`ob_end_flush`/`ob_implicit_flush`：`swoole_http_response`不支持`flush`。
