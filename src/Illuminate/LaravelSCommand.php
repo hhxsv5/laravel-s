@@ -103,7 +103,7 @@ EOS;
 
         if (file_exists($svrConf['swoole']['pid_file'])) {
             $pid = (int)file_get_contents($svrConf['swoole']['pid_file']);
-            if ($this->killProcess($pid, 0)) {
+            if ($pid > 0 && $this->killProcess($pid, 0)) {
                 $this->warn(sprintf('LaravelS: PID[%s] is already running at %s:%s.', $pid, $svrConf['listen_ip'], $svrConf['listen_port']));
                 return;
             }
