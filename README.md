@@ -672,7 +672,7 @@ For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_
 ```PHP
 'sockets' => [
     [
-       'host'     => '0.0.0.0',
+        'host'     => '0.0.0.0',
         'port'     => 5292,
         'type'     => SWOOLE_SOCK_UDP,
         'settings' => [
@@ -688,7 +688,7 @@ For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_
 ```PHP
 'sockets' => [
     [
-       'host'     => '0.0.0.0',
+        'host'     => '0.0.0.0',
         'port'     => 5293,
         'type'     => SWOOLE_SOCK_TCP,
         'settings' => [
@@ -703,7 +703,7 @@ For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_
 ```PHP
 'sockets' => [
     [
-       'host'     => '0.0.0.0',
+        'host'     => '0.0.0.0',
         'port'     => 5294,
         'type'     => SWOOLE_SOCK_TCP,
         'settings' => [

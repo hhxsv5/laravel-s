@@ -670,7 +670,7 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 ```PHP
 'sockets' => [
     [
-       'host'     => '0.0.0.0',
+        'host'     => '0.0.0.0',
         'port'     => 5292,
         'type'     => SWOOLE_SOCK_UDP,
         'settings' => [
@@ -686,7 +686,7 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 ```PHP
 'sockets' => [
     [
-       'host'     => '0.0.0.0',
+        'host'     => '0.0.0.0',
         'port'     => 5293,
         'type'     => SWOOLE_SOCK_TCP,
         'settings' => [
@@ -701,7 +701,7 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 ```PHP
 'sockets' => [
     [
-       'host'     => '0.0.0.0',
+        'host'     => '0.0.0.0',
         'port'     => 5294,
         'type'     => SWOOLE_SOCK_TCP,
         'settings' => [
