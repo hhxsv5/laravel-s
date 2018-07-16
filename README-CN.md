@@ -65,9 +65,9 @@ composer require "hhxsv5/laravel-s:~2.0" -vvv
 # 确保你的composer.lock文件是在版本控制中
 ```
 
-2.注册Service Provider。
+2.注册Service Provider（以下两步二选一）。
 
-- `Laravel`: 修改文件`config/app.php`
+- `Laravel`: 修改文件`config/app.php`，`Laravel 5.5+支持包自动发现，你应该跳过这步`
 ```PHP
 'providers' => [
     //...

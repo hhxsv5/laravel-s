@@ -65,9 +65,9 @@ composer require "hhxsv5/laravel-s:~2.0" -vvv
 # Make sure that your composer.lock file is under the VCS
 ```
 
-2.Register service provider.
+2.Register service provider(pick one of two).
 
-- `Laravel`: in `config/app.php` file
+- `Laravel`: in `config/app.php` file, `Laravel 5.5+ supports package discovery automatically, you should skip this step`
 ```PHP
 'providers' => [
     //...
