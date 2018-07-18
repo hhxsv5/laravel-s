@@ -280,8 +280,7 @@ class Server
         if ($data instanceof Event) {
             $this->handleEvent($data);
         } elseif ($data instanceof Task) {
-            $this->handleTask($data);
-            if (method_exists($data, 'finish')) {
+            if ($this->handleTask($data) && method_exists($data, 'finish')) {
                 if ($data->isBySendMessage()) {
                     $this->onFinish($server, $taskId, $data);
                 } else {
@@ -329,8 +328,10 @@ class Server
     {
         try {
             $task->handle();
+            return true;
         } catch (\Exception $e) {
             $this->logException($e);
+            return false;
         }
     }
 
