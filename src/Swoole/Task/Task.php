@@ -15,6 +15,12 @@ abstract class Task
      */
     protected $delay;
 
+    /**
+     * Whether deliver task by sending message
+     * @var bool
+     */
+    protected $bySendMessage = false;
+
     public function delay($delay)
     {
         if ($delay <= 0) {
@@ -32,10 +38,16 @@ abstract class Task
         return $this->delay;
     }
 
+    public function isBySendMessage()
+    {
+        return $this->bySendMessage;
+    }
+
     abstract public function handle();
 
     public static function deliver(self $task, $bySendMessage = false)
     {
+        $task->bySendMessage = $bySendMessage;
         $deliver = function () use ($task, $bySendMessage) {
             /**
              * @var \swoole_http_server $swoole

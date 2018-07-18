@@ -282,7 +282,11 @@ class Server
         } elseif ($data instanceof Task) {
             $this->handleTask($data);
             if (method_exists($data, 'finish')) {
-                return $data;
+                if ($data->isBySendMessage()) {
+                    $this->onFinish($server, $taskId, $data);
+                } else {
+                    return $data;
+                }
             }
         }
     }
@@ -290,8 +294,7 @@ class Server
     public function onFinish(\swoole_http_server $server, $taskId, $data)
     {
         if ($data instanceof Task) {
-            $data->/** @scrutinizer ignore-call */
-            finish();
+            $data->finish();
         }
     }
 
