@@ -932,6 +932,7 @@ public function test(Request $req)
 | 匿名 | 20元 |
 | *洋 Blues | 18.88元 |
 | *钧泽 Panda | 10.24元 |
+| *翔 海贼王路飞 | 12元 |
 
 ## License
 
