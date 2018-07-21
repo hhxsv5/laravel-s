@@ -907,6 +907,10 @@ public function test(Request $req)
 }
 ```
 
+- [Linux kernel parameter adjustment](https://wiki.swoole.com/wiki/page/p-server/sysctl.html)
+
+- [Pressure test](https://wiki.swoole.com/wiki/page/62.html)
+
 ## Todo list
 
 1. Connection pool for MySQL/Redis.

@@ -904,6 +904,10 @@ public function test(Request $req)
 }
 ```
 
+- [Linux内核参数调整](https://wiki.swoole.com/wiki/page/p-server/sysctl.html)
+
+- [压力测试](https://wiki.swoole.com/wiki/page/62.html)
+
 ## 待办事项
 
 1. 针对MySQL/Redis的连接池。
