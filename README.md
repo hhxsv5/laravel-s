@@ -495,7 +495,8 @@ class TestCronJob extends CronJob
         if ($this->i >= 10) { // Run 10 times only
             \Log::info(__METHOD__, ['stop', $this->i, microtime(true)]);
             $this->stop(); // Stop this cron job
-            $ret = Task::deliver(new TestTask('task data'), true); // Deliver task in CronJob, the second parameter is true
+            // Set the second parameter true to deliver task in CronJob, but NOT support callback finish() of task.
+            $ret = Task::deliver(new TestTask('task data'), true);
             var_dump($ret);
         }
         // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them

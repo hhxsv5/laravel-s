@@ -267,7 +267,9 @@ class Server
 
     public function onPipeMessage(\swoole_http_server $server, $srcWorkerId, $message)
     {
-        $this->onTask($server, uniqid('', true), $srcWorkerId, $message);
+        if ($message instanceof Task) {
+            $this->onTask($server, uniqid('', true), $srcWorkerId, $message);
+        }
     }
 
     public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
@@ -281,11 +283,7 @@ class Server
             $this->handleEvent($data);
         } elseif ($data instanceof Task) {
             if ($this->handleTask($data) && method_exists($data, 'finish')) {
-                if ($data->isBySendMessage()) {
-                    $this->onFinish($server, $taskId, $data);
-                } else {
-                    return $data;
-                }
+                return $data;
             }
         }
     }
