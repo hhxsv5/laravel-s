@@ -494,7 +494,10 @@ class TestCronJob extends CronJob
         if ($this->i >= 10) { // 运行10次后不再执行
             \Log::info(__METHOD__, ['stop', $this->i, microtime(true)]);
             $this->stop(); // 终止此任务
-            // 第二个参数设置为true，CronJob中也可以投递Task，但不支持Task的finish()回调。
+            // CronJob中也可以投递Task，但不支持Task的finish()回调。
+            // 注意：
+            // 1.参数2需传true
+            // 2.config/laravels.php中修改配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/wiki/page/296.html
             $ret = Task::deliver(new TestTask('task data'), true);
             var_dump($ret);
         }

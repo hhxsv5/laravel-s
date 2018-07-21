@@ -58,9 +58,6 @@ abstract class Task
                 if ($taskWorkerNum === 0) {
                     throw new \InvalidArgumentException('LaravelS: Asynchronous task needs to set task_worker_num > 0');
                 }
-                if ($taskWorkerNum === 1) {
-                    throw new \InvalidArgumentException('LaravelS: task_worker_num must be greater than 1');
-                }
                 $workerNum = isset($swoole->setting['worker_num']) ? $swoole->setting['worker_num'] : 0;
                 $totalNum = $workerNum + $taskWorkerNum;
 
