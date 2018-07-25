@@ -29,7 +29,7 @@ trait InotifyTrait
         $autoReload = function () use ($swoole, $config, $fileTypes) {
             $log = !empty($config['log']);
             $this->setProcessTitle(sprintf('%s laravels: inotify process', $config['process_prefix']));
-            $inotify = new Inotify($config['root_path'], IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVE,
+            $inotify = new Inotify($config['watch_path'], IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVE,
                 function ($event) use ($swoole, $log) {
                     $swoole->reload();
                     if ($log) {

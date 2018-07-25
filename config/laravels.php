@@ -13,6 +13,7 @@ return [
     'laravel_base_path'  => env('LARAVEL_BASE_PATH', base_path()),
     'inotify_reload'     => [
         'enable'     => env('LARAVELS_INOTIFY_RELOAD', false),
+        'watch_path' => base_path(),
         'file_types' => ['.php'],
         'log'        => true,
     ],

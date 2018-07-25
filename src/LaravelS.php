@@ -51,7 +51,9 @@ class LaravelS extends Server
         $this->swoole->timerProcess = $this->addTimerProcess($this->swoole, $timerCfg, $this->laravelConf);
 
         $inotifyCfg = isset($this->conf['inotify_reload']) ? $this->conf['inotify_reload'] : [];
-        $inotifyCfg['root_path'] = $this->laravelConf['root_path'];
+        if (!isset($inotifyCfg['watch_path'])) {
+            $inotifyCfg['watch_path'] = $this->laravelConf['root_path'];
+        }
         $inotifyCfg['process_prefix'] = $svrConf['process_prefix'];
         $this->swoole->inotifyProcess = $this->addInotifyProcess($this->swoole, $inotifyCfg);
 
