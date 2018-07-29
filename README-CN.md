@@ -97,6 +97,8 @@ $app->configure('laravels');
 ## 运行
 > `php artisan laravels {start|stop|restart|reload|publish}`
 
+`在运行之前，请先仔细阅读：`[注意事项](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)。
+
 | 命令 | 说明 |
 | --------- | --------- |
 | `start` | 启动LaravelS，展示已启动的进程列表 *ps -ef&#124;grep laravels* |

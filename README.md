@@ -97,6 +97,8 @@ $app->configure('laravels');
 ## Run demo
 > `php artisan laravels {start|stop|restart|reload|publish}`
 
+`Please read the notices carefully before running`, [Important notices](https://github.com/hhxsv5/laravel-s#important-notices).
+
 | Command | Description |
 | --------- | --------- |
 | `start` | Start LaravelS, list the processes by *ps -ef&#124;grep laravels* |
