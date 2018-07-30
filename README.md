@@ -324,7 +324,7 @@ server {
         proxy_http_version 1.1;
         # proxy_connect_timeout 60s;
         # proxy_send_timeout 60s;
-        # proxy_read_timeout: Nginx will close the connection if client does not send data to server in 60 seconds; At the same time, this close behavior is also affected by heartbeat setting of Swoole
+        # proxy_read_timeout: Nginx will close the connection if the proxied server does not send data to Nginx in 60 seconds; At the same time, this close behavior is also affected by heartbeat setting of Swoole.
         # proxy_read_timeout 60s;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Real-PORT $remote_port;
@@ -358,6 +358,27 @@ server {
 }
 ```
 
+5.Heartbeat setting
+
+- Swoole's heartbeat setting
+
+```PHP
+// config/laravels.php
+'swoole' => [
+    //...
+    // All connections are traversed every 60 seconds. If a connection does not send any data to the server within 600 seconds, the connection will be forced to close.
+    'heartbeat_idle_time'      => 600,
+    'heartbeat_check_interval' => 60,
+    //...
+],
+```
+
+- Timeout of Nginx proxy reading
+
+```Nginx
+# Nginx will close the connection if the proxied server does not send data to Nginx in 60 seconds
+proxy_read_timeout 60s;
+```
 
 ## Listen events
 
