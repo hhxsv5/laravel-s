@@ -44,4 +44,4 @@
     //...
     ```
 
-- `swoole`: `array` Swoole's original configuration items, refer [Swoole Configuration](https://www.swoole.co.uk/docs/modules/swoole-server/configuration)
+- `swoole`: `array` Swoole's `original` configuration items, refer [Swoole Configuration](https://www.swoole.co.uk/docs/modules/swoole-server/configuration)
