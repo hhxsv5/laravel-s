@@ -19,7 +19,30 @@
 
 **[中文文档](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md)**
 
-[TOC]
+Table of Contents
+=================
+
+* [Features](#features)
+* [Requirements](#requirements)
+* [Install](#install)
+* [Run demo](#run-demo)
+* [Cooperate with Nginx (Recommended)](#cooperate-with-nginx-recommended)
+* [Cooperate with Apache](#cooperate-with-apache)
+* [Enable WebSocket server](#enable-websocket-server)
+* [Listen events](#listen-events)
+    * [System events](#system-events)
+    * [Customized asynchronous events](#customized-asynchronous-events)
+* [Asynchronous task queue](#asynchronous-task-queue)
+* [Millisecond cron job](#millisecond-cron-job)
+* [Get the instance of swoole_server in your project](#get-the-instance-of-swoole_server-in-your-project)
+* [Use swoole_table](#use-swoole_table)
+* [Multi-port mixed protocol](#multi-port-mixed-protocol)
+* [Coroutine MySQL](#coroutine-mysql)
+* [Custom process](#custom-process)
+* [Important notices](#important-notices)
+* [Todo list](#todo-list)
+* [Alternatives](#alternatives)
+* [License](#license)
 
 ## Features
 

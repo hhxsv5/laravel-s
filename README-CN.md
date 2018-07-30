@@ -19,7 +19,33 @@
 
 **[English Documentation](https://github.com/hhxsv5/laravel-s/blob/master/README.md)**  *QQ交流群：698480528*
 
-[TOC]
+Table of Contents
+=================
+
+* [特性](#特性)
+* [要求](#要求)
+* [安装](#安装)
+* [运行](#运行)
+* [与Nginx配合使用（推荐）](#与nginx配合使用推荐)
+* [与Apache配合使用](#与apache配合使用)
+* [启用WebSocket服务器](#启用websocket服务器)
+* [监听事件](#监听事件)
+    * [系统事件](#系统事件)
+    * [自定义的异步事件](#自定义的异步事件)
+* [异步的任务队列](#异步的任务队列)
+* [毫秒级定时任务](#毫秒级定时任务)
+* [在你的项目中使用swoole_server实例](#在你的项目中使用swoole_server实例)
+* [使用swoole_table](#使用swoole_table)
+* [多端口混合协议](#多端口混合协议)
+* [协程MySQL](#协程mysql)
+* [自定义进程](#自定义进程)
+* [注意事项](#注意事项)
+* [待办事项](#待办事项)
+* [其他选择](#其他选择)
+* [打赏](#打赏)
+    * [感谢](#感谢)
+* [License](#license)
+
 
 ## 特性
 
