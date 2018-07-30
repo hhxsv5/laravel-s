@@ -360,7 +360,7 @@ server {
 
 5.Heartbeat setting
 
-- Swoole's heartbeat setting
+- Heartbeat setting of Swoole
 
 ```PHP
 // config/laravels.php
