@@ -363,7 +363,7 @@ server {
 
 5.心跳配置
 
-- Swoole心跳配置
+- Swoole的心跳配置
 
 ```PHP
 // config/laravels.php
@@ -376,7 +376,7 @@ server {
 ],
 ```
 
-- Nginx读取代理服务器超时配置
+- Nginx读取代理服务器超时的配置
 
 ```Nginx
 # 如果60秒内被代理的服务器没有响应数据给Nginx，那么Nginx会关闭当前连接
