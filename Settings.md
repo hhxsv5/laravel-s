@@ -24,15 +24,15 @@
 
 - `websocket.enable`: `bool` Whether enable WebSocket Server. The Listening address of WebSocket Sever is the same as Http Server, default `false`.
 
-- `websocket.handler`: `string` The class name for WebSocket handler, needs to implement interface `WebSocketHandlerInterface`, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server)
+- `websocket.handler`: `string` The class name for WebSocket handler, needs to implement interface `WebSocketHandlerInterface`, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server).
 
-- `sockets`: `array` The socket list for TCP/UDP, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-tcpudp-server)
+- `sockets`: `array` The socket list for TCP/UDP, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-tcpudp-server).
 
-- `processes`: `array` The custom process list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#custom-process)
+- `processes`: `array` The custom process list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#custom-process).
 
-- `events`: `array` The customized asynchronous event list of listener binding, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#customized-asynchronous-events)
+- `events`: `array` The customized asynchronous event list of listener binding, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#customized-asynchronous-events).
 
-- `swoole_tables`: `array` The defined of `swoole_table` list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#use-swoole_table)
+- `swoole_tables`: `array` The defined of `swoole_table` list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#use-swoole_table).
 
 - `register_providers`: `array` The `Service Provider` list, will be re-registered `every request`, and run method `boot()` if it exists. Usually, be used to clear the `Service Provider` which registers `Singleton` instances.
     ```PHP
@@ -44,4 +44,4 @@
     //...
     ```
 
-- `swoole`: `array` Swoole's `original` configuration items, refer [Swoole Configuration](https://www.swoole.co.uk/docs/modules/swoole-server/configuration)
+- `swoole`: `array` Swoole's `original` configuration items, refer [Swoole Configuration](https://www.swoole.co.uk/docs/modules/swoole-server/configuration).
