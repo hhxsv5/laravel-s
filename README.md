@@ -373,7 +373,7 @@ server {
 ],
 ```
 
-- Timeout of Nginx proxy reading
+- Proxy read timeout of Nginx
 
 ```Nginx
 # Nginx will close the connection if the proxied server does not send data to Nginx in 60 seconds
