@@ -19,6 +19,8 @@
 
 **[中文文档](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md)**
 
+[TOC]
+
 ## Features
 
 - Built-in Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server) server
