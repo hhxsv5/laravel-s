@@ -85,7 +85,7 @@ class TestController extends Controller
 
 ## Cannot use these global variables
 
-- `$_SESSION`
+- $_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST/$_SESSION/$GLOBALS
 
 ## Size restriction
 

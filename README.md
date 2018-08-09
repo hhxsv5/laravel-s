@@ -875,7 +875,7 @@ class TestProcess implements CustomProcessInterface
 
 - [Known issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md)
 
-- Get all info of request from `Illuminate\Http\Request` Object, compatible with $_SERVER/$_ENV/$_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST, `CANNOT USE` $_SESSION.
+- Should get all request information from `Illuminate\Http\Request` Object, $_SERVER/$_ENV are readable, `CANNOT USE` $_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST/$_SESSION/$GLOBALS.
 
 ```PHP
 public function form(\Illuminate\Http\Request $request)
