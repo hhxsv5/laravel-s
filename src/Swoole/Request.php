@@ -21,12 +21,12 @@ class Request
      */
     public function toIlluminateRequest(array $rawServer = [], array $rawEnv = [])
     {
-        $_GET = isset($this->swooleRequest->get) ? $this->swooleRequest->get : [];
-        $_POST = isset($this->swooleRequest->post) ? $this->swooleRequest->post : [];
-        $_COOKIE = isset($this->swooleRequest->cookie) ? $this->swooleRequest->cookie : [];
+        $__GET = isset($this->swooleRequest->get) ? $this->swooleRequest->get : [];
+        $__POST = isset($this->swooleRequest->post) ? $this->swooleRequest->post : [];
+        $__COOKIE = isset($this->swooleRequest->cookie) ? $this->swooleRequest->cookie : [];
         $server = isset($this->swooleRequest->server) ? $this->swooleRequest->server : [];
         $headers = isset($this->swooleRequest->header) ? $this->swooleRequest->header : [];
-        $_FILES = isset($this->swooleRequest->files) ? $this->swooleRequest->files : [];
+        $__FILES = isset($this->swooleRequest->files) ? $this->swooleRequest->files : [];
         $_REQUEST = [];
         $_SESSION = [];
 
@@ -63,29 +63,9 @@ class Request
             $_SERVER['argc'] = isset($GLOBALS['argc']) ? $GLOBALS['argc'] : 0;
         }
 
-        $requests = ['C' => $_COOKIE, 'G' => $_GET, 'P' => $_POST];
-        $requestOrder = ini_get('request_order') ?: ini_get('variables_order');
-        $requestOrder = preg_replace('#[^CGP]#', '', strtoupper($requestOrder)) ?: 'GP';
-        foreach (str_split($requestOrder) as $order) {
-            $_REQUEST = array_merge($_REQUEST, $requests[$order]);
-        }
-
-        $request = IlluminateRequest::capture();
-
-        /**
-         * Fix missed rawContent & parse JSON into $_POST
-         * @see \Illuminate\Http\Request::createFromBase()
-         */
-        $reflection = new \ReflectionObject($request);
-        $content = $reflection->getProperty('content');
-        $content->setAccessible(true);
-        $content->setValue($request, $this->swooleRequest->rawContent());
-        $json = $reflection->getProperty('json');
-        $json->setAccessible(true);
-        $json->setValue($request, null);
-        $getInputSource = $reflection->getMethod('getInputSource');
-        $getInputSource->setAccessible(true);
-        $request->request = $getInputSource->invoke($request);
+        // Initialize laravel request
+        IlluminateRequest::enableHttpMethodParameterOverride();
+        $request = IlluminateRequest::createFromBase(new \Symfony\Component\HttpFoundation\Request($__GET, $__POST, [], $__COOKIE, $__FILES, $_SERVER, $this->swooleRequest->rawContent()));
 
         if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')
             && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), ['PUT', 'DELETE', 'PATCH'])
