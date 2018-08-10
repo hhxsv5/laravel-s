@@ -844,8 +844,8 @@ class TestProcess implements CustomProcessInterface
         // 进程运行的代码，不能退出，一旦退出Manager进程会自动再次创建该进程。
         \Log::info(__METHOD__, [posix_getpid(), $swoole->stats()]);
         while (true) {
-            sleep(1);
             \Log::info('Do something');
+            sleep(1);
             // 自定义进程中也可以投递Task，但不支持Task的finish()回调。
             // 注意：
             // 1.参数2需传true

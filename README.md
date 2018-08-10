@@ -841,6 +841,7 @@ class TestProcess implements CustomProcessInterface
         // The callback method cannot exit. Once exited, Manager process will automatically create the process 
         \Log::info(__METHOD__, [posix_getpid(), $swoole->stats()]);
         while (true) {
+            \Log::info('Do something');
             sleep(1);
              // Deliver task in custom process, but NOT support callback finish() of task.
             // Note:
@@ -848,7 +849,6 @@ class TestProcess implements CustomProcessInterface
             // 2.Modify task_ipc_mode to 1 or 2 in config/laravels.php, see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
             $ret = Task::deliver(new TestTask('task data'), true);
             var_dump($ret);
-            \Log::info('Do something');
         }
     }
 }
