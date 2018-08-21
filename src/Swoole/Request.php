@@ -57,6 +57,12 @@ class Request
             $_SERVER['HTTPS'] = 'on';
         }
 
+        // Fix REQUEST_URI with QUERY_STRING
+        if (isset($_SERVER['QUERY_STRING']) && strlen($_SERVER['QUERY_STRING']) > 0) {
+            $_SERVER['REQUEST_URI'] .= strpos($_SERVER['REQUEST_URI'], '?') === false ? '?' : '';
+            $_SERVER['REQUEST_URI'] .= $_SERVER['QUERY_STRING'];
+        }
+
         // Fix argv & argc
         if (!isset($_SERVER['argv'])) {
             $_SERVER['argv'] = isset($GLOBALS['argv']) ? $GLOBALS['argv'] : [];
