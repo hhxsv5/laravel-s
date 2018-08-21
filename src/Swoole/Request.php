@@ -41,7 +41,7 @@ class Request
         ];
 
         $_ENV = $rawEnv;
-        $_SERVER = $rawServer;
+        $__SERVER = $rawServer;
         foreach ($headers as $key => $value) {
             // Fix client && server's info
             if (isset($headerServerMapping[$key])) {
@@ -52,20 +52,20 @@ class Request
             }
         }
         $server = array_change_key_case($server, CASE_UPPER);
-        $_SERVER = array_merge($_SERVER, $server);
-        if (isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] === 'https') {
-            $_SERVER['HTTPS'] = 'on';
+        $__SERVER = array_merge($__SERVER, $server);
+        if (isset($__SERVER['REQUEST_SCHEME']) && $__SERVER['REQUEST_SCHEME'] === 'https') {
+            $__SERVER['HTTPS'] = 'on';
         }
 
         // Fix argv & argc
-        if (!isset($_SERVER['argv'])) {
-            $_SERVER['argv'] = isset($GLOBALS['argv']) ? $GLOBALS['argv'] : [];
-            $_SERVER['argc'] = isset($GLOBALS['argc']) ? $GLOBALS['argc'] : 0;
+        if (!isset($__SERVER['argv'])) {
+            $__SERVER['argv'] = isset($GLOBALS['argv']) ? $GLOBALS['argv'] : [];
+            $__SERVER['argc'] = isset($GLOBALS['argc']) ? $GLOBALS['argc'] : 0;
         }
 
         // Initialize laravel request
         IlluminateRequest::enableHttpMethodParameterOverride();
-        $request = IlluminateRequest::createFromBase(new \Symfony\Component\HttpFoundation\Request($__GET, $__POST, [], $__COOKIE, $__FILES, $_SERVER, $this->swooleRequest->rawContent()));
+        $request = IlluminateRequest::createFromBase(new \Symfony\Component\HttpFoundation\Request($__GET, $__POST, [], $__COOKIE, $__FILES, $__SERVER, $this->swooleRequest->rawContent()));
 
         if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')
             && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), ['PUT', 'DELETE', 'PATCH'])
