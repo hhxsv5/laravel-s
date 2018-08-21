@@ -19,7 +19,7 @@ class LaravelSCommand extends Command
     {
         $this->actions = ['start', 'stop', 'restart', 'reload', 'publish'];
         $actions = implode('|', $this->actions);
-        $this->signature .= sprintf(' {action : %s}', $actions);
+        $this->signature .= sprintf(' {action : %s} {--d|daemonize : Whether run as a daemon for start & restart}', $actions);
         $this->description .= ': ' . $actions;
 
         parent::__construct();
@@ -90,6 +90,9 @@ EOS;
                 $this->error('LaravelS: Asynchronous event listening needs to set task_worker_num > 0');
                 return;
             }
+        }
+        if ($this->option('daemonize')) {
+            $svrConf['swoole']['daemonize'] = true;
         }
 
         $laravelConf = [

@@ -126,9 +126,9 @@ $app->configure('laravels');
 
 | Command | Description |
 | --------- | --------- |
-| `start` | Start LaravelS, list the processes by *ps -ef&#124;grep laravels* |
+| `start` | Start LaravelS, list the processes by *ps -ef&#124;grep laravels*, support command options `-d` and `--daemonize` to run as a daemon |
 | `stop` | Stop LaravelS |
-| `restart` | Restart LaravelS |
+| `restart` | Restart LaravelS, support command options `-d` and `--daemonize` |
 | `reload` | Reload all worker processes(Contain your business & Laravel/Lumen codes), exclude master/manger process |
 | `publish` | Publish configuration file `laravels.php` into folder `config` |
 
