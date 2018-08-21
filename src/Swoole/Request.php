@@ -21,12 +21,12 @@ class Request
      */
     public function toIlluminateRequest(array $rawServer = [], array $rawEnv = [])
     {
-        $_GET = isset($this->swooleRequest->get) ? $this->swooleRequest->get : [];
-        $_POST = isset($this->swooleRequest->post) ? $this->swooleRequest->post : [];
-        $_COOKIE = isset($this->swooleRequest->cookie) ? $this->swooleRequest->cookie : [];
+        $__GET = isset($this->swooleRequest->get) ? $this->swooleRequest->get : [];
+        $__POST = isset($this->swooleRequest->post) ? $this->swooleRequest->post : [];
+        $__COOKIE = isset($this->swooleRequest->cookie) ? $this->swooleRequest->cookie : [];
         $server = isset($this->swooleRequest->server) ? $this->swooleRequest->server : [];
         $headers = isset($this->swooleRequest->header) ? $this->swooleRequest->header : [];
-        $_FILES = isset($this->swooleRequest->files) ? $this->swooleRequest->files : [];
+        $__FILES = isset($this->swooleRequest->files) ? $this->swooleRequest->files : [];
         $_REQUEST = [];
         $_SESSION = [];
 
@@ -41,7 +41,7 @@ class Request
         ];
 
         $_ENV = $rawEnv;
-        $_SERVER = $rawServer;
+        $__SERVER = $rawServer;
         foreach ($headers as $key => $value) {
             // Fix client && server's info
             if (isset($headerServerMapping[$key])) {
@@ -52,9 +52,9 @@ class Request
             }
         }
         $server = array_change_key_case($server, CASE_UPPER);
-        $_SERVER = array_merge($_SERVER, $server);
-        if (isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] === 'https') {
-            $_SERVER['HTTPS'] = 'on';
+        $__SERVER = array_merge($__SERVER, $server);
+        if (isset($__SERVER['REQUEST_SCHEME']) && $__SERVER['REQUEST_SCHEME'] === 'https') {
+            $__SERVER['HTTPS'] = 'on';
         }
 
         // Fix REQUEST_URI with QUERY_STRING
@@ -64,34 +64,14 @@ class Request
         }
 
         // Fix argv & argc
-        if (!isset($_SERVER['argv'])) {
-            $_SERVER['argv'] = isset($GLOBALS['argv']) ? $GLOBALS['argv'] : [];
-            $_SERVER['argc'] = isset($GLOBALS['argc']) ? $GLOBALS['argc'] : 0;
+        if (!isset($__SERVER['argv'])) {
+            $__SERVER['argv'] = isset($GLOBALS['argv']) ? $GLOBALS['argv'] : [];
+            $__SERVER['argc'] = isset($GLOBALS['argc']) ? $GLOBALS['argc'] : 0;
         }
 
-        $requests = ['C' => $_COOKIE, 'G' => $_GET, 'P' => $_POST];
-        $requestOrder = ini_get('request_order') ?: ini_get('variables_order');
-        $requestOrder = preg_replace('#[^CGP]#', '', strtoupper($requestOrder)) ?: 'GP';
-        foreach (str_split($requestOrder) as $order) {
-            $_REQUEST = array_merge($_REQUEST, $requests[$order]);
-        }
-
-        $request = IlluminateRequest::capture();
-
-        /**
-         * Fix missed rawContent & parse JSON into $_POST
-         * @see \Illuminate\Http\Request::createFromBase()
-         */
-        $reflection = new \ReflectionObject($request);
-        $content = $reflection->getProperty('content');
-        $content->setAccessible(true);
-        $content->setValue($request, $this->swooleRequest->rawContent());
-        $json = $reflection->getProperty('json');
-        $json->setAccessible(true);
-        $json->setValue($request, null);
-        $getInputSource = $reflection->getMethod('getInputSource');
-        $getInputSource->setAccessible(true);
-        $request->request = $getInputSource->invoke($request);
+        // Initialize laravel request
+        IlluminateRequest::enableHttpMethodParameterOverride();
+        $request = IlluminateRequest::createFromBase(new \Symfony\Component\HttpFoundation\Request($__GET, $__POST, [], $__COOKIE, $__FILES, $__SERVER, $this->swooleRequest->rawContent()));
 
         if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')
             && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), ['PUT', 'DELETE', 'PATCH'])

@@ -18,11 +18,6 @@ class Laravel
      */
     protected $laravelKernel;
 
-    /**
-     * @var \ReflectionObject $laravelReflect
-     */
-    protected $laravelReflect;
-
     protected static $snapshotKeys = ['config', 'cookie', 'auth', /*'auth.password'*/];
 
     /**
@@ -135,10 +130,6 @@ class Laravel
                 }
             }
         }
-
-        if ($this->conf['is_lumen']) {
-            $this->laravelReflect = new \ReflectionObject($this->app);
-        }
     }
 
     protected function applySnapshots()
@@ -172,10 +163,11 @@ class Laravel
                 $content = (string)$response;
             }
 
-            $middleware = $this->laravelReflect->getProperty('middleware');
+            $laravelReflect = new \ReflectionObject($this->app);
+            $middleware = $laravelReflect->getProperty('middleware');
             $middleware->setAccessible(true);
             if (!empty($middleware->getValue($this->app))) {
-                $callTerminableMiddleware = $this->laravelReflect->getMethod('callTerminableMiddleware');
+                $callTerminableMiddleware = $laravelReflect->getMethod('callTerminableMiddleware');
                 $callTerminableMiddleware->setAccessible(true);
                 $callTerminableMiddleware->invoke($this->app, $response);
             }
@@ -242,7 +234,8 @@ class Laravel
     {
         if (class_exists($providerCls, false) || $force) {
             if ($this->conf['is_lumen']) {
-                $loadedProviders = $this->laravelReflect->getProperty('loadedProviders');
+                $laravelReflect = new \ReflectionObject($this->app);
+                $loadedProviders = $laravelReflect->getProperty('loadedProviders');
                 $loadedProviders->setAccessible(true);
                 $oldLoadedProviders = $loadedProviders->getValue($this->app);
                 unset($oldLoadedProviders[get_class(new $providerCls($this->app))]);
@@ -325,5 +318,11 @@ class Laravel
         if (!empty($this->app['session'])) {
             $this->app['session']->save();
         }
+    }
+
+    public function __clone()
+    {
+        $this->app = clone $this->app;
+        $this->laravelKernel = clone $this->laravelKernel;
     }
 }
