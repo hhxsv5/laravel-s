@@ -113,7 +113,7 @@ EOS;
         }
 
         if (!$svrConf['swoole']['daemonize']) {
-            $this->info(sprintf('LaravelS: Swoole will listen at %s:%s.', $svrConf['listen_ip'], $svrConf['listen_port']));
+            $this->info(sprintf('LaravelS: Swoole is listening at %s:%s.', $svrConf['listen_ip'], $svrConf['listen_port']));
         }
 
         // Implements gracefully reload, avoid including laravel's files before worker start
