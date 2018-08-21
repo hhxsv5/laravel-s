@@ -112,6 +112,10 @@ EOS;
             }
         }
 
+        if (!$svrConf['swoole']['daemonize']) {
+            $this->info(sprintf('LaravelS: Swoole will listen at %s:%s.', $svrConf['listen_ip'], $svrConf['listen_port']));
+        }
+
         // Implements gracefully reload, avoid including laravel's files before worker start
         $cmd = sprintf('%s %s/../GoLaravelS.php', PHP_BINARY, __DIR__);
         $ret = $this->popen($cmd, json_encode(compact('svrConf', 'laravelConf')));
@@ -129,7 +133,7 @@ EOS;
             $time++;
         }
         if (file_exists($pidFile)) {
-            $this->info(sprintf('LaravelS: PID[%s] is running at %s:%s.', file_get_contents($pidFile), $svrConf['listen_ip'], $svrConf['listen_port']));
+            $this->info(sprintf('LaravelS: PID[%s] is listening at %s:%s.', file_get_contents($pidFile), $svrConf['listen_ip'], $svrConf['listen_port']));
         } else {
             $this->error(sprintf('LaravelS: PID file[%s] does not exist.', $pidFile));
         }
