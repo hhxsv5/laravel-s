@@ -85,11 +85,11 @@ class TestController extends Controller
 
 ## Cannot use these global variables
 
-- $_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST/$_SESSION/$GLOBALS
+- $_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST/$_SESSION/$GLOBALS/$_SERVER
 
 ## Size restriction
 
-- The max size of `GET` request's header is `8KB`, restricted by `Swoole`, the big `Cookie` will lead to parse `$_COOKIE` fail.
+- The max size of `GET` request's header is `8KB`, restricted by `Swoole`, the big `Cookie` will lead to parse Cookie fail.
 
 - The max size of `POST` data/file is restricted by `Swoole` [`package_max_length`](https://www.swoole.co.uk/docs/modules/swoole-server/configuration), default `2M`.
 

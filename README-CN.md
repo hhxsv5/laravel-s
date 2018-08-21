@@ -884,7 +884,7 @@ class TestProcess implements CustomProcessInterface
 
 - [常见问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md)
 
-- 应通过`Illuminate\Http\Request`对象来获取请求信息，$_SERVER、$_ENV是可读取的，`不能使用`$_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST、$_SESSION、$GLOBALS。
+- 应通过`Illuminate\Http\Request`对象来获取请求信息，$_ENV是可读取的，`不能使用`$_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST、$_SESSION、$GLOBALS、$_SERVER。
 
 ```PHP
 public function form(\Illuminate\Http\Request $request)
