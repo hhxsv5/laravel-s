@@ -105,7 +105,7 @@ EOS;
         ];
 
         if (file_exists($svrConf['swoole']['pid_file'])) {
-            $pid = (int)file_get_contents($svrConf['swoole']['pid_file']);
+            $pid = (int) file_get_contents($svrConf['swoole']['pid_file']);
             if ($pid > 0 && $this->killProcess($pid, 0)) {
                 $this->warn(sprintf('LaravelS: PID[%s] is already running at %s:%s.', $pid, $svrConf['listen_ip'], $svrConf['listen_port']));
                 return 1;
@@ -163,30 +163,30 @@ EOS;
             return 0;
         }
 
-            $pid = (int)file_get_contents($pidFile);
-            if ($this->killProcess($pid, 0)) {
-                if ($this->killProcess($pid, SIGTERM)) {
-                    // Make sure that master process quit
-                    $time = 0;
-                    while ($this->killProcess($pid, 0) && $time <= 20) {
-                        usleep(100000);
-                        $this->killProcess($pid, SIGTERM);
-                        $time++;
-                    }
-                    if (file_exists($pidFile)) {
-                        unlink($pidFile);
-                    }
-                    $this->info("LaravelS: PID[{$pid}] is stopped.");
-                return 1;
-                } else {
-                    $this->error("LaravelS: PID[{$pid}] is stopped failed.");
-                return 0;
+        $pid = (int)file_get_contents($pidFile);
+        if ($this->killProcess($pid, 0)) {
+            if ($this->killProcess($pid, SIGTERM)) {
+                // Make sure that master process quit
+                $time = 0;
+                while ($this->killProcess($pid, 0) && $time <= 20) {
+                    usleep(100000);
+                    $this->killProcess($pid, SIGTERM);
+                    $time++;
                 }
-            } else {
-                $this->warn("LaravelS: PID[{$pid}] does not exist, or permission denied.");
                 if (file_exists($pidFile)) {
                     unlink($pidFile);
                 }
+                $this->info("LaravelS: PID[{$pid}] is stopped.");
+                return 0;
+            } else {
+                $this->error("LaravelS: PID[{$pid}] is stopped failed.");
+                return 1;
+            }
+        } else {
+            $this->warn("LaravelS: PID[{$pid}] does not exist, or permission denied.");
+            if (file_exists($pidFile)) {
+                unlink($pidFile);
+            }
             return 1;
         }
     }
@@ -208,7 +208,7 @@ EOS;
             return 1;
         }
 
-        $pid = (int)file_get_contents($pidFile);
+        $pid = (int) file_get_contents($pidFile);
         if (!$this->killProcess($pid, 0)) {
             $this->error("LaravelS: PID[{$pid}] does not exist, or permission denied.");
             return 1;
@@ -238,9 +238,9 @@ EOS;
         try {
             return $this->call('vendor:publish', ['--provider' => LaravelSServiceProvider::class, '--force' => true]);
         } catch (\InvalidArgumentException $e) {
-            throw $e;
-        } catch (\Exception $e) {
             // do nothing.
+        } catch (\Exception $e) {
+            throw $e;
         }
 
         $from = __DIR__ . '/../../config/laravels.php';
