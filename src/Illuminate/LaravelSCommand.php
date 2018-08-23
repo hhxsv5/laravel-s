@@ -167,10 +167,15 @@ EOS;
         if ($this->killProcess($pid, 0)) {
             if ($this->killProcess($pid, SIGTERM)) {
                 // Make sure that master process quit
-                $time = 0;
-                while ($this->killProcess($pid, 0) && $time <= 20) {
-                    usleep(100000);
-                    $this->killProcess($pid, SIGTERM);
+                $time = 1;
+                $waitTime = config('laravels.swoole.max_wait_time', 60);
+                while ($this->killProcess($pid, 0)) {
+                    $this->warn("LaravelS: Waiting PID[{$pid}] to stop. [{$time}]");
+                    if ($time > $waitTime) {
+                        $this->error("LaravelS: PID[{$pid}] cannot be stopped gracefully in {$waitTime}s, will be stopped forced right now.");
+                        return 1;
+                    }
+                    sleep(1);
                     $time++;
                 }
                 if (file_exists($pidFile)) {
