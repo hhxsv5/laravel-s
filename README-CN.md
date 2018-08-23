@@ -772,11 +772,11 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 
 ## 协程
 
-> 支持一键开启运行时协程，针对扩展redis、mysqlnd pdo、mysqlnd mysqli、soap，以及函数file_get_contents、fopen、stream_socket_client、fsockopen。
+> [Swoole原始文档](https://wiki.swoole.com/wiki/page/749.html)
 
-1.依赖需求：`Swoole>=4.1.0`，`Laravel>=5.1`。
+- [协程客户端](https://wiki.swoole.com/wiki/page/p-coroutine_mysql.html)：需`Swoole>=2.0`。
 
-2.启用运行时协程。
+- [运行时协程](https://wiki.swoole.com/wiki/page/965.html)：需`Swoole>=4.1.0`，同时启用下面的配置。
 
 ```PHP
 // 修改文件 `config/laravels.php`

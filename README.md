@@ -769,11 +769,11 @@ For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_
 
 ## Coroutine
 
-> Support one key to enable runtime coroutine for redis/mysqlnd pdo/mysqlnd mysqli/soap extensions and file_get_contents/fopen/stream_socket_client/fsockopen functions.
+> [Swoole Coroutine](https://www.swoole.co.uk/coroutine)
 
-1.Requirements: `Swoole>=4.1.0`, `Laravel>=5.1`.
+- [Coroutine Client](https://wiki.swoole.com/wiki/page/p-coroutine_mysql.html): require `Swoole>=2.0`.
 
-2.Enable coroutine.
+- [Runtime Coroutine](https://wiki.swoole.com/wiki/page/965.html): require `Swoole>=4.1.0`, and enable it.
 
 ```PHP
 // Edit `config/laravels.php`
