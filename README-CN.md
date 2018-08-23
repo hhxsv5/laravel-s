@@ -89,7 +89,7 @@ Table of Contents
 
 ```Bash
 # 在你的Laravel/Lumen项目的根目录下执行
-composer require "hhxsv5/laravel-s:~2.0" -vvv
+composer require "hhxsv5/laravel-s:~3.0" -vvv
 # 确保你的composer.lock文件是在版本控制中
 ```
 
