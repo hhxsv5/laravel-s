@@ -170,11 +170,11 @@ EOS;
                 $time = 1;
                 $waitTime = config('laravels.swoole.max_wait_time', 60);
                 while ($this->killProcess($pid, 0)) {
-                    $this->warn("LaravelS: Waiting PID[{$pid}] to stop. [{$time}]");
                     if ($time > $waitTime) {
                         $this->error("LaravelS: PID[{$pid}] cannot be stopped gracefully in {$waitTime}s, will be stopped forced right now.");
                         return 1;
                     }
+                    $this->warn("LaravelS: Waiting PID[{$pid}] to stop. [{$time}]");
                     sleep(1);
                     $time++;
                 }
