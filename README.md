@@ -37,7 +37,7 @@ Table of Contents
 * [Get the instance of swoole_server in your project](#get-the-instance-of-swoole_server-in-your-project)
 * [Use swoole_table](#use-swoole_table)
 * [Multi-port mixed protocol](#multi-port-mixed-protocol)
-* [Coroutine MySQL](#coroutine-mysql)
+* [Coroutine](#coroutine)
 * [Custom process](#custom-process)
 * [Important notices](#important-notices)
 * [Todo list](#todo-list)
@@ -50,7 +50,7 @@ Table of Contents
 
 - [Multi-port mixed protocol](https://github.com/hhxsv5/laravel-s/blob/master/README.md#multi-port-mixed-protocol)
 
-- [Coroutine MySQL](https://github.com/hhxsv5/laravel-s/blob/master/README.md#coroutine-mysql)
+- [Coroutine](https://github.com/hhxsv5/laravel-s/blob/master/README.md#coroutine)
 
 - [Custom process](https://github.com/hhxsv5/laravel-s/blob/master/README.md#custom-process)
 
@@ -767,46 +767,22 @@ For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_
 ],
 ```
 
-## Coroutine MySQL
+## Coroutine
 
-> Support coroutine client for MySQL database. IMPORTANT: `There will be some issues when concurrent requests, because of the singleton connection of MySQL, we are working on the new feature connection pool to solve it.`
+> Support one key to enable runtime coroutine for redis/mysqlnd pdo/mysqlnd mysqli/soap extensions and file_get_contents/fopen/stream_socket_client/fsockopen functions.
 
-1.Requirements: `Swoole>=4.0`, `Laravel>=5.1`(Lumen will be supported later).
+1.Requirements: `Swoole>=4.1.0`, `Laravel>=5.1`.
 
-2.Change the `driver` of MySQL connection to `sw-co-mysql` in file `config/database.php`.
-
-```PHP
-'connections' => [
-    //...
-    'mysql-test' => [
-        //'driver'    => 'mysql',
-        'driver'    => 'sw-co-mysql',
-        'host'      => env('DB_HOST', 'localhost'),
-        'port'      => env('DB_PORT', 3306),
-        'database'  => env('DB_DATABASE', 'forge'),
-        'username'  => env('DB_USERNAME', 'forge'),
-        'password'  => env('DB_PASSWORD', ''),
-        'charset'   => 'utf8mb4',
-        'collation' => 'utf8mb4_unicode_ci',
-        'prefix'    => '',
-        'strict'    => true,
-    ],
-    //...
-],
-```
-
-3.Replace `Illuminate\Database\DatabaseServiceProvider::class` of `providers` to `\Hhxsv5\LaravelS\Illuminate\Database\DatabaseServiceProvider::class` in file `config/app.php`.
+2.Enable coroutine.
 
 ```PHP
-'providers' => [
+// Edit `config/laravels.php`
+[
     //...
-    //Illuminate\Database\DatabaseServiceProvider::class,// Just annotate this line.
-    \Hhxsv5\LaravelS\Illuminate\Database\DatabaseServiceProvider::class,
+    'enable_coroutine' => true
     //...
-],
+]
 ```
-
-4.Now, you just use `QueryBuilder` and `ORM` as usual.
 
 ## Custom process
 
@@ -974,8 +950,6 @@ public function test(Request $req)
 ## Todo list
 
 1. Connection pool for MySQL/Redis.
-
-2. Wrap coroutine clients for Redis/Http.
 
 ## Alternatives
 

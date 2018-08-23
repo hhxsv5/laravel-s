@@ -37,7 +37,7 @@ Table of Contents
 * [在你的项目中使用swoole_server实例](#在你的项目中使用swoole_server实例)
 * [使用swoole_table](#使用swoole_table)
 * [多端口混合协议](#多端口混合协议)
-* [协程MySQL](#协程mysql)
+* [协程](#协程)
 * [自定义进程](#自定义进程)
 * [注意事项](#注意事项)
 * [待办事项](#待办事项)
@@ -53,7 +53,7 @@ Table of Contents
 
 - [多端口混合协议](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%A4%9A%E7%AB%AF%E5%8F%A3%E6%B7%B7%E5%90%88%E5%8D%8F%E8%AE%AE)
 
-- [协程MySQL](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%8D%8F%E7%A8%8Bmysql)
+- [协程](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%8D%8F%E7%A8%8B)
 
 - [自定义进程](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%9B%E7%A8%8B)
 
@@ -770,46 +770,22 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 ```
 
 
-## 协程MySQL
+## 协程
 
-> 支持MySQL数据库的`协程`客户端。注意：`目前客户端连接为单例，并发时存在问题，正在开发连接池已解决此问题。`
+> 支持一键开启运行时协程，针对扩展redis、mysqlnd pdo、mysqlnd mysqli、soap，以及函数file_get_contents、fopen、stream_socket_client、fsockopen。
 
-1.要求：`Swoole>=4.0`，`Laravel>=5.1`（后续将支持Lumen）。
+1.依赖需求：`Swoole>=4.1.0`，`Laravel>=5.1`。
 
-2.修改`config/database.php`MySQL连接的`driver`为`sw-co-mysql`。
-
-```PHP
-'connections' => [
-    //...
-    'mysql-test' => [
-        //'driver'    => 'mysql',
-        'driver'    => 'sw-co-mysql',
-        'host'      => env('DB_HOST', 'localhost'),
-        'port'      => env('DB_PORT', 3306),
-        'database'  => env('DB_DATABASE', 'forge'),
-        'username'  => env('DB_USERNAME', 'forge'),
-        'password'  => env('DB_PASSWORD', ''),
-        'charset'   => 'utf8mb4',
-        'collation' => 'utf8mb4_unicode_ci',
-        'prefix'    => '',
-        'strict'    => true,
-    ],
-    //...
-],
-```
-
-3.替换（注释掉之前的）`config/app.php`中`providers`的`Illuminate\Database\DatabaseServiceProvider::class`为`\Hhxsv5\LaravelS\Illuminate\Database\DatabaseServiceProvider::class`。
+2.启用运行时协程。
 
 ```PHP
-'providers' => [
+// 修改文件 `config/laravels.php`
+[
     //...
-    //Illuminate\Database\DatabaseServiceProvider::class,// Just annotate this line.
-    \Hhxsv5\LaravelS\Illuminate\Database\DatabaseServiceProvider::class,
+    'enable_coroutine' => true
     //...
-],
+]
 ```
-
-4.配置完成，`查询构造器`和`ORM`按正常的使用即可。
 
 ## 自定义进程
 
@@ -975,8 +951,6 @@ public function test(Request $req)
 ## 待办事项
 
 1. 针对MySQL/Redis的连接池。
-
-2. 包装Redis/Http的协程客户端。
 
 ## 其他选择
 

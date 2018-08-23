@@ -60,6 +60,10 @@ class Server
         $this->bindWebSocketEvent();
         $this->bindAttachedSockets();
         $this->bindSwooleTables();
+
+        if (!empty($conf['enable_coroutine'])) {
+            \Swoole\Runtime::enableCoroutine();
+        }
     }
 
     protected function bindBaseEvent()
