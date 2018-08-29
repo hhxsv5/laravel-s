@@ -34,6 +34,7 @@ Table of Contents
     * [Customized asynchronous events](#customized-asynchronous-events)
 * [Asynchronous task queue](#asynchronous-task-queue)
 * [Millisecond cron job](#millisecond-cron-job)
+* [Reload automatically when code is modified](#reload-automatically-when-code-is-modified)
 * [Get the instance of swoole_server in your project](#get-the-instance-of-swoole_server-in-your-project)
 * [Use swoole_table](#use-swoole_table)
 * [Multi-port mixed protocol](#multi-port-mixed-protocol)
@@ -64,7 +65,7 @@ Table of Contents
 
 - Gracefully reload
 
-- Automatically reload when code is modified
+- Reload automatically when code is modified
 
 - Support Laravel/Lumen both, good compatibility
 
@@ -573,6 +574,14 @@ class TestCronJob extends CronJob
 ```
 
 3.Note: it will launch multiple timers when build the server cluster, so you need to make sure that launch one timer only to avoid running repetitive task.
+
+## Reload automatically when code is modified
+
+1.Install [inotify](http://pecl.php.net/package/inotify) extension.
+
+2.Turn on the switch in [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
+
+3.Notice: Modify the file only in `Linux` to receive the file change events. It's recommended to use the latest Docker. [Vagrant Solution](https://github.com/mhallin/vagrant-notify-forwarder).
 
 ## Get the instance of `swoole_server` in your project
 

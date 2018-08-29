@@ -34,6 +34,7 @@ Table of Contents
     * [自定义的异步事件](#自定义的异步事件)
 * [异步的任务队列](#异步的任务队列)
 * [毫秒级定时任务](#毫秒级定时任务)
+* [修改代码后自动Reload](#修改代码后自动reload)
 * [在你的项目中使用swoole_server实例](#在你的项目中使用swoole_server实例)
 * [使用swoole_table](#使用swoole_table)
 * [多端口混合协议](#多端口混合协议)
@@ -45,7 +46,6 @@ Table of Contents
 * [打赏](#打赏)
     * [感谢](#感谢)
 * [License](#license)
-
 
 ## 特性
 
@@ -67,7 +67,7 @@ Table of Contents
 
 - 平滑Reload
 
-- 修改代码后自动Reload
+- [修改代码后自动Reload](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E4%BF%AE%E6%94%B9%E4%BB%A3%E7%A0%81%E5%90%8E%E8%87%AA%E5%8A%A8Reload)
 
 - 同时支持Laravel与Lumen，兼容主流版本
 
@@ -576,6 +576,14 @@ class TestCronJob extends CronJob
 ```
 
 3.注意在构建服务器集群时，会启动多个`定时器`，要确保只启动一个定期器，避免重复执行定时任务。
+
+## 修改代码后自动Reload
+
+1.安装[inotify](http://pecl.php.net/package/inotify)扩展。
+
+2.开启[配置项](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md)。
+
+3.注意：`inotify`只有在`Linux`内修改文件才能收到文件变更事件，建议使用最新版Docker，[Vagrant解决方案](https://github.com/mhallin/vagrant-notify-forwarder)。
 
 ## 在你的项目中使用`swoole_server`实例
 
