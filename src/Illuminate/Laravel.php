@@ -323,6 +323,9 @@ class Laravel
     public function __clone()
     {
         $this->app = clone $this->app;
-        $this->laravelKernel = clone $this->laravelKernel;
+
+        if (!$this->conf['is_lumen']) {
+            $this->laravelKernel = clone $this->laravelKernel;
+        }
     }
 }
