@@ -65,7 +65,7 @@ Table of Contents
 
 - Gracefully reload
 
-- Reload automatically when code is modified
+- [Reload automatically when code is modified](https://github.com/hhxsv5/laravel-s/blob/master/README.md#reload-automatically-when-code-is-modified)
 
 - Support Laravel/Lumen both, good compatibility
 
