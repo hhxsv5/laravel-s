@@ -85,7 +85,7 @@ Table of Contents
 
 ## 安装
 
-1.通过[Composer](https://getcomposer.org/)安装([packagist](https://packagist.org/packages/hhxsv5/laravel-s))。
+1.通过[Composer](https://getcomposer.org/)安装([packagist](https://packagist.org/packages/hhxsv5/laravel-s))。有可能找不到`3.0`版本，解决方案移步[#81](https://github.com/hhxsv5/laravel-s/issues/81)。
 
 ```Bash
 # 在你的Laravel/Lumen项目的根目录下执行
