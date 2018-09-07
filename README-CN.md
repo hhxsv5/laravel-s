@@ -17,7 +17,7 @@
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 <!-- [![Code Coverage](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/?branch=master) -->
 
-**[English Documentation](https://github.com/hhxsv5/laravel-s/blob/master/README.md)**  *QQ交流群：698480528* [![点击加群](https://pub.idqqimg.com/wpa/images/group.png "点击加群")](https://shang.qq.com/wpa/qunwpa?idkey=5199c1d21af48fa3f5c9e75a0af5548e0fa8c40bcb6cad1072018867293f569f)
+**[English Documentation](https://github.com/hhxsv5/laravel-s/blob/master/README.md)**  *QQ交流群：698480528* [![点击加群](https://pub.idqqimg.com/wpa/images/group.png "点击加群")](https://shang.qq.com/wpa/qunwpa?idkey=3b9eb9dd85e5ec59f760a4805a5dfe6fbc16f73a4e650f943c38cc49cd12f4b2)
 
 Table of Contents
 =================
