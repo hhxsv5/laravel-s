@@ -51,6 +51,9 @@
       ]
     }
   },
+  "bin": [
+    "bin/fswatch"
+  ],
   "prefer-stable": true,
   "minimum-stability": "dev"
 }
