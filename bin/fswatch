@@ -4,6 +4,8 @@ if [ ! -n "${WORK_DIR}" ] ;then
     WORK_DIR="."
 fi
 
+php artisan laravels start
+
 echo "Starting fswatch..."
 
 LOCKING=0
