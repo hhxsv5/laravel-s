@@ -4,10 +4,10 @@ if [ ! -n "${WORK_DIR}" ] ;then
     WORK_DIR="."
 fi
 
-php artisan laravels start
+echo "Restarting LaravelS..."
+php artisan laravels restart -d
 
 echo "Starting fswatch..."
-
 LOCKING=0
 fswatch -e ".*" -i "\\.php$" ${WORK_DIR} | while read file
 do
