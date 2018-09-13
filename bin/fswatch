@@ -5,7 +5,7 @@ if [ ! -n "${WORK_DIR}" ] ;then
 fi
 
 echo "Restarting LaravelS..."
-php artisan laravels restart -d
+php artisan laravels restart -d -i
 
 echo "Starting fswatch..."
 LOCKING=0
