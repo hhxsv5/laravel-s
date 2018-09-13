@@ -220,7 +220,8 @@ EOS;
         }
 
         if ($this->killProcess($pid, SIGUSR1)) {
-            $this->info("LaravelS: PID[{$pid}] is reloaded.");
+            $now = date('Y-m-d H:i:s');
+            $this->info("LaravelS: PID[{$pid}] is reloaded at {$now}.");
             return 0;
         } else {
             $this->error("LaravelS: PID[{$pid}] is reloaded failed.");
