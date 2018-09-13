@@ -19,7 +19,7 @@ class LaravelSCommand extends Command
     {
         $this->actions = ['start', 'stop', 'restart', 'reload', 'publish'];
         $actions = implode('|', $this->actions);
-        $this->signature .= sprintf(' {action : %s} {--d|daemonize : Whether run as a daemon for start & restart} {--i|ignore : Whether ignore checking the pid file for start & restart}', $actions);
+        $this->signature .= sprintf(' {action : %s} {--d|daemonize : Whether run as a daemon for start & restart} {--i|ignore : Whether ignore checking process pid for start & restart}', $actions);
         $this->description .= ': ' . $actions;
 
         parent::__construct();
@@ -192,17 +192,17 @@ EOS;
             if (file_exists($pidFile)) {
                 unlink($pidFile);
             }
-            return 1;
+            return $this->option('ignore') ? 0 : 1;
         }
     }
 
     protected function restart()
     {
-        if (($exitCode = $this->stop()) !== 0) {
+        $exitCode = $this->stop();
+        if ($exitCode !== 0) {
             return $exitCode;
         }
-        $exitCode = $this->start();
-        return $exitCode;
+        return $this->start();
     }
 
     protected function reload()
