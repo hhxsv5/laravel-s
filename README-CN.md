@@ -589,7 +589,7 @@ class TestCronJob extends CronJob
 
 - 基于`fswatch`，支持OS X、Linux、Windows。
 
-    1.安装[fswatch](https://github.com/emcrisostomo/fswatch)扩展。
+    1.安装[fswatch](https://github.com/emcrisostomo/fswatch)。
 
     2.在项目根目录下运行命令`./vendor/bin/fswatch`即可。
 
