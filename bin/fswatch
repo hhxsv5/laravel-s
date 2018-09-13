@@ -15,7 +15,7 @@ do
         echo "Reloading, skipped"
         continue
     fi
-    echo "File ${file} A has been modified"
+    echo "File ${file} has been modified"
     LOCKING=1
     php artisan laravels reload
     LOCKING=0
