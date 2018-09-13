@@ -579,11 +579,19 @@ class TestCronJob extends CronJob
 
 ## 修改代码后自动Reload
 
+- 基于`inotify`
+
 1.安装[inotify](http://pecl.php.net/package/inotify)扩展。
 
 2.开启[配置项](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md)。
 
 3.注意：`inotify`只有在`Linux`内修改文件才能收到文件变更事件，建议使用最新版Docker，[Vagrant解决方案](https://github.com/mhallin/vagrant-notify-forwarder)。
+
+- 基于`fswatch`
+
+1.安装[fswatch](https://github.com/emcrisostomo/fswatch)扩展。
+
+2.在项目根目录下运行命令`./vendor/bin/fswatch`即可。
 
 ## 在你的项目中使用`swoole_server`实例
 
