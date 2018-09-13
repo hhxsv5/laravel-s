@@ -19,7 +19,7 @@ class LaravelSCommand extends Command
     {
         $this->actions = ['start', 'stop', 'restart', 'reload', 'publish'];
         $actions = implode('|', $this->actions);
-        $this->signature .= sprintf(' {action : %s} {--d|daemonize : Whether run as a daemon for start & restart}', $actions);
+        $this->signature .= sprintf(' {action : %s} {--d|daemonize : Whether run as a daemon for start & restart} {--i|ignore : Whether ignore checking the pid file for start & restart}', $actions);
         $this->description .= ': ' . $actions;
 
         parent::__construct();
