@@ -577,7 +577,7 @@ class TestCronJob extends CronJob
 
 ## Reload automatically when code is modified
 
-- Via `inotify`
+- Via `inotify`, support Linux only.
 
     1.Install [inotify](http://pecl.php.net/package/inotify) extension.
 
@@ -585,7 +585,7 @@ class TestCronJob extends CronJob
 
     3.Notice: Modify the file only in `Linux` to receive the file change events. It's recommended to use the latest Docker. [Vagrant Solution](https://github.com/mhallin/vagrant-notify-forwarder).
 
-- Via `fswatch`
+- Via `fswatch`, support OS X/Linux/Windows.
 
     1.Install [fswatch](https://github.com/emcrisostomo/fswatch) extension.
 

@@ -579,7 +579,7 @@ class TestCronJob extends CronJob
 
 ## 修改代码后自动Reload
 
-- 基于`inotify`
+- 基于`inotify`，仅支持Linux。
 
     1.安装[inotify](http://pecl.php.net/package/inotify)扩展。
 
@@ -587,7 +587,7 @@ class TestCronJob extends CronJob
 
     3.注意：`inotify`只有在`Linux`内修改文件才能收到文件变更事件，建议使用最新版Docker，[Vagrant解决方案](https://github.com/mhallin/vagrant-notify-forwarder)。
 
-- 基于`fswatch`
+- 基于`fswatch`，支持OS X、Linux、Windows。
 
     1.安装[fswatch](https://github.com/emcrisostomo/fswatch)扩展。
 
