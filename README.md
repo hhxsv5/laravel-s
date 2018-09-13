@@ -579,17 +579,17 @@ class TestCronJob extends CronJob
 
 - Via `inotify`
 
-1.Install [inotify](http://pecl.php.net/package/inotify) extension.
+    1.Install [inotify](http://pecl.php.net/package/inotify) extension.
 
-2.Turn on the switch in [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
+    2.Turn on the switch in [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
-3.Notice: Modify the file only in `Linux` to receive the file change events. It's recommended to use the latest Docker. [Vagrant Solution](https://github.com/mhallin/vagrant-notify-forwarder).
+    3.Notice: Modify the file only in `Linux` to receive the file change events. It's recommended to use the latest Docker. [Vagrant Solution](https://github.com/mhallin/vagrant-notify-forwarder).
 
 - Via `fswatch`
 
-1.Install [fswatch](https://github.com/emcrisostomo/fswatch) extension.
+    1.Install [fswatch](https://github.com/emcrisostomo/fswatch) extension.
 
-2.Run command `./vendor/bin/fswatch` in your project root directory.
+    2.Run command `./vendor/bin/fswatch` in your project root directory.
 
 ## Get the instance of `swoole_server` in your project
 
