@@ -589,7 +589,14 @@ class TestCronJob extends CronJob
 
     1.Install [fswatch](https://github.com/emcrisostomo/fswatch).
 
-    2.Run command `./vendor/bin/fswatch` in your project root directory.
+    2.Run command in your project root directory.
+
+    ```Bash
+    # Watch current directory
+    ./vendor/bin/fswatch
+    # Watch app directory
+    ./vendor/bin/fswatch ./app
+    ```
 
 ## Get the instance of `swoole_server` in your project
 
