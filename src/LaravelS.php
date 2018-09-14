@@ -118,6 +118,7 @@ class LaravelS extends Server
 
     public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
     {
+        parent::onRequest($request, $response);
         $laravel = clone $this->laravel;
         try {
             $laravelRequest = $this->convertRequest($laravel, $request);
