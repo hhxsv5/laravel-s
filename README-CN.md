@@ -1000,6 +1000,7 @@ public function test(Request $req)
 | *翔 海贼王路飞 | 12元 |
 | *跃 Axiong | 10元 |
 | 落伽 | 10元 |
+| 很胖的胖子 | 15元 |
 
 ## License
 
