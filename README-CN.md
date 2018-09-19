@@ -1001,6 +1001,7 @@ public function test(Request $req)
 | *跃 Axiong | 10元 |
 | 落伽 | 10元 |
 | 很胖的胖子 | 15元 |
+| 霹格软件 | 18.88元 |
 
 ## License
 
