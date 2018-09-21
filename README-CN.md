@@ -1006,6 +1006,7 @@ public function test(Request $req)
 | 落伽 | 10元 |
 | 很胖的胖子 | 15元 |
 | 霹格软件 | 18.88元 |
+| Bygones | 18.88元 |
 
 ## License
 
