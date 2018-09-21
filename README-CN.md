@@ -154,6 +154,7 @@ upstream laravels {
 }
 server {
     listen 80;
+    # 别忘了绑Host哟
     server_name laravels.com;
     root /xxxpath/laravel-s-test/public;
     access_log /yyypath/log/nginx/$server_name.access.log  main;
@@ -198,6 +199,7 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 </IfModule>
 
 <VirtualHost *:80>
+    # 别忘了绑Host哟
     ServerName www.laravels.com
     ServerAdmin hhxsv5@sina.com
 
@@ -239,7 +241,7 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 ## 启用WebSocket服务器
 > WebSocket服务器监听的IP和端口与Http服务器相同。
 
-1.创建WebSocket Handler类，并实现接口`WebSocketHandlerInterface`。
+1.创建WebSocket Handler类，并实现接口`WebSocketHandlerInterface`。start时会自动实例化，不需要手动创建示例。
 ```PHP
 namespace App\Services;
 use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
@@ -276,7 +278,7 @@ class WebSocketService implements WebSocketHandlerInterface
 ```PHP
 // ...
 'websocket'      => [
-    'enable'  => true,
+    'enable'  => true, // 看清楚，这里是true
     'handler' => \App\Services\WebSocketService::class,
 ],
 'swoole'         => [
@@ -308,6 +310,7 @@ upstream laravels {
 }
 server {
     listen 80;
+    # 别忘了绑Host哟
     server_name laravels.com;
     root /xxxpath/laravel-s-test/public;
     access_log /yyypath/log/nginx/$server_name.access.log  main;

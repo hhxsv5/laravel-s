@@ -152,6 +152,7 @@ upstream laravels {
 }
 server {
     listen 80;
+    # Don't forget to bind the host
     server_name laravels.com;
     root /xxxpath/laravel-s-test/public;
     access_log /yyypath/log/nginx/$server_name.access.log  main;
@@ -196,6 +197,7 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 </IfModule>
 
 <VirtualHost *:80>
+    # Don't forget to bind the host
     ServerName www.laravels.com
     ServerAdmin hhxsv5@sina.com
 
@@ -238,7 +240,7 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 ## Enable WebSocket server
 > The Listening address of WebSocket Sever is the same as Http Server.
 
-1.Create WebSocket Handler class, and implement interface `WebSocketHandlerInterface`.
+1.Create WebSocket Handler class, and implement interface `WebSocketHandlerInterface`.The instant is automatically instantiated when start, you do not need to manually create it.
 ```PHP
 namespace App\Services;
 use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
@@ -275,7 +277,7 @@ class WebSocketService implements WebSocketHandlerInterface
 ```PHP
 // ...
 'websocket'      => [
-    'enable'  => true,
+    'enable'  => true, // Here is true
     'handler' => \App\Services\WebSocketService::class,
 ],
 'swoole'         => [
@@ -306,6 +308,7 @@ upstream laravels {
 }
 server {
     listen 80;
+    # Don't forget to bind the host
     server_name laravels.com;
     root /xxxpath/laravel-s-test/public;
     access_log /yyypath/log/nginx/$server_name.access.log  main;
