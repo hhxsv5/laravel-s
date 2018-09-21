@@ -325,6 +325,7 @@ server {
     #    return 404;
     #}
     # Http和WebSocket共存，Nginx通过location区分
+    # !!! WebSocket连接时路径为/ws
     # Javascript: var ws = new WebSocket("ws://laravels.com/ws");
     location =/ws {
         proxy_http_version 1.1;

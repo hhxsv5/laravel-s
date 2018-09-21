@@ -323,6 +323,7 @@ server {
     #    return 404;
     #}
     # Http and WebSocket are concomitant, Nginx identifies them by "location"
+    # !!! The location of WebSocket is /ws
     # Javascript: var ws = new WebSocket("ws://laravels.com/ws");
     location =/ws {
         proxy_http_version 1.1;
