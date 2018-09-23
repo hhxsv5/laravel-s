@@ -731,6 +731,8 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 ],
 ```
 
+关于心跳配置，只能设置在`主服务器`上，不能配置在多端口上。
+
 对于TCP协议，`dispatch_mode`选项设为`1/3`时，底层会屏蔽`onConnect`/`onClose`事件，原因是这两种模式下无法保证`onConnect`/`onClose`/`onReceive`的顺序。如果需要用到这两个事件，请将`dispatch_mode`改为`2/4/5`，[参考](https://wiki.swoole.com/wiki/page/277.html)。
 
 ```PHP

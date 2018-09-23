@@ -730,6 +730,8 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 ],
 ```
 
+About the heartbeat configuration, it can only be set on the `main server` and cannot be configured on ports.
+
 For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_mode` of Swoole is `1/3`, so if you want to unblock these two events please set `dispatch_mode` to `2/4/5`.
 
 ```PHP
