@@ -695,7 +695,7 @@ class TestTcpSocket extends TcpSocket
     }
     public function onClose(\swoole_server $server, $fd, $reactorId)
     {
-        \Log::info('New TCP connection', [$fd]);
+        \Log::info('Close TCP connection', [$fd]);
         $server->send($fd, 'Goodbye');
     }
 }
