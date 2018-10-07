@@ -117,7 +117,7 @@ EOS;
         }
 
         // Implements gracefully reload, avoid including laravel's files before worker start
-        $cmd = sprintf('%s %s/../GoLaravelS.php', PHP_BINARY, __DIR__);
+        $cmd = sprintf('%s -c "%s" %s/../GoLaravelS.php', PHP_BINARY, php_ini_loaded_file(), __DIR__);
         $ret = $this->popen($cmd, json_encode(compact('svrConf', 'laravelConf')));
         if ($ret === false) {
             $this->error('LaravelS: popen ' . $cmd . ' failed');
