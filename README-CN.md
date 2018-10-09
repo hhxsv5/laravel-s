@@ -243,53 +243,53 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 > WebSocket服务器监听的IP和端口与Http服务器相同。
 
 1.创建WebSocket Handler类，并实现接口`WebSocketHandlerInterface`。start时会自动实例化，不需要手动创建示例。
-```PHP
-namespace App\Services;
-use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
-/**
- * @see https://wiki.swoole.com/wiki/page/400.html
- */
-class WebSocketService implements WebSocketHandlerInterface
-{
-    // 声明没有参数的构造函数
-    public function __construct()
+    ```PHP
+    namespace App\Services;
+    use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
+    /**
+     * @see https://wiki.swoole.com/wiki/page/400.html
+     */
+    class WebSocketService implements WebSocketHandlerInterface
     {
+        // 声明没有参数的构造函数
+        public function __construct()
+        {
+        }
+        public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
+        {
+            // 在触发onOpen事件之前Laravel的生命周期已经完结，所以Laravel的Request是可读的，Session是可读写的
+            \Log::info('New WebSocket connection', [$request->fd, request()->all(), session()->getId(), session('xxx'), session(['yyy' => time()])]);
+            $server->push($request->fd, 'Welcome to LaravelS');
+            // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
+        }
+        public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame)
+        {
+            \Log::info('Received message', [$frame->fd, $frame->data, $frame->opcode, $frame->finish]);
+            $server->push($frame->fd, date('Y-m-d H:i:s'));
+            // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
+        }
+        public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
+        {
+            // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
+        }
     }
-    public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
-    {
-        // 在触发onOpen事件之前Laravel的生命周期已经完结，所以Laravel的Request是可读的，Session是可读写的
-        \Log::info('New WebSocket connection', [$request->fd, request()->all(), session()->getId(), session('xxx'), session(['yyy' => time()])]);
-        $server->push($request->fd, 'Welcome to LaravelS');
-        // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
-    }
-    public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame)
-    {
-        \Log::info('Received message', [$frame->fd, $frame->data, $frame->opcode, $frame->finish]);
-        $server->push($frame->fd, date('Y-m-d H:i:s'));
-        // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
-    }
-    public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
-    {
-        // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
-    }
-}
-```
+    ```
 
 2.更改配置`config/laravels.php`。
-```PHP
-// ...
-'websocket'      => [
-    'enable'  => true, // 看清楚，这里是true
-    'handler' => \App\Services\WebSocketService::class,
-],
-'swoole'         => [
-    //...
-    // dispatch_mode只能设置为2、4、5，https://wiki.swoole.com/wiki/page/277.html
-    'dispatch_mode' => 2,
-    //...
-],
-// ...
-```
+    ```PHP
+    // ...
+    'websocket'      => [
+        'enable'  => true, // 看清楚，这里是true
+        'handler' => \App\Services\WebSocketService::class,
+    ],
+    'swoole'         => [
+        //...
+        // dispatch_mode只能设置为2、4、5，https://wiki.swoole.com/wiki/page/277.html
+        'dispatch_mode' => 2,
+        //...
+    ],
+    // ...
+    ```
 
 3.使用`swoole_table`绑定FD与UserId，可选的，[Swoole Table示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E4%BD%BF%E7%94%A8swoole_table)。也可以用其他全局存储服务，例如Redis/Memcached/MySQL，但需要注意多个`Swoole Server`实例时FD可能冲突。
 
@@ -418,167 +418,167 @@ server {
 > 此特性依赖`Swoole`的`AsyncTask`，必须先设置`config/laravels.php`的`swoole.task_worker_num`。异步事件的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
 
 1.创建事件类。
-```PHP
-use Hhxsv5\LaravelS\Swoole\Task\Event;
-class TestEvent extends Event
-{
-    private $data;
-    public function __construct($data)
+    ```PHP
+    use Hhxsv5\LaravelS\Swoole\Task\Event;
+    class TestEvent extends Event
     {
-        $this->data = $data;
+        private $data;
+        public function __construct($data)
+        {
+            $this->data = $data;
+        }
+        public function getData()
+        {
+            return $this->data;
+        }
     }
-    public function getData()
-    {
-        return $this->data;
-    }
-}
-```
+    ```
 
 2.创建监听器类。
-```PHP
-use Hhxsv5\LaravelS\Swoole\Task\Event;
-use Hhxsv5\LaravelS\Swoole\Task\Listener;
-class TestListener1 extends Listener
-{
-    // 声明没有参数的构造函数
-    public function __construct()
+    ```PHP
+    use Hhxsv5\LaravelS\Swoole\Task\Event;
+    use Hhxsv5\LaravelS\Swoole\Task\Listener;
+    class TestListener1 extends Listener
     {
+        // 声明没有参数的构造函数
+        public function __construct()
+        {
+        }
+        public function handle(Event $event)
+        {
+            \Log::info(__CLASS__ . ':handle start', [$event->getData()]);
+            sleep(2);// 模拟一些慢速的事件处理
+            // throw new \Exception('an exception');// handle时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
+        }
     }
-    public function handle(Event $event)
-    {
-        \Log::info(__CLASS__ . ':handle start', [$event->getData()]);
-        sleep(2);// 模拟一些慢速的事件处理
-        // throw new \Exception('an exception');// handle时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
-    }
-}
-```
+    ```
 
 3.绑定事件与监听器。
-```PHP
-// 在"config/laravels.php"中绑定事件与监听器，一个事件可以有多个监听器，多个监听器按顺序执行
-[
-    // ...
-    'events' => [
-        \App\Tasks\TestEvent::class => [
-            \App\Tasks\TestListener1::class,
-            //\App\Tasks\TestListener2::class,
+    ```PHP
+    // 在"config/laravels.php"中绑定事件与监听器，一个事件可以有多个监听器，多个监听器按顺序执行
+    [
+        // ...
+        'events' => [
+            \App\Tasks\TestEvent::class => [
+                \App\Tasks\TestListener1::class,
+                //\App\Tasks\TestListener2::class,
+            ],
         ],
-    ],
-    // ...
-];
-```
+        // ...
+    ];
+    ```
 
 4.触发事件。
-```PHP
-// 实例化TestEvent并通过fire触发，此操作是异步的，触发后立即返回，由Task进程继续处理监听器中的handle逻辑
-use Hhxsv5\LaravelS\Swoole\Task\Event;
-$success = Event::fire(new TestEvent('event data'));
-var_dump($success);//判断是否触发成功
-```
+    ```PHP
+    // 实例化TestEvent并通过fire触发，此操作是异步的，触发后立即返回，由Task进程继续处理监听器中的handle逻辑
+    use Hhxsv5\LaravelS\Swoole\Task\Event;
+    $success = Event::fire(new TestEvent('event data'));
+    var_dump($success);//判断是否触发成功
+    ```
 
 ## 异步的任务队列
 > 此特性依赖`Swoole`的`AsyncTask`，必须先设置`config/laravels.php`的`swoole.task_worker_num`。异步任务的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
 
 1.创建任务类。
-```PHP
-use Hhxsv5\LaravelS\Swoole\Task\Task;
-class TestTask extends Task
-{
-    private $data;
-    private $result;
-    public function __construct($data)
+    ```PHP
+    use Hhxsv5\LaravelS\Swoole\Task\Task;
+    class TestTask extends Task
     {
-        $this->data = $data;
+        private $data;
+        private $result;
+        public function __construct($data)
+        {
+            $this->data = $data;
+        }
+        // 处理任务的逻辑，运行在Task进程中，不能投递任务
+        public function handle()
+        {
+            \Log::info(__CLASS__ . ':handle start', [$this->data]);
+            sleep(2);// 模拟一些慢速的事件处理
+            // throw new \Exception('an exception');// handle时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
+            $this->result = 'the result of ' . $this->data;
+        }
+        // 可选的，完成事件，任务处理完后的逻辑，运行在Worker进程中，可以投递任务
+        public function finish()
+        {
+            \Log::info(__CLASS__ . ':finish start', [$this->result]);
+            Task::deliver(new TestTask2('task2')); // 投递其他任务
+        }
     }
-    // 处理任务的逻辑，运行在Task进程中，不能投递任务
-    public function handle()
-    {
-        \Log::info(__CLASS__ . ':handle start', [$this->data]);
-        sleep(2);// 模拟一些慢速的事件处理
-        // throw new \Exception('an exception');// handle时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
-        $this->result = 'the result of ' . $this->data;
-    }
-    // 可选的，完成事件，任务处理完后的逻辑，运行在Worker进程中，可以投递任务
-    public function finish()
-    {
-        \Log::info(__CLASS__ . ':finish start', [$this->result]);
-        Task::deliver(new TestTask2('task2')); // 投递其他任务
-    }
-}
-```
+    ```
 
 2.投递任务。
-```PHP
-// 实例化TestTask并通过deliver投递，此操作是异步的，投递后立即返回，由Task进程继续处理TestTask中的handle逻辑
-use Hhxsv5\LaravelS\Swoole\Task\Task;
-$task = new TestTask('task data');
-// $task->delay(3);// 延迟3秒投放任务
-$ret = Task::deliver($task);
-var_dump($ret);//判断是否投递成功
-```
+    ```PHP
+    // 实例化TestTask并通过deliver投递，此操作是异步的，投递后立即返回，由Task进程继续处理TestTask中的handle逻辑
+    use Hhxsv5\LaravelS\Swoole\Task\Task;
+    $task = new TestTask('task data');
+    // $task->delay(3);// 延迟3秒投放任务
+    $ret = Task::deliver($task);
+    var_dump($ret);//判断是否投递成功
+    ```
 
 ## 毫秒级定时任务
 > 基于[Swoole的毫秒定时器](https://wiki.swoole.com/wiki/page/244.html)，封装的定时任务，取代`Linux`的`Crontab`。
 
 1.创建定时任务类。
-```PHP
-namespace App\Jobs\Timer;
-use App\Tasks\TestTask;
-use Hhxsv5\LaravelS\Swoole\Task\Task;
-use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
-class TestCronJob extends CronJob
-{
-    protected $i = 0;
-    // 声明没有参数的构造函数
-    public function __construct()
+    ```PHP
+    namespace App\Jobs\Timer;
+    use App\Tasks\TestTask;
+    use Hhxsv5\LaravelS\Swoole\Task\Task;
+    use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
+    class TestCronJob extends CronJob
     {
-    }
-    public function interval()
-    {
-        return 1000;// 每1秒运行一次
-    }
-    public function isImmediate()
-    {
-        return false;// 是否立即执行第一次，false则等待间隔时间后执行第一次
-    }
-    public function run()
-    {
-        \Log::info(__METHOD__, ['start', $this->i, microtime(true)]);
-        // do something
-        $this->i++;
-        \Log::info(__METHOD__, ['end', $this->i, microtime(true)]);
-
-        if ($this->i >= 10) { // 运行10次后不再执行
-            \Log::info(__METHOD__, ['stop', $this->i, microtime(true)]);
-            $this->stop(); // 终止此任务
-            // CronJob中也可以投递Task，但不支持Task的finish()回调。
-            // 注意：
-            // 1.参数2需传true
-            // 2.config/laravels.php中修改配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/wiki/page/296.html
-            $ret = Task::deliver(new TestTask('task data'), true);
-            var_dump($ret);
+        protected $i = 0;
+        // 声明没有参数的构造函数
+        public function __construct()
+        {
         }
-        // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
+        public function interval()
+        {
+            return 1000;// 每1秒运行一次
+        }
+        public function isImmediate()
+        {
+            return false;// 是否立即执行第一次，false则等待间隔时间后执行第一次
+        }
+        public function run()
+        {
+            \Log::info(__METHOD__, ['start', $this->i, microtime(true)]);
+            // do something
+            $this->i++;
+            \Log::info(__METHOD__, ['end', $this->i, microtime(true)]);
+
+            if ($this->i >= 10) { // 运行10次后不再执行
+                \Log::info(__METHOD__, ['stop', $this->i, microtime(true)]);
+                $this->stop(); // 终止此任务
+                // CronJob中也可以投递Task，但不支持Task的finish()回调。
+                // 注意：
+                // 1.参数2需传true
+                // 2.config/laravels.php中修改配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/wiki/page/296.html
+                $ret = Task::deliver(new TestTask('task data'), true);
+                var_dump($ret);
+            }
+            // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
+        }
     }
-}
-```
+    ```
 
 2.绑定定时任务类。
-```PHP
-// 在"config/laravels.php"绑定定时任务类
-[
-    // ...
-    'timer'          => [
-        'enable' => true, //启用Timer
-        'jobs'   => [ //绑定的定时任务类列表
-            // 启用LaravelScheduleJob来执行`php artisan schedule:run`，每分钟一次，替代Linux Crontab
-            //\Hhxsv5\LaravelS\Illuminate\LaravelScheduleJob::class,
-            \App\Jobs\Timer\TestCronJob::class,
+    ```PHP
+    // 在"config/laravels.php"绑定定时任务类
+    [
+        // ...
+        'timer'          => [
+            'enable' => true, //启用Timer
+            'jobs'   => [ //绑定的定时任务类列表
+                // 启用LaravelScheduleJob来执行`php artisan schedule:run`，每分钟一次，替代Linux Crontab
+                //\Hhxsv5\LaravelS\Illuminate\LaravelScheduleJob::class,
+                \App\Jobs\Timer\TestCronJob::class,
+            ],
         ],
-    ],
-    // ...
-];
-```
+        // ...
+    ];
+    ```
 
 3.注意在构建服务器集群时，会启动多个`定时器`，要确保只启动一个定期器，避免重复执行定时任务。
 
