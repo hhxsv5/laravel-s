@@ -243,6 +243,7 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 > WebSocket服务器监听的IP和端口与Http服务器相同。
 
 1.创建WebSocket Handler类，并实现接口`WebSocketHandlerInterface`。start时会自动实例化，不需要手动创建示例。
+
     ```PHP
     namespace App\Services;
     use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
@@ -276,6 +277,7 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
     ```
 
 2.更改配置`config/laravels.php`。
+
     ```PHP
     // ...
     'websocket'      => [
@@ -418,6 +420,7 @@ server {
 > 此特性依赖`Swoole`的`AsyncTask`，必须先设置`config/laravels.php`的`swoole.task_worker_num`。异步事件的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
 
 1.创建事件类。
+
     ```PHP
     use Hhxsv5\LaravelS\Swoole\Task\Event;
     class TestEvent extends Event
@@ -435,6 +438,7 @@ server {
     ```
 
 2.创建监听器类。
+
     ```PHP
     use Hhxsv5\LaravelS\Swoole\Task\Event;
     use Hhxsv5\LaravelS\Swoole\Task\Listener;
@@ -454,6 +458,7 @@ server {
     ```
 
 3.绑定事件与监听器。
+
     ```PHP
     // 在"config/laravels.php"中绑定事件与监听器，一个事件可以有多个监听器，多个监听器按顺序执行
     [
@@ -469,6 +474,7 @@ server {
     ```
 
 4.触发事件。
+
     ```PHP
     // 实例化TestEvent并通过fire触发，此操作是异步的，触发后立即返回，由Task进程继续处理监听器中的handle逻辑
     use Hhxsv5\LaravelS\Swoole\Task\Event;
@@ -480,6 +486,7 @@ server {
 > 此特性依赖`Swoole`的`AsyncTask`，必须先设置`config/laravels.php`的`swoole.task_worker_num`。异步任务的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
 
 1.创建任务类。
+
     ```PHP
     use Hhxsv5\LaravelS\Swoole\Task\Task;
     class TestTask extends Task
@@ -508,6 +515,7 @@ server {
     ```
 
 2.投递任务。
+
     ```PHP
     // 实例化TestTask并通过deliver投递，此操作是异步的，投递后立即返回，由Task进程继续处理TestTask中的handle逻辑
     use Hhxsv5\LaravelS\Swoole\Task\Task;
@@ -521,6 +529,7 @@ server {
 > 基于[Swoole的毫秒定时器](https://wiki.swoole.com/wiki/page/244.html)，封装的定时任务，取代`Linux`的`Crontab`。
 
 1.创建定时任务类。
+
     ```PHP
     namespace App\Jobs\Timer;
     use App\Tasks\TestTask;
@@ -564,6 +573,7 @@ server {
     ```
 
 2.绑定定时任务类。
+
     ```PHP
     // 在"config/laravels.php"绑定定时任务类
     [
@@ -640,34 +650,35 @@ var_dump($swoole->stats());// 单例
 ```
 
 2.访问`swoole_table`：所有的Table实例均绑定在`swoole_server`上，通过`app('swoole')->xxxTable`访问。
-```PHP
-// 场景：WebSocket中UserId与FD绑定
-public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
-{
-    // var_dump(app('swoole') === $server);// 同一实例
-    $userId = mt_rand(1000, 10000);
-    app('swoole')->wsTable->set('uid:' . $userId, ['value' => $request->fd]);// 绑定uid到fd的映射
-    app('swoole')->wsTable->set('fd:' . $request->fd, ['value' => $userId]);// 绑定fd到uid的映射
-    $server->push($request->fd, 'Welcome to LaravelS');
-}
-public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame)
-{
-    foreach (app('swoole')->wsTable as $key => $row) {
-        if (strpos($key, 'uid:') === 0) {
-            $server->push($row['value'], 'Broadcast: ' . date('Y-m-d H:i:s'));// 广播
+
+    ```PHP
+    // 场景：WebSocket中UserId与FD绑定
+    public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
+    {
+        // var_dump(app('swoole') === $server);// 同一实例
+        $userId = mt_rand(1000, 10000);
+        app('swoole')->wsTable->set('uid:' . $userId, ['value' => $request->fd]);// 绑定uid到fd的映射
+        app('swoole')->wsTable->set('fd:' . $request->fd, ['value' => $userId]);// 绑定fd到uid的映射
+        $server->push($request->fd, 'Welcome to LaravelS');
+    }
+    public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame)
+    {
+        foreach (app('swoole')->wsTable as $key => $row) {
+            if (strpos($key, 'uid:') === 0) {
+                $server->push($row['value'], 'Broadcast: ' . date('Y-m-d H:i:s'));// 广播
+            }
         }
     }
-}
-public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
-{
-    $uid = app('swoole')->wsTable->get('fd:' . $fd);
-    if ($uid !== false) {
-        app('swoole')->wsTable->del('uid:' . $uid['value']);// 解绑uid映射
+    public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
+    {
+        $uid = app('swoole')->wsTable->get('fd:' . $fd);
+        if ($uid !== false) {
+            app('swoole')->wsTable->del('uid:' . $uid['value']);// 解绑uid映射
+        }
+        app('swoole')->wsTable->del('fd:' . $fd);// 解绑fd映射
+        $server->push($fd, 'Goodbye');
     }
-    app('swoole')->wsTable->del('fd:' . $fd);// 解绑fd映射
-    $server->push($fd, 'Goodbye');
-}
-```
+    ```
 
 ## 多端口混合协议
 
