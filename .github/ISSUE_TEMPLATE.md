@@ -15,7 +15,7 @@
     | --------- | --------- |
     | PHP | `TODO` |
     | Swoole | `TODO` |
-    | `Laravel`/`Lumen` | `TODO` |
+    | Laravel/Lumen | `TODO` |
 
 2. Detail description about this issue(error/log)
 
