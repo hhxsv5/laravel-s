@@ -732,9 +732,9 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
     ],
     ```
 
-关于心跳配置，只能设置在`主服务器`上，不能配置在`套接字`上，但`套接字`会继承`主服务器`的心跳配置。
+    关于心跳配置，只能设置在`主服务器`上，不能配置在`套接字`上，但`套接字`会继承`主服务器`的心跳配置。
 
-对于TCP协议，`dispatch_mode`选项设为`1/3`时，底层会屏蔽`onConnect`/`onClose`事件，原因是这两种模式下无法保证`onConnect`/`onClose`/`onReceive`的顺序。如果需要用到这两个事件，请将`dispatch_mode`改为`2/4/5`，[参考](https://wiki.swoole.com/wiki/page/277.html)。
+    对于TCP协议，`dispatch_mode`选项设为`1/3`时，底层会屏蔽`onConnect`/`onClose`事件，原因是这两种模式下无法保证`onConnect`/`onClose`/`onReceive`的顺序。如果需要用到这两个事件，请将`dispatch_mode`改为`2/4/5`，[参考](https://wiki.swoole.com/wiki/page/277.html)。
 
     ```PHP
     'swoole' => [
@@ -982,18 +982,23 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 ## 用户与案例
 
 - [医联用户端Passport](https://www.medlinker.com/)：WEB站、M站、APP、小程序的账户体系服务。
+    
     <img src="https://user-images.githubusercontent.com/7278743/46649457-af05e980-cbcb-11e8-94a1-b13d743d33fd.png" height="300px" alt="医联Passport服务">
 
 - [ITOK在线客服平台](http://demo.topitsm.com)：用户IT工单的处理跟踪及在线实时沟通。
+    
     <img src="https://user-images.githubusercontent.com/7278743/46649548-10c65380-cbcc-11e8-81e6-f4a8dca2eb2c.png" height="300px" alt="ITOK在线客服平台">
 
 - [盟呱呱](http://mgg.yamecent.com)
+    
     <img src="https://user-images.githubusercontent.com/7278743/46648932-b3310780-cbc9-11e8-971e-ca26e3378507.png" height="300px" alt="盟呱呱">
 
 - 微信公众号-广州塔：活动、商城
+    
     <img src="https://user-images.githubusercontent.com/7278743/46649832-1a9c8680-cbcd-11e8-902e-978fa644f4d9.png" height="300px" alt="广州塔">
 
 - 企鹅游戏盒子、明星新势力、以及小程序广告服务
+    
     <img src="https://user-images.githubusercontent.com/7278743/46649296-2c7d2a00-cbcb-11e8-94d3-bc12fc9566d6.jpg" height="300px" alt="企鹅游戏盒子">
 
 - 亿健APP
