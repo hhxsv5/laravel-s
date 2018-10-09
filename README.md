@@ -41,7 +41,7 @@ Table of Contents
 * [Coroutine](#coroutine)
 * [Custom process](#custom-process)
 * [Important notices](#important-notices)
-* [User cases](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E7%94%A8%E6%88%B7%E4%B8%8E%E6%A1%88%E4%BE%8B)
+* [Users and cases](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E7%94%A8%E6%88%B7%E4%B8%8E%E6%A1%88%E4%BE%8B)
 * [Todo list](#todo-list)
 * [Alternatives](#alternatives)
 * [License](#license)
