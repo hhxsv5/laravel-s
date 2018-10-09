@@ -699,7 +699,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
             $server->send($fd, 'Goodbye');
         }
     }
-```
+    ```
 
     These `Socket` connections share the same worker processes with your `HTTP`/`WebSocket` connections. So it won't be a problem at all if you want to deliver tasks, use `swoole_table`, even Laravel components such as DB, Eloquent and so on.
     At the same time, you can access `swoole_server_port` object directly by member property `swoolePort`.
