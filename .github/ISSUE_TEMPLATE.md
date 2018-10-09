@@ -1,20 +1,29 @@
-1. Tell us your PHP version(`php -v`)
+1. Tell us your software version
+
+How to know software version?
+
+```Bash
+# PHP
+php -v
+# Swoole
+php --ri swoole
+# Laravel
+grep 'laravel/framework' composer.json
+# Lumen
+grep 'laravel/lumen-framework' composer.json
+```
+
+| Software | Version |
+| --------- | --------- |
+| PHP | `TODO` |
+| Swoole | `TODO` |
+| `Laravel`/`Lumen` | `TODO` |
+
+2. Detail description about this issue(error/log)
 
 `TODO`
 
-2. Tell us your Swoole version(`php --ri swoole`)
-
-`TODO`
-
-3. Tell us your `Laravel`/`Lumen` version(check composer.json & composer.lock)
-
-`TODO`
-
-4. Detail description about this issue(error/log)
-
-`TODO`
-
-5. Give us a `reproducible` code block and `steps`
+3. Give us a `reproducible` code block and `steps`
 
 ```PHP
 //TODO: Your code
