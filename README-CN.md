@@ -704,14 +704,14 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
     }
     ```
 
-这些连接和主服务器上的HTTP/WebSocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的`异步任务投递`、`swoole_table`、Laravel提供的组件如`DB`、`Eloquent`等。同时，如果需要使用该协议端口的`swoole_server_port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
+    这些连接和主服务器上的HTTP/WebSocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的`异步任务投递`、`swoole_table`、Laravel提供的组件如`DB`、`Eloquent`等。同时，如果需要使用该协议端口的`swoole_server_port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
 
-```PHP
-public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
-{
-    $port = $this->swoolePort; //获得`swoole_server_port`对象
-}
-```
+    ```PHP
+    public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
+    {
+        $port = $this->swoolePort; //获得`swoole_server_port`对象
+    }
+    ```
 
 2. 注册套接字。
 
