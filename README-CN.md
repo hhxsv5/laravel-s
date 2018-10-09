@@ -41,6 +41,7 @@ Table of Contents
 * [协程](#协程)
 * [自定义进程](#自定义进程)
 * [注意事项](#注意事项)
+* [用户与案例](#用户与案例)
 * [待办事项](#待办事项)
 * [其他选择](#其他选择)
 * [打赏](#打赏)
@@ -977,6 +978,25 @@ public function test(Request $req)
 
 - [压力测试](https://wiki.swoole.com/wiki/page/62.html)
 
+## 用户与案例
+
+- [医联用户端Passport](https://www.medlinker.com/)：WEB站、M站、APP、小程序的账户体系服务。
+<img src="https://user-images.githubusercontent.com/7278743/46649457-af05e980-cbcb-11e8-94a1-b13d743d33fd.png" height="300px" alt="医联Passport服务">
+
+- [ITOK在线客服平台](http://demo.topitsm.com)：用户IT工单的处理跟踪及在线实时沟通。
+<img src="https://user-images.githubusercontent.com/7278743/46649548-10c65380-cbcc-11e8-81e6-f4a8dca2eb2c.png" height="300px" alt="ITOK在线客服平台">
+
+- [盟呱呱](http://mgg.yamecent.com)
+<img src="https://user-images.githubusercontent.com/7278743/46648932-b3310780-cbc9-11e8-971e-ca26e3378507.png" height="300px" alt="盟呱呱">
+
+- 微信公众号-广州塔：活动、商城
+<img src="https://user-images.githubusercontent.com/7278743/46649832-1a9c8680-cbcd-11e8-902e-978fa644f4d9.png" height="300px" alt="广州塔">
+
+- 企鹅游戏盒子、明星新势力、以及小程序广告服务
+<img src="https://user-images.githubusercontent.com/7278743/46649296-2c7d2a00-cbcb-11e8-94d3-bc12fc9566d6.jpg" height="300px" alt="企鹅游戏盒子">
+
+- 亿健APP
+
 ## 待办事项
 
 1. 针对MySQL/Redis的连接池。
@@ -988,7 +1008,7 @@ public function test(Request $req)
 ## 打赏
 > 您的支持是我们坚持的最大动力。
 
-<img src="https://github.com/hhxsv5/laravel-s/blob/master/reward.png" height="300px" alt="打赏">
+<img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/master/reward.png" height="300px" alt="打赏">
 
 ### 感谢
 
