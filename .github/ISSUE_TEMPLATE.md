@@ -1,7 +1,5 @@
 1. Tell us your software version
-
-How to know software version?
-
+> How to know software version?
 ```Bash
 # PHP
 php -v
