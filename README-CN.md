@@ -1013,7 +1013,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 - 小程序-修机匠手机上门维修服务：手机维修服务，提供上门服务，支持在线维修。
     
-    <img src="https://user-images.githubusercontent.com/7278743/46649296-2c7d2a00-cbcb-11e8-94d3-bc12fc9566d6.jpg" height="300px" alt="修机匠手机上门维修服务">
+    <img src="https://user-images.githubusercontent.com/7278743/46941544-eda11580-d09d-11e8-8c3a-16c567655277.png" height="300px" alt="修机匠手机上门维修服务">
 
 - 亿健APP
 
