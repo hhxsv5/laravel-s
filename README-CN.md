@@ -1011,6 +1011,10 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
     
     <img src="https://user-images.githubusercontent.com/7278743/46649296-2c7d2a00-cbcb-11e8-94d3-bc12fc9566d6.jpg" height="300px" alt="企鹅游戏盒子">
 
+- 小程序-修机匠手机上门维修服务：手机维修服务，提供上门服务，支持在线维修。
+    
+    <img src="https://user-images.githubusercontent.com/7278743/46649296-2c7d2a00-cbcb-11e8-94d3-bc12fc9566d6.jpg" height="300px" alt="修机匠手机上门维修服务">
+
 - 亿健APP
 
 ## 待办事项
