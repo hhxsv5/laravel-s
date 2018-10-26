@@ -78,11 +78,9 @@ Table of Contents
 
 | 依赖 | 说明 |
 | -------- | -------- |
-| [PHP](https://secure.php.net/manual/zh/install.php) | `>= 5.5.9` |
-| [Swoole](https://www.swoole.com/) | `>= 1.7.19` `推荐最新的稳定版` `从2.0.12开始不再支持PHP5` |
+| [PHP](https://secure.php.net/manual/zh/install.php) | `>= 5.5.9` `推荐PHP7+` |
+| [Swoole](https://www.swoole.com/) | `>= 1.7.19` `从2.0.12开始不再支持PHP5` `推荐4.2.3+` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
-| Gzip[可选的] | [zlib](https://zlib.net/)，用于压缩HTTP响应，检查本机`libz`是否可用 *ldconfig -p&#124;grep libz* |
-| Inotify[可选的] | [inotify](http://pecl.php.net/package/inotify)，用于修改代码后自动Reload Worker进程，检查本机`inotify`是否可用 *php --ri inotify* |
 
 ## 安装
 

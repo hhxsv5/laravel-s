@@ -76,11 +76,9 @@ Table of Contents
 
 | Dependency | Requirement |
 | -------- | -------- |
-| [PHP](https://secure.php.net/manual/en/install.php) | `>= 5.5.9` |
-| [Swoole](https://www.swoole.co.uk/) | `>= 1.7.19` `The Newer The Better` `No longer support PHP5 since 2.0.12` |
+| [PHP](https://secure.php.net/manual/en/install.php) | `>= 5.5.9` `Recommend PHP7+` |
+| [Swoole](https://www.swoole.co.uk/) | `>= 1.7.19` `No longer support PHP5 since 2.0.12` `Recommend 4.2.3+` |
 | [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
-| Gzip[optional] | [zlib](https://zlib.net/), be used to compress the HTTP response, check by *ldconfig -p&#124;grep libz* |
-| Inotify[optional] | [inotify](http://pecl.php.net/package/inotify), be used to reload all worker processes when your code is modified, check by *php --ri inotify* |
 
 ## Install
 
