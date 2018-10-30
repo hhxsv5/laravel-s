@@ -16,11 +16,11 @@
 
 - `inotify_reload.enable`: `bool` Whether enable the `Inotify Reload` to reload all worker processes when your code is modified, depend on [inotify](http://pecl.php.net/package/inotify), use `php --ri inotify` to check whether the available. default `false`, `recommend to enable in development environment only`, change [Watchers Limit](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues.md#inotify-reached-the-watchers-limit).
 
-- `inotify_reload.watch_path`：`string` The file path which `Inotify` watched, default `base_path()`.
+- `inotify_reload.watch_path`：`string` The file path that `Inotify` watches, default `base_path()`.
 
-- `inotify_reload.file_types`: `array` The file types which `Inotify` watched, default `['.php']`.
+- `inotify_reload.file_types`: `array` The file types that `Inotify` watches, default `['.php']`.
 
-- `inotify_reload.excluded_dirs`: `array` The excluded/ignored directories which `Inotify` watched, default `[]`, eg: `[base_path('vendor')]`.
+- `inotify_reload.excluded_dirs`: `array` The excluded/ignored directories that `Inotify` watches, default `[]`, eg: `[base_path('vendor')]`.
 
 - `inotify_reload.log`: `bool` Whether output the reload log, default `true`.
 
