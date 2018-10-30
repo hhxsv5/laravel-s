@@ -20,6 +20,8 @@
 
 - `inotify_reload.file_types`: `array` The file types which `Inotify` watched, default `['.php']`.
 
+- `inotify_reload.excluded_dirs`: `array` The excluded/ignored directories which `Inotify` watched, default `[]`, eg: `[base_path('vendor')]`.
+
 - `inotify_reload.log`: `bool` Whether output the reload log, default `true`.
 
 - `websocket.enable`: `bool` Whether enable WebSocket Server. The Listening address of WebSocket Sever is the same as Http Server, default `false`.

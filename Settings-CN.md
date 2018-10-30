@@ -20,6 +20,8 @@
 
 - `inotify_reload.file_types`：`array` `Inotify` 监控的文件类型，默认有`.php`。
 
+- `inotify_reload.excluded_dirs`: `array` `Inotify` 监控需要排除(或忽略)的目录，默认`[]`，示例：`[base_path('vendor')]`。
+
 - `inotify_reload.log`：`bool` 是否输出Reload的日志，默认`true`。
 
 - `websocket.enable`：`bool` 是否启用WebSocket服务器。启用后WebSocket服务器监听的IP和端口与Http服务器相同，默认`false`。

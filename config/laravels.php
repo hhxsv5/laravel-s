@@ -16,7 +16,7 @@ return [
         'enable'        => env('LARAVELS_INOTIFY_RELOAD', false),
         'watch_path'    => base_path(),
         'file_types'    => ['.php'],
-        'excluded_dirs' => [base_path('vendor')],
+        'excluded_dirs' => [],
         'log'           => true,
     ],
     'websocket'          => [
