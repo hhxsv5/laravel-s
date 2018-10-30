@@ -1050,6 +1050,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 | *春 Flymoo | 100 |
 | 异乡人 | 20 |
 | only丶妳 | 100 |
+| 月殇 | 18.88 |
 
 ## License
 
