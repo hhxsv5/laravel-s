@@ -48,7 +48,7 @@ trait InotifyTrait
                                 $action = 'move';
                                 break;
                         }
-                        $this->log(sprintf('reloaded by inotify, %s %s', $action, $event['name']));
+                        $this->log(sprintf('reloaded by inotify, reason: %s %s', $action, $event['name']));
                     }
                 });
             $inotify->addFileTypes($config['file_types']);
