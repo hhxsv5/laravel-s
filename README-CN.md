@@ -17,7 +17,7 @@
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 <!-- [![Code Coverage](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/?branch=master) -->
 
-**[English Documentation](https://github.com/hhxsv5/laravel-s/blob/master/README.md)**  *QQ交流群：698480528*
+**[English Documentation](https://github.com/hhxsv5/laravel-s/blob/master/README.md)**  *QQ交流群：698480528* [![点击加群](https://pub.idqqimg.com/wpa/images/group.png "点击加群")](https://shang.qq.com/wpa/qunwpa?idkey=3b9eb9dd85e5ec59f760a4805a5dfe6fbc16f73a4e650f943c38cc49cd12f4b2)
 
 Table of Contents
 =================
@@ -34,18 +34,19 @@ Table of Contents
     * [自定义的异步事件](#自定义的异步事件)
 * [异步的任务队列](#异步的任务队列)
 * [毫秒级定时任务](#毫秒级定时任务)
+* [修改代码后自动Reload](#修改代码后自动reload)
 * [在你的项目中使用swoole_server实例](#在你的项目中使用swoole_server实例)
 * [使用swoole_table](#使用swoole_table)
 * [多端口混合协议](#多端口混合协议)
 * [协程](#协程)
 * [自定义进程](#自定义进程)
 * [注意事项](#注意事项)
+* [用户与案例](#用户与案例)
 * [待办事项](#待办事项)
 * [其他选择](#其他选择)
 * [打赏](#打赏)
     * [感谢](#感谢)
 * [License](#license)
-
 
 ## 特性
 
@@ -67,7 +68,7 @@ Table of Contents
 
 - 平滑Reload
 
-- 修改代码后自动Reload
+- [修改代码后自动Reload](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E4%BF%AE%E6%94%B9%E4%BB%A3%E7%A0%81%E5%90%8E%E8%87%AA%E5%8A%A8reload)
 
 - 同时支持Laravel与Lumen，兼容主流版本
 
@@ -77,18 +78,15 @@ Table of Contents
 
 | 依赖 | 说明 |
 | -------- | -------- |
-| [PHP](https://secure.php.net/manual/zh/install.php) | `>= 5.5.9` |
-| [Swoole](https://www.swoole.com/) | `>= 1.7.19` `推荐最新的稳定版` `从2.0.12开始不再支持PHP5` |
-| [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` |
-| Gzip[可选的] | [zlib](https://zlib.net/)，用于压缩HTTP响应，检查本机`libz`是否可用 *ldconfig -p&#124;grep libz* |
-| Inotify[可选的] | [inotify](http://pecl.php.net/package/inotify)，用于修改代码后自动Reload Worker进程，检查本机`inotify`是否可用 *php --ri inotify* |
+| [PHP](https://secure.php.net/manual/zh/install.php) | `>= 5.5.9` `推荐PHP7+` |
+| [Swoole](https://www.swoole.com/) | `>= 1.7.19` `从2.0.12开始不再支持PHP5` `推荐4.2.3+` |
+| [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` `推荐5.6+` |
 
 ## 安装
 
-1.通过[Composer](https://getcomposer.org/)安装([packagist](https://packagist.org/packages/hhxsv5/laravel-s))。
+1.通过[Composer](https://getcomposer.org/)安装([packagist](https://packagist.org/packages/hhxsv5/laravel-s))。有可能找不到`3.0`版本，解决方案移步[#81](https://github.com/hhxsv5/laravel-s/issues/81)。
 
 ```Bash
-# 在你的Laravel/Lumen项目的根目录下执行
 composer require "hhxsv5/laravel-s:~3.0" -vvv
 # 确保你的composer.lock文件是在版本控制中
 ```
@@ -96,17 +94,17 @@ composer require "hhxsv5/laravel-s:~3.0" -vvv
 2.注册Service Provider（以下两步二选一）。
 
 - `Laravel`: 修改文件`config/app.php`，`Laravel 5.5+支持包自动发现，你应该跳过这步`
-```PHP
-'providers' => [
-    //...
-    Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class,
-],
-```
+    ```PHP
+    'providers' => [
+        //...
+        Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class,
+    ],
+    ```
 
 - `Lumen`: 修改文件`bootstrap/app.php`
-```PHP
-$app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
-```
+    ```PHP
+    $app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
+    ```
 
 3.发布配置文件。
 > *每次升级LaravelS后，建议重新发布一次配置文件*
@@ -154,6 +152,7 @@ upstream laravels {
 }
 server {
     listen 80;
+    # 别忘了绑Host哟
     server_name laravels.com;
     root /xxxpath/laravel-s-test/public;
     access_log /yyypath/log/nginx/$server_name.access.log  main;
@@ -198,6 +197,7 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 </IfModule>
 
 <VirtualHost *:80>
+    # 别忘了绑Host哟
     ServerName www.laravels.com
     ServerAdmin hhxsv5@sina.com
 
@@ -239,7 +239,8 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 ## 启用WebSocket服务器
 > WebSocket服务器监听的IP和端口与Http服务器相同。
 
-1.创建WebSocket Handler类，并实现接口`WebSocketHandlerInterface`。
+1.创建WebSocket Handler类，并实现接口`WebSocketHandlerInterface`。start时会自动实例化，不需要手动创建示例。
+
 ```PHP
 namespace App\Services;
 use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
@@ -273,10 +274,11 @@ class WebSocketService implements WebSocketHandlerInterface
 ```
 
 2.更改配置`config/laravels.php`。
+
 ```PHP
 // ...
 'websocket'      => [
-    'enable'  => true,
+    'enable'  => true, // 看清楚，这里是true
     'handler' => \App\Services\WebSocketService::class,
 ],
 'swoole'         => [
@@ -308,6 +310,7 @@ upstream laravels {
 }
 server {
     listen 80;
+    # 别忘了绑Host哟
     server_name laravels.com;
     root /xxxpath/laravel-s-test/public;
     access_log /yyypath/log/nginx/$server_name.access.log  main;
@@ -322,6 +325,7 @@ server {
     #    return 404;
     #}
     # Http和WebSocket共存，Nginx通过location区分
+    # !!! WebSocket连接时路径为/ws
     # Javascript: var ws = new WebSocket("ws://laravels.com/ws");
     location =/ws {
         proxy_http_version 1.1;
@@ -365,23 +369,23 @@ server {
 
 - Swoole的心跳配置
 
-```PHP
-// config/laravels.php
-'swoole' => [
-    //...
-    // 表示每60秒遍历一次，一个连接如果600秒内未向服务器发送任何数据，此连接将被强制关闭
-    'heartbeat_idle_time'      => 600,
-    'heartbeat_check_interval' => 60,
-    //...
-],
-```
+    ```PHP
+    // config/laravels.php
+    'swoole' => [
+        //...
+        // 表示每60秒遍历一次，一个连接如果600秒内未向服务器发送任何数据，此连接将被强制关闭
+        'heartbeat_idle_time'      => 600,
+        'heartbeat_check_interval' => 60,
+        //...
+    ],
+    ```
 
 - Nginx读取代理服务器超时的配置
 
-```Nginx
-# 如果60秒内被代理的服务器没有响应数据给Nginx，那么Nginx会关闭当前连接
-proxy_read_timeout 60s;
-```
+    ```Nginx
+    # 如果60秒内被代理的服务器没有响应数据给Nginx，那么Nginx会关闭当前连接
+    proxy_read_timeout 60s;
+    ```
 
 ## 监听事件
 
@@ -390,29 +394,30 @@ proxy_read_timeout 60s;
 
 - `laravels.received_request` 将`swoole_http_request`转成`Illuminate\Http\Request`后，在Laravel内核处理请求前。
 
-```PHP
-// 修改`app/Providers/EventServiceProvider.php`, 添加下面监听代码到boot方法中
-// 如果变量$events不存在，你也可以通过Facade调用\Event::listen()。
-$events->listen('laravels.received_request', function (\Illuminate\Http\Request $req, $app) {
-    $req->query->set('get_key', 'hhxsv5');// 修改querystring
-    $req->request->set('post_key', 'hhxsv5'); // 修改post body
-});
-```
+    ```PHP
+    // 修改`app/Providers/EventServiceProvider.php`, 添加下面监听代码到boot方法中
+    // 如果变量$events不存在，你也可以通过Facade调用\Event::listen()。
+    $events->listen('laravels.received_request', function (\Illuminate\Http\Request $req, $app) {
+        $req->query->set('get_key', 'hhxsv5');// 修改querystring
+        $req->request->set('post_key', 'hhxsv5'); // 修改post body
+    });
+    ```
 
 - `laravels.generated_response` 在Laravel内核处理完请求后，将`Illuminate\Http\Response`转成`swoole_http_response`之前(下一步将响应给客户端)。
 
-```PHP
-// 修改`app/Providers/EventServiceProvider.php`, 添加下面监听代码到boot方法中
-// 如果变量$events不存在，你也可以通过Facade调用\Event::listen()。
-$events->listen('laravels.generated_response', function (\Illuminate\Http\Request $req, \Symfony\Component\HttpFoundation\Response $rsp, $app) {
-    $rsp->headers->set('header-key', 'hhxsv5');// 修改header
-});
-```
+    ```PHP
+    // 修改`app/Providers/EventServiceProvider.php`, 添加下面监听代码到boot方法中
+    // 如果变量$events不存在，你也可以通过Facade调用\Event::listen()。
+    $events->listen('laravels.generated_response', function (\Illuminate\Http\Request $req, \Symfony\Component\HttpFoundation\Response $rsp, $app) {
+        $rsp->headers->set('header-key', 'hhxsv5');// 修改header
+    });
+    ```
 
 ### 自定义的异步事件
 > 此特性依赖`Swoole`的`AsyncTask`，必须先设置`config/laravels.php`的`swoole.task_worker_num`。异步事件的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
 
 1.创建事件类。
+
 ```PHP
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 class TestEvent extends Event
@@ -430,6 +435,7 @@ class TestEvent extends Event
 ```
 
 2.创建监听器类。
+
 ```PHP
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
@@ -449,6 +455,7 @@ class TestListener1 extends Listener
 ```
 
 3.绑定事件与监听器。
+
 ```PHP
 // 在"config/laravels.php"中绑定事件与监听器，一个事件可以有多个监听器，多个监听器按顺序执行
 [
@@ -464,6 +471,7 @@ class TestListener1 extends Listener
 ```
 
 4.触发事件。
+
 ```PHP
 // 实例化TestEvent并通过fire触发，此操作是异步的，触发后立即返回，由Task进程继续处理监听器中的handle逻辑
 use Hhxsv5\LaravelS\Swoole\Task\Event;
@@ -475,6 +483,7 @@ var_dump($success);//判断是否触发成功
 > 此特性依赖`Swoole`的`AsyncTask`，必须先设置`config/laravels.php`的`swoole.task_worker_num`。异步任务的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
 
 1.创建任务类。
+
 ```PHP
 use Hhxsv5\LaravelS\Swoole\Task\Task;
 class TestTask extends Task
@@ -503,6 +512,7 @@ class TestTask extends Task
 ```
 
 2.投递任务。
+
 ```PHP
 // 实例化TestTask并通过deliver投递，此操作是异步的，投递后立即返回，由Task进程继续处理TestTask中的handle逻辑
 use Hhxsv5\LaravelS\Swoole\Task\Task;
@@ -516,6 +526,7 @@ var_dump($ret);//判断是否投递成功
 > 基于[Swoole的毫秒定时器](https://wiki.swoole.com/wiki/page/244.html)，封装的定时任务，取代`Linux`的`Crontab`。
 
 1.创建定时任务类。
+
 ```PHP
 namespace App\Jobs\Timer;
 use App\Tasks\TestTask;
@@ -559,6 +570,7 @@ class TestCronJob extends CronJob
 ```
 
 2.绑定定时任务类。
+
 ```PHP
 // 在"config/laravels.php"绑定定时任务类
 [
@@ -576,6 +588,29 @@ class TestCronJob extends CronJob
 ```
 
 3.注意在构建服务器集群时，会启动多个`定时器`，要确保只启动一个定期器，避免重复执行定时任务。
+
+## 修改代码后自动Reload
+
+- 基于`inotify`，仅支持Linux。
+
+    1.安装[inotify](http://pecl.php.net/package/inotify)扩展。
+
+    2.开启[配置项](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md)。
+
+    3.注意：`inotify`只有在`Linux`内修改文件才能收到文件变更事件，建议使用最新版Docker，[Vagrant解决方案](https://github.com/mhallin/vagrant-notify-forwarder)。
+
+- 基于`fswatch`，支持OS X、Linux、Windows。
+
+    1.安装[fswatch](https://github.com/emcrisostomo/fswatch)。
+
+    2.在项目根目录下运行命令。
+
+    ```Bash
+    # 监听当前目录
+    ./vendor/bin/fswatch
+    # 监听app目录
+    ./vendor/bin/fswatch ./app
+    ```
 
 ## 在你的项目中使用`swoole_server`实例
 
@@ -612,6 +647,7 @@ var_dump($swoole->stats());// 单例
 ```
 
 2.访问`swoole_table`：所有的Table实例均绑定在`swoole_server`上，通过`app('swoole')->xxxTable`访问。
+
 ```PHP
 // 场景：WebSocket中UserId与FD绑定
 public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
@@ -649,70 +685,72 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 1. 创建Socket处理类，继承`Hhxsv5\LaravelS\Swoole\Socket\{TcpSocket|UdpSocket|Http|WebSocket}`
 
-```PHP
-namespace App\Sockets;
-use Hhxsv5\LaravelS\Swoole\Socket\TcpSocket;
-class TestTcpSocket extends TcpSocket
-{
-    public function onConnect(\swoole_server $server, $fd, $reactorId)
+    ```PHP
+    namespace App\Sockets;
+    use Hhxsv5\LaravelS\Swoole\Socket\TcpSocket;
+    class TestTcpSocket extends TcpSocket
     {
-        \Log::info('New TCP connection', [$fd]);
-        $server->send($fd, 'Welcome to LaravelS.');
-    }
-    public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
-    {
-        \Log::info('Received data', [$fd, $data]);
-        $server->send($fd, 'LaravelS: ' . $data);
-        if ($data === "quit\r\n") {
-            $server->send($fd, 'LaravelS: bye' . PHP_EOL);
-            $server->close($fd);
+        public function onConnect(\swoole_server $server, $fd, $reactorId)
+        {
+            \Log::info('New TCP connection', [$fd]);
+            $server->send($fd, 'Welcome to LaravelS.');
+        }
+        public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
+        {
+            \Log::info('Received data', [$fd, $data]);
+            $server->send($fd, 'LaravelS: ' . $data);
+            if ($data === "quit\r\n") {
+                $server->send($fd, 'LaravelS: bye' . PHP_EOL);
+                $server->close($fd);
+            }
+        }
+        public function onClose(\swoole_server $server, $fd, $reactorId)
+        {
+            \Log::info('Close TCP connection', [$fd]);
+            $server->send($fd, 'Goodbye');
         }
     }
-    public function onClose(\swoole_server $server, $fd, $reactorId)
+    ```
+
+    这些连接和主服务器上的HTTP/WebSocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的`异步任务投递`、`swoole_table`、Laravel提供的组件如`DB`、`Eloquent`等。同时，如果需要使用该协议端口的`swoole_server_port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
+
+    ```PHP
+    public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
     {
-        \Log::info('New TCP connection', [$fd]);
-        $server->send($fd, 'Goodbye');
+        $port = $this->swoolePort; //获得`swoole_server_port`对象
     }
-}
-```
-
-这些连接和主服务器上的HTTP/WebSocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的`异步任务投递`、`swoole_table`、Laravel提供的组件如`DB`、`Eloquent`等。同时，如果需要使用该协议端口的`swoole_server_port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
-
-```PHP
-public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
-{
-    $port = $this->swoolePort; //获得`swoole_server_port`对象
-}
-```
+    ```
 
 2. 注册套接字。
 
-```PHP
-// 修改文件 config/laravels.php
-// ...
-'sockets' => [
-    [
-        'host'     => '127.0.0.1',
-        'port'     => 5291,
-        'type'     => SWOOLE_SOCK_TCP,// 支持的嵌套字类型：https://wiki.swoole.com/wiki/page/16.html#entry_h2_0
-        'settings' => [// Swoole可用的配置项：https://wiki.swoole.com/wiki/page/526.html
-            'open_eof_check' => true,
-            'package_eof'    => "\r\n",
+    ```PHP
+    // 修改文件 config/laravels.php
+    // ...
+    'sockets' => [
+        [
+            'host'     => '127.0.0.1',
+            'port'     => 5291,
+            'type'     => SWOOLE_SOCK_TCP,// 支持的嵌套字类型：https://wiki.swoole.com/wiki/page/16.html#entry_h2_0
+            'settings' => [// Swoole可用的配置项：https://wiki.swoole.com/wiki/page/526.html
+                'open_eof_check' => true,
+                'package_eof'    => "\r\n",
+            ],
+            'handler'  => \App\Sockets\TestTcpSocket::class,
         ],
-        'handler'  => \App\Sockets\TestTcpSocket::class,
     ],
-],
-```
+    ```
 
-对于TCP协议，`dispatch_mode`选项设为`1/3`时，底层会屏蔽`onConnect`/`onClose`事件，原因是这两种模式下无法保证`onConnect`/`onClose`/`onReceive`的顺序。如果需要用到这两个事件，请将`dispatch_mode`改为`2/4/5`，[参考](https://wiki.swoole.com/wiki/page/277.html)。
+    关于心跳配置，只能设置在`主服务器`上，不能配置在`套接字`上，但`套接字`会继承`主服务器`的心跳配置。
 
-```PHP
-'swoole' => [
-    //...
-    'dispatch_mode' => 2,
-    //...
-];
-```
+    对于TCP协议，`dispatch_mode`选项设为`1/3`时，底层会屏蔽`onConnect`/`onClose`事件，原因是这两种模式下无法保证`onConnect`/`onClose`/`onReceive`的顺序。如果需要用到这两个事件，请将`dispatch_mode`改为`2/4/5`，[参考](https://wiki.swoole.com/wiki/page/277.html)。
+
+    ```PHP
+    'swoole' => [
+        //...
+        'dispatch_mode' => 2,
+        //...
+    ];
+    ```
 
 3. 测试。
 
@@ -722,52 +760,52 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 
 4. 其他协议的注册示例。
 
-- UDP
-```PHP
-'sockets' => [
-    [
-        'host'     => '0.0.0.0',
-        'port'     => 5292,
-        'type'     => SWOOLE_SOCK_UDP,
-        'settings' => [
-            'open_eof_check' => true,
-            'package_eof'    => "\r\n",
+    - UDP
+    ```PHP
+    'sockets' => [
+        [
+            'host'     => '0.0.0.0',
+            'port'     => 5292,
+            'type'     => SWOOLE_SOCK_UDP,
+            'settings' => [
+                'open_eof_check' => true,
+                'package_eof'    => "\r\n",
+            ],
+            'handler'  => \App\Sockets\TestUdpSocket::class,
         ],
-        'handler'  => \App\Sockets\TestUdpSocket::class,
     ],
-],
-```
+    ```
 
-- Http
-```PHP
-'sockets' => [
-    [
-        'host'     => '0.0.0.0',
-        'port'     => 5293,
-        'type'     => SWOOLE_SOCK_TCP,
-        'settings' => [
-            'open_http_protocol' => true,
+    - Http
+    ```PHP
+    'sockets' => [
+        [
+            'host'     => '0.0.0.0',
+            'port'     => 5293,
+            'type'     => SWOOLE_SOCK_TCP,
+            'settings' => [
+                'open_http_protocol' => true,
+            ],
+            'handler'  => \App\Sockets\TestHttp::class,
         ],
-        'handler'  => \App\Sockets\TestHttp::class,
     ],
-],
-```
+    ```
 
-- WebSocket
-```PHP
-'sockets' => [
-    [
-        'host'     => '0.0.0.0',
-        'port'     => 5294,
-        'type'     => SWOOLE_SOCK_TCP,
-        'settings' => [
-            'open_http_protocol'      => true,
-            'open_websocket_protocol' => true,
+    - WebSocket
+    ```PHP
+    'sockets' => [
+        [
+            'host'     => '0.0.0.0',
+            'port'     => 5294,
+            'type'     => SWOOLE_SOCK_TCP,
+            'settings' => [
+                'open_http_protocol'      => true,
+                'open_websocket_protocol' => true,
+            ],
+            'handler'  => \App\Sockets\TestWebSocket::class,
         ],
-        'handler'  => \App\Sockets\TestWebSocket::class,
     ],
-],
-```
+    ```
 
 
 ## 协程
@@ -778,14 +816,14 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 
 - [运行时协程](https://wiki.swoole.com/wiki/page/965.html)：需`Swoole>=4.1.0`，同时启用下面的配置。
 
-```PHP
-// 修改文件 `config/laravels.php`
-[
-    //...
-    'enable_coroutine' => true
-    //...
-]
-```
+    ```PHP
+    // 修改文件 `config/laravels.php`
+    [
+        //...
+        'enable_coroutine' => true
+        //...
+    ]
+    ```
 
 ## 自定义进程
 
@@ -793,55 +831,55 @@ public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
 
 1. 创建Proccess类，实现CustomProcessInterface接口。
 
-```PHP
-namespace App\Processes;
-use App\Tasks\TestTask;
-use Hhxsv5\LaravelS\Swoole\Task\Task;
-use Hhxsv5\LaravelS\Swoole\Process\CustomProcessInterface;
-class TestProcess implements CustomProcessInterface
-{
-    public static function getName()
+    ```PHP
+    namespace App\Processes;
+    use App\Tasks\TestTask;
+    use Hhxsv5\LaravelS\Swoole\Task\Task;
+    use Hhxsv5\LaravelS\Swoole\Process\CustomProcessInterface;
+    class TestProcess implements CustomProcessInterface
     {
-        // 进程名称
-        return 'test';
-    }
-    public static function isRedirectStdinStdout()
-    {
-        // 是否重定向输入输出
-        return false;
-    }
-    public static function getPipeType()
-    {
-        // 管道类型：0不创建管道，1创建SOCK_STREAM类型管道，2创建SOCK_DGRAM类型管道
-        return 0;
-    }
-    public static function callback(\swoole_server $swoole)
-    {
-        // 进程运行的代码，不能退出，一旦退出Manager进程会自动再次创建该进程。
-        \Log::info(__METHOD__, [posix_getpid(), $swoole->stats()]);
-        while (true) {
-            \Log::info('Do something');
-            sleep(1);
-            // 自定义进程中也可以投递Task，但不支持Task的finish()回调。
-            // 注意：
-            // 1.参数2需传true
-            // 2.config/laravels.php中修改配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/wiki/page/296.html
-            $ret = Task::deliver(new TestTask('task data'), true);
-            var_dump($ret);
+        public static function getName()
+        {
+            // 进程名称
+            return 'test';
+        }
+        public static function isRedirectStdinStdout()
+        {
+            // 是否重定向输入输出
+            return false;
+        }
+        public static function getPipeType()
+        {
+            // 管道类型：0不创建管道，1创建SOCK_STREAM类型管道，2创建SOCK_DGRAM类型管道
+            return 0;
+        }
+        public static function callback(\swoole_server $swoole)
+        {
+            // 进程运行的代码，不能退出，一旦退出Manager进程会自动再次创建该进程。
+            \Log::info(__METHOD__, [posix_getpid(), $swoole->stats()]);
+            while (true) {
+                \Log::info('Do something');
+                sleep(1);
+                // 自定义进程中也可以投递Task，但不支持Task的finish()回调。
+                // 注意：
+                // 1.参数2需传true
+                // 2.config/laravels.php中修改配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/wiki/page/296.html
+                $ret = Task::deliver(new TestTask('task data'), true);
+                var_dump($ret);
+            }
         }
     }
-}
-```
+    ```
 
 2. 注册TestProcess。
 
-```PHP
-// 修改文件 config/laravels.php
-// ...
-'processes' => [
-    \App\Processes\TestProcess::class,
-],
-```
+    ```PHP
+    // 修改文件 config/laravels.php
+    // ...
+    'processes' => [
+        \App\Processes\TestProcess::class,
+    ],
+    ```
 
 3. 注意：TestProcess::callback()方法不能退出，一旦退出Manager进程会自动再次创建该进程。
 
@@ -862,91 +900,120 @@ class TestProcess implements CustomProcessInterface
 
 - 应通过`Illuminate\Http\Request`对象来获取请求信息，$_ENV是可读取的，`不能使用`$_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST、$_SESSION、$GLOBALS、$_SERVER。
 
-```PHP
-public function form(\Illuminate\Http\Request $request)
-{
-    $name = $request->input('name');
-    $all = $request->all();
-    $sessionId = $request->cookie('sessionId');
-    $photo = $request->file('photo');
-    $rawContent = $request->getContent();
-    //...
-}
-```
+    ```PHP
+    public function form(\Illuminate\Http\Request $request)
+    {
+        $name = $request->input('name');
+        $all = $request->all();
+        $sessionId = $request->cookie('sessionId');
+        $photo = $request->file('photo');
+        $rawContent = $request->getContent();
+        //...
+    }
+    ```
 
 - 推荐通过返回`Illuminate\Http\Response`对象来响应请求，兼容echo、vardump()、print_r()，`不能使用`函数像exit()、die()、header()、setcookie()、http_response_code()。
 
-```PHP
-public function json()
-{
-    return response()->json(['time' => time()])->header('header1', 'value1')->withCookie('c1', 'v1');
-}
-```
+    ```PHP
+    public function json()
+    {
+        return response()->json(['time' => time()])->header('header1', 'value1')->withCookie('c1', 'v1');
+    }
+    ```
 
 - 各种`单例的连接`将被常驻内存，建议开启`持久连接`。
 1. 数据库连接，连接断开后会自动重连
-```PHP
-// config/database.php
-'connections' => [
-    'my_conn' => [
-        'driver'    => 'mysql',
-        'host'      => env('DB_MY_CONN_HOST', 'localhost'),
-        'port'      => env('DB_MY_CONN_PORT', 3306),
-        'database'  => env('DB_MY_CONN_DATABASE', 'forge'),
-        'username'  => env('DB_MY_CONN_USERNAME', 'forge'),
-        'password'  => env('DB_MY_CONN_PASSWORD', ''),
-        'charset'   => 'utf8mb4',
-        'collation' => 'utf8mb4_unicode_ci',
-        'prefix'    => '',
-        'strict'    => false,
-        'options'   => [
-            // 开启持久连接
-            \PDO::ATTR_PERSISTENT => true,
+    ```PHP
+    // config/database.php
+    'connections' => [
+        'my_conn' => [
+            'driver'    => 'mysql',
+            'host'      => env('DB_MY_CONN_HOST', 'localhost'),
+            'port'      => env('DB_MY_CONN_PORT', 3306),
+            'database'  => env('DB_MY_CONN_DATABASE', 'forge'),
+            'username'  => env('DB_MY_CONN_USERNAME', 'forge'),
+            'password'  => env('DB_MY_CONN_PASSWORD', ''),
+            'charset'   => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix'    => '',
+            'strict'    => false,
+            'options'   => [
+                // 开启持久连接
+                \PDO::ATTR_PERSISTENT => true,
+            ],
         ],
+        //...
     ],
     //...
-],
-//...
-```
+    ```
+
 2. Redis连接，连接断开后`不会立即`自动重连，会抛出一个关于连接断开的异常，下次会自动重连。需确保每次操作Redis前正确的`SELECT DB`。
-```PHP
-// config/database.php
-'redis' => [
-        'default' => [
-            'host'       => env('REDIS_HOST', 'localhost'),
-            'password'   => env('REDIS_PASSWORD', null),
-            'port'       => env('REDIS_PORT', 6379),
-            'database'   => 0,
-            'persistent' => true, // 开启持久连接
+    ```PHP
+    // config/database.php
+    'redis' => [
+            'default' => [
+                'host'       => env('REDIS_HOST', 'localhost'),
+                'password'   => env('REDIS_PASSWORD', null),
+                'port'       => env('REDIS_PORT', 6379),
+                'database'   => 0,
+                'persistent' => true, // 开启持久连接
+            ],
         ],
-    ],
-//...
-```
+    //...
+    ```
 
 - 你声明的全局、静态变量必须手动清理或重置。
 
 - 无限追加元素到静态或全局变量中，将导致内存爆满。
 
-```PHP
-// 某类
-class Test
-{
-    public static $array = [];
-    public static $string = '';
-}
+    ```PHP
+    // 某类
+    class Test
+    {
+        public static $array = [];
+        public static $string = '';
+    }
 
-// 某控制器
-public function test(Request $req)
-{
-    // 内存爆满
-    Test::$array[] = $req->input('param1');
-    Test::$string .= $req->input('param2');
-}
-```
+    // 某控制器
+    public function test(Request $req)
+    {
+        // 内存爆满
+        Test::$array[] = $req->input('param1');
+        Test::$string .= $req->input('param2');
+    }
+    ```
 
 - [Linux内核参数调整](https://wiki.swoole.com/wiki/page/p-server/sysctl.html)
 
 - [压力测试](https://wiki.swoole.com/wiki/page/62.html)
+
+## 用户与案例
+
+- [医联用户端Passport](https://www.medlinker.com/)：WEB站、M站、APP、小程序的账户体系服务。
+    
+    <img src="https://user-images.githubusercontent.com/7278743/46649457-af05e980-cbcb-11e8-94a1-b13d743d33fd.png" height="300px" alt="医联Passport服务">
+
+- [ITOK在线客服平台](http://demo.topitsm.com)：用户IT工单的处理跟踪及在线实时沟通。
+    
+    <img src="https://user-images.githubusercontent.com/7278743/46649548-10c65380-cbcc-11e8-81e6-f4a8dca2eb2c.png" height="300px" alt="ITOK在线客服平台">
+
+- [盟呱呱](http://mgg.yamecent.com)
+    
+    <img src="https://user-images.githubusercontent.com/7278743/46648932-b3310780-cbc9-11e8-971e-ca26e3378507.png" height="300px" alt="盟呱呱">
+
+- 微信公众号-广州塔：活动、商城
+    
+    <img src="https://user-images.githubusercontent.com/7278743/46649832-1a9c8680-cbcd-11e8-902e-978fa644f4d9.png" height="300px" alt="广州塔">
+
+- 企鹅游戏盒子、明星新势力、以及小程序广告服务
+    
+    <img src="https://user-images.githubusercontent.com/7278743/46649296-2c7d2a00-cbcb-11e8-94d3-bc12fc9566d6.jpg" height="300px" alt="企鹅游戏盒子">
+
+- 小程序-修机匠手机上门维修服务：手机维修服务，提供上门服务，支持在线维修。
+    
+    <img src="https://user-images.githubusercontent.com/7278743/46941544-eda11580-d09d-11e8-8c3a-16c567655277.png" height="300px" alt="修机匠手机上门维修服务">
+
+- 亿健APP
 
 ## 待办事项
 
@@ -959,24 +1026,30 @@ public function test(Request $req)
 ## 打赏
 > 您的支持是我们坚持的最大动力。
 
-<img src="https://github.com/hhxsv5/laravel-s/blob/master/reward.png" height="300px" alt="打赏">
+<img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/master/reward.png" height="300px" alt="打赏">
 
 ### 感谢
 
-| 支持者 | 金额 |
+| 支持者 | 金额(元) |
 | --- | --- |
-| *思勇 | 18.88元 |
-| *德国 | 18.88元 |
-| 魂之挽歌 | 100元 |
-| 小南瓜 | 10.01元 |
-| *丁智 | 16.66元 |
-| 匿名 | 20元 |
-| 匿名 | 20元 |
-| *洋 Blues | 18.88元 |
-| *钧泽 Panda | 10.24元 |
-| *翔 海贼王路飞 | 12元 |
-| *跃 Axiong | 10元 |
-| 落伽 | 10元 |
+| *思勇 | 18.88 |
+| *德国 | 18.88 |
+| 魂之挽歌 | 100 |
+| 小南瓜 | 10.01 |
+| *丁智 | 16.66 |
+| 匿名 | 20 |
+| 匿名 | 20 |
+| *洋 Blues | 18.88 |
+| *钧泽 Panda | 10.24 |
+| *翔 海贼王路飞 | 12 |
+| *跃 Axiong | 10 |
+| 落伽 | 10 |
+| 很胖的胖子 | 15 |
+| 霹格软件 | 18.88 |
+| Bygones | 18.88 |
+| *春 Flymoo | 100 |
+| 异乡人 | 20 |
+| only丶妳 | 100 |
 
 ## License
 

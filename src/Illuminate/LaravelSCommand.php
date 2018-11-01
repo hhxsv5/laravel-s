@@ -19,7 +19,7 @@ class LaravelSCommand extends Command
     {
         $this->actions = ['start', 'stop', 'restart', 'reload', 'publish'];
         $actions = implode('|', $this->actions);
-        $this->signature .= sprintf(' {action : %s} {--d|daemonize : Whether run as a daemon for start & restart}', $actions);
+        $this->signature .= sprintf(' {action : %s} {--d|daemonize : Whether run as a daemon for start & restart} {--i|ignore : Whether ignore checking process pid for start & restart}', $actions);
         $this->description .= ': ' . $actions;
 
         parent::__construct();
@@ -104,8 +104,8 @@ EOS;
             '_ENV'               => $_ENV,
         ];
 
-        if (file_exists($svrConf['swoole']['pid_file'])) {
-            $pid = (int) file_get_contents($svrConf['swoole']['pid_file']);
+        if (!$this->option('ignore') && file_exists($svrConf['swoole']['pid_file'])) {
+            $pid = (int)file_get_contents($svrConf['swoole']['pid_file']);
             if ($pid > 0 && $this->killProcess($pid, 0)) {
                 $this->warn(sprintf('LaravelS: PID[%s] is already running at %s:%s.', $pid, $svrConf['listen_ip'], $svrConf['listen_port']));
                 return 1;
@@ -117,7 +117,7 @@ EOS;
         }
 
         // Implements gracefully reload, avoid including laravel's files before worker start
-        $cmd = sprintf('%s %s/../GoLaravelS.php', PHP_BINARY, __DIR__);
+        $cmd = sprintf('%s -c "%s" %s/../GoLaravelS.php', PHP_BINARY, php_ini_loaded_file(), __DIR__);
         $ret = $this->popen($cmd, json_encode(compact('svrConf', 'laravelConf')));
         if ($ret === false) {
             $this->error('LaravelS: popen ' . $cmd . ' failed');
@@ -192,17 +192,17 @@ EOS;
             if (file_exists($pidFile)) {
                 unlink($pidFile);
             }
-            return 1;
+            return $this->option('ignore') ? 0 : 1;
         }
     }
 
     protected function restart()
     {
-        if (($exitCode = $this->stop()) !== 0) {
+        $exitCode = $this->stop();
+        if ($exitCode !== 0) {
             return $exitCode;
         }
-        $exitCode = $this->start();
-        return $exitCode;
+        return $this->start();
     }
 
     protected function reload()
@@ -220,7 +220,8 @@ EOS;
         }
 
         if ($this->killProcess($pid, SIGUSR1)) {
-            $this->info("LaravelS: PID[{$pid}] is reloaded.");
+            $now = date('Y-m-d H:i:s');
+            $this->info("LaravelS: PID[{$pid}] is reloaded at {$now}.");
             return 0;
         } else {
             $this->error("LaravelS: PID[{$pid}] is reloaded failed.");

@@ -120,27 +120,16 @@ class Laravel
 
     protected function saveSnapshots()
     {
-        $this->snapshots = [];
-        foreach (self::$snapshotKeys as $key) {
-            if (isset($this->app[$key])) {
-                if (is_object($this->app[$key])) {
-                    $this->snapshots[$key] = clone $this->app[$key];
-                } else {
-                    $this->snapshots[$key] = $this->app[$key];
-                }
-            }
-        }
+        $this->snapshots['config'] = $this->app['config']->all();
     }
 
     protected function applySnapshots()
     {
-        foreach ($this->snapshots as $key => $value) {
-            if (is_object($value)) {
-                $this->app[$key] = clone $value;
-            } else {
-                $this->app[$key] = $value;
+        $this->app['config']->set($this->snapshots['config']);
+        if (isset($this->app['cookie'])) {
+            foreach ($this->app['cookie']->getQueuedCookies() as $name => $cookie) {
+                $this->app['cookie']->unqueue($name);
             }
-            Facade::clearResolvedInstance($key);
         }
     }
 
@@ -317,15 +306,6 @@ class Laravel
     {
         if (!empty($this->app['session'])) {
             $this->app['session']->save();
-        }
-    }
-
-    public function __clone()
-    {
-        $this->app = clone $this->app;
-
-        if (!$this->conf['is_lumen']) {
-            $this->laravelKernel = clone $this->laravelKernel;
         }
     }
 }

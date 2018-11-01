@@ -74,14 +74,13 @@ class LaravelS extends Server
             };
 
             $this->swoole->on('Open', function (\swoole_websocket_server $server, \swoole_http_request $request) use ($eventHandler) {
-                $laravel = clone $this->laravel;
                 // Start Laravel's lifetime, then support session ...middleware.
-                $laravel->resetSession();
-                $laravelRequest = $this->convertRequest($laravel, $request);
-                $laravel->bindRequest($laravelRequest);
-                $laravel->handleDynamic($laravelRequest);
+                $this->laravel->resetSession();
+                $laravelRequest = $this->convertRequest($this->laravel, $request);
+                $this->laravel->bindRequest($laravelRequest);
+                $this->laravel->handleDynamic($laravelRequest);
                 $eventHandler('onOpen', func_get_args());
-                $laravel->saveSession();
+                $this->laravel->saveSession();
             });
 
             $this->swoole->on('Message', function () use ($eventHandler) {
@@ -118,14 +117,14 @@ class LaravelS extends Server
 
     public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
     {
-        $laravel = clone $this->laravel;
+        parent::onRequest($request, $response);
         try {
-            $laravelRequest = $this->convertRequest($laravel, $request);
-            $laravel->bindRequest($laravelRequest);
-            $laravel->fireEvent('laravels.received_request', [$laravelRequest]);
-            $success = $this->handleStaticResource($laravel, $laravelRequest, $response);
+            $laravelRequest = $this->convertRequest($this->laravel, $request);
+            $this->laravel->bindRequest($laravelRequest);
+            $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
+            $success = $this->handleStaticResource($this->laravel, $laravelRequest, $response);
             if ($success === false) {
-                $this->handleDynamicResource($laravel, $laravelRequest, $response);
+                $this->handleDynamicResource($this->laravel, $laravelRequest, $response);
             }
         } catch (\Exception $e) {
             $this->handleException($e, $response);
