@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Illuminate\Database\ConnectionPool;
 
-class CoroutineMySQLConnectionPool extends AbstractConnectionPool
+final class PDOConnectionPool extends ConnectionPool
 {
-
+    
 }

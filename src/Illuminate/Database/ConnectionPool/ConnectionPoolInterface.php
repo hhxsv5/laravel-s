@@ -2,19 +2,20 @@
 
 namespace Hhxsv5\LaravelS\Illuminate\Database\ConnectionPool;
 
-use Illuminate\Database\ConnectionInterface;
-
 interface ConnectionPoolInterface
 {
     /**
+     * Get a connection from pool
      * @param string $name
-     * @return \Illuminate\Database\ConnectionInterface
+     * @return mixed
      */
     public function getConnection($name);
 
     /**
-     * @param ConnectionInterface $connection
+     * Put a connection into pool
+     * @param string $name
+     * @param mixed $connection
      * @return bool
      */
-    public function returnConnection(ConnectionInterface $connection);
+    public function putConnection($name, $connection);
 }
