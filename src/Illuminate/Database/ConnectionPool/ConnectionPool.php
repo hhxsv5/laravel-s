@@ -17,6 +17,12 @@ class ConnectionPool implements ConnectionPoolInterface
 
     public function __construct($minActive, $maxActive)
     {
+        if ($minActive < 1) {
+            throw new \InvalidArgumentException('minActive must be >= 1');
+        }
+        if ($maxActive < $minActive) {
+            throw new \InvalidArgumentException('maxActive must be >= minActive');
+        }
         $this->minActive = $minActive;
         $this->maxActive = $maxActive;
     }
