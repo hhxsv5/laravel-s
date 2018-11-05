@@ -7,29 +7,53 @@ use Swoole\Coroutine\Channel;
 class ConnectionPool implements ConnectionPoolInterface
 {
     /**
-     * @var Channel[]
+     * @var Channel
      */
-    protected $pools;
+    protected $pool;
 
-    protected $minActive;
+    /**
+     * @var string
+     */
+    protected $name;
 
-    protected $maxActive;
+    /**
+     * @var int
+     */
+    protected $min;
+
+    /**
+     * @var int
+     */
+    protected $max;
 
     /**
      * @var callable
      */
     protected $connectionResolver;
 
-    public function __construct($minActive, $maxActive)
+    public function setConfig($name, $min, $max)
     {
-        if ($minActive < 1) {
-            throw new \InvalidArgumentException('minActive must be >= 1');
+        if ($min < 1) {
+            throw new \InvalidArgumentException('The min must be >= 1');
         }
-        if ($maxActive < $minActive) {
-            throw new \InvalidArgumentException('maxActive must be >= minActive');
+        if ($max < $min) {
+            throw new \InvalidArgumentException('The max must be >= min');
         }
-        $this->minActive = $minActive;
-        $this->maxActive = $maxActive;
+
+        $this->name = $name;
+        $this->min = $min;
+        $this->max = $max;
+        $this->pool = new Channel($this->max);
+        swoole_event_add($this->pool, function () {
+            \Log::info('make balance start', [$this->pool->length()]);
+            $this->balance();
+            \Log::info('make balance end', [$this->pool->length()]);
+        });
+    }
+
+    public function getSize()
+    {
+        return $this->pool->length();
     }
 
     public function setConnectionResolver(callable $connectionResolver)
@@ -37,42 +61,29 @@ class ConnectionPool implements ConnectionPoolInterface
         $this->connectionResolver = $connectionResolver;
     }
 
-    protected function getPool($name)
+    public function getConnection()
     {
-        if (!isset($this->pools[$name])) {
-            $this->pools[$name] = new Channel($this->maxActive);
-        }
-        return $this->pools[$name];
+        return $this->pool->pop();
     }
 
-    public function getPoolSize($name)
+    public function putConnection($connection)
     {
-        return $this->getPool($name)->length();
-    }
-
-    public function getConnection($name)
-    {
-        go(function () use ($name) {
-            $pool = $this->getPool($name);
-            if ($this->minActive - $pool->length() > 0) {
-                $connection = call_user_func($this->connectionResolver, $name);
-                $pool->push($connection);
-            } else {
-                if ($pool->length() - $this->maxActive > 0) {
-                    $pool->pop();
-                }
-            }
-        });
-        return $this->getPool($name)->pop();
-    }
-
-    public function putConnection($name, $connection)
-    {
-        $pool = $this->getPool($name);
-        if ($pool->length() > $this->maxActive) {
+        if ($this->pool->length() > $this->max) {
             return false;
         }
-        return $pool->push($connection);
+        return $this->pool->push($connection);
+    }
+
+    public function balance()
+    {
+        if ($this->min - $this->pool->length() > 0) {
+            $connection = call_user_func($this->connectionResolver, $this->name);
+            $this->pool->push($connection);
+        } else {
+            if ($this->pool->length() - $this->max > 0) {
+                $this->pool->pop();
+            }
+        }
     }
 
 }

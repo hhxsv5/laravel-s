@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Illuminate\Database;
 
-use Hhxsv5\LaravelS\Illuminate\Database\ConnectionPool\LaravelConnectionPool;
+use Hhxsv5\LaravelS\Illuminate\Database\ConnectionPool\LaravelConnectionPools;
 use Illuminate\Database\DatabaseServiceProvider as IlluminateDatabaseServiceProvider;
 
 class DatabaseServiceProvider extends IlluminateDatabaseServiceProvider
@@ -16,13 +16,13 @@ class DatabaseServiceProvider extends IlluminateDatabaseServiceProvider
         });
 
         $this->app->singleton('db.pool', function ($app) {
-            $minActive = 2;
-            $maxActive = 4;
-            $pool = new LaravelConnectionPool($minActive, $maxActive, $app);
-            $pool->setConnectionResolver(function ($name) use ($app) {
+            $min = 2; // TODO
+            $max = 4;
+            $pools = new LaravelConnectionPools($min, $max);
+            $pools->setConnectionsResolver(function ($name) use ($app) {
                 return $app['db']->parentConnection($name);
             });
-            return $pool;
+            return $pools;
         });
     }
 }

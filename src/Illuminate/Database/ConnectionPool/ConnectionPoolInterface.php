@@ -5,6 +5,21 @@ namespace Hhxsv5\LaravelS\Illuminate\Database\ConnectionPool;
 interface ConnectionPoolInterface
 {
     /**
+     * ConnectionPoolInterface constructor
+     * @param string $name The name of pool
+     * @param int $min The minimum active count of connection
+     * @param int $max The maximum count of connection
+     * @return void
+     */
+    public function setConfig($name, $min, $max);
+
+    /**
+     * Get the size of connection pool
+     * @return int
+     */
+    public function getSize();
+
+    /**
      * Set a callback of connection resolver
      * @param callable $connectionResolver
      * @return mixed
@@ -13,23 +28,20 @@ interface ConnectionPoolInterface
 
     /**
      * Get a connection from pool
-     * @param string $name
      * @return mixed
      */
-    public function getConnection($name);
+    public function getConnection();
 
     /**
      * Put a connection into pool
-     * @param string $name
      * @param mixed $connection
      * @return bool
      */
-    public function putConnection($name, $connection);
+    public function putConnection($connection);
 
     /**
-     * Get the size of connection pool
-     * @param string $name
-     * @return int
+     * Make connection pool balanced
+     * @return void
      */
-    public function getPoolSize($name);
+    public function balance();
 }
