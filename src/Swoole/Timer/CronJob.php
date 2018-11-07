@@ -30,7 +30,8 @@ abstract class CronJob implements CronJobInterface
      */
     public function __construct()
     {
-        $config = func_get_arg(0);
+        $args = func_get_args();
+        $config = isset($args[0]) ? $args[0] : [];
         if (is_array($config)) {
             if (array_key_exists(0, $config)) {
                 $this->interval = $config[0];
