@@ -143,9 +143,9 @@ gzip_types text/plain text/css text/javascript application/json application/java
 gzip_vary on;
 gzip_disable "msie6";
 upstream laravels {
-    # By IP:Port
+    # 通过 IP:Port 连接
     server 127.0.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
-    # By UnixSocket Stream file
+    # 通过 UnixSocket Stream 连接，小诀窍：将socket文件放在/dev/shm目录下，性能会更好
     #server unix:/xxxpath/laravel-s-test/storage/laravels.sock weight=5 max_fails=3 fail_timeout=30s;
     #server 192.168.1.1:5200 weight=3 max_fails=3 fail_timeout=30s;
     #server 192.168.1.2:5200 backup;
@@ -301,9 +301,9 @@ map $http_upgrade $connection_upgrade {
     ''      close;
 }
 upstream laravels {
-    # By IP:Port
+    # 通过 IP:Port 连接
     server 127.0.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
-    # By UnixSocket Stream file
+    # 通过 UnixSocket Stream 连接，小诀窍：将socket文件放在/dev/shm目录下，性能会更好
     #server unix:/xxxpath/laravel-s-test/storage/laravels.sock weight=5 max_fails=3 fail_timeout=30s;
     #server 192.168.1.1:5200 weight=3 max_fails=3 fail_timeout=30s;
     #server 192.168.1.2:5200 backup;
