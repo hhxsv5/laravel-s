@@ -20,7 +20,15 @@ trait TimerTrait
             $this->setProcessTitle(sprintf('%s laravels: timer process', $config['process_prefix']));
             $this->initLaravel($laravelConfig, $swoole);
             foreach ($config['jobs'] as $jobClass) {
-                $job = new $jobClass();
+                if (is_array($jobClass)) {
+                    if (isset($jobClass[1])) {
+                        $job = new $jobClass[0]($jobClass[1]);
+                    } else {
+                        $job = new $jobClass[0]();
+                    }
+                } else {
+                    $job = new $jobClass();
+                }
                 if (!($job instanceof CronJob)) {
                     throw new \Exception(sprintf('%s must implement the abstract class %s', get_class($job), CronJob::class));
                 }
