@@ -20,12 +20,8 @@ trait TimerTrait
             $this->setProcessTitle(sprintf('%s laravels: timer process', $config['process_prefix']));
             $this->initLaravel($laravelConfig, $swoole);
             foreach ($config['jobs'] as $jobClass) {
-                if (is_array($jobClass)) {
-                    if (isset($jobClass[1])) {
-                        $job = new $jobClass[0]($jobClass[1]);
-                    } else {
-                        $job = new $jobClass[0]();
-                    }
+                if (is_array($jobClass) && isset($jobClass[0])) {
+                    $job = new $jobClass[0](isset($jobClass[1]) ? $jobClass[1] : []);
                 } else {
                     $job = new $jobClass();
                 }

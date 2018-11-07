@@ -564,7 +564,7 @@ class TestCronJob extends CronJob
     // ...
     'timer'          => [
         'enable' => true, // Enable Timer
-        'jobs'   => [ // the list of cron job
+        'jobs'   => [ // The list of cron job
             // Enable LaravelScheduleJob to run `php artisan schedule:run` every 1 minute, replace Linux Crontab
             // \Hhxsv5\LaravelS\Illuminate\LaravelScheduleJob::class,
             // Two ways to configure parameters:
