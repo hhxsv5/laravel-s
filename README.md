@@ -524,7 +524,7 @@ use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 class TestCronJob extends CronJob
 {
     protected $i = 0;
-    // !!! The `interval` and `isImmediate` of cron job can be configured in two ways: one is to overload the corresponding method, and the other is to pass parameters when registering cron job.
+    // !!! The `interval` and `isImmediate` of cron job can be configured in two ways(pick one of two): one is to overload the corresponding method, and the other is to pass parameters when registering cron job.
     // --- Override the corresponding method to return the configuration: begin
     public function interval()
     {

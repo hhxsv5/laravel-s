@@ -534,7 +534,7 @@ use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 class TestCronJob extends CronJob
 {
     protected $i = 0;
-    // !!! 定时任务的`interval`和`isImmediate`有两种配置方式：一是重载对应的方法，二是注册定时任务时传入参数。
+    // !!! 定时任务的`interval`和`isImmediate`有两种配置方式（二选一）：一是重载对应的方法，二是注册定时任务时传入参数。
     // --- 重载对应的方法来返回配置：开始
     public function interval()
     {
@@ -574,8 +574,8 @@ class TestCronJob extends CronJob
 [
     // ...
     'timer'          => [
-        'enable' => true, //启用Timer
-        'jobs'   => [ //注册的定时任务类列表
+        'enable' => true, // 启用Timer
+        'jobs'   => [ // 注册的定时任务类列表
             // 启用LaravelScheduleJob来执行`php artisan schedule:run`，每分钟一次，替代Linux Crontab
             // \Hhxsv5\LaravelS\Illuminate\LaravelScheduleJob::class,
             // 两种配置参数的方式：
