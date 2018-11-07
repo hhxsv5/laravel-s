@@ -526,7 +526,6 @@ var_dump($ret);//判断是否投递成功
 > 基于[Swoole的毫秒定时器](https://wiki.swoole.com/wiki/page/244.html)，封装的定时任务，取代`Linux`的`Crontab`。
 
 1.创建定时任务类。
-
 ```PHP
 namespace App\Jobs\Timer;
 use App\Tasks\TestTask;
@@ -535,10 +534,8 @@ use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 class TestCronJob extends CronJob
 {
     protected $i = 0;
-    // 声明没有参数的构造函数
-    public function __construct()
-    {
-    }
+    // !!! 定时任务的`interval`和`isImmediate`有两种配置方式：一是重载对应的方法，二是注册定时任务时传入参数。
+    // --- 重载对应的方法来返回配置：开始
     public function interval()
     {
         return 1000;// 每1秒运行一次
@@ -547,6 +544,7 @@ class TestCronJob extends CronJob
     {
         return false;// 是否立即执行第一次，false则等待间隔时间后执行第一次
     }
+    // --- 重载对应的方法来返回配置：结束
     public function run()
     {
         \Log::info(__METHOD__, ['start', $this->i, microtime(true)]);
@@ -569,18 +567,20 @@ class TestCronJob extends CronJob
 }
 ```
 
-2.绑定定时任务类。
+2.注册定时任务类。
 
 ```PHP
-// 在"config/laravels.php"绑定定时任务类
+// 在"config/laravels.php"注册定时任务类
 [
     // ...
     'timer'          => [
         'enable' => true, //启用Timer
-        'jobs'   => [ //绑定的定时任务类列表
+        'jobs'   => [ //注册的定时任务类列表
             // 启用LaravelScheduleJob来执行`php artisan schedule:run`，每分钟一次，替代Linux Crontab
-            //\Hhxsv5\LaravelS\Illuminate\LaravelScheduleJob::class,
-            \App\Jobs\Timer\TestCronJob::class,
+            // \Hhxsv5\LaravelS\Illuminate\LaravelScheduleJob::class,
+            // 两种配置参数的方式：
+            // [\App\Jobs\Timer\TestCronJob::class, [1000, true]], // 注册时传入参数
+            \App\Jobs\Timer\TestCronJob::class, // 重载对应的方法来返回参数
         ],
     ],
     // ...

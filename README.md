@@ -524,10 +524,8 @@ use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 class TestCronJob extends CronJob
 {
     protected $i = 0;
-    // Declare constructor without parameters
-    public function __construct()
-    {
-    }
+    // !!! The `interval` and `isImmediate` of cron job can be configured in two ways: one is to overload the corresponding method, and the other is to pass parameters when registering cron job.
+    // --- Override the corresponding method to return the configuration: begin
     public function interval()
     {
         return 1000;// Run every 1000ms
@@ -536,6 +534,7 @@ class TestCronJob extends CronJob
     {
         return false;// Whether to trigger `run` immediately after setting up
     }
+    // --- Override the corresponding method to return the configuration: end
     public function run()
     {
         \Log::info(__METHOD__, ['start', $this->i, microtime(true)]);
@@ -558,17 +557,19 @@ class TestCronJob extends CronJob
 }
 ```
 
-2.Bind cron job.
+2.Register cron job.
 ```PHP
-// Bind cron jobs in file "config/laravels.php"
+// Register cron jobs in file "config/laravels.php"
 [
     // ...
     'timer'          => [
         'enable' => true, // Enable Timer
         'jobs'   => [ // the list of cron job
             // Enable LaravelScheduleJob to run `php artisan schedule:run` every 1 minute, replace Linux Crontab
-            //\Hhxsv5\LaravelS\Illuminate\LaravelScheduleJob::class,
-            \App\Jobs\Timer\TestCronJob::class,
+            // \Hhxsv5\LaravelS\Illuminate\LaravelScheduleJob::class,
+            // Two ways to configure parameters:
+            // [\App\Jobs\Timer\TestCronJob::class, [1000, true]], // Pass in parameters when registering
+            \App\Jobs\Timer\TestCronJob::class, // Override the corresponding method to return the configuration
         ],
     ],
     // ...
