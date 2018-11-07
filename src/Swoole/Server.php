@@ -33,7 +33,7 @@ class Server
 
         $ip = isset($conf['listen_ip']) ? $conf['listen_ip'] : '127.0.0.1';
         $port = isset($conf['listen_port']) ? $conf['listen_port'] : 5200;
-        $socketType = isset($conf['socket_type']) ? $conf['socket_type'] : \SWOOLE_SOCK_TCP;
+        $socketType = isset($conf['socket_type']) ? (int)$conf['socket_type'] : \SWOOLE_SOCK_TCP;
 
         if ($socketType === \SWOOLE_SOCK_UNIX_STREAM) {
             $socketDir = dirname($ip);

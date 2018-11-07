@@ -104,16 +104,24 @@ EOS;
             '_ENV'               => $_ENV,
         ];
 
+        if (isset($svrConf['socket_type'])
+            && in_array($svrConf['socket_type'], [\SWOOLE_UNIX_DGRAM, \SWOOLE_UNIX_STREAM])
+        ) {
+            $listenAt = $svrConf['listen_ip'];
+        } else {
+            $listenAt = sprintf('%s:%s', $svrConf['listen_ip'], $svrConf['listen_port']);
+        }
+
         if (!$this->option('ignore') && file_exists($svrConf['swoole']['pid_file'])) {
             $pid = (int)file_get_contents($svrConf['swoole']['pid_file']);
             if ($pid > 0 && $this->killProcess($pid, 0)) {
-                $this->warn(sprintf('LaravelS: PID[%s] is already running at %s:%s.', $pid, $svrConf['listen_ip'], $svrConf['listen_port']));
+                $this->warn(sprintf('LaravelS: PID[%s] is already running at %s.', $pid, $listenAt));
                 return 1;
             }
         }
 
         if (!$svrConf['swoole']['daemonize']) {
-            $this->info(sprintf('LaravelS: Swoole is listening at %s:%s.', $svrConf['listen_ip'], $svrConf['listen_port']));
+            $this->info(sprintf('LaravelS: Swoole is listening at %s.', $listenAt));
         }
 
         // Implements gracefully reload, avoid including laravel's files before worker start
@@ -134,7 +142,7 @@ EOS;
         }
 
         if (file_exists($pidFile)) {
-            $this->info(sprintf('LaravelS: PID[%s] is listening at %s:%s.', file_get_contents($pidFile), $svrConf['listen_ip'], $svrConf['listen_port']));
+            $this->info(sprintf('LaravelS: PID[%s] is listening at %s.', file_get_contents($pidFile), $listenAt));
             return 0;
         } else {
             $this->error(sprintf('LaravelS: PID file[%s] does not exist.', $pidFile));
