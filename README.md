@@ -84,7 +84,7 @@ Table of Contents
 
 1.Require package via [Composer](https://getcomposer.org/)([packagist](https://packagist.org/packages/hhxsv5/laravel-s)).
 
-```Bash
+```bash
 composer require "hhxsv5/laravel-s:~3.0" -vvv
 # Make sure that your composer.lock file is under the VCS
 ```
@@ -92,7 +92,7 @@ composer require "hhxsv5/laravel-s:~3.0" -vvv
 2.Register service provider(pick one of two).
 
 - `Laravel`: in `config/app.php` file, `Laravel 5.5+ supports package discovery automatically, you should skip this step`
-    ```PHP
+    ```php
     'providers' => [
         //...
         Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class,
@@ -100,18 +100,18 @@ composer require "hhxsv5/laravel-s:~3.0" -vvv
     ```
 
 - `Lumen`: in `bootstrap/app.php` file
-    ```PHP
+    ```php
     $app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
     ```
 
 3.Publish configuration.
 > *Suggest that do publish after upgrade LaravelS every time*
-```Bash
+```bash
 php artisan laravels publish
 ```
 
 `Special for Lumen`: you `DO NOT` need to load this configuration manually in `bootstrap/app.php` file, LaravelS will load it automatically.
-```PHP
+```php
 // Unnecessary to call configure()
 $app->configure('laravels');
 ```
@@ -133,7 +133,7 @@ $app->configure('laravels');
 
 ## Cooperate with Nginx (Recommended)
 
-```Nginx
+```nginx
 gzip on;
 gzip_min_length 1024;
 gzip_comp_level 2;
@@ -186,7 +186,7 @@ server {
 
 ## Cooperate with Apache
 
-```Apache
+```apache
 LoadModule proxy_module /yyypath/modules/mod_deflate.so
 <IfModule deflate_module>
     SetOutputFilter DEFLATE
@@ -239,7 +239,7 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 > The Listening address of WebSocket Sever is the same as Http Server.
 
 1.Create WebSocket Handler class, and implement interface `WebSocketHandlerInterface`.The instant is automatically instantiated when start, you do not need to manually create it.
-```PHP
+```php
 namespace App\Services;
 use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
 /**
@@ -272,7 +272,7 @@ class WebSocketService implements WebSocketHandlerInterface
 ```
 
 2.Modify `config/laravels.php`.
-```PHP
+```php
 // ...
 'websocket'      => [
     'enable'  => true, // Here is true
@@ -291,7 +291,7 @@ class WebSocketService implements WebSocketHandlerInterface
 4.Cooperate with Nginx (Recommended)
 > Refer [WebSocket Proxy](http://nginx.org/en/docs/http/websocket.html)
 
-```Nginx
+```nginx
 map $http_upgrade $connection_upgrade {
     default upgrade;
     ''      close;
@@ -365,7 +365,7 @@ server {
 
 - Heartbeat setting of Swoole
 
-    ```PHP
+    ```php
     // config/laravels.php
     'swoole' => [
         //...
@@ -378,7 +378,7 @@ server {
 
 - Proxy read timeout of Nginx
 
-    ```Nginx
+    ```nginx
     # Nginx will close the connection if the proxied server does not send data to Nginx in 60 seconds
     proxy_read_timeout 60s;
     ```
@@ -390,7 +390,7 @@ server {
 
 - `laravels.received_request` After LaravelS parsed `swoole_http_request` to `Illuminate\Http\Request`, before Laravel's Kernel handles this request.
 
-    ```PHP
+    ```php
     // Edit file `app/Providers/EventServiceProvider.php`, add the following code into method `boot`
     // If no variable $events, you can also call Facade \Event::listen(). 
     $events->listen('laravels.received_request', function (\Illuminate\Http\Request $req, $app) {
@@ -401,7 +401,7 @@ server {
 
 - `laravels.generated_response` After Laravel's Kernel handled the request, before LaravelS parses `Illuminate\Http\Response` to `swoole_http_response`.
 
-    ```PHP
+    ```php
     // Edit file `app/Providers/EventServiceProvider.php`, add the following code into method `boot`
     // If no variable $events, you can also call Facade \Event::listen(). 
     $events->listen('laravels.generated_response', function (\Illuminate\Http\Request $req, \Symfony\Component\HttpFoundation\Response $rsp, $app) {
@@ -413,7 +413,7 @@ server {
 > This feature depends on `AsyncTask` of `Swoole`, your need to set `swoole.task_worker_num` in `config/laravels.php` firstly. The performance of asynchronous event processing is influenced by number of Swoole task process, you need to set [task_worker_num](https://www.swoole.co.uk/docs/modules/swoole-server/configuration) appropriately.
 
 1.Create event class.
-```PHP
+```php
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 class TestEvent extends Event
 {
@@ -430,7 +430,7 @@ class TestEvent extends Event
 ```
 
 2.Create listener class.
-```PHP
+```php
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 class TestListener1 extends Listener
@@ -449,7 +449,7 @@ class TestListener1 extends Listener
 ```
 
 3.Bind event & listeners.
-```PHP
+```php
 // Bind event & listeners in file "config/laravels.php", one event => many listeners
 [
     // ...
@@ -464,7 +464,7 @@ class TestListener1 extends Listener
 ```
 
 4.Fire event.
-```PHP
+```php
 // Create instance of event and fire it, "fire" is asynchronous.
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 $success = Event::fire(new TestEvent('event data'));
@@ -475,7 +475,7 @@ var_dump($success);// Return true if sucess, otherwise false
 > This feature depends on `AsyncTask` of `Swoole`, your need to set `swoole.task_worker_num` in `config/laravels.php` firstly. The performance of task processing is influenced by number of Swoole task process, you need to set [task_worker_num](https://www.swoole.co.uk/docs/modules/swoole-server/configuration) appropriately.
 
 1.Create task class.
-```PHP
+```php
 use Hhxsv5\LaravelS\Swoole\Task\Task;
 class TestTask extends Task
 {
@@ -503,7 +503,7 @@ class TestTask extends Task
 ```
 
 2.Deliver task.
-```PHP
+```php
 // Create instance of TestTask and deliver it, "deliver" is asynchronous.
 use Hhxsv5\LaravelS\Swoole\Task\Task;
 $task = new TestTask('task data');
@@ -516,7 +516,7 @@ var_dump($ret);// Return true if sucess, otherwise false
 > Wrapper cron job base on [Swoole's Millisecond Timer](https://www.swoole.co.uk/docs/modules/swoole-async-io), replace `Linux` `Crontab`.
 
 1.Create cron job class.
-```PHP
+```php
 namespace App\Jobs\Timer;
 use App\Tasks\TestTask;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
@@ -558,7 +558,7 @@ class TestCronJob extends CronJob
 ```
 
 2.Register cron job.
-```PHP
+```php
 // Register cron jobs in file "config/laravels.php"
 [
     // ...
@@ -594,7 +594,7 @@ class TestCronJob extends CronJob
 
     2.Run command in your project root directory.
 
-    ```Bash
+    ```bash
     # Watch current directory
     ./vendor/bin/fswatch
     # Watch app directory
@@ -603,7 +603,7 @@ class TestCronJob extends CronJob
 
 ## Get the instance of `swoole_server` in your project
 
-```PHP
+```php
 /**
  * $swoole is the instance of `swoole_websocket_server` if enable WebSocket server, otherwise `\swoole_http_server`
  * @var \swoole_http_server|\swoole_websocket_server $swoole
@@ -617,7 +617,7 @@ var_dump($swoole->stats());// Singleton
 1.Define `swoole_table`, support multiple.
 > All defined tables will be created before Swoole starting.
 
-```PHP
+```php
 // in file "config/laravels.php"
 [
     // ...
@@ -636,7 +636,7 @@ var_dump($swoole->stats());// Singleton
 ```
 
 2.Access `swoole_table`: all table instances will be bound on `swoole_server`, access by `app('swoole')->xxxTable`.
-```PHP
+```php
 // Scene：bind UserId & FD in WebSocket
 public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
 {
@@ -673,7 +673,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 1. Create socket handler class, and extend `Hhxsv5\LaravelS\Swoole\Socket\{TcpSocket|UdpSocket|Http|WebSocket}`.
 
-    ```PHP
+    ```php
     namespace App\Sockets;
     use Hhxsv5\LaravelS\Swoole\Socket\TcpSocket;
     class TestTcpSocket extends TcpSocket
@@ -703,7 +703,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
     These `Socket` connections share the same worker processes with your `HTTP`/`WebSocket` connections. So it won't be a problem at all if you want to deliver tasks, use `swoole_table`, even Laravel components such as DB, Eloquent and so on.
     At the same time, you can access `swoole_server_port` object directly by member property `swoolePort`.
 
-    ```PHP
+    ```php
     public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
     {
         $port = $this->swoolePort; //There you go
@@ -712,7 +712,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 2. Register Sockets.
 
-    ```PHP
+    ```php
     // Edit `config/laravels.php`
     //...
     'sockets' => [
@@ -733,7 +733,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
     For TCP socket, `onConnect` and `onClose` events will be blocked when `dispatch_mode` of Swoole is `1/3`, so if you want to unblock these two events please set `dispatch_mode` to `2/4/5`.
 
-    ```PHP
+    ```php
     'swoole' => [
         //...
         'dispatch_mode' => 2,
@@ -750,7 +750,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 4. Register example of other protocols.
 
     - UDP
-    ```PHP
+    ```php
     'sockets' => [
         [
             'host'     => '0.0.0.0',
@@ -766,7 +766,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ```
 
     - Http
-    ```PHP
+    ```php
     'sockets' => [
         [
             'host'     => '0.0.0.0',
@@ -781,7 +781,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ```
 
     - WebSocket
-    ```PHP
+    ```php
     'sockets' => [
         [
             'host'     => '0.0.0.0',
@@ -804,7 +804,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 - [Runtime Coroutine](https://wiki.swoole.com/wiki/page/965.html): require `Swoole>=4.1.0`, and enable it.
 
-    ```PHP
+    ```php
     // Edit `config/laravels.php`
     [
         //...
@@ -819,7 +819,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 1. Create Proccess class, implements CustomProcessInterface.
 
-    ```PHP
+    ```php
     namespace App\Processes;
     use App\Tasks\TestTask;
     use Hhxsv5\LaravelS\Swoole\Task\Task;
@@ -861,7 +861,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 2. Register TestProcess.
 
-    ```PHP
+    ```php
     // Edit `config/laravels.php`
     // ...
     'processes' => [
@@ -889,7 +889,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 - Should get all request information from `Illuminate\Http\Request` Object, $_ENV is readable, `CANNOT USE` $_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST/$_SESSION/$GLOBALS/$_SERVER.
 
-    ```PHP
+    ```php
     public function form(\Illuminate\Http\Request $request)
     {
         $name = $request->input('name');
@@ -903,7 +903,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 - Respond by `Illuminate\Http\Response` Object, compatible with echo/vardump()/print_r()，`CANNOT USE` functions like header()/setcookie()/http_response_code().
 
-    ```PHP
+    ```php
     public function json()
     {
         return response()->json(['time' => time()])->header('header1', 'value1')->withCookie('c1', 'v1');
@@ -912,7 +912,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 - The various `singleton connections` will be `memory resident`, recommend to enable `persistent connection`.
 1. Database connection, it `will` reconnect automatically `immediately` after disconnect.
-    ```PHP
+    ```php
     // config/database.php
     //...
     'connections' => [
@@ -938,7 +938,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ```
 
 2. Redis connection, it `won't` reconnect automatically `immediately` after disconnect, and will throw an exception about lost connection, reconnect next time. You need to make sure that `SELECT DB` correctly before operating Redis every time.
-    ```PHP
+    ```php
     // config/database.php
     'redis' => [
             'default' => [
@@ -956,7 +956,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 - Infinitely appending element into `static`/`global` variable will lead to memory leak.
 
-    ```PHP
+    ```php
     // Some class
     class Test
     {

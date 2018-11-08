@@ -3,7 +3,7 @@
 ## Use package [jenssegers/agent](https://github.com/jenssegers/agent)
 > [Listen System Event](https://github.com/hhxsv5/laravel-s/blob/master/README.md#system-events)
 
-```PHP
+```php
 // Reset Agent
 \Event::listen('laravels.received_request', function (\Illuminate\Http\Request $req, $app) {
     $app->agent->setHttpHeaders($req->server->all());
@@ -14,14 +14,14 @@
 ## Use package [barryvdh/laravel-debugbar](https://github.com/barryvdh/laravel-debugbar)
 > Not support `cli` mode officially, you need to remove the logic of `runningInConsole`, but there may be some other issues.
 
-```PHP
+```php
 // Search runningInConsole(), then annotate it
 $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this->app->environment('testing');
 ```
 ## Use package [overtrue/wechat](https://github.com/overtrue/wechat)
 > The asynchronous notification callback will be failing, because `$app['request']` is empty, give it a value.
 
-```PHP
+```php
 public function notify(Request $request)
 {
     $app = $this->getPayment();//Get payment instance
@@ -42,7 +42,7 @@ public function notify(Request $request)
 ## Singleton controller
 
 1.`Incorrect` usage.
-```PHP
+```php
 namespace App\Http\Controllers;
 class TestController extends Controller
 {
@@ -60,7 +60,7 @@ class TestController extends Controller
 ```
 
 2.`Correct` usage.
-```PHP
+```php
 namespace App\Http\Controllers;
 class TestController extends Controller
 {
@@ -116,7 +116,7 @@ Solutions:
 
 2.Register a custom MIME guesser.
 
-```PHP
+```php
 // MyGuessMimeType.php
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesserInterface;
 class MyGuessMimeType implements MimeTypeGuesserInterface
@@ -137,7 +137,7 @@ class MyGuessMimeType implements MimeTypeGuesserInterface
 }
 ```
 
-```PHP
+```php
 // AppServiceProvider.php
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 public function boot()

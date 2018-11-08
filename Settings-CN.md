@@ -37,7 +37,7 @@
 - `swoole_tables`：`array` 定义的`swoole_table`列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E4%BD%BF%E7%94%A8swoole_table)。
 
 - `register_providers`：`array` `每次请求`需要重新注册的`Service Provider`列表，若存在`boot()`方法，会自动执行。一般用于清理`注册了单例的ServiceProvider`。
-    ```PHP
+    ```php
     //...
     'register_providers' => [
         //例如：重新注册jwt的ServiceProvider

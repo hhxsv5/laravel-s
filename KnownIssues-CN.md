@@ -3,7 +3,7 @@
 ## 使用包 [jenssegers/agent](https://github.com/jenssegers/agent)
 > [监听系统事件](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E7%B3%BB%E7%BB%9F%E4%BA%8B%E4%BB%B6)
 
-```PHP
+```php
 // 重置Agent
 \Event::listen('laravels.received_request', function (\Illuminate\Http\Request $req, $app) {
     $app->agent->setHttpHeaders($req->server->all());
@@ -14,7 +14,7 @@
 ## 使用包 [barryvdh/laravel-debugbar](https://github.com/barryvdh/laravel-debugbar)
 > 官方不支持`cli`模式，需手动注释掉此判断，但启用后不排除会有其他问题。
 
-```PHP
+```php
 // 搜索 runningInConsole()，并注释掉该判断
 $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this->app->environment('testing');
 ```
@@ -22,7 +22,7 @@ $this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this
 ## 使用包 [overtrue/wechat](https://github.com/overtrue/wechat)
 > easywechat包会出现异步通知回调失败的问题，原因是`$app['request']`是空的，给其赋值即可。
 
-```PHP
+```php
 //回调通知
 public function notify(Request $request)
 {
@@ -46,7 +46,7 @@ public function notify(Request $request)
 ## 单例的控制器
 
 1.错误用法。
-```PHP
+```php
 namespace App\Http\Controllers;
 class TestController extends Controller
 {
@@ -64,7 +64,7 @@ class TestController extends Controller
 ```
 
 2.正确用法。
-```PHP
+```php
 namespace App\Http\Controllers;
 class TestController extends Controller
 {
@@ -121,7 +121,7 @@ class TestController extends Controller
 
 2.注册自定义MIME猜测器
 
-```PHP
+```php
 // MyGuessMimeType.php
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesserInterface;
 class MyGuessMimeType implements MimeTypeGuesserInterface
@@ -142,7 +142,7 @@ class MyGuessMimeType implements MimeTypeGuesserInterface
 }
 ```
 
-```PHP
+```php
 // AppServiceProvider.php
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 public function boot()
