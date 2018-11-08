@@ -2,16 +2,15 @@
 
 namespace Hhxsv5\LaravelS\Swoole\Traits;
 
-use Hhxsv5\LaravelS\Swoole\Process\CustomProcessInterface;
+use Hhxsv5\LaravelS\Illuminate\Laravel;
 
 trait CustomProcessTrait
 {
     use ProcessTitleTrait;
-    use LaravelTrait;
 
     public function addCustomProcesses(\swoole_server $swoole, $processPrefix, array $processes, array $laravelConfig)
     {
-        $this->initLaravel($laravelConfig, $swoole);
+        Laravel::autoload($laravelConfig['root_path']);
 
         /**
          * @var []CustomProcessInterface $processList

@@ -42,7 +42,7 @@ class Laravel
 
     public function prepareLaravel()
     {
-        $this->autoload();
+        static::autoload($this->conf['root_path']);
         $this->createApp();
         $this->createKernel();
         $this->setLaravel();
@@ -51,13 +51,13 @@ class Laravel
         $this->saveSnapshots();
     }
 
-    protected function autoload()
+    public static function autoload($rootPath)
     {
-        $autoload = $this->conf['root_path'] . '/bootstrap/autoload.php';
+        $autoload = $rootPath . '/bootstrap/autoload.php';
         if (file_exists($autoload)) {
             require_once $autoload;
         } else {
-            require_once $this->conf['root_path'] . '/vendor/autoload.php';
+            require_once $rootPath . '/vendor/autoload.php';
         }
     }
 
