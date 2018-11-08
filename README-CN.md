@@ -19,10 +19,8 @@
 
 **[English Documentation](https://github.com/hhxsv5/laravel-s/blob/master/README.md)**
 
-** QQ交流群 **
-
+**QQ交流群**
 - 群1：698480528（已满）[![点击加群](https://pub.idqqimg.com/wpa/images/group.png "点击加群")](//shang.qq.com/wpa/qunwpa?idkey=f949191c8f413a3ecc5fbce661e57d379740ba92172bd50b02d23a5ab36cc7d6)
-
 - 群2：62075835 [![点击加群](https://pub.idqqimg.com/wpa/images/group.png "点击加群")](//shang.qq.com/wpa/qunwpa?idkey=5230f8da0693a812811e21e19d5823ee802ee5d24def177663f42a32a9060e97)
 
 Table of Contents
