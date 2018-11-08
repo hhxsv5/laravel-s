@@ -14,7 +14,7 @@
 
 - `laravel_base_path`：`string` `Laravel/Lumen`的基础路径，默认`base_path()`，可用于配置`符号链接`。
 
-- `inotify_reload.enable`：`bool` 是否开启`Inotify Reload`，用于当修改代码后实时Reload所有worker进程，依赖库[inotify](http://pecl.php.net/package/inotify)，通过命令`php --ri inotify`检查是否可用，默认`false`，`建议仅开发环境开启`，[修改监听数上限](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues-CN.md#inotify%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E6%95%B0%E8%BE%BE%E5%88%B0%E4%B8%8A%E9%99%90)。
+- `inotify_reload.enable`：`bool` 是否开启`Inotify Reload`，用于当修改代码后实时Reload所有worker进程，依赖库[inotify](http://pecl.php.net/package/inotify)，通过命令`php --ri inotify`检查是否可用，默认`false`，`建议仅开发环境开启`，[修改监听数上限](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md#inotify%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E6%95%B0%E8%BE%BE%E5%88%B0%E4%B8%8A%E9%99%90)。
  
 - `inotify_reload.watch_path`：`string` `Inotify` 监控的文件路径，默认有`base_path()`。
 
@@ -28,7 +28,7 @@
 
 - `websocket.handler`：`string` WebSocket逻辑处理的类名，需实现接口`WebSocketHandlerInterface`，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%90%AF%E7%94%A8websocket%E6%9C%8D%E5%8A%A1%E5%99%A8)。
 
-- `sockets`：`array` 配置`TCP/UDP`套接字列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%BC%80%E5%90%AFtcpudp%E6%9C%8D%E5%8A%A1%E5%99%A8)。
+- `sockets`：`array` 配置`TCP/UDP`套接字列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%A4%9A%E7%AB%AF%E5%8F%A3%E6%B7%B7%E5%90%88%E5%8D%8F%E8%AE%AE)。
 
 - `processes`：`array` 配置自定义进程列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%9B%E7%A8%8B)。
 
