@@ -43,25 +43,32 @@ class Pool implements PoolInterface
         $this->name = $name;
         $this->min = $min;
         $this->max = $max;
-        $this->resolver = $resolver;
-    }
-
-    public function init()
-    {
         $this->pool = new Channel($this->max);
-        for ($i = 0; $i < $this->min; $i++) {
-            $connection = call_user_func($this->resolver, $this->name);
-            $this->put($connection);
-        }
+        $this->resolver = $resolver;
+        $this->fill();
     }
 
-    public function getSize()
+    protected function fill()
+    {
+        go(function () {
+            $count = $this->min - $this->size();
+            for ($i = 0; $i < $count; $i++) {
+                $resource = call_user_func($this->resolver, $this->name);
+                $this->put($resource);
+            }
+        });
+    }
+
+    public function size()
     {
         return $this->pool->length();
     }
 
     public function get()
     {
+        if ($this->size() == 0) {
+            $this->fill();
+        }
         return $this->pool->pop();
     }
 
@@ -71,18 +78,6 @@ class Pool implements PoolInterface
             return false;
         }
         return $this->pool->push($resource);
-    }
-
-    public function balance()
-    {
-        if ($this->min - $this->pool->length() > 0) {
-            $resource = call_user_func($this->resolver, $this->name);
-            $this->pool->push($resource);
-        } else {
-            if ($this->pool->length() - $this->max > 0) {
-                $this->pool->pop();
-            }
-        }
     }
 
 }

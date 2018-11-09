@@ -43,7 +43,6 @@ class ConnectionPools
         $pool = new Pool($name, $this->min, $this->max, function () use ($name) {
             return call_user_func($this->resolver, $name);
         });
-        $pool->init();
         return $this->pools[$name] = $pool;
     }
 

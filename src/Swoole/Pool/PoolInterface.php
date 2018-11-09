@@ -17,7 +17,7 @@ interface PoolInterface
      * Get the current size of pool
      * @return int
      */
-    public function getSize();
+    public function size();
 
     /**
      * Get a resource from pool
@@ -31,10 +31,4 @@ interface PoolInterface
      * @return bool
      */
     public function put($resource);
-
-    /**
-     * Make resource pool balanced
-     * @return void
-     */
-    public function balance();
 }
