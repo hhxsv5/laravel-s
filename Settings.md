@@ -14,7 +14,7 @@
 
 - `laravel_base_path`: `string` The basic path of `Laravel/Lumen`, default `base_path()`, be used for `symbolic link`.
 
-- `inotify_reload.enable`: `bool` Whether enable the `Inotify Reload` to reload all worker processes when your code is modified, depend on [inotify](http://pecl.php.net/package/inotify), use `php --ri inotify` to check whether the available. default `false`, `recommend to enable in development environment only`, change [Watchers Limit](https://github.com/hhxsv5/laravel-s/blob/master/KnownCompatibleIssues.md#inotify-reached-the-watchers-limit).
+- `inotify_reload.enable`: `bool` Whether enable the `Inotify Reload` to reload all worker processes when your code is modified, depend on [inotify](http://pecl.php.net/package/inotify), use `php --ri inotify` to check whether the available. default `false`, `recommend to enable in development environment only`, change [Watchers Limit](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md#inotify-reached-the-watchers-limit).
 
 - `inotify_reload.watch_path`：`string` The file path that `Inotify` watches, default `base_path()`.
 
@@ -28,7 +28,7 @@
 
 - `websocket.handler`: `string` The class name for WebSocket handler, needs to implement interface `WebSocketHandlerInterface`, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server).
 
-- `sockets`: `array` The socket list for TCP/UDP, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-tcpudp-server).
+- `sockets`: `array` The socket list for TCP/UDP, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#multi-port-mixed-protocol).
 
 - `processes`: `array` The custom process list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#custom-process).
 
@@ -37,7 +37,7 @@
 - `swoole_tables`: `array` The defined of `swoole_table` list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#use-swoole_table).
 
 - `register_providers`: `array` The `Service Provider` list, will be re-registered `every request`, and run method `boot()` if it exists. Usually, be used to clear the `Service Provider` which registers `Singleton` instances.
-    ```PHP
+    ```php
     //...
     'register_providers' => [
         //eg: re-register ServiceProvider of jwt
