@@ -2,7 +2,10 @@
 
 namespace Hhxsv5\LaravelS\Illuminate\Database\ConnectionPool;
 
-class LaravelConnectionPools
+use Hhxsv5\LaravelS\Swoole\Pool\Pool;
+use Hhxsv5\LaravelS\Swoole\Pool\PoolInterface;
+
+class ConnectionPools
 {
 
     /**
@@ -16,19 +19,20 @@ class LaravelConnectionPools
     protected $max;
 
     /**
-     * @var ConnectionPoolInterface[]
+     * @var PoolInterface[]
      */
     protected $pools = [];
 
     /**
      * @var callable
      */
-    protected $connectionsResolver;
+    protected $resolver;
 
-    public function __construct($min, $max)
+    public function __construct($min, $max, callable $resolver)
     {
         $this->min = $min;
         $this->max = $max;
+        $this->resolver = $resolver;
     }
 
     public function getPool($name)
@@ -36,17 +40,11 @@ class LaravelConnectionPools
         if (isset($this->pools[$name])) {
             return $this->pools[$name];
         }
-        $pool = new ConnectionPool();
-        $pool->setConfig($name, $this->min, $this->max);
-        $pool->setConnectionResolver(function () use ($name) {
-            return $this->connectionsResolver($name);
+        $pool = new Pool($name, $this->min, $this->max, function () use ($name) {
+            return call_user_func($this->resolver, $name);
         });
+        $pool->init();
         return $this->pools[$name] = $pool;
-    }
-
-    public function setConnectionsResolver(callable $connectionsResolver)
-    {
-        $this->connectionsResolver = $connectionsResolver;
     }
 
 }

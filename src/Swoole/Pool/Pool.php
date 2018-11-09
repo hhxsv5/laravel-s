@@ -1,10 +1,10 @@
 <?php
 
-namespace Hhxsv5\LaravelS\Illuminate\Database\ConnectionPool;
+namespace Hhxsv5\LaravelS\Swoole\Pool;
 
 use Swoole\Coroutine\Channel;
 
-class ConnectionPool implements ConnectionPoolInterface
+class Pool implements PoolInterface
 {
     /**
      * @var Channel
@@ -29,9 +29,9 @@ class ConnectionPool implements ConnectionPoolInterface
     /**
      * @var callable
      */
-    protected $connectionResolver;
+    protected $resolver;
 
-    public function setConfig($name, $min, $max)
+    public function __construct($name, $min, $max, callable $resolver)
     {
         if ($min < 1) {
             throw new \InvalidArgumentException('The min must be >= 1');
@@ -43,12 +43,16 @@ class ConnectionPool implements ConnectionPoolInterface
         $this->name = $name;
         $this->min = $min;
         $this->max = $max;
+        $this->resolver = $resolver;
+    }
+
+    public function init()
+    {
         $this->pool = new Channel($this->max);
-        swoole_event_add($this->pool, function () {
-            \Log::info('make balance start', [$this->pool->length()]);
-            $this->balance();
-            \Log::info('make balance end', [$this->pool->length()]);
-        });
+        for ($i = 0; $i < $this->min; $i++) {
+            $connection = call_user_func($this->resolver, $this->name);
+            $this->put($connection);
+        }
     }
 
     public function getSize()
@@ -56,29 +60,24 @@ class ConnectionPool implements ConnectionPoolInterface
         return $this->pool->length();
     }
 
-    public function setConnectionResolver(callable $connectionResolver)
-    {
-        $this->connectionResolver = $connectionResolver;
-    }
-
-    public function getConnection()
+    public function get()
     {
         return $this->pool->pop();
     }
 
-    public function putConnection($connection)
+    public function put($resource)
     {
         if ($this->pool->length() > $this->max) {
             return false;
         }
-        return $this->pool->push($connection);
+        return $this->pool->push($resource);
     }
 
     public function balance()
     {
         if ($this->min - $this->pool->length() > 0) {
-            $connection = call_user_func($this->connectionResolver, $this->name);
-            $this->pool->push($connection);
+            $resource = call_user_func($this->resolver, $this->name);
+            $this->pool->push($resource);
         } else {
             if ($this->pool->length() - $this->max > 0) {
                 $this->pool->pop();

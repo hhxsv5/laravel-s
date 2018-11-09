@@ -8,7 +8,8 @@ class DatabaseManager extends IlluminateDatabaseManager
 {
     public function connection($name = null)
     {
-        $connection = $this->app['db.pool']->getConnection($name);
+        $pool = $this->app['db.pool']->getPool($name);
+        $connection = $pool->get();
         \Log::info(__METHOD__, [$name, get_class($connection)]);
         return $connection;
     }
@@ -21,6 +22,7 @@ class DatabaseManager extends IlluminateDatabaseManager
     public function disconnect($name = null)
     {
         \Log::info(__METHOD__, [$name]);
-        $this->app['db.pool']->putConnection($name, parent::connection($name));
+        $pool = $this->app['db.pool']->getPool($name);
+        $pool->put($name, parent::connection($name));
     }
 }
