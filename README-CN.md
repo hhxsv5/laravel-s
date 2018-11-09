@@ -916,7 +916,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
     }
     ```
 
-- 推荐通过返回`Illuminate\Http\Response`对象来响应请求，兼容echo、vardump()、print_r()，`不能使用`函数像exit()、die()、header()、setcookie()、http_response_code()。
+- 推荐通过返回`Illuminate\Http\Response`对象来响应请求，兼容echo、vardump()、print_r()，`不能使用`函数像 dd()、exit()、die()、header()、setcookie()、http_response_code()。
 
     ```php
     public function json()

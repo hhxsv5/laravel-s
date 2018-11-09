@@ -901,7 +901,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
     }
     ```
 
-- Respond by `Illuminate\Http\Response` Object, compatible with echo/vardump()/print_r()，`CANNOT USE` functions like header()/setcookie()/http_response_code().
+- Respond by `Illuminate\Http\Response` Object, compatible with echo/vardump()/print_r()，`CANNOT USE` functions dd()/exit()/die()/header()/setcookie()/http_response_code().
 
     ```php
     public function json()
