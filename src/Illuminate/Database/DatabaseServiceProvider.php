@@ -12,7 +12,15 @@ class DatabaseServiceProvider extends IlluminateDatabaseServiceProvider
         parent::register();
 
         $this->app->singleton('db', function ($app) {
-            return new DatabaseManager($app, $app['db.factory']);
+            $db = new DatabaseManager($app, $app['db.factory']);
+            $version = $app->version();
+            if (version_compare($version, '5.2', '>=')) {
+                throw new \Exception('Connection pool needs >= 5.2');
+                return $db;
+            }
+            $db->listen(function ($query) {
+
+            });
         });
 
         $this->app->singleton('db.pool', function ($app) {
