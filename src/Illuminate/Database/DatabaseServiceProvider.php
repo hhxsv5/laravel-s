@@ -14,13 +14,10 @@ class DatabaseServiceProvider extends IlluminateDatabaseServiceProvider
         $this->app->singleton('db', function ($app) {
             $db = new DatabaseManager($app, $app['db.factory']);
             $version = $app->version();
-            if (version_compare($version, '5.2', '>=')) {
-                throw new \Exception('Connection pool needs >= 5.2');
-                return $db;
+            if (!version_compare($version, '5.2', '>=')) {
+                throw new \Exception('Connection pool needs the version of Laravel/Lumen >= 5.2');
             }
-            $db->listen(function ($query) {
-
-            });
+            return $db;
         });
 
         $this->app->singleton('db.pool', function ($app) {
