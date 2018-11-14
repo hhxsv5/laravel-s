@@ -441,7 +441,7 @@ class TestEvent extends Event
 2.创建监听器类。
 
 ```php
-use App\Tasks\TestTask;
+use Hhxsv5\LaravelS\Swoole\Task\Task;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 class TestListener1 extends Listener
