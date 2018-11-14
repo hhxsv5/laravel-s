@@ -45,7 +45,13 @@ abstract class Task
 
     abstract public function handle();
 
-    public static function deliver(self $task, $bySendMessage = false)
+    /**
+     * Deliver a task
+     * @param Task $task The task object
+     * @param bool $bySendMessage If set to true, the task will be delivered via the pipe message, and this task does not support the finish callback. Default false.
+     * @return bool
+     */
+    public static function deliver(Task $task, $bySendMessage = false)
     {
         $task->bySendMessage = $bySendMessage;
         $deliver = function () use ($task, $bySendMessage) {
