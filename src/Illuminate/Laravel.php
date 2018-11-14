@@ -14,9 +14,9 @@ class Laravel
     protected $app;
 
     /**
-     * @var HttpKernel $laravelKernel
+     * @var HttpKernel $kernel
      */
-    protected $laravelKernel;
+    protected $kernel;
 
     protected static $snapshotKeys = ['config', 'cookie', 'auth', /*'auth.password'*/];
 
@@ -69,7 +69,7 @@ class Laravel
     protected function createKernel()
     {
         if (!$this->conf['is_lumen']) {
-            $this->laravelKernel = $this->app->make(HttpKernel::class);
+            $this->kernel = $this->app->make(HttpKernel::class);
         }
     }
 
@@ -161,9 +161,9 @@ class Laravel
                 $callTerminableMiddleware->invoke($this->app, $response);
             }
         } else {
-            $response = $this->laravelKernel->handle($request);
+            $response = $this->kernel->handle($request);
             $content = $response->getContent();
-            $this->laravelKernel->terminate($request, $response);
+            $this->kernel->terminate($request, $response);
         }
 
         // prefer content in response, secondly ob
