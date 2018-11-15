@@ -8,6 +8,8 @@
 
 - `enable_gzip`: `bool` Whether enable the gzip of response content when respond by LaravelS, depend on [zlib](https://zlib.net/), use `php --ri swoole|grep zlib` to check whether the available. The header about Content-Encoding will be added automatically if enable, default `false`. If there is a proxy server like Nginx, suggest that enable gzip in Nginx and disable gzip in LaravelS, to avoid the repeated gzip compression for response.
 
+- `enable_coroutine_runtime`: `bool` Whether enable [runtime coroutine](https://wiki.swoole.com/wiki/page/965.html), require `Swoole>=4.1.0`.
+
 - `server`: `string` Set HTTP header `Server` when respond by LaravelS, default `LaravelS`.
 
 - `handle_static`: `bool` Whether handle the static resource by LaravelS(Require `Swoole >= 1.7.21`, Handle by Swoole if `Swoole >= 1.9.17`), default `false`, Suggest that Nginx handles the statics and LaravelS handles the dynamics. The default path of static resource is `base_path('public')`, you can modify `swoole.document_root` to change it.

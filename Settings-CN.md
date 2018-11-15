@@ -8,6 +8,8 @@
 
 - `enable_gzip`：`bool` 当通过LaravelS响应数据时，是否启用gzip压缩响应的内容，依赖库[zlib](https://zlib.net/)，通过命令`php --ri swoole|grep zlib`检查gzip是否可用。如果开启则会自动加上头部`Content-Encoding`，默认`false`。如果存在代理服务器（例如Nginx），建议代理服务器开启gzip，LaravelS关闭gzip，避免重复gzip压缩。
 
+- `enable_coroutine_runtime`：`bool` 是否启用[运行时协程](https://wiki.swoole.com/wiki/page/965.html)，需`Swoole>=4.1.0`。
+
 - `server`：`string` 当通过LaravelS响应数据时，设置HTTP头部`Server`的值，若为空则不设置，default `LaravelS`。
 
 - `handle_static`：`bool` 是否开启LaravelS处理静态资源(要求 `Swoole >= 1.7.21`，若`Swoole >= 1.9.17`则由Swoole自己处理)，默认`false`，建议Nginx处理静态资源，LaravelS仅处理动态资源。静态资源的默认路径为`base_path('public')`，可通过修改`swoole.document_root`变更。
