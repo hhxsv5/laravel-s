@@ -242,7 +242,7 @@ class Server
             $process = 'task worker';
         } else {
             $process = 'worker';
-            if (!empty($this->conf['enable_coroutine'])) {
+            if (!empty($this->conf['enable_coroutine_runtime'])) {
                 \Swoole\Runtime::enableCoroutine();
             }
         }

@@ -4,30 +4,30 @@
  * @see https://github.com/hhxsv5/laravel-s/blob/master/Settings.md  English
  */
 return [
-    'listen_ip'          => env('LARAVELS_LISTEN_IP', '127.0.0.1'),
-    'listen_port'        => env('LARAVELS_LISTEN_PORT', 5200),
-    'socket_type'        => env('LARAVELS_SOCKET_TYPE', defined('SWOOLE_SOCK_TCP') ? \SWOOLE_SOCK_TCP : 1),
-    'enable_gzip'        => env('LARAVELS_ENABLE_GZIP', false),
-    'enable_coroutine'   => false,
-    'server'             => env('LARAVELS_SERVER', 'LaravelS'),
-    'handle_static'      => env('LARAVELS_HANDLE_STATIC', false),
-    'laravel_base_path'  => env('LARAVEL_BASE_PATH', base_path()),
-    'inotify_reload'     => [
+    'listen_ip'                => env('LARAVELS_LISTEN_IP', '127.0.0.1'),
+    'listen_port'              => env('LARAVELS_LISTEN_PORT', 5200),
+    'socket_type'              => env('LARAVELS_SOCKET_TYPE', defined('SWOOLE_SOCK_TCP') ? \SWOOLE_SOCK_TCP : 1),
+    'enable_gzip'              => env('LARAVELS_ENABLE_GZIP', false),
+    'enable_coroutine_runtime' => false,
+    'server'                   => env('LARAVELS_SERVER', 'LaravelS'),
+    'handle_static'            => env('LARAVELS_HANDLE_STATIC', false),
+    'laravel_base_path'        => env('LARAVEL_BASE_PATH', base_path()),
+    'inotify_reload'           => [
         'enable'        => env('LARAVELS_INOTIFY_RELOAD', false),
         'watch_path'    => base_path(),
         'file_types'    => ['.php'],
         'excluded_dirs' => [],
         'log'           => true,
     ],
-    'websocket'          => [
+    'websocket'                => [
         'enable' => false,
         //'handler' => XxxWebSocketHandler::class,
     ],
-    'sockets'            => [
+    'sockets'                  => [
     ],
-    'processes'          => [
+    'processes'                => [
     ],
-    'timer'              => [
+    'timer'                    => [
         'enable' => false,
         'jobs'   => [
             // Enable LaravelScheduleJob to run `php artisan schedule:run` every 1 minute, replace Linux Crontab
@@ -37,13 +37,13 @@ return [
             // \App\Jobs\XxxCronJob::class, // Override the corresponding method to return the configuration
         ],
     ],
-    'events'             => [
+    'events'                   => [
     ],
-    'swoole_tables'      => [
+    'swoole_tables'            => [
     ],
-    'register_providers' => [
+    'register_providers'       => [
     ],
-    'swoole'             => [
+    'swoole'                   => [
         'daemonize'          => env('LARAVELS_DAEMONIZE', false),
         'dispatch_mode'      => 1,
         'reactor_num'        => function_exists('\swoole_cpu_num') ? \swoole_cpu_num() * 2 : 4,
@@ -65,6 +65,7 @@ return [
         'reload_async'       => true,
         'max_wait_time'      => 60,
         'enable_reuse_port'  => true,
+        'enable_coroutine'   => false,
 
         /**
          * More settings of Swoole
