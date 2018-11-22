@@ -807,6 +807,19 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 > [Swoole Coroutine](https://www.swoole.co.uk/coroutine)
 
+- Enable Coroutine.
+    
+    ```php
+    // Edit `config/laravels.php`
+    [
+        //...
+        'swoole' => [
+            //...
+            'enable_coroutine' => true
+         ],
+    ]
+    ```
+
 - [Coroutine Client](https://wiki.swoole.com/wiki/page/p-coroutine_mysql.html): require `Swoole>=2.0`.
 
 - [Runtime Coroutine](https://wiki.swoole.com/wiki/page/965.html): require `Swoole>=4.1.0`, and enable it.
@@ -815,7 +828,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
     // Edit `config/laravels.php`
     [
         //...
-        'enable_coroutine' => true
+        'enable_coroutine_runtime' => true
         //...
     ]
     ```

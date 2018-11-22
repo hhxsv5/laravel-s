@@ -823,6 +823,19 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 > [Swoole原始文档](https://wiki.swoole.com/wiki/page/749.html)
 
+- 启用协程。
+    
+    ```php
+    // 修改文件 `config/laravels.php`
+    [
+        //...
+        'swoole' => [
+            //...
+            'enable_coroutine' => true
+         ],
+    ]
+    ```
+
 - [协程客户端](https://wiki.swoole.com/wiki/page/p-coroutine_mysql.html)：需`Swoole>=2.0`。
 
 - [运行时协程](https://wiki.swoole.com/wiki/page/965.html)：需`Swoole>=4.1.0`，同时启用下面的配置。
@@ -831,8 +844,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
     // 修改文件 `config/laravels.php`
     [
         //...
-        'enable_coroutine' => true
-        //...
+        'enable_coroutine_runtime' => true
     ]
     ```
 
