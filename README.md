@@ -807,7 +807,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 > [Swoole Coroutine](https://www.swoole.co.uk/coroutine)
 
-- Enable Coroutine.
+- Enable Coroutine, default disable.
     
     ```php
     // Edit `config/laravels.php`
