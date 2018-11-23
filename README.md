@@ -147,6 +147,7 @@ upstream laravels {
     #server unix:/xxxpath/laravel-s-test/storage/laravels.sock weight=5 max_fails=3 fail_timeout=30s;
     #server 192.168.1.1:5200 weight=3 max_fails=3 fail_timeout=30s;
     #server 192.168.1.2:5200 backup;
+    keepalive 16;
 }
 server {
     listen 80;
@@ -169,7 +170,6 @@ server {
         # proxy_connect_timeout 60s;
         # proxy_send_timeout 60s;
         # proxy_read_timeout 120s;
-        proxy_set_header Connection "keep-alive";
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Real-PORT $remote_port;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -179,6 +179,7 @@ server {
         proxy_set_header Server-Name $server_name;
         proxy_set_header Server-Addr $server_addr;
         proxy_set_header Server-Port $server_port;
+        proxy_set_header Connection "";
         proxy_pass http://laravels;
     }
 }
@@ -303,6 +304,7 @@ upstream laravels {
     #server unix:/xxxpath/laravel-s-test/storage/laravels.sock weight=5 max_fails=3 fail_timeout=30s;
     #server 192.168.1.1:5200 weight=3 max_fails=3 fail_timeout=30s;
     #server 192.168.1.2:5200 backup;
+    keepalive 16;
 }
 server {
     listen 80;
@@ -356,6 +358,7 @@ server {
         proxy_set_header Server-Name $server_name;
         proxy_set_header Server-Addr $server_addr;
         proxy_set_header Server-Port $server_port;
+        proxy_set_header Connection "";
         proxy_pass http://laravels;
     }
 }
