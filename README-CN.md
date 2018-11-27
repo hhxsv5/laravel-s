@@ -45,6 +45,7 @@ Table of Contents
 * [协程](#协程)
 * [自定义进程](#自定义进程)
 * [注意事项](#注意事项)
+* [部署](#部署)
 * [用户与案例](#用户与案例)
 * [待办事项](#待办事项)
 * [其他选择](#其他选择)
@@ -138,6 +139,7 @@ $app->configure('laravels');
 | `publish` | 发布配置文件到你的项目中`config/laravels.php` |
 
 ## 与Nginx配合使用（推荐）
+> [示例](https://github.com/hhxsv5/docker/blob/master/compose/nginx)。
 
 ```nginx
 gzip on;
@@ -1012,6 +1014,23 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 - [Linux内核参数调整](https://wiki.swoole.com/wiki/page/p-server/sysctl.html)
 
 - [压力测试](https://wiki.swoole.com/wiki/page/62.html)
+
+## 部署
+> 建议通过[Supervisord](http://supervisord.org/)监管Swoole进程。
+
+```supervisord
+[program:laravel-s-test]
+command=/user/local/bin/php /opt/www/laravel-s-test/artisan laravels start
+numprocs=1
+autostart=true
+autorestart=true
+startretries=3
+user=www-data
+redirect_stderr=true
+stdout_logfile=/opt/www/laravel-s-test/storage/logs/supervisord-stdout.log
+stopasgroup=true
+killasgroup=true
+```
 
 ## 用户与案例
 

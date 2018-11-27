@@ -41,6 +41,7 @@ Table of Contents
 * [Coroutine](#coroutine)
 * [Custom process](#custom-process)
 * [Important notices](#important-notices)
+* [Deployment](#deployment)
 * [Users and cases](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E7%94%A8%E6%88%B7%E4%B8%8E%E6%A1%88%E4%BE%8B)
 * [Todo list](#todo-list)
 * [Alternatives](#alternatives)
@@ -132,6 +133,7 @@ $app->configure('laravels');
 | `publish` | Publish configuration file `laravels.php` into folder `config` |
 
 ## Cooperate with Nginx (Recommended)
+> [Demo](https://github.com/hhxsv5/docker/blob/master/compose/nginx).
 
 ```nginx
 gzip on;
@@ -999,6 +1001,23 @@ To make our main server support more protocols not just Http and WebSocket, we b
 - [Linux kernel parameter adjustment](https://wiki.swoole.com/wiki/page/p-server/sysctl.html)
 
 - [Pressure test](https://wiki.swoole.com/wiki/page/62.html)
+
+## Deployment
+> It is recommended to supervise the Swoole process through [Supervisord](http://supervisord.org/).
+
+```supervisord
+[program:laravel-s-test]
+command=/user/local/bin/php /opt/www/laravel-s-test/artisan laravels start
+numprocs=1
+autostart=true
+autorestart=true
+startretries=3
+user=www-data
+redirect_stderr=true
+stdout_logfile=/opt/www/laravel-s-test/storage/logs/supervisord-stdout.log
+stopasgroup=true
+killasgroup=true
+```
 
 ## Todo list
 
