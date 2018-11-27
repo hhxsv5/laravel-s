@@ -1016,7 +1016,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 - [压力测试](https://wiki.swoole.com/wiki/page/62.html)
 
 ## 部署
-> 建议通过[Supervisord](http://supervisord.org/)监管主进程。
+> 建议通过[Supervisord](http://supervisord.org/)监管主进程，前提是不能加`-d`选项并且设置`swoole.daemonize`为`false`。
 
 ```
 [program:laravel-s-test]

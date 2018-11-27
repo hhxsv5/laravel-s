@@ -1003,7 +1003,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 - [Pressure test](https://wiki.swoole.com/wiki/page/62.html)
 
 ## Deployment
-> It is recommended to supervise the main process through [Supervisord](http://supervisord.org/).
+> It is recommended to supervise the main process through [Supervisord](http://supervisord.org/), the premise is without option `-d` and to set `swoole.daemonize` to `false`.
 
 ```
 [program:laravel-s-test]
