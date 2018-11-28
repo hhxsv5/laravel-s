@@ -828,6 +828,8 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 > [Swoole原始文档](https://wiki.swoole.com/wiki/page/749.html)
 
+- 警告：Laravel/Lumen中存在大量单例和静态属性，在协程下是`不安全`的，不建议打开协程。
+
 - 启用协程，默认是关闭的。
     
     ```php

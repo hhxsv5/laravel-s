@@ -812,6 +812,8 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 > [Swoole Coroutine](https://www.swoole.co.uk/coroutine)
 
+- Warning: There are a large number of singletons and static properties in Laravel/Lumen, which are `unsafe' in coroutine. It is NOT recommended to enable coroutine.
+
 - Enable Coroutine, default disable.
     
     ```php
