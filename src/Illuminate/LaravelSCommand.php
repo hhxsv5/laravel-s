@@ -82,6 +82,9 @@ EOS;
 
     protected function preSet(array &$svrConf)
     {
+        if (!isset($svrConf['enable_gzip'])) {
+            $svrConf['enable_gzip'] = false;
+        }
         if (empty($svrConf['laravel_base_path'])) {
             $svrConf['laravel_base_path'] = base_path();
         }
