@@ -30,6 +30,7 @@ Table of Contents
 * [要求](#要求)
 * [安装](#安装)
 * [运行](#运行)
+* [部署](#部署)
 * [与Nginx配合使用（推荐）](#与nginx配合使用推荐)
 * [与Apache配合使用](#与apache配合使用)
 * [启用WebSocket服务器](#启用websocket服务器)
@@ -45,7 +46,6 @@ Table of Contents
 * [协程](#协程)
 * [自定义进程](#自定义进程)
 * [注意事项](#注意事项)
-* [部署](#部署)
 * [用户与案例](#用户与案例)
 * [待办事项](#待办事项)
 * [其他选择](#其他选择)
@@ -137,6 +137,23 @@ $app->configure('laravels');
 | `restart` | 重启LaravelS，支持选项`-d`或`--daemonize` |
 | `reload` | 平滑重启所有worker进程，这些worker进程内包含你的业务代码和框架(Laravel/Lumen)代码，不会重启master/manger进程 |
 | `publish` | 发布配置文件到你的项目中`config/laravels.php` |
+
+## 部署
+> 建议通过[Supervisord](http://supervisord.org/)监管主进程，前提是不能加`-d`选项并且设置`swoole.daemonize`为`false`。
+
+```
+[program:laravel-s-test]
+command=/user/local/bin/php /opt/www/laravel-s-test/artisan laravels start -i
+numprocs=1
+autostart=true
+autorestart=true
+startretries=3
+user=www-data
+redirect_stderr=true
+stdout_logfile=/opt/www/laravel-s-test/storage/logs/supervisord-stdout.log
+stopasgroup=true
+killasgroup=true
+```
 
 ## 与Nginx配合使用（推荐）
 > [示例](https://github.com/hhxsv5/docker/blob/master/compose/nginx)。
@@ -1016,23 +1033,6 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 - [Linux内核参数调整](https://wiki.swoole.com/wiki/page/p-server/sysctl.html)
 
 - [压力测试](https://wiki.swoole.com/wiki/page/62.html)
-
-## 部署
-> 建议通过[Supervisord](http://supervisord.org/)监管主进程，前提是不能加`-d`选项并且设置`swoole.daemonize`为`false`。
-
-```
-[program:laravel-s-test]
-command=/user/local/bin/php /opt/www/laravel-s-test/artisan laravels start -i
-numprocs=1
-autostart=true
-autorestart=true
-startretries=3
-user=www-data
-redirect_stderr=true
-stdout_logfile=/opt/www/laravel-s-test/storage/logs/supervisord-stdout.log
-stopasgroup=true
-killasgroup=true
-```
 
 ## 用户与案例
 

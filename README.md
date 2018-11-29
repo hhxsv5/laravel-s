@@ -26,6 +26,7 @@ Table of Contents
 * [Requirements](#requirements)
 * [Install](#install)
 * [Run demo](#run-demo)
+* [Deployment](#deployment)
 * [Cooperate with Nginx (Recommended)](#cooperate-with-nginx-recommended)
 * [Cooperate with Apache](#cooperate-with-apache)
 * [Enable WebSocket server](#enable-websocket-server)
@@ -41,7 +42,6 @@ Table of Contents
 * [Coroutine](#coroutine)
 * [Custom process](#custom-process)
 * [Important notices](#important-notices)
-* [Deployment](#deployment)
 * [Users and cases](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E7%94%A8%E6%88%B7%E4%B8%8E%E6%A1%88%E4%BE%8B)
 * [Todo list](#todo-list)
 * [Alternatives](#alternatives)
@@ -131,6 +131,23 @@ $app->configure('laravels');
 | `restart` | Restart LaravelS, support command options `-d` and `--daemonize` |
 | `reload` | Reload all worker processes(Contain your business & Laravel/Lumen codes), exclude master/manger process |
 | `publish` | Publish configuration file `laravels.php` into folder `config` |
+
+## Deployment
+> It is recommended to supervise the main process through [Supervisord](http://supervisord.org/), the premise is without option `-d` and to set `swoole.daemonize` to `false`.
+
+```
+[program:laravel-s-test]
+command=/user/local/bin/php /opt/www/laravel-s-test/artisan laravels start -i
+numprocs=1
+autostart=true
+autorestart=true
+startretries=3
+user=www-data
+redirect_stderr=true
+stdout_logfile=/opt/www/laravel-s-test/storage/logs/supervisord-stdout.log
+stopasgroup=true
+killasgroup=true
+```
 
 ## Cooperate with Nginx (Recommended)
 > [Demo](https://github.com/hhxsv5/docker/blob/master/compose/nginx).
@@ -1003,23 +1020,6 @@ To make our main server support more protocols not just Http and WebSocket, we b
 - [Linux kernel parameter adjustment](https://wiki.swoole.com/wiki/page/p-server/sysctl.html)
 
 - [Pressure test](https://wiki.swoole.com/wiki/page/62.html)
-
-## Deployment
-> It is recommended to supervise the main process through [Supervisord](http://supervisord.org/), the premise is without option `-d` and to set `swoole.daemonize` to `false`.
-
-```
-[program:laravel-s-test]
-command=/user/local/bin/php /opt/www/laravel-s-test/artisan laravels start -i
-numprocs=1
-autostart=true
-autorestart=true
-startretries=3
-user=www-data
-redirect_stderr=true
-stdout_logfile=/opt/www/laravel-s-test/storage/logs/supervisord-stdout.log
-stopasgroup=true
-killasgroup=true
-```
 
 ## Todo list
 
