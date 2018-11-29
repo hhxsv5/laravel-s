@@ -1009,7 +1009,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 ```
 [program:laravel-s-test]
-command=/user/local/bin/php /opt/www/laravel-s-test/artisan laravels start
+command=/user/local/bin/php /opt/www/laravel-s-test/artisan laravels start -i
 numprocs=1
 autostart=true
 autorestart=true

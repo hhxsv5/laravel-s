@@ -1022,7 +1022,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 ```
 [program:laravel-s-test]
-command=/user/local/bin/php /opt/www/laravel-s-test/artisan laravels start
+command=/user/local/bin/php /opt/www/laravel-s-test/artisan laravels start -i
 numprocs=1
 autostart=true
 autorestart=true
