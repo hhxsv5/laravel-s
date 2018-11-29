@@ -2,13 +2,13 @@
 
 - `listen_ip`：`string` 监听的IP，监听本机`127.0.0.1`(IPv4) `::1`(IPv6)，监听所有地址 `0.0.0.0`(IPv4) `::`(IPv6)， 默认`127.0.0.1`。
 
-- `listen_port`：`int` 监听的端口，如果端口小于1024则需要`root`权限，default `5200`。
+- `listen_port`：`int` 监听的端口，如果端口小于1024则需要`root`权限，默认 `5200`。
 
 - `socket_type`：默认`SWOOLE_SOCK_TCP`。通常情况下，无需关心这个配置。若需Nginx代理至`UnixSocket Stream`文件，则需修改为`SWOOLE_SOCK_UNIX_STREAM`，此时`listen_ip`则是`UnixSocket Stream`文件的路径。
 
 - `enable_coroutine_runtime`：`bool` 是否启用[运行时协程](https://wiki.swoole.com/wiki/page/965.html)，需`Swoole>=4.1.0`，默认`false`。
 
-- `server`：`string` 当通过LaravelS响应数据时，设置HTTP头部`Server`的值，若为空则不设置，default `LaravelS`。
+- `server`：`string` 当通过LaravelS响应数据时，设置HTTP头部`Server`的值，若为空则不设置，默认 `LaravelS`。
 
 - `handle_static`：`bool` 是否开启LaravelS处理静态资源(要求 `Swoole >= 1.7.21`，若`Swoole >= 1.9.17`则由Swoole自己处理)，默认`false`，建议Nginx处理静态资源，LaravelS仅处理动态资源。静态资源的默认路径为`base_path('public')`，可通过修改`swoole.document_root`变更。
 
