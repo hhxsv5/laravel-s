@@ -18,6 +18,10 @@ trait CustomProcessTrait
         $processList = [];
         foreach ($processes as $process) {
             $processHandler = function () use ($swoole, $processPrefix, $process, $laravelConfig) {
+                // Inject the global variables
+                $_SERVER = $laravelConfig['_SERVER'];
+                $_ENV = $laravelConfig['_ENV'];
+
                 $name = $process::getName() ?: 'custom';
                 $this->setProcessTitle(sprintf('%s laravels: %s process', $processPrefix, $name));
                 $this->initLaravel($laravelConfig, $swoole);
