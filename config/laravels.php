@@ -65,7 +65,7 @@ return [
         'max_wait_time'      => 60,
         'enable_reuse_port'  => true,
         'enable_coroutine'   => false,
-        'http_compression'   => true,
+        'http_compression'   => false,
 
         /**
          * More settings of Swoole

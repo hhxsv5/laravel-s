@@ -6,8 +6,6 @@
 
 - `socket_type`: `int` Default `SWOOLE_SOCK_TCP`. Usually, you don’t need to care about it. Unless you want Nginx to proxy to the `UnixSocket Stream` file, you need to modify it to `SWOOLE_SOCK_UNIX_STREAM`, and `listen_ip` is the path of `UnixSocket Stream` file.
 
-- `enable_gzip`: `bool` Whether enable the gzip of response content when respond by LaravelS, depend on [zlib](https://zlib.net/), use `php --ri swoole|grep zlib` to check whether the available. The header about Content-Encoding will be added automatically if enable, default `false`. If there is a proxy server like Nginx, suggest that enable gzip in Nginx and disable gzip in LaravelS, to avoid the repeated gzip compression for response.
-
 - `enable_coroutine_runtime`: `bool` Whether enable [runtime coroutine](https://wiki.swoole.com/wiki/page/965.html), require `Swoole>=4.1.0`.
 
 - `server`: `string` Set HTTP header `Server` when respond by LaravelS, default `LaravelS`.
