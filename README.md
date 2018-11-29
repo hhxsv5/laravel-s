@@ -25,7 +25,7 @@ Table of Contents
 * [Features](#features)
 * [Requirements](#requirements)
 * [Install](#install)
-* [Run demo](#run-demo)
+* [Run](#run)
 * [Deployment](#deployment)
 * [Cooperate with Nginx (Recommended)](#cooperate-with-nginx-recommended)
 * [Cooperate with Apache](#cooperate-with-apache)
@@ -119,7 +119,7 @@ $app->configure('laravels');
 
 4.Change `config/laravels.php`: listen_ip, listen_port, refer [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
-## Run demo
+## Run
 > `php artisan laravels {start|stop|restart|reload|publish}`
 
 `Please read the notices carefully before running`, [Important notices](https://github.com/hhxsv5/laravel-s#important-notices).
