@@ -915,7 +915,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ],
     ```
 
-3. Attention：TestProcess::callback() cannot exit. Once exited, Manager process will automatically create the process again.
+3. Note: The TestProcess::callback() method cannot quit. If the number of quit reaches 10, the Manager process will re-create the process.
 
 ## Important notices
 

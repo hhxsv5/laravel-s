@@ -930,7 +930,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
     ],
     ```
 
-3. 注意：TestProcess::callback()方法不能退出，一旦退出Manager进程会自动再次创建该进程。
+3. 注意：TestProcess::callback()方法不能退出，如果退出次数达到10次，Manager进程将会重新创建进程。
 
 ## 注意事项
 
