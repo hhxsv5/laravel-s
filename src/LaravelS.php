@@ -29,8 +29,9 @@ class LaravelS extends Server
      * Fix conflicts of traits
      */
     use InotifyTrait, LaravelTrait, LogTrait, ProcessTitleTrait, TimerTrait, CustomProcessTrait {
-        LogTrait::log insteadof InotifyTrait, TimerTrait;
-        LogTrait::logException insteadof InotifyTrait, TimerTrait;
+        LogTrait::log insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
+        LogTrait::logException insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
+        LogTrait::callWithCatchException insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
         ProcessTitleTrait::setProcessTitle insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
         LaravelTrait::initLaravel insteadof TimerTrait, CustomProcessTrait;
     }
@@ -66,11 +67,9 @@ class LaravelS extends Server
     {
         if ($this->enableWebSocket) {
             $eventHandler = function ($method, array $params) {
-                try {
+                $this->callWithCatchException(function () use ($method, $params) {
                     call_user_func_array([$this->getWebSocketHandler(), $method], $params);
-                } catch (\Exception $e) {
-                    $this->logException($e);
-                }
+                });
             };
 
             $this->swoole->on('Open', function (\swoole_websocket_server $server, \swoole_http_request $request) use ($eventHandler) {

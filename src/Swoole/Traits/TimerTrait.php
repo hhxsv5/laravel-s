@@ -26,26 +26,27 @@ trait TimerTrait
                     $job = new $jobClass();
                 }
                 if (!($job instanceof CronJob)) {
-                    throw new \Exception(sprintf('%s must implement the abstract class %s', get_class($job), CronJob::class));
+                    throw new \Exception(sprintf(
+                            '%s must extend the abstract class %s',
+                            get_class($job),
+                            CronJob::class
+                        )
+                    );
                 }
                 if (empty($job->interval())) {
                     throw new \Exception(sprintf('The interval of %s cannot be empty', get_class($job)));
                 }
                 $timerId = swoole_timer_tick($job->interval(), function () use ($job) {
-                    try {
+                    $this->callWithCatchException(function () use ($job) {
                         $job->run();
-                    } catch (\Exception $e) {
-                        $this->logException($e);
-                    }
+                    });
                 });
                 $job->setTimerId($timerId);
                 if ($job->isImmediate()) {
                     swoole_timer_after(1, function () use ($job) {
-                        try {
+                        $this->callWithCatchException(function () use ($job) {
                             $job->run();
-                        } catch (\Exception $e) {
-                            $this->logException($e);
-                        }
+                        });
                     });
                 }
             }

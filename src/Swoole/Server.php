@@ -91,11 +91,9 @@ class Server
     {
         if ($this->enableWebSocket) {
             $eventHandler = function ($method, array $params) {
-                try {
+                $this->callWithCatchException(function () use ($method, $params) {
                     call_user_func_array([$this->getWebSocketHandler(), $method], $params);
-                } catch (\Exception $e) {
-                    $this->logException($e);
-                }
+                });
             };
 
             $this->swoole->on('Open', function () use ($eventHandler) {
@@ -133,11 +131,9 @@ class Server
             $eventHandler = function ($method, array $params) use ($port, $handlerClass) {
                 $handler = $this->getSocketHandler($port, $handlerClass);
                 if (method_exists($handler, $method)) {
-                    try {
+                    $this->callWithCatchException(function () use ($handler, $method, $params) {
                         call_user_func_array([$handler, $method], $params);
-                    } catch (\Exception $e) {
-                        $this->logException($e);
-                    }
+                    });
                 }
             };
             static $events = [
@@ -317,23 +313,18 @@ class Server
             if (!($listener instanceof Listener)) {
                 throw new \Exception(sprintf('%s must extend the abstract class %s', $listenerClass, Listener::class));
             }
-            try {
+            $this->callWithCatchException(function () use ($listener, $event) {
                 $listener->handle($event);
-            } catch (\Exception $e) {
-                $this->logException($e);
-            }
+            });
         }
     }
 
     protected function handleTask(Task $task)
     {
-        try {
+        return $this->callWithCatchException(function () use ($task) {
             $task->handle();
             return true;
-        } catch (\Exception $e) {
-            $this->logException($e);
-            return false;
-        }
+        });
     }
 
     public function run()
