@@ -36,12 +36,9 @@ trait CustomProcessTrait
                 $name = $process::getName() ?: 'custom';
                 $this->setProcessTitle(sprintf('%s laravels: %s process', $processPrefix, $name));
                 $this->initLaravel($laravelConfig, $swoole);
-                while (true) {
-                    $this->callWithCatchException(function () use ($process, $swoole) {
-                        return $process::callback($swoole);
-                    });
-                    sleep(1);
-                }
+                $this->callWithCatchException(function () use ($process, $swoole) {
+                    return $process::callback($swoole);
+                }, true);
             };
             $customProcess = new \swoole_process(
                 $processHandler,

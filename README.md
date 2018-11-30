@@ -898,6 +898,8 @@ To make our main server support more protocols not just Http and WebSocket, we b
                 // 2.Modify task_ipc_mode to 1 or 2 in config/laravels.php, see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
                 $ret = Task::deliver(new TestTask('task data'), true);
                 var_dump($ret);
+                // The exception thrown in this callback will cause the process to exit. The upper layer will catch the exception and record it to the Swoole log. Then the Manager process will re-create the process, so developers are encouraged to try/catch capture to avoid creating the process frequently.
+                // throw new \Exception('an exception');
             }
         }
     }
