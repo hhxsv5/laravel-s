@@ -26,15 +26,12 @@ trait LogTrait
         echo sprintf('[%s] [%s] LaravelS: %s', date('Y-m-d H:i:s'), $type, $msg), PHP_EOL;
     }
 
-    public function callWithCatchException(callable $callback, $throw = false)
+    public function callWithCatchException(callable $callback)
     {
         try {
             return $callback();
         } catch (\Exception $e) {
             $this->logException($e);
-            if ($throw) {
-                throw $e;
-            }
             return false;
         }
     }

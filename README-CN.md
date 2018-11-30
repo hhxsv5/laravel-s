@@ -913,7 +913,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
                 // 2.config/laravels.php中修改配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/wiki/page/296.html
                 $ret = Task::deliver(new TestTask('task data'), true);
                 var_dump($ret);
-                // callback中抛出的异常会导致进程退出，上层会捕获异常并记录到Swoole日志，然后Manager进程会重新创建此进程，所以建议开发者自行try/catch捕获，避免频繁创建进程。
+                // 上层会捕获callback中抛出的异常，并记录到Swoole日志，如果异常数达到10次，此进程会退出，Manager进程会重新创建进程，所以建议开发者自行try/catch捕获，避免创建进程过于频繁。
                 // throw new \Exception('an exception');
             }
         }

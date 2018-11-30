@@ -27,7 +27,6 @@ trait CustomProcessTrait
                     )
                 );
             }
-
             $processHandler = function () use ($swoole, $processPrefix, $process, $laravelConfig) {
                 // Inject the global variables
                 $_SERVER = $laravelConfig['_SERVER'];
@@ -36,9 +35,16 @@ trait CustomProcessTrait
                 $name = $process::getName() ?: 'custom';
                 $this->setProcessTitle(sprintf('%s laravels: %s process', $processPrefix, $name));
                 $this->initLaravel($laravelConfig, $swoole);
-                $this->callWithCatchException(function () use ($process, $swoole) {
-                    return $process::callback($swoole);
-                }, true);
+                $maxTry = 10;
+                $i = 0;
+                do {
+                    $this->callWithCatchException(function () use ($process, $swoole) {
+                        return $process::callback($swoole);
+                    });
+                    ++$i;
+                    sleep(1);
+                } while ($i < $maxTry);
+                $this->log(sprintf('The custom process "%s" reaches maximum number of retries, and will be restarted by the manager process.', $name), 'WARN');
             };
             $customProcess = new \swoole_process(
                 $processHandler,
