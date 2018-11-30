@@ -17,6 +17,10 @@ trait TimerTrait
         }
 
         $startTimer = function () use ($swoole, $config, $laravelConfig) {
+            // Inject the global variables
+            $_SERVER = $laravelConfig['_SERVER'];
+            $_ENV = $laravelConfig['_ENV'];
+
             $this->setProcessTitle(sprintf('%s laravels: timer process', $config['process_prefix']));
             $this->initLaravel($laravelConfig, $swoole);
             foreach ($config['jobs'] as $jobClass) {
