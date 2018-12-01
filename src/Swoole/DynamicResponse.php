@@ -29,10 +29,11 @@ class DynamicResponse extends Response
         }
 
         if ($len > self::CHUNK_LIMIT) {
-            for ($i = 0, $limit = 1024 * 10; $i < $len; $i += $limit) {
-                $str = substr($content, $i, $limit);
-                $this->swooleResponse->write($str);
+            for ($i = 0, $limit = 1024 * 1024; $i < $len; $i += $limit) {
+                $chunk = substr($content, $i, $limit);
+                $this->swooleResponse->write($chunk);
             }
+            $this->swooleResponse->end();
         } else {
             $this->swooleResponse->end($content);
         }
