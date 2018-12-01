@@ -4,6 +4,8 @@ namespace Hhxsv5\LaravelS\Swoole;
 
 class DynamicResponse extends Response
 {
+    const CHUNK_LIMIT = 2097152; // 2M
+
     /**
      * @throws \Exception
      */
@@ -19,10 +21,20 @@ class DynamicResponse extends Response
     public function sendContent()
     {
         $content = $this->laravelResponse->getContent();
-        if (isset($content[0])) {
-            $this->swooleResponse->end($content);
-        } else {
+
+        $len = strlen($content);
+        if ($len === 0) {
             $this->swooleResponse->end();
+            return;
+        }
+
+        if ($len > self::CHUNK_LIMIT) {
+            for ($i = 0, $limit = 1024 * 10; $i < $len; $i += $limit) {
+                $str = substr($content, $i, $limit);
+                $this->swooleResponse->write($str);
+            }
+        } else {
+            $this->swooleResponse->end($content);
         }
     }
 }
