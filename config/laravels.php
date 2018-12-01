@@ -51,7 +51,6 @@ return [
         'task_ipc_mode'      => 1,
         'task_max_request'   => 5000,
         'task_tmpdir'        => @is_writable('/dev/shm/') ? '/dev/shm' : '/tmp',
-        'message_queue_key'  => ftok(base_path('public/index.php'), 1),
         'max_request'        => 3000,
         'open_tcp_nodelay'   => true,
         'pid_file'           => storage_path('laravels.pid'),
