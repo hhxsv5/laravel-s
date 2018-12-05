@@ -687,7 +687,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 {
     $uid = app('swoole')->wsTable->get('fd:' . $fd);
     if ($uid !== false) {
-        app('swoole')->wsTable->del('uid:' . $uid['value']); // Ubind uid map
+        app('swoole')->wsTable->del('uid:' . $uid['value']); // Unbind uid map
     }
     app('swoole')->wsTable->del('fd:' . $fd);// Unbind fd map
     $server->push($fd, 'Goodbye');
