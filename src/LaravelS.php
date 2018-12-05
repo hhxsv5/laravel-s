@@ -65,6 +65,8 @@ class LaravelS extends Server
 
     protected function bindWebSocketEvent()
     {
+        parent::bindWebSocketEvent();
+
         if ($this->enableWebSocket) {
             $eventHandler = function ($method, array $params) {
                 $this->callWithCatchException(function () use ($method, $params) {
@@ -80,18 +82,6 @@ class LaravelS extends Server
                 $this->laravel->handleDynamic($laravelRequest);
                 $eventHandler('onOpen', func_get_args());
                 $this->laravel->saveSession();
-            });
-
-            $this->swoole->on('Message', function () use ($eventHandler) {
-                $eventHandler('onMessage', func_get_args());
-            });
-
-            $this->swoole->on('Close', function (\swoole_websocket_server $server, $fd, $reactorId) use ($eventHandler) {
-                $clientInfo = $server->getClientInfo($fd);
-                if (isset($clientInfo['websocket_status']) && $clientInfo['websocket_status'] === \WEBSOCKET_STATUS_FRAME) {
-                    $eventHandler('onClose', func_get_args());
-                }
-                // else ignore the close event for http server
             });
         }
     }
