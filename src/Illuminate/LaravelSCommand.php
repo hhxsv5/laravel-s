@@ -141,7 +141,7 @@ EOS;
         ];
 
         if (isset($svrConf['socket_type'])
-            && in_array($svrConf['socket_type'], [\SWOOLE_UNIX_DGRAM, \SWOOLE_UNIX_STREAM])
+            && in_array($svrConf['socket_type'], [\SWOOLE_SOCK_UNIX_DGRAM, \SWOOLE_SOCK_UNIX_STREAM])
         ) {
             $listenAt = $svrConf['listen_ip'];
         } else {
