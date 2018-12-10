@@ -26,7 +26,7 @@ Table of Contents
 * [Requirements](#requirements)
 * [Install](#install)
 * [Run](#run)
-* [Deployment](#deployment)
+* [Deploy](#deploy)
 * [Cooperate with Nginx (Recommended)](#cooperate-with-nginx-recommended)
 * [Cooperate with Apache](#cooperate-with-apache)
 * [Enable WebSocket server](#enable-websocket-server)
@@ -132,7 +132,7 @@ $app->configure('laravels');
 | `reload` | Reload all worker processes(Contain your business & Laravel/Lumen codes), exclude master/manger process |
 | `publish` | Publish configuration file `laravels.php` into folder `config` |
 
-## Deployment
+## Deploy
 > It is recommended to supervise the main process through [Supervisord](http://supervisord.org/), the premise is without option `-d` and to set `swoole.daemonize` to `false`.
 
 ```
