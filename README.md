@@ -185,10 +185,11 @@ server {
     #    return 404;
     #}
     location @laravels {
-        proxy_http_version 1.1;
         # proxy_connect_timeout 60s;
         # proxy_send_timeout 60s;
         # proxy_read_timeout 120s;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Real-PORT $remote_port;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -198,7 +199,6 @@ server {
         proxy_set_header Server-Name $server_name;
         proxy_set_header Server-Addr $server_addr;
         proxy_set_header Server-Port $server_port;
-        proxy_set_header Connection "";
         proxy_pass http://laravels;
     }
 }
@@ -345,11 +345,11 @@ server {
     # !!! The location of WebSocket is "/ws"
     # Javascript: var ws = new WebSocket("ws://laravels.com/ws");
     location =/ws {
-        proxy_http_version 1.1;
         # proxy_connect_timeout 60s;
         # proxy_send_timeout 60s;
         # proxy_read_timeout: Nginx will close the connection if the proxied server does not send data to Nginx in 60 seconds; At the same time, this close behavior is also affected by heartbeat setting of Swoole.
         # proxy_read_timeout 60s;
+        proxy_http_version 1.1;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Real-PORT $remote_port;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -364,10 +364,11 @@ server {
         proxy_pass http://laravels;
     }
     location @laravels {
-        proxy_http_version 1.1;
         # proxy_connect_timeout 60s;
         # proxy_send_timeout 60s;
         # proxy_read_timeout 60s;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Real-PORT $remote_port;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -377,7 +378,6 @@ server {
         proxy_set_header Server-Name $server_name;
         proxy_set_header Server-Addr $server_addr;
         proxy_set_header Server-Port $server_port;
-        proxy_set_header Connection "";
         proxy_pass http://laravels;
     }
 }
