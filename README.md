@@ -145,8 +145,6 @@ startretries=3
 user=www-data
 redirect_stderr=true
 stdout_logfile=/opt/www/laravel-s-test/storage/logs/supervisord-stdout.log
-stopasgroup=true
-killasgroup=true
 ```
 
 ## Cooperate with Nginx (Recommended)
