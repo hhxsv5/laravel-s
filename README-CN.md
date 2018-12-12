@@ -151,6 +151,7 @@ startretries=3
 user=www-data
 redirect_stderr=true
 stdout_logfile=/opt/www/laravel-s-test/storage/logs/supervisord-stdout.log
+stopasgroup=true
 ```
 
 ## 与Nginx配合使用（推荐）
