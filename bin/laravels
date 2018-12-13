@@ -1,0 +1,152 @@
+#!/usr/bin/env php
+<?php
+$basePath = realpath(__DIR__ . '/../');
+include $basePath . '/vendor/autoload.php';
+
+$cfg = json_decode(file_get_contents($basePath . '/config/laravels.json'), true);
+$lvs = new GoLaravelS($cfg);
+
+$action = isset($argv[1]) ? $argv[1] : null;
+switch ($action) {
+    case 'start':
+        //--d|daemonize : Whether run as a daemon for start & restart} {--i|ignore : Whether ignore checking process pid for start & restart
+        $lvs->start();
+        break;
+    case 'stop':
+        $lvs->stop();
+        break;
+    case 'restart':
+        $lvs->restart();
+        break;
+    case 'reload':
+        $lvs->reload();
+        break;
+    default:
+        outputLog('Usage: php ssr.php start|stop|restart|reload');
+        break;
+}
+
+class GoLaravelS
+{
+    protected $cfg;
+
+    public function __construct(array $cfg)
+    {
+        $this->cfg = $cfg;
+    }
+
+    public function start()
+    {
+        $phpCmd = sprintf('%s -c "%s"', PHP_BINARY, php_ini_loaded_file());
+        $artisanCmd = sprintf('%s %s/artisan', $phpCmd, $this->cfg['laravelConf']['root_path']);
+
+        // Make config
+        $makeConfigCmd = sprintf('%s laravels config', $artisanCmd);
+        runCommand($makeConfigCmd);
+
+        // Show info
+        $infoCmd = sprintf('%s laravels info', $artisanCmd);
+        runCommand($infoCmd);
+
+        // Here we go...
+        (new \Hhxsv5\LaravelS\LaravelS($this->cfg['svrConf'], $this->cfg['laravelConf']))->run();
+    }
+
+    public function stop()
+    {
+        $pidFile = $this->cfg['svrConf']['swoole']['pid_file'];
+        if (!file_exists($pidFile)) {
+            $this->log('It seems that Swoole is not running.', 'WARN');
+            return;
+        }
+
+        $pid = file_get_contents($pidFile);
+        if (kill($pid, 0)) {
+            if (kill($pid, SIGTERM)) {
+                // Make sure that master process quit
+                $time = 1;
+                $waitTime = 60;
+                while (kill($pid, 0)) {
+                    if ($time > $waitTime) {
+                        $this->log(
+                            "PID[{$pid}] cannot be stopped gracefully in {$waitTime}s, will be stopped forced right now.",
+                            'WARN'
+                        );
+                        return;
+                    }
+                    $this->log("Waiting PID[{$pid}] to stop. [{$time}]");
+                    sleep(1);
+                    $time++;
+                }
+                if (file_exists($pidFile)) {
+                    unlink($pidFile);
+                }
+                $this->log("PID[{$pid}] is stopped.");
+            } else {
+                $this->log("PID[{$pid}] is stopped failed.", 'ERROR');
+            }
+        } else {
+            $this->log("PID[{$pid}] does not exist, or permission denied.", 'ERROR');
+            if (file_exists($pidFile)) {
+                unlink($pidFile);
+            }
+        }
+    }
+
+    public function restart()
+    {
+        $this->stop();
+        $this->start();
+    }
+
+    public function reload()
+    {
+        $pidFile = $this->cfg['svrConf']['swoole']['pid_file'];
+        if (!file_exists($pidFile)) {
+            $this->log('It seems that Swoole is not running.', 'ERROR');
+            return;
+        }
+
+        $pid = file_get_contents($pidFile);
+        if (!$pid || !kill($pid, 0)) {
+            $this->log("PID[{$pid}] does not exist, or permission denied.", 'ERROR');
+            return;
+        }
+
+        if (kill($pid, SIGUSR1)) {
+            $now = date('Y-m-d H:i:s');
+            $this->log("PID[{$pid}] is reloaded at {$now}.");
+            return;
+        } else {
+            $this->log("PID[{$pid}] is reloaded failed.", 'ERROR');
+            return;
+        }
+    }
+}
+
+function kill($pid, $sig)
+{
+    try {
+        return Swoole\Process::kill($pid, $sig);
+    } catch (\Exception $e) {
+        return false;
+    }
+}
+
+function outputLog($msg, $type = 'INFO')
+{
+    echo sprintf('[%s] [%s] Swoole: %s', date('Y-m-d H:i:s'), $type, $msg), PHP_EOL;
+}
+
+function runCommand($cmd, $input = null)
+{
+    $fp = popen($cmd, 'w');
+    if ($fp === false) {
+        return false;
+    }
+    if ($input !== null) {
+        fwrite($fp, $input);
+    }
+    pclose($fp);
+    return true;
+}
