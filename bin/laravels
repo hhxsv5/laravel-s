@@ -3,8 +3,7 @@
 $basePath = realpath(__DIR__ . '/../');
 include $basePath . '/vendor/autoload.php';
 
-$cfg = json_decode(file_get_contents($basePath . '/config/laravels.json'), true);
-$lvs = new GoLaravelS($cfg);
+$lvs = new GoLaravelS($basePath);
 
 $action = isset($argv[1]) ? $argv[1] : null;
 switch ($action) {
@@ -28,65 +27,88 @@ switch ($action) {
 
 class GoLaravelS
 {
-    protected $cfg;
+    protected $basePath;
+    protected $config = [];
 
-    public function __construct(array $cfg)
+    public function __construct($basePath)
     {
-        $this->cfg = $cfg;
+        $this->basePath = $basePath;
+
+        // Initialize configuration config/laravels.json
+        $this->runArtisanCommand('laravels config');
+    }
+
+    public function artisanCmd($subCmd = null)
+    {
+        $phpCmd = sprintf('%s -c "%s"', PHP_BINARY, php_ini_loaded_file());
+        $artisanCmd = sprintf('%s %s/artisan', $phpCmd, $this->basePath);
+        if ($subCmd !== null) {
+            $artisanCmd .= ' ' . $subCmd;
+        }
+        return $artisanCmd;
+    }
+
+    public function runArtisanCommand($cmd)
+    {
+        $cmd = $this->artisanCmd($cmd);
+        self::runCommand($cmd);
+    }
+
+    public function getConfig()
+    {
+        if (empty($this->config)) {
+            $json = file_get_contents($this->basePath . '/config/laravels.json');
+            $this->config = (array)json_decode($json, true);
+        }
+        return $this->config;
     }
 
     public function start()
     {
-        $phpCmd = sprintf('%s -c "%s"', PHP_BINARY, php_ini_loaded_file());
-        $artisanCmd = sprintf('%s %s/artisan', $phpCmd, $this->cfg['laravelConf']['root_path']);
-
-        // Make config
-        $makeConfigCmd = sprintf('%s laravels config', $artisanCmd);
-        runCommand($makeConfigCmd);
-
         // Show info
-        $infoCmd = sprintf('%s laravels info', $artisanCmd);
-        runCommand($infoCmd);
+        $this->runArtisanCommand('laravels info');
 
         // Here we go...
-        (new \Hhxsv5\LaravelS\LaravelS($this->cfg['svrConf'], $this->cfg['laravelConf']))->run();
+        $config = $this->getConfig();
+        (new Hhxsv5\LaravelS\LaravelS($config['svrConf'], $config['laravelConf']))->run();
     }
 
     public function stop()
     {
-        $pidFile = $this->cfg['svrConf']['swoole']['pid_file'];
+        $config = $this->getConfig();
+        $pidFile = $config['svrConf']['swoole']['pid_file'];
         if (!file_exists($pidFile)) {
-            $this->log('It seems that Swoole is not running.', 'WARN');
+            self::outputLog('It seems that Swoole is not running.', 'WARN');
             return;
         }
 
         $pid = file_get_contents($pidFile);
-        if (kill($pid, 0)) {
-            if (kill($pid, SIGTERM)) {
+        if (self::kill($pid, 0)) {
+            if (self::kill($pid, SIGTERM)) {
                 // Make sure that master process quit
                 $time = 1;
                 $waitTime = 60;
-                while (kill($pid, 0)) {
+                while (self::kill($pid, 0)) {
                     if ($time > $waitTime) {
-                        $this->log(
+                        self::outputLog(
                             "PID[{$pid}] cannot be stopped gracefully in {$waitTime}s, will be stopped forced right now.",
                             'WARN'
                         );
                         return;
                     }
-                    $this->log("Waiting PID[{$pid}] to stop. [{$time}]");
+                    self::outputLog("Waiting PID[{$pid}] to stop. [{$time}]");
                     sleep(1);
                     $time++;
                 }
                 if (file_exists($pidFile)) {
                     unlink($pidFile);
                 }
-                $this->log("PID[{$pid}] is stopped.");
+                self::outputLog("PID[{$pid}] is stopped.");
             } else {
-                $this->log("PID[{$pid}] is stopped failed.", 'ERROR');
+                self::outputLog("PID[{$pid}] is stopped failed.", 'ERROR');
             }
         } else {
-            $this->log("PID[{$pid}] does not exist, or permission denied.", 'ERROR');
+            self::outputLog("PID[{$pid}] does not exist, or permission denied.", 'ERROR');
             if (file_exists($pidFile)) {
                 unlink($pidFile);
             }
@@ -101,52 +123,53 @@ class GoLaravelS
 
     public function reload()
     {
-        $pidFile = $this->cfg['svrConf']['swoole']['pid_file'];
+        $config = $this->getConfig();
+        $pidFile = $config['svrConf']['swoole']['pid_file'];
         if (!file_exists($pidFile)) {
-            $this->log('It seems that Swoole is not running.', 'ERROR');
+            self::outputLog('It seems that Swoole is not running.', 'ERROR');
             return;
         }
 
         $pid = file_get_contents($pidFile);
-        if (!$pid || !kill($pid, 0)) {
-            $this->log("PID[{$pid}] does not exist, or permission denied.", 'ERROR');
+        if (!$pid || !self::kill($pid, 0)) {
+            self::outputLog("PID[{$pid}] does not exist, or permission denied.", 'ERROR');
             return;
         }
 
-        if (kill($pid, SIGUSR1)) {
+        if (self::kill($pid, SIGUSR1)) {
             $now = date('Y-m-d H:i:s');
-            $this->log("PID[{$pid}] is reloaded at {$now}.");
+            self::outputLog("PID[{$pid}] is reloaded at {$now}.");
             return;
         } else {
-            $this->log("PID[{$pid}] is reloaded failed.", 'ERROR');
+            self::outputLog("PID[{$pid}] is reloaded failed.", 'ERROR');
             return;
         }
     }
-}
 
-function kill($pid, $sig)
-{
-    try {
-        return Swoole\Process::kill($pid, $sig);
-    } catch (\Exception $e) {
-        return false;
+    public static function runCommand($cmd, $input = null)
+    {
+        $fp = popen($cmd, 'w');
+        if ($fp === false) {
+            return false;
+        }
+        if ($input !== null) {
+            fwrite($fp, $input);
+        }
+        pclose($fp);
+        return true;
     }
-}
 
-function outputLog($msg, $type = 'INFO')
-{
-    echo sprintf('[%s] [%s] Swoole: %s', date('Y-m-d H:i:s'), $type, $msg), PHP_EOL;
-}
+    public static function kill($pid, $sig)
+    {
+        try {
+            return Swoole\Process::kill($pid, $sig);
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
 
-function runCommand($cmd, $input = null)
-{
-    $fp = popen($cmd, 'w');
-    if ($fp === false) {
-        return false;
+    public static function outputLog($msg, $type = 'INFO')
+    {
+        echo sprintf('[%s] [%s] Swoole: %s', date('Y-m-d H:i:s'), $type, $msg), PHP_EOL;
     }
-    if ($input !== null) {
-        fwrite($fp, $input);
-    }
-    pclose($fp);
-    return true;
 }

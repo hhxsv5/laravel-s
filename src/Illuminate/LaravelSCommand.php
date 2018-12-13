@@ -61,7 +61,7 @@ class LaravelSCommand extends Command
                                            
 EOS;
         parent::info($logo);
-        $this->info('Speed up your Laravel/Lumen');
+        parent::info('Speed up your Laravel/Lumen');
         $this->table(['Component', 'Version'], [
             [
                 'Component' => 'PHP',

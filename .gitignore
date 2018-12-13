@@ -1,3 +1,4 @@
 vendor
 .idea
 *.sw[a-z]
+config/laravels.json
