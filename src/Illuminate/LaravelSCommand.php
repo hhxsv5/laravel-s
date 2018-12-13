@@ -7,7 +7,11 @@ use Illuminate\Filesystem\Filesystem;
 
 class LaravelSCommand extends Command
 {
-    protected $signature = 'laravels {action? : publish|config|info} {--d|daemonize : Whether run as a daemon for "config"} {--i|ignore : Whether ignore checking process pid for "config"}';
+    protected $signature = 'laravels {action? : publish|config|info|output}
+    {--d|daemonize : Whether run as a daemon for "start & restart"}
+    {--i|ignore : Whether ignore checking process pid for "start & restart"}
+    {--l|level= : Set the level of console log for "output"}
+    {--c|content= : Set the content of console log for "output", need base64 encoded}';
 
     protected $description = 'LaravelS console tool';
 
@@ -24,10 +28,13 @@ class LaravelSCommand extends Command
                 $this->publish();
                 break;
             case 'info':
-                $this->outputInfo();
+                $this->showInfo();
                 break;
             case 'config':
                 $this->makeConfig();
+                break;
+            case 'output':
+                $this->output();
                 break;
             default:
                 $this->info('Usage: php artisan laravels publish|config|info');
@@ -49,7 +56,18 @@ class LaravelSCommand extends Command
         }
     }
 
-    protected function outputInfo()
+    public function output()
+    {
+        $level = strtolower($this->option('level'));
+        if (!in_array($level, ['info', 'warn', 'error'], true)) {
+            $this->error('Bad level for output');
+            return;
+        }
+        $content = base64_decode($this->option('content'));
+        $this->{$level}($content);
+    }
+
+    protected function showInfo()
     {
         static $logo = <<<EOS
  _                               _  _____ 

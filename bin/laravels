@@ -3,12 +3,12 @@
 $basePath = realpath(__DIR__ . '/../');
 include $basePath . '/vendor/autoload.php';
 
-$lvs = new GoLaravelS($basePath);
+$args = array_slice($argv, 2);
+$lvs = new GoLaravelS($basePath, $args);
 
 $action = isset($argv[1]) ? $argv[1] : null;
 switch ($action) {
     case 'start':
-        //--d|daemonize : Whether run as a daemon for start & restart} {--i|ignore : Whether ignore checking process pid for start & restart
         $lvs->start();
         break;
     case 'stop':
@@ -21,21 +21,24 @@ switch ($action) {
         $lvs->reload();
         break;
     default:
-        outputLog('Usage: php ssr.php start|stop|restart|reload');
+        $lvs->log('Usage: bin/laravels start|stop|restart|reload');
         break;
 }
 
 class GoLaravelS
 {
     protected $basePath;
+    protected $arguments;
     protected $config = [];
 
-    public function __construct($basePath)
+    public function __construct($basePath, array $arguments = [])
     {
         $this->basePath = $basePath;
+        $this->arguments = $arguments;
 
         // Initialize configuration config/laravels.json
-        $this->runArtisanCommand('laravels config');
+        $cmd = trim('laravels config ' . implode(' ', $arguments));
+        $this->runArtisanCommand($cmd);
     }
 
     public function artisanCmd($subCmd = null)
@@ -78,7 +81,7 @@ class GoLaravelS
         $config = $this->getConfig();
         $pidFile = $config['svrConf']['swoole']['pid_file'];
         if (!file_exists($pidFile)) {
-            self::outputLog('It seems that Swoole is not running.', 'WARN');
+            $this->log('It seems that LaravelS is not running.', 'WARN');
             return;
         }
 
@@ -90,25 +93,25 @@ class GoLaravelS
                 $waitTime = 60;
                 while (self::kill($pid, 0)) {
                     if ($time > $waitTime) {
-                        self::outputLog(
+                        $this->log(
                             "PID[{$pid}] cannot be stopped gracefully in {$waitTime}s, will be stopped forced right now.",
                             'WARN'
                         );
                         return;
                     }
-                    self::outputLog("Waiting PID[{$pid}] to stop. [{$time}]");
+                    $this->log("Waiting PID[{$pid}] to stop. [{$time}]");
                     sleep(1);
                     $time++;
                 }
                 if (file_exists($pidFile)) {
                     unlink($pidFile);
                 }
-                self::outputLog("PID[{$pid}] is stopped.");
+                $this->log("PID[{$pid}] is stopped.");
             } else {
-                self::outputLog("PID[{$pid}] is stopped failed.", 'ERROR');
+                $this->log("PID[{$pid}] is stopped failed.", 'ERROR');
             }
         } else {
-            self::outputLog("PID[{$pid}] does not exist, or permission denied.", 'ERROR');
+            $this->log("PID[{$pid}] does not exist, or permission denied.", 'ERROR');
             if (file_exists($pidFile)) {
                 unlink($pidFile);
             }
@@ -126,24 +129,30 @@ class GoLaravelS
         $config = $this->getConfig();
         $pidFile = $config['svrConf']['swoole']['pid_file'];
         if (!file_exists($pidFile)) {
-            self::outputLog('It seems that Swoole is not running.', 'ERROR');
+            $this->log('It seems that Swoole is not running.', 'ERROR');
             return;
         }
 
         $pid = file_get_contents($pidFile);
         if (!$pid || !self::kill($pid, 0)) {
-            self::outputLog("PID[{$pid}] does not exist, or permission denied.", 'ERROR');
+            $this->log("PID[{$pid}] does not exist, or permission denied.", 'ERROR');
             return;
         }
 
         if (self::kill($pid, SIGUSR1)) {
             $now = date('Y-m-d H:i:s');
-            self::outputLog("PID[{$pid}] is reloaded at {$now}.");
+            $this->log("PID[{$pid}] is reloaded at {$now}.");
             return;
         } else {
-            self::outputLog("PID[{$pid}] is reloaded failed.", 'ERROR');
+            $this->log("PID[{$pid}] is reloaded failed.", 'ERROR');
             return;
         }
+    }
+
+    public function log($msg, $level = 'info')
+    {
+        $cmd = sprintf('laravels output --level=%s --content=%s', strtolower($level), base64_encode($msg));
+        $this->runArtisanCommand($cmd);
     }
 
     public static function runCommand($cmd, $input = null)
@@ -166,10 +175,5 @@ class GoLaravelS
         } catch (\Exception $e) {
             return false;
         }
-    }
-
-    public static function outputLog($msg, $type = 'INFO')
-    {
-        echo sprintf('[%s] [%s] Swoole: %s', date('Y-m-d H:i:s'), $type, $msg), PHP_EOL;
     }
 }
