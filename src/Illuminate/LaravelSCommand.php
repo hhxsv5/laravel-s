@@ -60,7 +60,7 @@ class LaravelSCommand extends Command
         }
     }
 
-    protected function outputLogo()
+    protected function outputInfo()
     {
         static $logo = <<<EOS
  _                               _  _____ 
@@ -120,7 +120,7 @@ EOS;
 
     protected function start()
     {
-        $this->outputLogo();
+        $this->outputInfo();
 
         $svrConf = config('laravels');
 
@@ -162,7 +162,8 @@ EOS;
 
         // Implements gracefully reload, avoid including laravel's files before worker start
         $cmd = sprintf('%s -c "%s" %s/../GoLaravelS.php', PHP_BINARY, php_ini_loaded_file(), __DIR__);
-        $ret = $this->popen($cmd, json_encode(compact('svrConf', 'laravelConf')));
+        $params = json_encode(compact('svrConf', 'laravelConf'));
+        $ret = $this->popen($cmd, $params);
         if ($ret === false) {
             $this->error('LaravelS: popen ' . $cmd . ' failed');
             return 1;
