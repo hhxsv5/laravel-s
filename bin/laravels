@@ -80,7 +80,6 @@ class GoLaravelS
 
         // Here we go...
         $config = $this->getConfig();
-        var_dump(get_included_files());
         (new Hhxsv5\LaravelS\LaravelS($config['svrConf'], $config['laravelConf']))->run();
     }
 
