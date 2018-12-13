@@ -1,8 +1,15 @@
 #!/usr/bin/env php
 <?php
 $basePath = realpath(__DIR__ . '/../');
-include $basePath . '/vendor/autoload.php';
-
+$vendorPath = $basePath . '/vendor/hhxsv5/laravel-s/src/';
+spl_autoload_register(function ($class) use ($vendorPath) {
+    $file = $vendorPath . substr(str_replace('\\', '/', $class), 16) . '.php';
+    if (is_readable($file)) {
+        include $file;
+        return true;
+    }
+    return false;
+});
 $args = array_slice($argv, 2);
 $lvs = new GoLaravelS($basePath, $args);
 
@@ -73,6 +80,7 @@ class GoLaravelS
 
         // Here we go...
         $config = $this->getConfig();
+        var_dump(get_included_files());
         (new Hhxsv5\LaravelS\LaravelS($config['svrConf'], $config['laravelConf']))->run();
     }
 
