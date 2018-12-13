@@ -10,8 +10,7 @@ spl_autoload_register(function ($class) use ($vendorPath) {
     }
     return false;
 });
-$args = array_slice($argv, 2);
-$lvs = new GoLaravelS($basePath, $args);
+$lvs = new GoLaravelS($basePath, array_slice($argv, 2));
 
 $action = isset($argv[1]) ? $argv[1] : null;
 switch ($action) {
@@ -67,7 +66,7 @@ class GoLaravelS
     public function getConfig()
     {
         if (empty($this->config)) {
-            $json = file_get_contents($this->basePath . '/config/laravels.json');
+            $json = file_get_contents($this->basePath . '/storage/laravels.json');
             $this->config = (array)json_decode($json, true);
         }
         return $this->config;

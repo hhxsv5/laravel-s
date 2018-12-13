@@ -119,7 +119,7 @@ EOS;
         ];
 
         $config = json_encode(compact('svrConf', 'laravelConf'), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        file_put_contents(base_path('config/laravels.json'), $config);
+        file_put_contents(base_path('storage/laravels.json'), $config);
         $this->info('Make configuration successfully');
         return 0;
     }
