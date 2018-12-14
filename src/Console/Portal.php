@@ -142,7 +142,7 @@ class Portal extends Command
         $config = $this->getConfig();
         $pidFile = $config['svrConf']['swoole']['pid_file'];
         if (!file_exists($pidFile)) {
-            $this->outputStyle->warning('It seems that LaravelS is not running.');
+            $this->outputStyle->warning('It seems that Swoole is not running.');
             return 1;
         }
 
@@ -155,24 +155,24 @@ class Portal extends Command
                 $this->outputStyle->note("The max time of waiting to forcibly stop is {$waitTime}s.");
                 while (self::kill($pid, 0)) {
                     if ($time > $waitTime) {
-                        $this->outputStyle->warning("PID[{$pid}] cannot be stopped gracefully in {$waitTime}s, will be stopped forced right now.");
+                        $this->outputStyle->warning("Swoole [PID={$pid}] cannot be stopped gracefully in {$waitTime}s, will be stopped forced right now.");
                         return 1;
                     }
-                    $this->outputStyle->note("Waiting PID[{$pid}] to stop. [{$time}]");
+                    $this->outputStyle->note("Waiting Swoole[PID={$pid}] to stop. [{$time}]");
                     sleep(1);
                     $time++;
                 }
                 if (file_exists($pidFile)) {
                     unlink($pidFile);
                 }
-                $this->outputStyle->note("PID[{$pid}] is stopped.");
+                $this->outputStyle->note("Swoole [PID={$pid}] is stopped.");
                 return 0;
             } else {
-                $this->outputStyle->error("PID[{$pid}] is stopped failed.");
+                $this->outputStyle->error("Swoole [PID={$pid}] is stopped failed.");
                 return 1;
             }
         } else {
-            $this->outputStyle->error("PID[{$pid}] does not exist, or permission denied.");
+            $this->outputStyle->error("Swoole [PID={$pid}] does not exist, or permission denied.");
             return 1;
         }
     }
@@ -197,15 +197,15 @@ class Portal extends Command
 
         $pid = file_get_contents($pidFile);
         if (!$pid || !self::kill($pid, 0)) {
-            $this->outputStyle->error("PID[{$pid}] does not exist, or permission denied.");
+            $this->outputStyle->error("Swoole [PID={$pid}] does not exist, or permission denied.");
             return;
         }
 
         if (self::kill($pid, SIGUSR1)) {
             $now = date('Y-m-d H:i:s');
-            $this->outputStyle->note("PID[{$pid}] is reloaded at {$now}.");
+            $this->outputStyle->note("Swoole [PID={$pid}] is reloaded at {$now}.");
         } else {
-            $this->outputStyle->error("PID[{$pid}] is reloaded failed.");
+            $this->outputStyle->error("Swoole [PID={$pid}] is reloaded failed.");
         }
     }
 
