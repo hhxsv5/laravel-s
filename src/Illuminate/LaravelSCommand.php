@@ -32,7 +32,7 @@ class LaravelSCommand extends Command
                 $this->showInfo();
                 break;
             default:
-                $this->info('Usage: php artisan laravels publish|config|info');
+                $this->info(sprintf('Usage: [%s] ./artisan laravels publish|config|info', PHP_BINARY));
                 break;
         }
     }
@@ -42,7 +42,7 @@ class LaravelSCommand extends Command
         return stripos($this->getApplication()->getVersion(), 'Lumen') !== false;
     }
 
-    protected function loadConfigManually()
+    protected function loadConfig()
     {
         // Load configuration laravel.php manually for Lumen
         $basePath = config('laravels.laravel_base_path') ?: base_path();
@@ -82,7 +82,7 @@ EOS;
 
     protected function prepareConfig()
     {
-        $this->loadConfigManually();
+        $this->loadConfig();
 
         $svrConf = config('laravels');
 
@@ -102,9 +102,9 @@ EOS;
             '_ENV'               => $_ENV,
         ];
 
-        $config = json_encode(compact('svrConf', 'laravelConf'), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $config = ['server' => $svrConf, 'laravel' => $laravelConf];
+        $config = json_encode($config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         file_put_contents(base_path('storage/laravels.json'), $config);
-        $this->info('Prepare configuration successfully');
         return 0;
     }
 

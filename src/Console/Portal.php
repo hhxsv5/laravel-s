@@ -76,12 +76,12 @@ class Portal extends Command
                     $this->showInfo();
                     break;
                 default:
-                    $this->outputStyle->note('Usage: [/usr/local/bin/php] bin/laravels start|stop|restart|reload|info');
+                    $this->outputStyle->note(sprintf('Usage: [%s] ./bin/laravels start|stop|restart|reload|info', PHP_BINARY));
                     break;
             }
         } catch (\Exception $e) {
             $error = sprintf(
-                'onRequest: Uncaught exception "%s"([%d]%s) at %s:%s, %s%s',
+                'Uncaught exception "%s"([%d]%s) at %s:%s, %s%s',
                 get_class($e),
                 $e->getCode(),
                 $e->getMessage(),
@@ -110,27 +110,27 @@ class Portal extends Command
         // Here we go...
         $config = $this->getConfig();
 
-        if (in_array($config['svrConf']['socket_type'], [SWOOLE_SOCK_UNIX_DGRAM, SWOOLE_SOCK_UNIX_STREAM])) {
-            $listenAt = $config['svrConf']['listen_ip'];
+        if (in_array($config['server']['socket_type'], [SWOOLE_SOCK_UNIX_DGRAM, SWOOLE_SOCK_UNIX_STREAM])) {
+            $listenAt = $config['server']['listen_ip'];
         } else {
-            $listenAt = sprintf('%s:%s', $config['svrConf']['listen_ip'], $config['svrConf']['listen_port']);
+            $listenAt = sprintf('%s:%s', $config['server']['listen_ip'], $config['server']['listen_port']);
         }
 
-        if (!$config['svrConf']['ignore_check_pid'] && file_exists($config['svrConf']['swoole']['pid_file'])) {
-            $pid = (int)file_get_contents($config['svrConf']['swoole']['pid_file']);
+        if (!$config['server']['ignore_check_pid'] && file_exists($config['server']['swoole']['pid_file'])) {
+            $pid = (int)file_get_contents($config['server']['swoole']['pid_file']);
             if ($pid > 0 && self::kill($pid, 0)) {
                 $this->outputStyle->warning(sprintf('Swoole[PID=%d] is already running at %s.', $pid, $listenAt));
                 return 1;
             }
         }
 
-        if ($config['svrConf']['swoole']['daemonize']) {
+        if ($config['server']['swoole']['daemonize']) {
             $this->outputStyle->note(sprintf('Swoole is running in daemon mode, and listening at %s, see "ps -ef|grep laravels".', $listenAt));
         } else {
             $this->outputStyle->note(sprintf('Swoole is listening at %s, press Ctrl+C to quit.', $listenAt));
         }
 
-        $lvs = new \Hhxsv5\LaravelS\LaravelS($config['svrConf'], $config['laravelConf']);
+        $lvs = new \Hhxsv5\LaravelS\LaravelS($config['server'], $config['laravel']);
         $lvs->setOutputStyle($this->outputStyle);
         $lvs->run();
 
@@ -140,7 +140,7 @@ class Portal extends Command
     public function stop()
     {
         $config = $this->getConfig();
-        $pidFile = $config['svrConf']['swoole']['pid_file'];
+        $pidFile = $config['server']['swoole']['pid_file'];
         if (!file_exists($pidFile)) {
             $this->outputStyle->warning('It seems that Swoole is not running.');
             return 1;
@@ -151,7 +151,7 @@ class Portal extends Command
             if (self::kill($pid, SIGTERM)) {
                 // Make sure that master process quit
                 $time = 1;
-                $waitTime = isset($config['svrConf']['swoole']['max_wait_time']) ? $config['svrConf']['swoole']['max_wait_time'] : 60;
+                $waitTime = isset($config['server']['swoole']['max_wait_time']) ? $config['server']['swoole']['max_wait_time'] : 60;
                 $this->outputStyle->note("The max time of waiting to forcibly stop is {$waitTime}s.");
                 while (self::kill($pid, 0)) {
                     if ($time > $waitTime) {
@@ -189,7 +189,7 @@ class Portal extends Command
     public function reload()
     {
         $config = $this->getConfig();
-        $pidFile = $config['svrConf']['swoole']['pid_file'];
+        $pidFile = $config['server']['swoole']['pid_file'];
         if (!file_exists($pidFile)) {
             $this->outputStyle->error('It seems that Swoole is not running.');
             return;
