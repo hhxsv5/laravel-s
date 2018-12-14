@@ -112,7 +112,7 @@ composer require "hhxsv5/laravel-s:~3.0" -vvv
     ```
 
 3.发布配置和二进制文件。
-> *每次升级LaravelS后，建议重新发布一次配置文件*
+> *每次升级LaravelS后，需重新发布*
 ```bash
 php artisan laravels publish
 # 配置文件：config/laravels.php
