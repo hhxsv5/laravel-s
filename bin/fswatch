@@ -5,7 +5,7 @@ if [ ! -n "${WORK_DIR}" ] ;then
 fi
 
 echo "Restarting LaravelS..."
-php artisan laravels restart -d -i
+./bin/laravels restart -d -i
 
 echo "Starting fswatch..."
 LOCKING=0
@@ -17,7 +17,7 @@ do
     fi
     echo "File ${file} has been modified."
     LOCKING=1
-    php artisan laravels reload
+    ./bin/laravels reload
     LOCKING=0
 done
 exit 0

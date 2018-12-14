@@ -152,7 +152,7 @@ EOS;
         $pidFile = $config['server']['swoole']['pid_file'];
         if (!file_exists($pidFile)) {
             $this->warning('It seems that Swoole is not running.');
-            return 1;
+            return 0;
         }
 
         $pid = file_get_contents($pidFile);
@@ -181,8 +181,8 @@ EOS;
                 return 1;
             }
         } else {
-            $this->error("Swoole [PID={$pid}] does not exist, or permission denied.");
-            return 1;
+            $this->warning("Swoole [PID={$pid}] does not exist, or permission denied.");
+            return 0;
         }
     }
 
