@@ -44,7 +44,13 @@ trait CustomProcessTrait
                     ++$i;
                     sleep(1);
                 } while ($i < $maxTry);
-                $this->log(sprintf('The custom process "%s" reaches the maximum number of retries %d times, and will be restarted by the manager process.', $name, $maxTry), 'WARN');
+                $this->warning(
+                    sprintf(
+                        'The custom process "%s" reaches the maximum number of retries %d times, and will be restarted by the manager process.',
+                        $name,
+                        $maxTry
+                    )
+                );
             };
             $customProcess = new \swoole_process(
                 $processHandler,

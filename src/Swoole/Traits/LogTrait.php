@@ -2,6 +2,8 @@
 
 namespace Hhxsv5\LaravelS\Swoole\Traits;
 
+use Hhxsv5\LaravelS\LaravelS;
+
 trait LogTrait
 {
     public function logException(\Exception $e)
@@ -23,8 +25,41 @@ trait LogTrait
 
     public function log($msg, $type = 'INFO')
     {
-        echo sprintf('[%s] [%s] LaravelS: %s', date('Y-m-d H:i:s'), $type, $msg), PHP_EOL;
+        $outputStyle = LaravelS::getOutputStyle();
+        if ($outputStyle) {
+            $msg = sprintf('[%s] %s', date('Y-m-d H:i:s'), $msg);
+            switch (strtolower($type)) {
+                case 'WARN':
+                    $outputStyle->warning($msg);
+                    break;
+                case 'ERROR':
+                    $outputStyle->error($msg);
+                    break;
+                default:
+                    $outputStyle->note($msg);
+                    break;
+            }
+        } else {
+            $msg = sprintf('[%s] [%s] LaravelS: %s', date('Y-m-d H:i:s'), $type, $msg . PHP_EOL);
+            echo $msg;
+        }
     }
+
+    public function info($msg)
+    {
+        $this->log($msg, 'INFO');
+    }
+
+    public function warning($msg)
+    {
+        $this->log($msg, 'WARN');
+    }
+
+    public function error($msg)
+    {
+        $this->log($msg, 'ERROR');
+    }
+
 
     public function callWithCatchException(callable $callback)
     {

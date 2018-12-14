@@ -2,17 +2,20 @@
 
 namespace Hhxsv5\LaravelS\Console;
 
+use Hhxsv5\LaravelS\LaravelS;
+use Hhxsv5\LaravelS\Swoole\Traits\LogTrait;
 use Swoole\Process;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class Portal extends Command
 {
+    use LogTrait;
+
     protected $basePath;
 
     /**
@@ -29,11 +32,6 @@ class Portal extends Command
      * @var OutputInterface $output
      */
     protected $output;
-
-    /**
-     * @var OutputStyle $output
-     */
-    protected $outputStyle;
 
     public function __construct($basePath)
     {
@@ -55,7 +53,7 @@ class Portal extends Command
     {
         $this->input = $input;
         $this->output = $output;
-        $this->outputStyle = new SymfonyStyle($this->input, $this->output);
+        LaravelS::setOutputStyle(new SymfonyStyle($this->input, $this->output));
 
         try {
             $action = $input->getArgument('action');
@@ -76,7 +74,7 @@ class Portal extends Command
                     $this->showInfo();
                     break;
                 default:
-                    $this->outputStyle->note(sprintf('Usage: [%s] ./bin/laravels start|stop|restart|reload|info', PHP_BINARY));
+                    $this->info(sprintf('Usage: [%s] ./bin/laravels start|stop|restart|reload|info', PHP_BINARY));
                     break;
             }
         } catch (\Exception $e) {
@@ -90,7 +88,7 @@ class Portal extends Command
                 PHP_EOL,
                 $e->getTraceAsString()
             );
-            $this->outputStyle->error($error);
+            $this->error($error);
         }
     }
 
@@ -119,20 +117,18 @@ class Portal extends Command
         if (!$config['server']['ignore_check_pid'] && file_exists($config['server']['swoole']['pid_file'])) {
             $pid = (int)file_get_contents($config['server']['swoole']['pid_file']);
             if ($pid > 0 && self::kill($pid, 0)) {
-                $this->outputStyle->warning(sprintf('Swoole[PID=%d] is already running at %s.', $pid, $listenAt));
+                $this->warning(sprintf('Swoole[PID=%d] is already running at %s.', $pid, $listenAt));
                 return 1;
             }
         }
 
         if ($config['server']['swoole']['daemonize']) {
-            $this->outputStyle->note(sprintf('Swoole is running in daemon mode, and listening at %s, see "ps -ef|grep laravels".', $listenAt));
+            $this->info(sprintf('Swoole is running in daemon mode, and listening at %s, see "ps -ef|grep laravels".', $listenAt));
         } else {
-            $this->outputStyle->note(sprintf('Swoole is listening at %s, press Ctrl+C to quit.', $listenAt));
+            $this->info(sprintf('Swoole is listening at %s, press Ctrl+C to quit.', $listenAt));
         }
 
-        $lvs = new \Hhxsv5\LaravelS\LaravelS($config['server'], $config['laravel']);
-        $lvs->setOutputStyle($this->outputStyle);
-        $lvs->run();
+        (new LaravelS($config['server'], $config['laravel']))->run();
 
         return 0;
     }
@@ -142,7 +138,7 @@ class Portal extends Command
         $config = $this->getConfig();
         $pidFile = $config['server']['swoole']['pid_file'];
         if (!file_exists($pidFile)) {
-            $this->outputStyle->warning('It seems that Swoole is not running.');
+            $this->warning('It seems that Swoole is not running.');
             return 1;
         }
 
@@ -152,27 +148,27 @@ class Portal extends Command
                 // Make sure that master process quit
                 $time = 1;
                 $waitTime = isset($config['server']['swoole']['max_wait_time']) ? $config['server']['swoole']['max_wait_time'] : 60;
-                $this->outputStyle->note("The max time of waiting to forcibly stop is {$waitTime}s.");
+                $this->info("The max time of waiting to forcibly stop is {$waitTime}s.");
                 while (self::kill($pid, 0)) {
                     if ($time > $waitTime) {
-                        $this->outputStyle->warning("Swoole [PID={$pid}] cannot be stopped gracefully in {$waitTime}s, will be stopped forced right now.");
+                        $this->warning("Swoole [PID={$pid}] cannot be stopped gracefully in {$waitTime}s, will be stopped forced right now.");
                         return 1;
                     }
-                    $this->outputStyle->note("Waiting Swoole[PID={$pid}] to stop. [{$time}]");
+                    $this->info("Waiting Swoole[PID={$pid}] to stop. [{$time}]");
                     sleep(1);
                     $time++;
                 }
                 if (file_exists($pidFile)) {
                     unlink($pidFile);
                 }
-                $this->outputStyle->note("Swoole [PID={$pid}] is stopped.");
+                $this->info("Swoole [PID={$pid}] is stopped.");
                 return 0;
             } else {
-                $this->outputStyle->error("Swoole [PID={$pid}] is stopped failed.");
+                $this->error("Swoole [PID={$pid}] is stopped failed.");
                 return 1;
             }
         } else {
-            $this->outputStyle->error("Swoole [PID={$pid}] does not exist, or permission denied.");
+            $this->error("Swoole [PID={$pid}] does not exist, or permission denied.");
             return 1;
         }
     }
@@ -191,21 +187,21 @@ class Portal extends Command
         $config = $this->getConfig();
         $pidFile = $config['server']['swoole']['pid_file'];
         if (!file_exists($pidFile)) {
-            $this->outputStyle->error('It seems that Swoole is not running.');
+            $this->error('It seems that Swoole is not running.');
             return;
         }
 
         $pid = file_get_contents($pidFile);
         if (!$pid || !self::kill($pid, 0)) {
-            $this->outputStyle->error("Swoole [PID={$pid}] does not exist, or permission denied.");
+            $this->error("Swoole [PID={$pid}] does not exist, or permission denied.");
             return;
         }
 
         if (self::kill($pid, SIGUSR1)) {
             $now = date('Y-m-d H:i:s');
-            $this->outputStyle->note("Swoole [PID={$pid}] is reloaded at {$now}.");
+            $this->info("Swoole [PID={$pid}] is reloaded at {$now}.");
         } else {
-            $this->outputStyle->error("Swoole [PID={$pid}] is reloaded failed.");
+            $this->error("Swoole [PID={$pid}] is reloaded failed.");
         }
     }
 

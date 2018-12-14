@@ -16,13 +16,13 @@ trait InotifyTrait
         }
 
         if (!extension_loaded('inotify')) {
-            $this->log('Require extension inotify', 'WARN');
+            $this->warning('Require extension inotify');
             return;
         }
 
         $fileTypes = isset($config['file_types']) ? (array)$config['file_types'] : [];
         if (empty($fileTypes)) {
-            $this->log('No file types to watch by inotify', 'WARN');
+            $this->warning('No file types to watch by inotify');
             return;
         }
 
@@ -48,7 +48,7 @@ trait InotifyTrait
                                 $action = 'move';
                                 break;
                         }
-                        $this->log(sprintf('reloaded by inotify, reason: %s %s', $action, $event['name']));
+                        $this->info(sprintf('reloaded by inotify, reason: %s %s', $action, $event['name']));
                     }
                 });
             $inotify->addFileTypes($config['file_types']);
@@ -58,7 +58,7 @@ trait InotifyTrait
             $inotify->addExcludedDirs($config['excluded_dirs']);
             $inotify->watch();
             if ($log) {
-                $this->log(sprintf('[Inotify] watched files: %d; file types: %s; excluded directories: %s',
+                $this->info(sprintf('[Inotify] watched files: %d; file types: %s; excluded directories: %s',
                         $inotify->getWatchedFileCount(),
                         implode(',', $config['file_types']),
                         implode(',', $config['excluded_dirs'])

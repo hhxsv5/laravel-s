@@ -121,7 +121,7 @@ class Server
             if (!($port instanceof \swoole_server_port)) {
                 $errno = method_exists($this->swoole, 'getLastError') ? $this->swoole->getLastError() : 'unknown';
                 $errstr = sprintf('listen %s:%s failed: errno=%s', $socket['host'], $socket['port'], $errno);
-                $this->log($errstr, 'ERROR');
+                $this->error($errstr);
                 continue;
             }
 
@@ -261,7 +261,7 @@ class Server
 
     public function onWorkerError(\swoole_http_server $server, $workerId, $workerPId, $exitCode, $signal)
     {
-        $this->log(sprintf('worker[%d] error: exitCode=%s, signal=%s', $workerId, $exitCode, $signal), 'ERROR');
+        $this->error(sprintf('worker[%d] error: exitCode=%s, signal=%s', $workerId, $exitCode, $signal));
     }
 
     public function onPipeMessage(\swoole_http_server $server, $srcWorkerId, $message)

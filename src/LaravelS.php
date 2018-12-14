@@ -32,6 +32,9 @@ class LaravelS extends Server
     use InotifyTrait, LaravelTrait, LogTrait, ProcessTitleTrait, TimerTrait, CustomProcessTrait {
         LogTrait::log insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
         LogTrait::logException insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
+        LogTrait::info insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
+        LogTrait::warning insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
+        LogTrait::error insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
         LogTrait::callWithCatchException insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
         ProcessTitleTrait::setProcessTitle insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
         LaravelTrait::initLaravel insteadof TimerTrait, CustomProcessTrait;
@@ -43,11 +46,6 @@ class LaravelS extends Server
      * @var Laravel $laravel
      */
     protected $laravel;
-
-    /**
-     * @var OutputStyle $outputStyle
-     */
-    protected $outputStyle;
 
     public function __construct(array $svrConf, array $laravelConf)
     {
@@ -67,11 +65,6 @@ class LaravelS extends Server
 
         $processes = isset($this->conf['processes']) ? $this->conf['processes'] : [];
         $this->swoole->customProcesses = $this->addCustomProcesses($this->swoole, $svrConf['process_prefix'], $processes, $this->laravelConf);
-    }
-
-    public function setOutputStyle(OutputStyle $outputStyle)
-    {
-        $this->outputStyle = $outputStyle;
     }
 
     protected function bindWebSocketEvent()
@@ -139,8 +132,17 @@ class LaravelS extends Server
      */
     protected function handleException($e, \swoole_http_response $response)
     {
-        $error = sprintf('onRequest: Uncaught exception "%s"([%d]%s) at %s:%s, %s%s', get_class($e), $e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine(), PHP_EOL, $e->getTraceAsString());
-        $this->log($error, 'ERROR');
+        $error = sprintf(
+            'onRequest: Uncaught exception "%s"([%d]%s) at %s:%s, %s%s',
+            get_class($e),
+            $e->getCode(),
+            $e->getMessage(),
+            $e->getFile(),
+            $e->getLine(),
+            PHP_EOL,
+            $e->getTraceAsString()
+        );
+        $this->error($error);
         try {
             $response->status(500);
             $response->end('Oops! An unexpected error occurred: ' . $e->getMessage());
@@ -176,5 +178,20 @@ class LaravelS extends Server
             (new DynamicResponse($swooleResponse, $laravelResponse))->send($this->conf['enable_gzip']);
         }
         return true;
+    }
+
+    /**
+     * @var OutputStyle $outputStyle
+     */
+    protected static $outputStyle;
+
+    public static function setOutputStyle(OutputStyle $outputStyle)
+    {
+        static::$outputStyle = $outputStyle;
+    }
+
+    public static function getOutputStyle()
+    {
+        return static::$outputStyle;
     }
 }
