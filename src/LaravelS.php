@@ -15,6 +15,7 @@ use Hhxsv5\LaravelS\Swoole\Traits\LogTrait;
 use Hhxsv5\LaravelS\Swoole\Traits\ProcessTitleTrait;
 use Hhxsv5\LaravelS\Swoole\Traits\TimerTrait;
 use Illuminate\Http\Request as IlluminateRequest;
+use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
@@ -43,6 +44,11 @@ class LaravelS extends Server
      */
     protected $laravel;
 
+    /**
+     * @var OutputStyle $outputStyle
+     */
+    protected $outputStyle;
+
     public function __construct(array $svrConf, array $laravelConf)
     {
         parent::__construct($svrConf);
@@ -61,6 +67,11 @@ class LaravelS extends Server
 
         $processes = isset($this->conf['processes']) ? $this->conf['processes'] : [];
         $this->swoole->customProcesses = $this->addCustomProcesses($this->swoole, $svrConf['process_prefix'], $processes, $this->laravelConf);
+    }
+
+    public function setOutputStyle(OutputStyle $outputStyle)
+    {
+        $this->outputStyle = $outputStyle;
     }
 
     protected function bindWebSocketEvent()

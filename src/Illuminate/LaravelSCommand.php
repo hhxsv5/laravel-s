@@ -7,11 +7,9 @@ use Illuminate\Filesystem\Filesystem;
 
 class LaravelSCommand extends Command
 {
-    protected $signature = 'laravels {action? : publish|config|info|output}
+    protected $signature = 'laravels {action? : publish|config|info}
     {--d|daemonize : Whether run as a daemon for "start & restart"}
-    {--i|ignore : Whether ignore checking process pid for "start & restart"}
-    {--l|level= : Set the level of console log for "output"}
-    {--c|content= : Set the content of console log for "output", need base64 encoded}';
+    {--i|ignore : Whether ignore checking process pid for "start & restart"}';
 
     protected $description = 'LaravelS console tool';
 
@@ -27,14 +25,11 @@ class LaravelSCommand extends Command
             case 'publish':
                 $this->publish();
                 break;
+            case 'config':
+                $this->prepareConfig();
+                break;
             case 'info':
                 $this->showInfo();
-                break;
-            case 'config':
-                $this->makeConfig();
-                break;
-            case 'output':
-                $this->output();
                 break;
             default:
                 $this->info('Usage: php artisan laravels publish|config|info');
@@ -56,17 +51,6 @@ class LaravelSCommand extends Command
         }
     }
 
-    public function output()
-    {
-        $level = strtolower($this->option('level'));
-        if (!in_array($level, ['info', 'warn', 'error'], true)) {
-            $this->error('Bad level for output');
-            return;
-        }
-        $content = base64_decode($this->option('content'));
-        $this->{$level}($content);
-    }
-
     protected function showInfo()
     {
         static $logo = <<<EOS
@@ -78,8 +62,8 @@ class LaravelSCommand extends Command
 |______\__,_|_|  \__,_| \_/ \___|_|_____/ 
                                            
 EOS;
-        parent::info($logo);
-        parent::info('Speed up your Laravel/Lumen');
+        $this->info($logo);
+        $this->comment('Speed up your Laravel/Lumen');
         $this->table(['Component', 'Version'], [
             [
                 'Component' => 'PHP',
@@ -96,7 +80,7 @@ EOS;
         ]);
     }
 
-    protected function makeConfig()
+    protected function prepareConfig()
     {
         $this->loadConfigManually();
 
@@ -120,7 +104,7 @@ EOS;
 
         $config = json_encode(compact('svrConf', 'laravelConf'), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         file_put_contents(base_path('storage/laravels.json'), $config);
-        $this->info('Make configuration successfully');
+        $this->info('Prepare configuration successfully');
         return 0;
     }
 
@@ -183,39 +167,19 @@ EOS;
             }
         }
 
-        /**
-         * @var Filesystem $files
-         */
-        $files = app(Filesystem::class);
+        /** @var Filesystem $file */
+        $file = app(Filesystem::class);
         foreach ($todoList as $todo) {
             $toDir = dirname($todo['to']);
-            if (!$files->isDirectory($toDir)) {
-                $files->makeDirectory($toDir, 0755, true);
+            if (!$file->isDirectory($toDir)) {
+                $file->makeDirectory($toDir, 0755, true);
             }
-            $files->copy($todo['from'], $todo['to']);
+            $file->copy($todo['from'], $todo['to']);
             chmod($todo['to'], $todo['mode']);
             $from = str_replace($basePath, '', realpath($todo['from']));
             $to = str_replace($basePath, '', realpath($todo['to']));
             $this->line('<info>Copied File</info> <comment>[' . $from . ']</comment> <info>To</info> <comment>[' . $to . ']</comment>');
         }
         return 0;
-    }
-
-    public function info($string)
-    {
-        $string = 'LaravelS: ' . $string;
-        parent::info($string);
-    }
-
-    public function warn($string)
-    {
-        $string = 'LaravelS: ' . $string;
-        parent::warn($string);
-    }
-
-    public function error($string)
-    {
-        $string = 'LaravelS: ' . $string;
-        parent::error($string);
     }
 }
