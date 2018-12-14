@@ -3,6 +3,7 @@
 namespace Hhxsv5\LaravelS\Swoole\Traits;
 
 use Hhxsv5\LaravelS\LaravelS;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 trait LogTrait
 {
@@ -26,22 +27,25 @@ trait LogTrait
     public function log($msg, $type = 'INFO')
     {
         $outputStyle = LaravelS::getOutputStyle();
+        $msg = sprintf('[%s] [%s] %s', date('Y-m-d H:i:s'), $type, $msg);
         if ($outputStyle) {
-            $msg = sprintf('[%s] %s', date('Y-m-d H:i:s'), $msg);
-            switch (strtolower($type)) {
+            switch (strtoupper($type)) {
                 case 'WARN':
-                    $outputStyle->warning($msg);
+                    if (!$outputStyle->getFormatter()->hasStyle('warning')) {
+                        $style = new OutputFormatterStyle('yellow');
+                        $outputStyle->getFormatter()->setStyle('warning', $style);
+                    }
+                    $outputStyle->writeln("<warning>$msg</warning>");
                     break;
                 case 'ERROR':
-                    $outputStyle->error($msg);
+                    $outputStyle->writeln("<error>$msg</error>");
                     break;
                 default:
-                    $outputStyle->note($msg);
+                    $outputStyle->writeln("<info>$msg</info>");
                     break;
             }
         } else {
-            $msg = sprintf('[%s] [%s] LaravelS: %s', date('Y-m-d H:i:s'), $type, $msg . PHP_EOL);
-            echo $msg;
+            echo $msg, PHP_EOL;
         }
     }
 
