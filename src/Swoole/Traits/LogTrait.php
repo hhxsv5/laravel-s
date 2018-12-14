@@ -40,8 +40,11 @@ trait LogTrait
                 case 'ERROR':
                     $outputStyle->writeln("<error>$msg</error>");
                     break;
-                default:
+                case 'INFO':
                     $outputStyle->writeln("<info>$msg</info>");
+                    break;
+                default:
+                    $outputStyle->writeln($msg);
                     break;
             }
         } else {

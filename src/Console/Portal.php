@@ -74,7 +74,20 @@ class Portal extends Command
                     $this->showInfo();
                     break;
                 default:
-                    $this->info(sprintf('Usage: [%s] ./bin/laravels start|stop|restart|reload|info', PHP_BINARY));
+                    $help = <<<EOS
+
+Usage: 
+  [%s] ./bin/laravels [options] <action>
+
+Arguments:
+  action                start|stop|restart|reload|info
+
+Options:
+  -d, --daemonize       Whether run as a daemon for "start & restart"
+  -i, --ignore          Whether ignore checking process pid for "start & restart"
+EOS;
+
+                    $this->info(sprintf($help, PHP_BINARY));
                     break;
             }
         } catch (\Exception $e) {
