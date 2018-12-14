@@ -116,7 +116,7 @@ composer require "hhxsv5/laravel-s:~3.0" -vvv
 ```bash
 php artisan laravels publish
 # 配置文件：config/laravels.php
-# 二进制文件：bin/laravels  bin/fswatch
+# 二进制文件：bin/laravels bin/fswatch
 ```
 
 `使用Lumen时的特别说明`: 你不需要手动加载配置`laravels.php`，LaravelS底层已自动加载。
@@ -128,7 +128,7 @@ $app->configure('laravels');
 4.修改配置`config/laravels.php`：监听的IP、端口等，请参考[配置项](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
 ## 运行
-> `./bin/laravels {start|stop|restart|reload|info}`
+> `php bin/laravels {start|stop|restart|reload|info}`
 
 `在运行之前，请先仔细阅读：`[注意事项](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)。
 
@@ -145,7 +145,7 @@ $app->configure('laravels');
 
 ```
 [program:laravel-s-test]
-command=/user/local/bin/php /opt/www/laravel-s-test/artisan laravels start -i
+command=/user/local/bin/php /opt/www/laravel-s-test/bin/laravels start -i
 numprocs=1
 autostart=true
 autorestart=true
@@ -640,9 +640,9 @@ class TestCronJob extends CronJob
 
     ```bash
     # 监听当前目录
-    ./vendor/bin/fswatch
+    ./bin/fswatch
     # 监听app目录
-    ./vendor/bin/fswatch ./app
+    ./bin/fswatch ./app
     ```
 
 ## 在你的项目中使用`swoole_server`实例

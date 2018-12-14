@@ -110,7 +110,7 @@ composer require "hhxsv5/laravel-s:~3.0" -vvv
 ```bash
 php artisan laravels publish
 # Configuration: config/laravels.php
-# Binary: bin/laravels  bin/fswatch
+# Binary: bin/laravels bin/fswatch
 ```
 
 `Special for Lumen`: you `DO NOT` need to load this configuration manually in `bootstrap/app.php` file, LaravelS will load it automatically.
@@ -122,7 +122,7 @@ $app->configure('laravels');
 4.Change `config/laravels.php`: listen_ip, listen_port, refer [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
 ## Run
-> `./bin/laravels {start|stop|restart|reload|info}`
+> `php bin/laravels {start|stop|restart|reload|info}`
 
 `Please read the notices carefully before running`, [Important notices](https://github.com/hhxsv5/laravel-s#important-notices).
 
@@ -139,7 +139,7 @@ $app->configure('laravels');
 
 ```
 [program:laravel-s-test]
-command=/user/local/bin/php /opt/www/laravel-s-test/artisan laravels start -i
+command=/user/local/bin/php /opt/www/laravel-s-test/bin/laravels start -i
 numprocs=1
 autostart=true
 autorestart=true
@@ -625,9 +625,9 @@ class TestCronJob extends CronJob
 
     ```bash
     # Watch current directory
-    ./vendor/bin/fswatch
+    ./bin/fswatch
     # Watch app directory
-    ./vendor/bin/fswatch ./app
+    ./bin/fswatch ./app
     ```
 
 ## Get the instance of `swoole_server` in your project
