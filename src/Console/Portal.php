@@ -109,9 +109,29 @@ class Portal extends Command
 
         // Here we go...
         $config = $this->getConfig();
+
+        if (in_array($config['svrConf']['socket_type'], [SWOOLE_SOCK_UNIX_DGRAM, SWOOLE_SOCK_UNIX_STREAM])) {
+            $listenAt = $config['svrConf']['listen_ip'];
+        } else {
+            $listenAt = sprintf('%s:%s', $config['svrConf']['listen_ip'], $config['svrConf']['listen_port']);
+        }
+
+        if (!$config['svrConf']['ignore_check_pid'] && file_exists($config['svrConf']['swoole']['pid_file'])) {
+            $pid = (int)file_get_contents($config['svrConf']['swoole']['pid_file']);
+            if ($pid > 0 && self::kill($pid, 0)) {
+                $this->outputStyle->warning(sprintf('Swoole[PID=%d] is already running at %s.', $pid, $listenAt));
+                return 1;
+            }
+        }
+
+        if (!$config['svrConf']['swoole']['daemonize']) {
+            $this->outputStyle->note(sprintf('Swoole is listening at %s, press Ctrl+C to quit.', $listenAt));
+        }
+
         $lvs = new \Hhxsv5\LaravelS\LaravelS($config['svrConf'], $config['laravelConf']);
         $lvs->setOutputStyle($this->outputStyle);
         $lvs->run();
+        return 0;
     }
 
     public function stop()
@@ -120,7 +140,7 @@ class Portal extends Command
         $pidFile = $config['svrConf']['swoole']['pid_file'];
         if (!file_exists($pidFile)) {
             $this->outputStyle->warning('It seems that LaravelS is not running.');
-            return;
+            return 1;
         }
 
         $pid = file_get_contents($pidFile);
@@ -128,11 +148,11 @@ class Portal extends Command
             if (self::kill($pid, SIGTERM)) {
                 // Make sure that master process quit
                 $time = 1;
-                $waitTime = 60;
+                $waitTime = isset($config['svrConf']['swoole']['max_wait_time']) ? $config['svrConf']['swoole']['max_wait_time'] : 60;
                 while (self::kill($pid, 0)) {
                     if ($time > $waitTime) {
                         $this->outputStyle->warning("PID[{$pid}] cannot be stopped gracefully in {$waitTime}s, will be stopped forced right now.");
-                        return;
+                        return 1;
                     }
                     $this->outputStyle->note("Waiting PID[{$pid}] to stop. [{$time}]");
                     sleep(1);
@@ -142,21 +162,24 @@ class Portal extends Command
                     unlink($pidFile);
                 }
                 $this->outputStyle->note("PID[{$pid}] is stopped.");
+                return 0;
             } else {
                 $this->outputStyle->error("PID[{$pid}] is stopped failed.");
+                return 1;
             }
         } else {
             $this->outputStyle->error("PID[{$pid}] does not exist, or permission denied.");
-            if (file_exists($pidFile)) {
-                unlink($pidFile);
-            }
+            return 1;
         }
     }
 
     public function restart()
     {
-        $this->stop();
-        $this->start();
+        $code = $this->stop();
+        if ($code !== 0) {
+            return $code;
+        }
+        return $this->start();
     }
 
     public function reload()
@@ -177,10 +200,8 @@ class Portal extends Command
         if (self::kill($pid, SIGUSR1)) {
             $now = date('Y-m-d H:i:s');
             $this->outputStyle->note("PID[{$pid}] is reloaded at {$now}.");
-            return;
         } else {
             $this->outputStyle->error("PID[{$pid}] is reloaded failed.");
-            return;
         }
     }
 
