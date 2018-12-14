@@ -30,7 +30,7 @@ trait LogTrait
         $msg = sprintf('[%s] [%s] %s', date('Y-m-d H:i:s'), $type, $msg);
         if ($outputStyle) {
             switch (strtoupper($type)) {
-                case 'WARN':
+                case 'WARNING':
                     if (!$outputStyle->getFormatter()->hasStyle('warning')) {
                         $style = new OutputFormatterStyle('yellow');
                         $outputStyle->getFormatter()->setStyle('warning', $style);
@@ -59,7 +59,7 @@ trait LogTrait
 
     public function warning($msg)
     {
-        $this->log($msg, 'WARN');
+        $this->log($msg, 'WARNING');
     }
 
     public function error($msg)
