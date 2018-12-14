@@ -64,6 +64,16 @@ class LaravelSCommand extends Command
 EOS;
         $this->info($logo);
         $this->comment('Speed up your Laravel/Lumen');
+        $laravelSVersion = '-';
+        $cfg = json_decode(file_get_contents(base_path('composer.lock')), true);
+        if (isset($cfg['packages'])) {
+            foreach ($cfg['packages'] as $pkg) {
+                if (isset($pkg['name']) && $pkg['name'] === 'hhxsv5/laravel-s') {
+                    $laravelSVersion = $pkg['version'];
+                    break;
+                }
+            }
+        }
         $this->table(['Component', 'Version'], [
             [
                 'Component' => 'PHP',
@@ -76,6 +86,10 @@ EOS;
             [
                 'Component' => $this->getApplication()->getName(),
                 'Version'   => $this->getApplication()->getVersion(),
+            ],
+            [
+                'Component' => 'LaravelS',
+                'Version'   => $laravelSVersion,
             ],
         ]);
     }
