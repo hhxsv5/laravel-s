@@ -12,7 +12,9 @@ trait CustomProcessTrait
 
     public function addCustomProcesses(\swoole_server $swoole, $processPrefix, array $processes, array $laravelConfig)
     {
-        Laravel::autoload($laravelConfig['root_path']);
+        if (!empty($processes)) {
+            Laravel::autoload($laravelConfig['root_path']);
+        }
 
         /**
          * @var []CustomProcessInterface $processList
