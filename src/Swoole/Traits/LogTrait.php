@@ -30,6 +30,9 @@ trait LogTrait
         $msg = sprintf('[%s] [%s] %s', date('Y-m-d H:i:s'), $type, $msg);
         if ($outputStyle) {
             switch (strtoupper($type)) {
+                case 'INFO':
+                    $outputStyle->writeln("<info>$msg</info>");
+                    break;
                 case 'WARNING':
                     if (!$outputStyle->getFormatter()->hasStyle('warning')) {
                         $style = new OutputFormatterStyle('yellow');
@@ -39,9 +42,6 @@ trait LogTrait
                     break;
                 case 'ERROR':
                     $outputStyle->writeln("<error>$msg</error>");
-                    break;
-                case 'INFO':
-                    $outputStyle->writeln("<info>$msg</info>");
                     break;
                 default:
                     $outputStyle->writeln($msg);
