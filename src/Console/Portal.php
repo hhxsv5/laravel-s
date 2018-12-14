@@ -152,7 +152,7 @@ class Portal extends Command
                 // Make sure that master process quit
                 $time = 1;
                 $waitTime = isset($config['svrConf']['swoole']['max_wait_time']) ? $config['svrConf']['swoole']['max_wait_time'] : 60;
-                $this->outputStyle->note("The max wait time is {$waitTime}s");
+                $this->outputStyle->note("The max wait time to forcibly stop is {$waitTime}s.");
                 while (self::kill($pid, 0)) {
                     if ($time > $waitTime) {
                         $this->outputStyle->warning("PID[{$pid}] cannot be stopped gracefully in {$waitTime}s, will be stopped forced right now.");
