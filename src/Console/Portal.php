@@ -124,13 +124,16 @@ class Portal extends Command
             }
         }
 
-        if (!$config['svrConf']['swoole']['daemonize']) {
+        if ($config['svrConf']['swoole']['daemonize']) {
+            $this->outputStyle->note(sprintf('Swoole is running in daemon mode, and listening at %s, see "ps -ef|grep laravels".', $listenAt));
+        } else {
             $this->outputStyle->note(sprintf('Swoole is listening at %s, press Ctrl+C to quit.', $listenAt));
         }
 
         $lvs = new \Hhxsv5\LaravelS\LaravelS($config['svrConf'], $config['laravelConf']);
         $lvs->setOutputStyle($this->outputStyle);
         $lvs->run();
+
         return 0;
     }
 
@@ -149,6 +152,7 @@ class Portal extends Command
                 // Make sure that master process quit
                 $time = 1;
                 $waitTime = isset($config['svrConf']['swoole']['max_wait_time']) ? $config['svrConf']['swoole']['max_wait_time'] : 60;
+                $this->outputStyle->note("The max wait time is {$waitTime}s");
                 while (self::kill($pid, 0)) {
                     if ($time > $waitTime) {
                         $this->outputStyle->warning("PID[{$pid}] cannot be stopped gracefully in {$waitTime}s, will be stopped forced right now.");
