@@ -111,10 +111,12 @@ composer require "hhxsv5/laravel-s:~3.0" -vvv
     $app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
     ```
 
-3.发布配置文件。
+3.发布配置和二进制文件。
 > *每次升级LaravelS后，建议重新发布一次配置文件*
 ```bash
 php artisan laravels publish
+# 配置文件：config/laravels.php
+# 二进制文件：bin/laravels  bin/fswatch
 ```
 
 `使用Lumen时的特别说明`: 你不需要手动加载配置`laravels.php`，LaravelS底层已自动加载。
@@ -126,7 +128,7 @@ $app->configure('laravels');
 4.修改配置`config/laravels.php`：监听的IP、端口等，请参考[配置项](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
 ## 运行
-> `php artisan laravels {start|stop|restart|reload|publish}`
+> `./bin/laravels {start|stop|restart|reload|info}`
 
 `在运行之前，请先仔细阅读：`[注意事项](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)。
 
@@ -136,7 +138,7 @@ $app->configure('laravels');
 | `stop` | 停止LaravelS |
 | `restart` | 重启LaravelS，支持选项`-d`和`--daemonize` |
 | `reload` | 平滑重启所有worker进程，这些worker进程内包含你的业务代码和框架(Laravel/Lumen)代码，不会重启master/manger进程 |
-| `publish` | 发布配置文件到你的项目中`config/laravels.php` |
+| `info` | 显示组件的版本信息 |
 
 ## 部署
 > 建议通过[Supervisord](http://supervisord.org/)监管主进程，前提是不能加`-d`选项并且设置`swoole.daemonize`为`false`。
@@ -151,7 +153,6 @@ startretries=3
 user=www-data
 redirect_stderr=true
 stdout_logfile=/opt/www/laravel-s-test/storage/logs/supervisord-stdout.log
-stopasgroup=true
 ```
 
 ## 与Nginx配合使用（推荐）

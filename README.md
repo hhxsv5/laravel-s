@@ -105,10 +105,12 @@ composer require "hhxsv5/laravel-s:~3.0" -vvv
     $app->register(Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider::class);
     ```
 
-3.Publish configuration.
+3.Publish configuration and binaries.
 > *Suggest that do publish after upgrade LaravelS every time*
 ```bash
 php artisan laravels publish
+# Configuration: config/laravels.php
+# Binary: bin/laravels  bin/fswatch
 ```
 
 `Special for Lumen`: you `DO NOT` need to load this configuration manually in `bootstrap/app.php` file, LaravelS will load it automatically.
@@ -120,7 +122,7 @@ $app->configure('laravels');
 4.Change `config/laravels.php`: listen_ip, listen_port, refer [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
 ## Run
-> `php artisan laravels {start|stop|restart|reload|publish}`
+> `./bin/laravels {start|stop|restart|reload|info}`
 
 `Please read the notices carefully before running`, [Important notices](https://github.com/hhxsv5/laravel-s#important-notices).
 
@@ -130,7 +132,7 @@ $app->configure('laravels');
 | `stop` | Stop LaravelS |
 | `restart` | Restart LaravelS, support command options `-d` and `--daemonize` |
 | `reload` | Reload all worker processes(Contain your business & Laravel/Lumen codes), exclude master/manger process |
-| `publish` | Publish configuration file `laravels.php` into folder `config` |
+| `info` | Display component version information |
 
 ## Deploy
 > It is recommended to supervise the main process through [Supervisord](http://supervisord.org/), the premise is without option `-d` and to set `swoole.daemonize` to `false`.
@@ -145,7 +147,6 @@ startretries=3
 user=www-data
 redirect_stderr=true
 stdout_logfile=/opt/www/laravel-s-test/storage/logs/supervisord-stdout.log
-stopasgroup=true
 ```
 
 ## Cooperate with Nginx (Recommended)
