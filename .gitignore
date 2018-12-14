@@ -1,3 +1,4 @@
 vendor
 .idea
+composer.lock
 *.sw[a-z]
