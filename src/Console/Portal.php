@@ -19,11 +19,6 @@ class Portal extends Command
     protected $basePath;
 
     /**
-     * @var array
-     */
-    protected $config = [];
-
-    /**
      * @var InputInterface $input
      */
     protected $input;
@@ -241,11 +236,8 @@ EOS;
 
     public function getConfig()
     {
-        if (empty($this->config)) {
-            $json = file_get_contents($this->basePath . '/storage/laravels.json');
-            $this->config = (array)json_decode($json, true);
-        }
-        return $this->config;
+        $json = file_get_contents($this->basePath . '/storage/laravels.json');
+        return (array)json_decode($json, true);
     }
 
     public static function runCommand($cmd, $input = null)
@@ -269,5 +261,4 @@ EOS;
             return false;
         }
     }
-
 }
