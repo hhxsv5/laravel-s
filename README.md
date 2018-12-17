@@ -942,6 +942,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
         $all = $request->all();
         $sessionId = $request->cookie('sessionId');
         $photo = $request->file('photo');
+        // Call getContent() to get the raw POST body, instead of file_get_contents('php://input')
         $rawContent = $request->getContent();
         //...
     }

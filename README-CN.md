@@ -956,6 +956,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
         $all = $request->all();
         $sessionId = $request->cookie('sessionId');
         $photo = $request->file('photo');
+        // 调用getContent()来获取原始的POST body，而不能用file_get_contents('php://input')
         $rawContent = $request->getContent();
         //...
     }
