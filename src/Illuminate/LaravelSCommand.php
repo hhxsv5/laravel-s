@@ -184,7 +184,9 @@ EOS;
             if (!is_dir($toDir)) {
                 mkdir($toDir, 0755, true);
             }
-            unlink($todo['to']);
+            if (file_exists($todo['to'])) {
+                unlink($todo['to']);
+            }
             $operation = 'Linked';
             if (!link($todo['from'], $todo['to'])) {
                 $operation = 'Copied';
