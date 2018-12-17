@@ -68,7 +68,7 @@ EOS;
         if (isset($cfg['packages'])) {
             foreach ($cfg['packages'] as $pkg) {
                 if (isset($pkg['name']) && $pkg['name'] === 'hhxsv5/laravel-s') {
-                    $laravelSVersion = $pkg['version'];
+                    $laravelSVersion = ltrim($pkg['version'], 'vV');
                     break;
                 }
             }
@@ -185,13 +185,13 @@ EOS;
                 mkdir($toDir, 0755, true);
             }
             unlink($todo['to']);
-            $operation = 'Create symbolic link';
-            if (!symlink($todo['from'], $todo['to'])) {
-                $operation = 'Copied file';
+            $operation = 'Linked';
+            if (!link($todo['from'], $todo['to'])) {
+                $operation = 'Copied';
                 copy($todo['from'], $todo['to']);
             }
             chmod($todo['to'], $todo['mode']);
-            $this->line("<info>{$operation}</info> <comment>[{$todo['from']}]</comment> <info>To</info> <comment>[{$todo['to']}]</comment>");
+            $this->line("<info>{$operation} file</info> <comment>[{$todo['from']}]</comment> <info>To</info> <comment>[{$todo['to']}]</comment>");
         }
         return 0;
     }
