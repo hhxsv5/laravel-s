@@ -166,9 +166,9 @@ EOS;
         $basePath = config('laravels.laravel_base_path') ?: base_path();
         $configPath = $basePath . '/config/laravels.php';
         $todoList = [
-            ['from' => __DIR__ . '/../../config/laravels.php', 'to' => $configPath, 'mode' => 0644],
-            ['from' => __DIR__ . '/../../bin/laravels', 'to' => $basePath . '/bin/laravels', 'mode' => 0755],
-            ['from' => __DIR__ . '/../../bin/fswatch', 'to' => $basePath . '/bin/fswatch', 'mode' => 0755],
+            ['from' => realpath(__DIR__ . '/../../config/laravels.php'), 'to' => $configPath, 'mode' => 0644],
+            ['from' => realpath(__DIR__ . '/../../bin/laravels'), 'to' => $basePath . '/bin/laravels', 'mode' => 0755],
+            ['from' => realpath(__DIR__ . '/../../bin/fswatch'), 'to' => $basePath . '/bin/fswatch', 'mode' => 0755],
         ];
         if (file_exists($configPath)) {
             $choice = $this->anticipate($configPath . ' already exists, do you want to override it ? Y/N',
@@ -180,18 +180,22 @@ EOS;
             }
         }
 
-        /** @var Filesystem $file */
-        $file = app(Filesystem::class);
         foreach ($todoList as $todo) {
             $toDir = dirname($todo['to']);
-            if (!$file->isDirectory($toDir)) {
-                $file->makeDirectory($toDir, 0755, true);
+            if (!is_dir($toDir)) {
+                mkdir($toDir, 0755, true);
             }
-            $file->copy($todo['from'], $todo['to']);
+            unlink($todo['to']);
+            $operation = 'Create symbolic link';
+            if (!symlink($todo['from'], $todo['to'])) {
+                $operation = 'Copied file';
+                copy($todo['from'], $todo['to']);
+            }
             chmod($todo['to'], $todo['mode']);
+
             $from = str_replace($basePath, '', realpath($todo['from']));
             $to = str_replace($basePath, '', realpath($todo['to']));
-            $this->line('<info>Copied File</info> <comment>[' . $from . ']</comment> <info>To</info> <comment>[' . $to . ']</comment>');
+            $this->line("<info>{$operation}</info> <comment>[{$from}]</comment> <info>To</info> <comment>[{$to}]</comment>");
         }
         return 0;
     }
