@@ -166,8 +166,8 @@ EOS;
         $configPath = $basePath . '/config/laravels.php';
         $todoList = [
             ['from' => realpath(__DIR__ . '/../../config/laravels.php'), 'to' => $configPath, 'mode' => 0644],
-            ['from' => realpath(__DIR__ . '/../../bin/laravels'), 'to' => $basePath . '/bin/laravels', 'mode' => 0755],
-            ['from' => realpath(__DIR__ . '/../../bin/fswatch'), 'to' => $basePath . '/bin/fswatch', 'mode' => 0755],
+            ['from' => realpath(__DIR__ . '/../../bin/laravels'), 'to' => $basePath . '/bin/laravels', 'mode' => 0755, 'link' => true],
+            ['from' => realpath(__DIR__ . '/../../bin/fswatch'), 'to' => $basePath . '/bin/fswatch', 'mode' => 0755, 'link' => true],
         ];
         if (file_exists($configPath)) {
             $choice = $this->anticipate($configPath . ' already exists, do you want to override it ? Y/N',
@@ -187,10 +187,12 @@ EOS;
             if (file_exists($todo['to'])) {
                 unlink($todo['to']);
             }
-            $operation = 'Linked';
-            if (!link($todo['from'], $todo['to'])) {
-                $operation = 'Copied';
+            if (empty($todo['link'])) {
                 copy($todo['from'], $todo['to']);
+                $operation = 'Copied';
+            } else {
+                link($todo['from'], $todo['to']);
+                $operation = 'Linked';
             }
             chmod($todo['to'], $todo['mode']);
             $this->line("<info>{$operation} file</info> <comment>[{$todo['from']}]</comment> <info>To</info> <comment>[{$todo['to']}]</comment>");
