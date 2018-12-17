@@ -3,7 +3,6 @@
 namespace Hhxsv5\LaravelS\Illuminate;
 
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
 
 class LaravelSCommand extends Command
 {
