@@ -192,10 +192,7 @@ EOS;
                 copy($todo['from'], $todo['to']);
             }
             chmod($todo['to'], $todo['mode']);
-
-            $from = str_replace($basePath, '', realpath($todo['from']));
-            $to = str_replace($basePath, '', realpath($todo['to']));
-            $this->line("<info>{$operation}</info> <comment>[{$from}]</comment> <info>To</info> <comment>[{$to}]</comment>");
+            $this->line("<info>{$operation}</info> <comment>[{$todo['from']}]</comment> <info>To</info> <comment>[{$todo['to']}]</comment>");
         }
         return 0;
     }
