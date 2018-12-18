@@ -933,7 +933,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 - [Known issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md)
 
-- Should get all request information from `Illuminate\Http\Request` Object, $_ENV is readable, `CANNOT USE` $_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST/$_SESSION/$GLOBALS/$_SERVER.
+- Should get all request information from `Illuminate\Http\Request` Object, $_ENV is readable, $_SERVER is partially readable, `CANNOT USE` $_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST/$_SESSION/$GLOBALS.
 
     ```php
     public function form(\Illuminate\Http\Request $request)

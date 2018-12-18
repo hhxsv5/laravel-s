@@ -947,7 +947,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 - [常见问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md)
 
-- 应通过`Illuminate\Http\Request`对象来获取请求信息，$_ENV是可读取的，`不能使用`$_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST、$_SESSION、$GLOBALS、$_SERVER。
+- 应通过`Illuminate\Http\Request`对象来获取请求信息，$_ENV是可读取的，$_SERVER是部分可读的，`不能使用`$_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST、$_SESSION、$GLOBALS。
 
     ```php
     public function form(\Illuminate\Http\Request $request)

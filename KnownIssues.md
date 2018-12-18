@@ -92,7 +92,7 @@ class TestController extends Controller
 
 ## Cannot use these global variables
 
-- $_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST/$_SESSION/$GLOBALS/$_SERVER
+- $_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST/$_SESSION/$GLOBALS, $_ENV is `readable`, $_SERVER is `partial readable`.
 
 ## Size restriction
 

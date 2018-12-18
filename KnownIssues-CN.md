@@ -96,7 +96,7 @@ class TestController extends Controller
 
 ## 不能使用的全局变量
 
-- $_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST、$_SESSION、$GLOBALS、$_SERVER
+- $_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST、$_SESSION、$GLOBALS，$_ENV是`可读`的，$_SERVER是`部分可读`的。
 
 ## 大小限制
 
