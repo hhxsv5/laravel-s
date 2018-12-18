@@ -25,6 +25,7 @@
 - `inotify_reload.log`：`bool` 是否输出Reload的日志，默认`true`。
 
 - `event_handlers`：`array` 配置`Swoole`的事件回调函数，key-value格式，key为事件名，value为实现了事件处理接口的类。
+
 支持的事件列表：
 
 | 事件 | 需实现的接口 | 发生时机 |
@@ -33,7 +34,7 @@
 
 如何使用：
 
-1.创建事件类，实现对应的接口
+1.创建事件类，实现对应的接口。
 ```php
 namespace App\Events;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
@@ -51,7 +52,7 @@ class WorkerStartEvent implements WorkerStartInterface
     }
 }
 ```
-2.配置
+2.配置。
 ```php
 'event_handlers' => [
     'WorkerStart' => \App\Events\WorkerStartEvent::class,
