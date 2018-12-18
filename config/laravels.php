@@ -18,6 +18,8 @@ return [
         'excluded_dirs' => [],
         'log'           => true,
     ],
+    'event_handlers'           => [
+    ],
     'websocket'                => [
         'enable' => false,
         //'handler' => XxxWebSocketHandler::class,

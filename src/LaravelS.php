@@ -5,6 +5,7 @@ namespace Hhxsv5\LaravelS;
 use Hhxsv5\LaravelS\Illuminate\Laravel;
 use Hhxsv5\LaravelS\Swoole\Coroutine\Context;
 use Hhxsv5\LaravelS\Swoole\DynamicResponse;
+use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
 use Hhxsv5\LaravelS\Swoole\Request;
 use Hhxsv5\LaravelS\Swoole\Server;
 use Hhxsv5\LaravelS\Swoole\StaticResponse;
@@ -98,6 +99,9 @@ class LaravelS extends Server
         // Delay to create Laravel
         // Delay to include Laravel's autoload.php
         $this->laravel = $this->initLaravel($this->laravelConf, $this->swoole);
+
+        // Fire workerStart event
+        $this->fireEvent('workerStart', WorkerStartInterface::class, func_get_args());
     }
 
     protected function convertRequest(Laravel $laravel, \swoole_http_request $request)
