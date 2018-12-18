@@ -26,11 +26,13 @@
 
 - `event_handlers`：`array` 配置`Swoole`的事件回调函数，key-value格式，key为事件名，value为实现了事件处理接口的类。
 支持的事件列表：
+
 | 事件 | 需实现的接口 | 发生时机 |
 | -------- | -------- | -------- |
 | WorkerStart | Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface | 发生在Worker进程/Task进程启动时，并且已经完成Laravel初始化 |
 
 如何使用：
+
 1.创建事件类，实现对应的接口
 ```php
 namespace App\Events;
