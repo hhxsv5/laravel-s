@@ -4,8 +4,8 @@
 - In `LaravelS`, `Swoole` is `Http Server` started in `cli` mode, replacing `FPM`.
 - Delivering a task, triggering an asynchronous event will call `app('swoole')` and get the `Swoole\http\server` instance from the `Laravel container`. This instance is injected into the container only when `LaravelS` is started.
 - So, once you leave the `LaravelS`, due to the cross-process, you will be `unable` to successfully call `app('swoole')`:
-     - The code that runs in various `command line` modes, such as the Artisan command line and the PHP script command line.
-     - Run the code under `FPM`/`Apache PHP Module`.
+    - The code that runs in various `command line` modes, such as the Artisan command line and the PHP script command line.
+    - Run the code under `FPM`/`Apache PHP Module`.
 
 ## Use package [jenssegers/agent](https://github.com/jenssegers/agent)
 > [Listen System Event](https://github.com/hhxsv5/laravel-s/blob/master/README.md#system-events)
