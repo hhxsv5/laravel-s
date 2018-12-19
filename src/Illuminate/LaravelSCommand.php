@@ -187,12 +187,16 @@ EOS;
             if (file_exists($todo['to'])) {
                 unlink($todo['to']);
             }
+            $operation = 'Copied';
             if (empty($todo['link'])) {
                 copy($todo['from'], $todo['to']);
-                $operation = 'Copied';
             } else {
-                link($todo['from'], $todo['to']);
-                $operation = 'Linked';
+                if (link($todo['from'], $todo['to'])) {
+                    $operation = 'Linked';
+                } else {
+                    copy($todo['from'], $todo['to']);
+                }
+
             }
             chmod($todo['to'], $todo['mode']);
             $this->line("<info>{$operation} file</info> <comment>[{$todo['from']}]</comment> <info>To</info> <comment>[{$todo['to']}]</comment>");
