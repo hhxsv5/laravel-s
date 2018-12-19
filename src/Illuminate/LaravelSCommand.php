@@ -132,11 +132,15 @@ EOS;
         if (empty($svrConf['process_prefix'])) {
             $svrConf['process_prefix'] = $svrConf['laravel_base_path'];
         }
-        $svrConf['ignore_check_pid'] = $this->option('ignore');
+        if ($this->option('ignore')) {
+            $svrConf['ignore_check_pid'] = true;
+        }
         if (empty($svrConf['swoole']['document_root'])) {
             $svrConf['swoole']['document_root'] = $svrConf['laravel_base_path'] . '/public';
         }
-        $svrConf['swoole']['daemonize'] = $this->option('daemonize');
+        if ($this->option('daemonize')) {
+            $svrConf['swoole']['daemonize'] = true;
+        }
         if (empty($svrConf['swoole']['pid_file'])) {
             $svrConf['swoole']['pid_file'] = storage_path('laravels.pid');
         }
