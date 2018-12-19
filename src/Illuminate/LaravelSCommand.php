@@ -134,12 +134,16 @@ EOS;
         }
         if ($this->option('ignore')) {
             $svrConf['ignore_check_pid'] = true;
+        } elseif (!isset($svrConf['ignore_check_pid'])) {
+            $svrConf['ignore_check_pid'] = false;
         }
         if (empty($svrConf['swoole']['document_root'])) {
             $svrConf['swoole']['document_root'] = $svrConf['laravel_base_path'] . '/public';
         }
         if ($this->option('daemonize')) {
             $svrConf['swoole']['daemonize'] = true;
+        } elseif (!isset($svrConf['swoole']['daemonize'])) {
+            $svrConf['swoole']['daemonize'] = false;
         }
         if (empty($svrConf['swoole']['pid_file'])) {
             $svrConf['swoole']['pid_file'] = storage_path('laravels.pid');
