@@ -191,7 +191,7 @@ EOS;
             if (empty($todo['link'])) {
                 copy($todo['from'], $todo['to']);
             } else {
-                if (link($todo['from'], $todo['to'])) {
+                if (@link($todo['from'], $todo['to'])) {
                     $operation = 'Linked';
                 } else {
                     copy($todo['from'], $todo['to']);
