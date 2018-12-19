@@ -24,7 +24,7 @@
 
 - `inotify_reload.log`: `bool` Whether output the reload log, default `true`.
 
-- `event_handlers`: `array` Configure the event callback function of `Swoole`, key-value format, key is the event name, and value is the class that implements the event processing interface, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server).
+- `event_handlers`: `array` Configure the event callback function of `Swoole`, key-value format, key is the event name, and value is the class that implements the event processing interface, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#configuring-the-event-callback-function-of-swoole).
 
 - `websocket.enable`: `bool` Whether enable WebSocket Server. The Listening address of WebSocket Sever is the same as Http Server, default `false`.
 
