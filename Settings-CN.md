@@ -24,40 +24,7 @@
 
 - `inotify_reload.log`：`bool` 是否输出Reload的日志，默认`true`。
 
-- `event_handlers`：`array` 配置`Swoole`的事件回调函数，key-value格式，key为事件名，value为实现了事件处理接口的类。
-
-支持的事件列表：
-
-| 事件 | 需实现的接口 | 发生时机 |
-| -------- | -------- | -------- |
-| WorkerStart | Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface | 发生在Worker进程/Task进程启动时，并且已经完成Laravel初始化 |
-
-如何使用：
-
-1.创建事件类，实现对应的接口。
-```php
-namespace App\Events;
-use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
-class WorkerStartEvent implements WorkerStartInterface
-{
-    public function __construct()
-    {
-    }
-    public function handle(\swoole_http_server $server, $workerId)
-    {
-        // 例如：初始化一个连接池对象，绑定到Swoole Server对象上，其他地方可通过app('swoole')->connectionPool访问
-        if (!isset($server->connectionPool)) {
-            $server->connectionPool = new ConnectionPool();
-        }
-    }
-}
-```
-2.配置。
-```php
-'event_handlers' => [
-    'WorkerStart' => \App\Events\WorkerStartEvent::class,
-],
-```
+- `event_handlers`：`array` 配置`Swoole`的事件回调函数，key-value格式，key为事件名，value为实现了事件处理接口的类，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E9%85%8D%E7%BD%AE%60Swoole%60%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0)。
 
 - `websocket.enable`：`bool` 是否启用WebSocket服务器。启用后WebSocket服务器监听的IP和端口与Http服务器相同，默认`false`。
 
