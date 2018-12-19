@@ -41,6 +41,7 @@ Table of Contents
 * [Multi-port mixed protocol](#multi-port-mixed-protocol)
 * [Coroutine](#coroutine)
 * [Custom process](#custom-process)
+* [Other features](#other-features)
 * [Important notices](#important-notices)
 * [Users and cases](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E7%94%A8%E6%88%B7%E4%B8%8E%E6%A1%88%E4%BE%8B)
 * [Todo list](#todo-list)
@@ -916,6 +917,42 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ```
 
 3. Note: The TestProcess::callback() method cannot quit. If the number of quit reaches 10, the Manager process will re-create the process.
+
+## Other features
+
+### Configuring the event callback function of `Swoole`
+
+Supported events:
+
+| Event | Interface | When happened |
+| -------- | -------- | -------- |
+| WorkerStart | Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface | Occurs when the Worker process/Task process starts, and the Laravel initialization has been completed. |
+
+1.Create an event class to implement the corresponding interface.
+```php
+namespace App\Events;
+use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
+class WorkerStartEvent implements WorkerStartInterface
+{
+    public function __construct()
+    {
+    }
+    public function handle(\swoole_http_server $server, $workerId)
+    {
+        // Eg: Initialize a connection pool object, bound to the Swoole Server object, accessible via app('swoole')->connectionPool
+        if (!isset($server->connectionPool)) {
+            $server->connectionPool = new ConnectionPool();
+        }
+    }
+}
+```
+2.Configuration.
+```php
+// Edit `config/laravels.php`
+'event_handlers' => [
+    'WorkerStart' => \App\Events\WorkerStartEvent::class,
+],
+```
 
 ## Important notices
 

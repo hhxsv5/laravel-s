@@ -24,41 +24,7 @@
 
 - `inotify_reload.log`: `bool` Whether output the reload log, default `true`.
 
-
-- `event_handlers`: `array` Configure the event callback function of `Swoole`, key-value format, key is the event name, and value is the class that implements the event processing interface.
-
-Supported events:
-
-| Event | Interface | When happened |
-| -------- | -------- | -------- |
-| WorkerStart | Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface | Occurs when the Worker process/Task process starts, and the Laravel initialization has been completed. |
-
-How to use:
-
-1.Create an event class to implement the corresponding interface.
-```php
-namespace App\Events;
-use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
-class WorkerStartEvent implements WorkerStartInterface
-{
-    public function __construct()
-    {
-    }
-    public function handle(\swoole_http_server $server, $workerId)
-    {
-        // Eg: Initialize a connection pool object, bound to the Swoole Server object, accessible via app('swoole')->connectionPool
-        if (!isset($server->connectionPool)) {
-            $server->connectionPool = new ConnectionPool();
-        }
-    }
-}
-```
-2.Configuration.
-```php
-'event_handlers' => [
-    'WorkerStart' => \App\Events\WorkerStartEvent::class,
-],
-```
+- `event_handlers`: `array` Configure the event callback function of `Swoole`, key-value format, key is the event name, and value is the class that implements the event processing interface, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server).
 
 - `websocket.enable`: `bool` Whether enable WebSocket Server. The Listening address of WebSocket Sever is the same as Http Server, default `false`.
 
