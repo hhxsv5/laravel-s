@@ -24,7 +24,7 @@
 
 - `inotify_reload.log`：`bool` 是否输出Reload的日志，默认`true`。
 
-- `event_handlers`：`array` 配置`Swoole`的事件回调函数，key-value格式，key为事件名，value为实现了事件处理接口的类，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E9%85%8D%E7%BD%AE%60Swoole%60%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0)。
+- `event_handlers`：`array` 配置`Swoole`的事件回调函数，key-value格式，key为事件名，value为实现了事件处理接口的类，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E9%85%8D%E7%BD%AEswoole%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0)。
 
 - `websocket.enable`：`bool` 是否启用WebSocket服务器。启用后WebSocket服务器监听的IP和端口与Http服务器相同，默认`false`。
 

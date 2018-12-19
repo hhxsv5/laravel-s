@@ -943,31 +943,31 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 | -------- | -------- | -------- |
 | WorkerStart | Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface | 发生在Worker进程/Task进程启动时，并且已经完成Laravel初始化 |
 
-    1.创建事件处理类，实现相应的接口。
-    ```php
-    namespace App\Events;
-    use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
-    class WorkerStartEvent implements WorkerStartInterface
+1.创建事件处理类，实现相应的接口。
+```php
+namespace App\Events;
+use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
+class WorkerStartEvent implements WorkerStartInterface
+{
+    public function __construct()
     {
-        public function __construct()
-        {
-        }
-        public function handle(\swoole_http_server $server, $workerId)
-        {
-            // 例如：初始化一个连接池对象，绑定到Swoole Server对象上，其他地方可通过app('swoole')->connectionPool访问
-            if (!isset($server->connectionPool)) {
-                $server->connectionPool = new ConnectionPool();
-            }
+    }
+    public function handle(\swoole_http_server $server, $workerId)
+    {
+        // 例如：初始化一个连接池对象，绑定到Swoole Server对象上，其他地方可通过app('swoole')->connectionPool访问
+        if (!isset($server->connectionPool)) {
+            $server->connectionPool = new ConnectionPool();
         }
     }
-    ```
-    2.配置。
-    ```php
-    // 修改文件 config/laravels.php
-    'event_handlers' => [
-        'WorkerStart' => \App\Events\WorkerStartEvent::class,
-    ],
-    ```
+}
+```
+2.配置。
+```php
+// 修改文件 config/laravels.php
+'event_handlers' => [
+    'WorkerStart' => \App\Events\WorkerStartEvent::class,
+],
+```
 
 ## 注意事项
 
