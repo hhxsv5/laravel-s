@@ -83,12 +83,12 @@ EOS;
                 'Version'   => swoole_version(),
             ],
             [
-                'Component' => $this->getApplication()->getName(),
-                'Version'   => $this->getApplication()->getVersion(),
-            ],
-            [
                 'Component' => 'LaravelS',
                 'Version'   => $laravelSVersion,
+            ],
+            [
+                'Component' => $this->getApplication()->getName(),
+                'Version'   => $this->getApplication()->getVersion(),
             ],
         ]);
     }
