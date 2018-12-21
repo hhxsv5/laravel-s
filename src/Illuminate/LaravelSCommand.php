@@ -32,6 +32,13 @@ class LaravelSCommand extends Command
                 break;
             default:
                 $this->info(sprintf('Usage: [%s] ./artisan laravels publish|config|info', PHP_BINARY));
+                if (in_array($action, ['start', 'stop', 'restart', 'reload'], true)) {
+                    $this->error(sprintf(
+                        'The "%s" command has been migrated to "bin/laravels", %ssee https://github.com/hhxsv5/laravel-s#run',
+                        $action,
+                        file_exists(base_path('bin/laravels')) ? '' : 'please run `php artisan laravels publish` first, '
+                    ));
+                }
                 break;
         }
     }
