@@ -73,9 +73,10 @@ EOS;
         $laravelSVersion = '-';
         $cfg = json_decode(file_get_contents(base_path('composer.lock')), true);
         if (isset($cfg['packages'])) {
-            foreach ($cfg['packages'] as $pkg) {
-                if (isset($pkg['name']) && $pkg['name'] === 'hhxsv5/laravel-s') {
-                    $laravelSVersion = ltrim($pkg['version'], 'vV');
+            $packages = array_merge($cfg['packages'], array_get($cfg, 'packages-dev', []));
+            foreach ($packages as $package) {
+                if (isset($package['name']) && $package['name'] === 'hhxsv5/laravel-s') {
+                    $laravelSVersion = ltrim($package['version'], 'vV');
                     break;
                 }
             }
