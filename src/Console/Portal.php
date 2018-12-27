@@ -40,6 +40,7 @@ class Portal extends Command
         $this->setHelp('LaravelS console tool');
 
         $this->addArgument('action', InputArgument::OPTIONAL, 'start|stop|restart|reload|info|help', 'help');
+        $this->addOption('env', 'e', InputOption::VALUE_OPTIONAL, 'The environment the command should run under, such as local/testing/production');
         $this->addOption('daemonize', 'd', InputOption::VALUE_NONE, 'Whether run as a daemon for "start & restart"');
         $this->addOption('ignore', 'i', InputOption::VALUE_NONE, 'Whether ignore checking process pid for "start & restart"');
     }
@@ -78,6 +79,7 @@ Arguments:
   action                start|stop|restart|reload|info
 
 Options:
+  -e, --env             The environment the command should run under, such as local/testing/production
   -d, --daemonize       Whether run as a daemon for "start & restart"
   -i, --ignore          Whether ignore checking process pid for "start & restart"
 EOS;
@@ -104,11 +106,13 @@ EOS;
     {
         // Initialize configuration config/laravels.json
         $options = $this->input->getOptions();
+        unset($options['env']);
         $options = array_filter($options);
-        array_walk($options, function (&$value, $key) {
-            $value = '--' . $key;
-        });
-        $cmd = trim('laravels config ' . implode(' ', $options));
+        $optionStr = '';
+        foreach ($options as $key => $value) {
+            $optionStr .= sprintf('--%s%s ', $key, is_bool($value) ? '' : ('=' . $value));
+        }
+        $cmd = trim('laravels config ' . $optionStr);
         $this->runArtisanCommand($cmd);
 
         $this->showInfo();
@@ -218,13 +222,12 @@ EOS;
         $this->runArtisanCommand('laravels info');
     }
 
-    public function artisanCmd($subCmd = null)
+    public function artisanCmd($subCmd)
     {
         $phpCmd = sprintf('%s -c "%s"', PHP_BINARY, php_ini_loaded_file());
-        $artisanCmd = sprintf('%s %s/artisan', $phpCmd, $this->basePath);
-        if ($subCmd !== null) {
-            $artisanCmd .= ' ' . $subCmd;
-        }
+        $env = $this->input->getOption('env');
+        $envs = $env ? "APP_ENV={$env}" : '';
+        $artisanCmd = trim(sprintf('%s %s %s/artisan %s', $envs, $phpCmd, $this->basePath, $subCmd));
         return $artisanCmd;
     }
 
