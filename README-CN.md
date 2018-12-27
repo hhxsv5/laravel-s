@@ -129,17 +129,18 @@ $app->configure('laravels');
 4.修改配置`config/laravels.php`：监听的IP、端口等，请参考[配置项](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
 ## 运行
-> `php bin/laravels {start|stop|restart|reload|info}`
+> `php bin/laravels {start|stop|restart|reload|info|help}`
 
 `在运行之前，请先仔细阅读：`[注意事项](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)。
 
 | 命令 | 说明 |
 | --------- | --------- |
-| `start` | 启动LaravelS，展示已启动的进程列表 "*ps -ef&#124;grep laravels*"。添加选项`-d`或`--daemonize`以守护进程的方式运行，此选项将覆盖`laravels.php`中`swoole.daemonize`设置 |
+| `start` | 启动LaravelS，展示已启动的进程列表 "*ps -ef&#124;grep laravels*"。添加选项`-d`或`--daemonize`以守护进程的方式运行，此选项将覆盖`laravels.php`中`swoole.daemonize`设置；添加选项`-e`或`--env`用来指定运行的环境，如`--env=testing`将会使用配置文件`.env.testing`，这个特性要求`Laravel/Lumen 5.2+` |
 | `stop` | 停止LaravelS |
 | `restart` | 重启LaravelS，支持选项`-d`和`--daemonize` |
 | `reload` | 平滑重启所有Task/Worker进程，这些进程内包含了你的业务代码，不会重启Master/Manger/Timer/Custom进程 |
 | `info` | 显示组件的版本信息 |
+| `help` | 显示帮助信息 |
 
 ## 部署
 > 建议通过[Supervisord](http://supervisord.org/)监管主进程，前提是不能加`-d`选项并且设置`swoole.daemonize`为`false`。

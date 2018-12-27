@@ -76,7 +76,7 @@ Usage:
   [%s] ./bin/laravels [options] <action>
 
 Arguments:
-  action                start|stop|restart|reload|info
+  action                start|stop|restart|reload|info|help
 
 Options:
   -e, --env             The environment the command should run under, this feature requires 5.2+

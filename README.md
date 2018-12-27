@@ -123,17 +123,18 @@ $app->configure('laravels');
 4.Change `config/laravels.php`: listen_ip, listen_port, refer [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
 ## Run
-> `php bin/laravels {start|stop|restart|reload|info}`
+> `php bin/laravels {start|stop|restart|reload|info|help}`
 
 `Please read the notices carefully before running`, [Important notices](https://github.com/hhxsv5/laravel-s#important-notices).
 
 | Command | Description |
 | --------- | --------- |
-| `start` | Start LaravelS, list the processes by "*ps -ef&#124;grep laravels*", support command options `-d` and `--daemonize`, to run as a daemon |
+| `start` | Start LaravelS, list the processes by "*ps -ef&#124;grep laravels*". Support the option `-d` or `--daemonize`, to run as a daemon; Support the option `-e` or `--env` to specify the environment to run, such as `--env=testing` will use the configuration file `.env.testing`, this feature requires `Laravel/Lumen 5.2+` |
 | `stop` | Stop LaravelS |
-| `restart` | Restart LaravelS, support command options `-d` and `--daemonize` |
+| `restart` | Restart LaravelS, support the option `-d` or `--daemonize` |
 | `reload` | Reload all Task/Worker processes which contain your business codes, exclude Master/Manger/Timer/Custom processes |
 | `info` | Display component version information |
+| `help` | Display help information |
 
 ## Deploy
 > It is recommended to supervise the main process through [Supervisord](http://supervisord.org/), the premise is without option `-d` and to set `swoole.daemonize` to `false`.
