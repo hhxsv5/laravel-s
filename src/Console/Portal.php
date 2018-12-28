@@ -40,7 +40,7 @@ class Portal extends Command
         $this->setHelp('LaravelS console tool');
 
         $this->addArgument('action', InputArgument::OPTIONAL, 'start|stop|restart|reload|info|help', 'help');
-        $this->addOption('env', 'e', InputOption::VALUE_OPTIONAL, 'The environment the command should run under, this feature requires 5.2+');
+        $this->addOption('env', 'e', InputOption::VALUE_OPTIONAL, 'The environment the command should run under, this feature requires Laravel 5.2+');
         $this->addOption('daemonize', 'd', InputOption::VALUE_NONE, 'Whether run as a daemon for "start & restart"');
         $this->addOption('ignore', 'i', InputOption::VALUE_NONE, 'Whether ignore checking process pid for "start & restart"');
     }
@@ -79,7 +79,7 @@ Arguments:
   action                start|stop|restart|reload|info|help
 
 Options:
-  -e, --env             The environment the command should run under, this feature requires 5.2+
+  -e, --env             The environment the command should run under, this feature requires Laravel 5.2+
   -d, --daemonize       Whether run as a daemon for "start & restart"
   -i, --ignore          Whether ignore checking process pid for "start & restart"
 EOS;
