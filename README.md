@@ -129,9 +129,9 @@ $app->configure('laravels');
 
 | Command | Description |
 | --------- | --------- |
-| `start` | Start LaravelS, list the processes by "*ps -ef&#124;grep laravels*". Support the option `-d` or `--daemonize` to run as a daemon; Support the option `-e` or `--env` to specify the environment to run, such as `--env=testing` will use the configuration file `.env.testing`, this feature requires `Laravel/Lumen 5.2+` |
+| `start` | Start LaravelS, list the processes by "*ps -ef&#124;grep laravels*". Support the option `-d` or `--daemonize` to run as a daemon; Support the option `-e` or `--env` to specify the environment to run, such as `--env=testing` will use the configuration file `.env.testing` firstly, this feature requires `Laravel/Lumen 5.2+` |
 | `stop` | Stop LaravelS |
-| `restart` | Restart LaravelS, support the option `-d` or `--daemonize` |
+| `restart` | Restart LaravelS, support the options `-d|--daemonize` and `-e|--env` |
 | `reload` | Reload all Task/Worker processes which contain your business codes, exclude Master/Manger/Timer/Custom processes |
 | `info` | Display component version information |
 | `help` | Display help information |
