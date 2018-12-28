@@ -1140,6 +1140,7 @@ class WorkerStartEvent implements WorkerStartInterface
 | only丶妳 | 100 |
 | 月殇 | 18.88 |
 | Shmily | 20 |
+| *俊 | 20 |
 
 ## License
 
