@@ -47,7 +47,7 @@ class Laravel
         $this->createKernel();
         $this->setLaravel();
         $this->loadAllConfigurations();
-        $this->consoleKernelBootstrap();
+        $this->bootstrap();
         $this->saveSnapshots();
     }
 
@@ -86,9 +86,13 @@ class Laravel
         $this->rawGlobals['_ENV'] = array_merge($_ENV, $env);
     }
 
-    protected function consoleKernelBootstrap()
+    protected function bootstrap()
     {
-        if (!$this->conf['is_lumen']) {
+        if ($this->conf['is_lumen']) {
+            if (method_exists($this->app, 'boot')) {
+                $this->app->boot();
+            }
+        } else {
             $this->app->make(ConsoleKernel::class)->bootstrap();
         }
     }
