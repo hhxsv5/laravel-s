@@ -135,9 +135,9 @@ $app->configure('laravels');
 
 | 命令 | 说明 |
 | --------- | --------- |
-| `start` | 启动LaravelS，展示已启动的进程列表 "*ps -ef\|grep laravels*"。支持选项`-d\|--daemonize`以守护进程的方式运行，此选项将覆盖`laravels.php`中`swoole.daemonize`设置；支持选项`-e\|--env`用来指定运行的环境，如`--env=testing`将会优先使用配置文件`.env.testing`，这个特性要求`Laravel 5.2+` |
+| `start` | 启动LaravelS，展示已启动的进程列表 "*ps -ef&#124;grep laravels*"。支持选项 ”*-d&#124;--daemonize*“ 以守护进程的方式运行，此选项将覆盖`laravels.php`中`swoole.daemonize`设置；支持选项 ”*-e&#124;--env*" 用来指定运行的环境，如`--env=testing`将会优先使用配置文件`.env.testing`，这个特性要求`Laravel 5.2+` |
 | `stop` | 停止LaravelS |
-| `restart` | 重启LaravelS，支持选项`-d\|--daemonize`和`-e\|--env` |
+| `restart` | 重启LaravelS，支持选项 ”*-d&#124;--daemonize*“ 和 ”*-e&#124;--env*“ |
 | `reload` | 平滑重启所有Task/Worker进程，这些进程内包含了你的业务代码，不会重启Master/Manger/Timer/Custom进程 |
 | `info` | 显示组件的版本信息 |
 | `help` | 显示帮助信息 |
