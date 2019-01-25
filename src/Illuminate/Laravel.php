@@ -14,9 +14,9 @@ class Laravel
     protected $app;
 
     /**
-     * @var HttpKernel $laravelKernel
+     * @var HttpKernel $kernel
      */
-    protected $laravelKernel;
+    protected $kernel;
 
     protected static $snapshotKeys = ['config', 'cookie', 'auth', /*'auth.password'*/];
 
@@ -42,22 +42,22 @@ class Laravel
 
     public function prepareLaravel()
     {
-        $this->autoload();
+        static::autoload($this->conf['root_path']);
         $this->createApp();
         $this->createKernel();
         $this->setLaravel();
         $this->loadAllConfigurations();
-        $this->consoleKernelBootstrap();
+        $this->bootstrap();
         $this->saveSnapshots();
     }
 
-    protected function autoload()
+    public static function autoload($rootPath)
     {
-        $autoload = $this->conf['root_path'] . '/bootstrap/autoload.php';
+        $autoload = $rootPath . '/bootstrap/autoload.php';
         if (file_exists($autoload)) {
             require_once $autoload;
         } else {
-            require_once $this->conf['root_path'] . '/vendor/autoload.php';
+            require_once $rootPath . '/vendor/autoload.php';
         }
     }
 
@@ -69,7 +69,7 @@ class Laravel
     protected function createKernel()
     {
         if (!$this->conf['is_lumen']) {
-            $this->laravelKernel = $this->app->make(HttpKernel::class);
+            $this->kernel = $this->app->make(HttpKernel::class);
         }
     }
 
@@ -86,9 +86,13 @@ class Laravel
         $this->rawGlobals['_ENV'] = array_merge($_ENV, $env);
     }
 
-    protected function consoleKernelBootstrap()
+    protected function bootstrap()
     {
-        if (!$this->conf['is_lumen']) {
+        if ($this->conf['is_lumen']) {
+            if (method_exists($this->app, 'boot')) {
+                $this->app->boot();
+            }
+        } else {
             $this->app->make(ConsoleKernel::class)->bootstrap();
         }
     }
@@ -161,9 +165,9 @@ class Laravel
                 $callTerminableMiddleware->invoke($this->app, $response);
             }
         } else {
-            $response = $this->laravelKernel->handle($request);
+            $response = $this->kernel->handle($request);
             $content = $response->getContent();
-            $this->laravelKernel->terminate($request, $response);
+            $this->kernel->terminate($request, $response);
         }
 
         // prefer content in response, secondly ob

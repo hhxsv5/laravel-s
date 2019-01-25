@@ -24,7 +24,9 @@ abstract class Response implements ResponseInterface
 
     public function sendHeaders()
     {
-        foreach ($this->laravelResponse->headers->allPreserveCase() as $name => $values) {
+        $headers = method_exists($this->laravelResponse->headers, 'allPreserveCaseWithoutCookies') ?
+            $this->laravelResponse->headers->allPreserveCaseWithoutCookies() : $this->laravelResponse->headers->allPreserveCase();
+        foreach ($headers as $name => $values) {
             foreach ($values as $value) {
                 $this->swooleResponse->header($name, $value);
             }

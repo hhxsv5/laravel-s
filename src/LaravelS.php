@@ -5,6 +5,7 @@ namespace Hhxsv5\LaravelS;
 use Hhxsv5\LaravelS\Illuminate\Laravel;
 use Hhxsv5\LaravelS\Swoole\Coroutine\Context;
 use Hhxsv5\LaravelS\Swoole\DynamicResponse;
+use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
 use Hhxsv5\LaravelS\Swoole\Request;
 use Hhxsv5\LaravelS\Swoole\Server;
 use Hhxsv5\LaravelS\Swoole\StaticResponse;
@@ -15,6 +16,7 @@ use Hhxsv5\LaravelS\Swoole\Traits\LogTrait;
 use Hhxsv5\LaravelS\Swoole\Traits\ProcessTitleTrait;
 use Hhxsv5\LaravelS\Swoole\Traits\TimerTrait;
 use Illuminate\Http\Request as IlluminateRequest;
+use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
@@ -29,8 +31,12 @@ class LaravelS extends Server
      * Fix conflicts of traits
      */
     use InotifyTrait, LaravelTrait, LogTrait, ProcessTitleTrait, TimerTrait, CustomProcessTrait {
-        LogTrait::log insteadof InotifyTrait, TimerTrait;
-        LogTrait::logException insteadof InotifyTrait, TimerTrait;
+        LogTrait::log insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
+        LogTrait::logException insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
+        LogTrait::info insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
+        LogTrait::warning insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
+        LogTrait::error insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
+        LogTrait::callWithCatchException insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
         ProcessTitleTrait::setProcessTitle insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
         LaravelTrait::initLaravel insteadof TimerTrait, CustomProcessTrait;
     }
@@ -64,13 +70,13 @@ class LaravelS extends Server
 
     protected function bindWebSocketEvent()
     {
+        parent::bindWebSocketEvent();
+
         if ($this->enableWebSocket) {
             $eventHandler = function ($method, array $params) {
-                try {
+                $this->callWithCatchException(function () use ($method, $params) {
                     call_user_func_array([$this->getWebSocketHandler(), $method], $params);
-                } catch (\Exception $e) {
-                    $this->logException($e);
-                }
+                });
             };
 
             $this->swoole->on('Open', function (\swoole_websocket_server $server, \swoole_http_request $request) use ($eventHandler) {
@@ -81,18 +87,6 @@ class LaravelS extends Server
                 $this->laravel->handleDynamic($laravelRequest);
                 $eventHandler('onOpen', func_get_args());
                 $this->laravel->saveSession();
-            });
-
-            $this->swoole->on('Message', function () use ($eventHandler) {
-                $eventHandler('onMessage', func_get_args());
-            });
-
-            $this->swoole->on('Close', function (\swoole_websocket_server $server, $fd, $reactorId) use ($eventHandler) {
-                $clientInfo = $server->getClientInfo($fd);
-                if (isset($clientInfo['websocket_status']) && $clientInfo['websocket_status'] === \WEBSOCKET_STATUS_FRAME) {
-                    $eventHandler('onClose', func_get_args());
-                }
-                // else ignore the close event for http server
             });
         }
     }
@@ -105,6 +99,9 @@ class LaravelS extends Server
         // Delay to create Laravel
         // Delay to include Laravel's autoload.php
         $this->laravel = $this->initLaravel($this->laravelConf, $this->swoole);
+
+        // Fire workerStart event
+        $this->fireEvent('workerStart', WorkerStartInterface::class, func_get_args());
     }
 
     protected function convertRequest(Laravel $laravel, \swoole_http_request $request)
@@ -139,8 +136,17 @@ class LaravelS extends Server
      */
     protected function handleException($e, \swoole_http_response $response)
     {
-        $error = sprintf('onRequest: Uncaught exception "%s"([%d]%s) at %s:%s, %s%s', get_class($e), $e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine(), PHP_EOL, $e->getTraceAsString());
-        $this->log($error, 'ERROR');
+        $error = sprintf(
+            'onRequest: Uncaught exception "%s"([%d]%s) at %s:%s, %s%s',
+            get_class($e),
+            $e->getCode(),
+            $e->getMessage(),
+            $e->getFile(),
+            $e->getLine(),
+            PHP_EOL,
+            $e->getTraceAsString()
+        );
+        $this->error($error);
         try {
             $response->status(500);
             $response->end('Oops! An unexpected error occurred: ' . $e->getMessage());
@@ -176,5 +182,20 @@ class LaravelS extends Server
             (new DynamicResponse($swooleResponse, $laravelResponse))->send($this->conf['enable_gzip']);
         }
         return true;
+    }
+
+    /**
+     * @var OutputStyle $outputStyle
+     */
+    protected static $outputStyle;
+
+    public static function setOutputStyle(OutputStyle $outputStyle)
+    {
+        static::$outputStyle = $outputStyle;
+    }
+
+    public static function getOutputStyle()
+    {
+        return static::$outputStyle;
     }
 }

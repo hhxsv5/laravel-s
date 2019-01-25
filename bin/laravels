@@ -1,0 +1,11 @@
+#!/usr/bin/env php
+<?php
+$basePath = realpath(__DIR__ . '/../');
+include $basePath . '/vendor/autoload.php';
+
+$command = new Hhxsv5\LaravelS\Console\Portal($basePath);
+$input = new Symfony\Component\Console\Input\ArgvInput();
+$output = new Symfony\Component\Console\Output\ConsoleOutput();
+
+$code = $command->run($input, $output);
+exit($code);

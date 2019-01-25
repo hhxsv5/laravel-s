@@ -8,10 +8,11 @@ class Inotify
     private $watchPath;
     private $watchMask;
     private $watchHandler;
-    private $doing     = false;
-    private $fileTypes = [];
-    private $wdPath    = [];
-    private $pathWd    = [];
+    private $doing        = false;
+    private $fileTypes    = [];
+    private $excludedDirs = [];
+    private $wdPath       = [];
+    private $pathWd       = [];
 
     public function __construct($watchPath, $watchMask, callable $watchHandler)
     {
@@ -34,6 +35,29 @@ class Inotify
         }
     }
 
+    public function addExcludedDir($dir)
+    {
+        $dir = realpath($dir);
+        $this->excludedDirs[$dir] = $dir;
+    }
+
+    public function addExcludedDirs(array $dirs)
+    {
+        foreach ($dirs as $dir) {
+            $this->addExcludedDir($dir);
+        }
+    }
+
+    public function isExcluded($path)
+    {
+        foreach ($this->excludedDirs as $excludedDir) {
+            if ($excludedDir === $path || strpos($path, $excludedDir . '/') === 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function watch()
     {
         $this->_watch($this->watchPath);
@@ -41,6 +65,9 @@ class Inotify
 
     protected function _watch($path)
     {
+        if ($this->isExcluded($path)) {
+            return false;
+        }
         $wd = inotify_add_watch($this->fd, $path, $this->watchMask);
         if ($wd === false) {
             return false;
@@ -50,7 +77,7 @@ class Inotify
         if (is_dir($path)) {
             $files = scandir($path);
             foreach ($files as $file) {
-                if ($file === '.' || $file === '..') {
+                if ($file === '.' || $file === '..' || $this->isExcluded($file)) {
                     continue;
                 }
                 $file = $path . DIRECTORY_SEPARATOR . $file;
@@ -74,7 +101,7 @@ class Inotify
     protected function clearWatch()
     {
         foreach ($this->wdPath as $wd => $path) {
-            /** @scrutinizer ignore-unhandled */@inotify_rm_watch($this->fd, $wd);
+            @inotify_rm_watch($this->fd, $wd);
         }
         $this->wdPath = [];
         $this->pathWd = [];
@@ -96,7 +123,7 @@ class Inotify
 
     public function start()
     {
-        swoole_event_add(/** @scrutinizer ignore-type */$this->fd, function ($fp) {
+        swoole_event_add($this->fd, function ($fp) {
             $events = inotify_read($fp);
             foreach ($events as $event) {
                 if ($event['mask'] == IN_IGNORED) {
@@ -125,7 +152,7 @@ class Inotify
 
     public function stop()
     {
-        swoole_event_del(/** @scrutinizer ignore-type */$this->fd);
+        swoole_event_del($this->fd);
         fclose($this->fd);
     }
 
