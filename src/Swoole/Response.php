@@ -40,7 +40,7 @@ abstract class Response implements ResponseInterface
             if ($hasIsRaw === null) {
                 $hasIsRaw = method_exists($cookie, 'isRaw');
             }
-            $setCookie = $hasIsRaw && $cookie->isRaw() ? 'rawCookie' : 'cookie';
+            $setCookie = $hasIsRaw && $cookie->isRaw() ? 'rawcookie' : 'cookie';
             $this->swooleResponse->$setCookie(
                 $cookie->getName(),
                 $cookie->getValue(),
