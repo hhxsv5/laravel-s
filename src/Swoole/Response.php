@@ -35,8 +35,13 @@ abstract class Response implements ResponseInterface
 
     public function sendCookies()
     {
+        $hasIsRaw = null;
         foreach ($this->laravelResponse->headers->getCookies() as $cookie) {
-            $this->swooleResponse->cookie(
+            if ($hasIsRaw === null) {
+                $hasIsRaw = method_exists($cookie, 'isRaw');
+            }
+            $setCookie = $hasIsRaw && $cookie->isRaw() ? 'rawCookie' : 'cookie';
+            $this->swooleResponse->$setCookie(
                 $cookie->getName(),
                 $cookie->getValue(),
                 $cookie->getExpiresTime(),
