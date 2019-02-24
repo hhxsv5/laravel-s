@@ -148,8 +148,8 @@ EOS;
             SWOOLE_SOCK_UNIX_STREAM => 'Unix Socket Stream',
         ];
         foreach ($config['server']['sockets'] as $key => $socket) {
-            $name = isset($socketTypeNames[$socket['type']]) ? $socketTypeNames[$socket['type']] : 'Unknown socket';
-            $name .= ' #' . ($key + 1);
+            $name = 'Port#' . ($key + 1) . ' ';
+            $name .= isset($socketTypeNames[$socket['type']]) ? $socketTypeNames[$socket['type']] : 'Unknown socket';
             $tableRows [] = [
                 $name,
                 '<info>On</info>',
