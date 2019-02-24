@@ -219,6 +219,9 @@ EOS;
         if (empty($svrConf['swoole']['pid_file'])) {
             $svrConf['swoole']['pid_file'] = storage_path('laravels.pid');
         }
+        if (empty($svrConf['timer']['pid_file'])) {
+            $svrConf['timer']['pid_file'] = storage_path('laravels-timer.pid');
+        }
         return 0;
     }
 

@@ -16,9 +16,11 @@ trait TimerTrait
             return;
         }
 
-        $startTimer = function () use ($swoole, $config, $laravelConfig) {
+        $startTimer = function (\swoole_process $process) use ($swoole, $config, $laravelConfig) {
+            file_put_contents($config['pid_file'], $process->pid);
             $this->setProcessTitle(sprintf('%s laravels: timer process', $config['process_prefix']));
             $this->initLaravel($laravelConfig, $swoole);
+            $timerIds = [];
             foreach ($config['jobs'] as $jobClass) {
                 if (is_array($jobClass) && isset($jobClass[0])) {
                     $job = new $jobClass[0](isset($jobClass[1]) ? $jobClass[1] : []);
@@ -41,6 +43,7 @@ trait TimerTrait
                         $job->run();
                     });
                 });
+                $timerIds[] = $timerId;
                 $job->setTimerId($timerId);
                 if ($job->isImmediate()) {
                     swoole_timer_after(1, function () use ($job) {
@@ -50,6 +53,13 @@ trait TimerTrait
                     });
                 }
             }
+
+            \swoole_process::signal(SIGUSR1, function ($signo) use ($timerIds, $process) {
+                foreach ($timerIds as $timerId) {
+                    swoole_timer_clear($timerId);
+                }
+                $process->exit(0);
+            });
         };
 
         $timerProcess = new \swoole_process($startTimer, false, false);

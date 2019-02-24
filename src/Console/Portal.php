@@ -194,6 +194,7 @@ EOS;
             return;
         }
 
+        // Reload worker process
         $pid = file_get_contents($pidFile);
         if (!$pid || !self::kill($pid, 0)) {
             $this->error("Swoole [PID={$pid}] does not exist, or permission denied.");
@@ -205,6 +206,21 @@ EOS;
             $this->info("Swoole [PID={$pid}] is reloaded at {$now}.");
         } else {
             $this->error("Swoole [PID={$pid}] is reloaded failed.");
+        }
+
+        // Reload timer process
+        $pidFile = $config['server']['timer']['pid_file'];
+        $pid = file_get_contents($pidFile);
+        if (!$pid || !self::kill($pid, 0)) {
+            $this->error("Swoole Timer [PID={$pid}] does not exist, or permission denied.");
+            return;
+        }
+
+        if (self::kill($pid, SIGUSR1)) {
+            $now = date('Y-m-d H:i:s');
+            $this->info("Swoole Timer [PID={$pid}] is reloaded at {$now}.");
+        } else {
+            $this->error("Swoole Timer [PID={$pid}] is reloaded failed.");
         }
     }
 
