@@ -133,13 +133,16 @@ EOS;
                 $this->getApplication()->getName(),
                 $listenAt,
             ],
-            [
+        ];
+        if (!empty($config['server']['websocket']['enable'])) {
+            $tableRows [] = [
                 'Main WebSocket',
-                empty($config['server']['websocket']['enable']) ? 'Off' : '<info>On</info>',
+                '<info>On</info>',
                 empty($config['server']['websocket']['handler']) ? '-' : $config['server']['websocket']['handler'],
                 $listenAt,
-            ],
-        ];
+            ];
+        }
+
         $socketTypeNames = [
             SWOOLE_SOCK_TCP         => 'TCP IPV4 Socket',
             SWOOLE_SOCK_TCP6        => 'TCP IPV6 Socket',
