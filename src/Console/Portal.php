@@ -120,12 +120,12 @@ EOS;
         // Here we go...
         $config = $this->getConfig();
 
-        $listenAt = empty($config['server']['websocket']['enable']) ? '[HTTP] ' : '[HTTP & WebSocket] ';
         if (in_array($config['server']['socket_type'], [SWOOLE_SOCK_UNIX_DGRAM, SWOOLE_SOCK_UNIX_STREAM])) {
-            $listenAt .= $config['server']['listen_ip'];
+            $listenAt = $config['server']['listen_ip'];
         } else {
-            $listenAt .= sprintf('%s:%s', $config['server']['listen_ip'], $config['server']['listen_port']);
+            $listenAt = sprintf('%s:%s', $config['server']['listen_ip'], $config['server']['listen_port']);
         }
+        $listenAt .= empty($config['server']['websocket']['enable']) ? ' for <comment>HTTP</comment>' : ' for <comment>HTTP & WebSocket</comment>';
 
         if (!$config['server']['ignore_check_pid'] && file_exists($config['server']['swoole']['pid_file'])) {
             $pid = (int)file_get_contents($config['server']['swoole']['pid_file']);
