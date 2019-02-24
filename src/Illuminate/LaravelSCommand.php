@@ -136,7 +136,7 @@ EOS;
             $tableRows [] = [
                 'Main WebSocket',
                 '<info>On</info>',
-                empty($config['server']['websocket']['handler']) ? '-' : $config['server']['websocket']['handler'],
+                $config['server']['websocket']['handler'],
                 $listenAt,
             ];
         }
@@ -151,7 +151,7 @@ EOS;
         ];
         $sockets = isset($config['server']['sockets']) ? $config['server']['sockets'] : [];
         foreach ($sockets as $key => $socket) {
-            $name = 'Port#' . ($key + 1) . ' ';
+            $name = 'Port#' . $key . ' ';
             $name .= isset($socketTypeNames[$socket['type']]) ? $socketTypeNames[$socket['type']] : 'Unknown socket';
             $tableRows [] = [
                 $name,
