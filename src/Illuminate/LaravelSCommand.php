@@ -28,7 +28,9 @@ class LaravelSCommand extends Command
                 $this->prepareConfig();
                 break;
             case 'info':
-                $this->showInfo();
+                $this->showLogo();
+                $this->showComponents();
+                $this->showDashboard();
                 break;
             default:
                 $this->info(sprintf('Usage: [%s] ./artisan laravels publish|config|info', PHP_BINARY));
@@ -57,7 +59,7 @@ class LaravelSCommand extends Command
         }
     }
 
-    protected function showInfo()
+    protected function showLogo()
     {
         static $logo = <<<EOS
  _                               _  _____ 
@@ -69,9 +71,14 @@ class LaravelSCommand extends Command
                                            
 EOS;
         $this->info($logo);
-        $this->comment('Speed up your Laravel/Lumen');
+        $this->info('Speed up your Laravel/Lumen');
+    }
+
+    protected function showComponents()
+    {
+        $this->comment('>>> Components');
         $laravelSVersion = '-';
-        $cfg = json_decode(file_get_contents(base_path('composer.lock')), true);
+        $cfg = (array)json_decode(file_get_contents(base_path('composer.lock')), true);
         if (isset($cfg['packages'])) {
             $packages = array_merge($cfg['packages'], array_get($cfg, 'packages-dev', []));
             foreach ($packages as $package) {
@@ -83,22 +90,70 @@ EOS;
         }
         $this->table(['Component', 'Version'], [
             [
-                'Component' => 'PHP',
-                'Version'   => phpversion(),
+                'PHP',
+                phpversion(),
             ],
             [
-                'Component' => 'Swoole',
-                'Version'   => swoole_version(),
+                'Swoole',
+                swoole_version(),
             ],
             [
-                'Component' => 'LaravelS',
-                'Version'   => $laravelSVersion,
+                'LaravelS',
+                $laravelSVersion,
             ],
             [
-                'Component' => $this->getApplication()->getName() . ' [<info>' . env('APP_ENV') . '</info>]',
-                'Version'   => $this->getApplication()->getVersion(),
+                $this->getApplication()->getName() . ' [<info>' . env('APP_ENV') . '</info>]',
+                $this->getApplication()->getVersion(),
             ],
         ]);
+    }
+
+    protected function showDashboard()
+    {
+        $this->comment('>>> Dashboard');
+
+        $config = (array)json_decode(file_get_contents(base_path('storage/laravels.json')), true);
+        if (in_array($config['server']['socket_type'], [SWOOLE_SOCK_UNIX_DGRAM, SWOOLE_SOCK_UNIX_STREAM])) {
+            $listenAt = $config['server']['listen_ip'];
+        } else {
+            $listenAt = sprintf('%s:%s', $config['server']['listen_ip'], $config['server']['listen_port']);
+        }
+
+        $tableRows = [
+            [
+                'Main HTTP',
+                '<info>On</info>',
+                empty($config['laravel']['is_lumen']) ? 'Laravel' : 'Lumen',
+                $listenAt,
+            ],
+            [
+                'Main WebSocket',
+                empty($config['server']['websocket']['enable']) ? 'Off' : '<info>On</info>',
+                empty($config['server']['websocket']['handler']) ? '-' : $config['server']['websocket']['handler'],
+                $listenAt,
+            ],
+        ];
+        $socketTypeNames = [
+            SWOOLE_SOCK_TCP         => 'TCP IPV4 Socket',
+            SWOOLE_SOCK_TCP6        => 'TCP IPV6 Socket',
+            SWOOLE_SOCK_UDP         => 'UDP IPV4 Socket',
+            SWOOLE_SOCK_UDP6        => 'TCP IPV6 Socket',
+            SWOOLE_SOCK_UNIX_DGRAM  => 'Unix Socket Dgram',
+            SWOOLE_SOCK_UNIX_STREAM => 'Unix Socket Stream',
+        ];
+        foreach ($config['server']['sockets'] as $key => $socket) {
+            $name = isset($socketTypeNames[$socket['type']]) ? $socketTypeNames[$socket['type']] : 'Unknown socket';
+            $name .= ' #' . ($key + 1);
+            $tableRows [] = [
+                $name,
+                '<info>On</info>',
+                $socket['handler'],
+                sprintf('%s:%s', $socket['host'], $socket['port']),
+            ];
+        }
+        $this->table(['Protocol', 'Status', 'Handler', 'Listen At'], $tableRows);
+
+        $this->comment('>>> Feedback: <options=underscore>https://github.com/hhxsv5/laravel-s</>');
     }
 
     protected function prepareConfig()
@@ -124,9 +179,8 @@ EOS;
         ];
 
         $config = ['server' => $svrConf, 'laravel' => $laravelConf];
-        $config = json_encode($config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        file_put_contents(base_path('storage/laravels.json'), $config);
-        return 0;
+        $jsonConfig = json_encode($config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        return file_put_contents(base_path('storage/laravels.json'), $jsonConfig) > 0 ? 0 : 1;
     }
 
     protected function preSet(array &$svrConf)
@@ -181,9 +235,23 @@ EOS;
         $basePath = config('laravels.laravel_base_path') ?: base_path();
         $configPath = $basePath . '/config/laravels.php';
         $todoList = [
-            ['from' => realpath(__DIR__ . '/../../config/laravels.php'), 'to' => $configPath, 'mode' => 0644],
-            ['from' => realpath(__DIR__ . '/../../bin/laravels'), 'to' => $basePath . '/bin/laravels', 'mode' => 0755, 'link' => true],
-            ['from' => realpath(__DIR__ . '/../../bin/fswatch'), 'to' => $basePath . '/bin/fswatch', 'mode' => 0755, 'link' => true],
+            [
+                'from' => realpath(__DIR__ . '/../../config/laravels.php'),
+                'to'   => $configPath,
+                'mode' => 0644,
+            ],
+            [
+                'from' => realpath(__DIR__ . '/../../bin/laravels'),
+                'to'   => $basePath . '/bin/laravels',
+                'mode' => 0755,
+                'link' => true,
+            ],
+            [
+                'from' => realpath(__DIR__ . '/../../bin/fswatch'),
+                'to'   => $basePath . '/bin/fswatch',
+                'mode' => 0755,
+                'link' => true,
+            ],
         ];
         if (file_exists($configPath)) {
             $choice = $this->anticipate($configPath . ' already exists, do you want to override it ? Y/N',

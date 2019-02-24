@@ -43,6 +43,7 @@ trait LogTrait
                 case 'ERROR':
                     $outputStyle->writeln("<error>$msg</error>");
                     break;
+                case 'TRACE':
                 default:
                     $outputStyle->writeln($msg);
                     break;
@@ -50,6 +51,11 @@ trait LogTrait
         } else {
             echo $msg, PHP_EOL;
         }
+    }
+
+    public function trace($msg)
+    {
+        $this->log($msg, 'TRACE');
     }
 
     public function info($msg)
@@ -66,7 +72,6 @@ trait LogTrait
     {
         $this->log($msg, 'ERROR');
     }
-
 
     public function callWithCatchException(callable $callback)
     {

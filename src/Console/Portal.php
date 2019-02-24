@@ -120,25 +120,18 @@ EOS;
         // Here we go...
         $config = $this->getConfig();
 
-        if (in_array($config['server']['socket_type'], [SWOOLE_SOCK_UNIX_DGRAM, SWOOLE_SOCK_UNIX_STREAM])) {
-            $listenAt = $config['server']['listen_ip'];
-        } else {
-            $listenAt = sprintf('%s:%s', $config['server']['listen_ip'], $config['server']['listen_port']);
-        }
-        $listenAt .= empty($config['server']['websocket']['enable']) ? ' for <comment>HTTP</comment>' : ' for <comment>HTTP & WebSocket</comment>';
-
         if (!$config['server']['ignore_check_pid'] && file_exists($config['server']['swoole']['pid_file'])) {
             $pid = (int)file_get_contents($config['server']['swoole']['pid_file']);
             if ($pid > 0 && self::kill($pid, 0)) {
-                $this->warning(sprintf('Swoole[PID=%d] is already running at %s.', $pid, $listenAt));
+                $this->warning(sprintf('Swoole[PID=%d] is already running.', $pid));
                 return 1;
             }
         }
 
         if ($config['server']['swoole']['daemonize']) {
-            $this->info(sprintf('Swoole is running in daemon mode, and listening at %s, see "ps -ef|grep laravels".', $listenAt));
+            $this->trace('Swoole is running in daemon mode, see "ps -ef|grep laravels".');
         } else {
-            $this->info(sprintf('Swoole is listening at %s, press Ctrl+C to quit.', $listenAt));
+            $this->trace('Swoole is running, press Ctrl+C to quit.');
         }
 
         (new LaravelS($config['server'], $config['laravel']))->run();
