@@ -129,7 +129,7 @@ EOS;
             [
                 'Main HTTP',
                 '<info>On</info>',
-                empty($config['laravel']['is_lumen']) ? 'Laravel' : 'Lumen',
+                $this->getApplication()->getName(),
                 $listenAt,
             ],
             [
