@@ -54,10 +54,11 @@ trait TimerTrait
                 }
             }
 
-            \swoole_process::signal(SIGUSR1, function ($signo) use ($timerIds) {
+            \swoole_process::signal(SIGUSR1, function ($signo) use (&$timerIds) {
                 foreach ($timerIds as $timerId) {
                     swoole_timer_clear($timerId);
                 }
+                $timerIds = [];
             });
         };
 
