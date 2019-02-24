@@ -112,10 +112,7 @@ EOS;
         foreach ($options as $key => $value) {
             $optionStr .= sprintf('--%s%s ', $key, is_bool($value) ? '' : ('=' . $value));
         }
-        $cmd = trim('laravels config ' . $optionStr);
-        $this->runArtisanCommand($cmd);
-
-        $this->showInfo();
+        $this->runArtisanCommand(trim('laravels config ' . $optionStr));
 
         // Here we go...
         $config = $this->getConfig();

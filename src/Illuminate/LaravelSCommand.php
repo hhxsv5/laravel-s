@@ -26,11 +26,10 @@ class LaravelSCommand extends Command
                 break;
             case 'config':
                 $this->prepareConfig();
+                $this->showInfo();
                 break;
             case 'info':
-                $this->showLogo();
-                $this->showComponents();
-                $this->showDashboard();
+                $this->showInfo();
                 break;
             default:
                 $this->info(sprintf('Usage: [%s] ./artisan laravels publish|config|info', PHP_BINARY));
@@ -57,6 +56,13 @@ class LaravelSCommand extends Command
         if ($this->isLumen() && file_exists($basePath . '/config/laravels.php')) {
             $this->getLaravel()->configure('laravels');
         }
+    }
+
+    protected function showInfo()
+    {
+        $this->showLogo();
+        $this->showComponents();
+        $this->showDashboard();
     }
 
     protected function showLogo()
