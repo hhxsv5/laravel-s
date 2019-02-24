@@ -119,7 +119,8 @@ EOS;
         $this->comment('>>> Dashboard');
 
         $config = (array)json_decode(file_get_contents(base_path('storage/laravels.json')), true);
-        if (in_array($config['server']['socket_type'], [SWOOLE_SOCK_UNIX_DGRAM, SWOOLE_SOCK_UNIX_STREAM])) {
+        $socketType = isset($config['server']['socket_type']) ? $config['server']['socket_type'] : SWOOLE_SOCK_TCP;
+        if (in_array($socketType, [SWOOLE_SOCK_UNIX_DGRAM, SWOOLE_SOCK_UNIX_STREAM])) {
             $listenAt = $config['server']['listen_ip'];
         } else {
             $listenAt = sprintf('%s:%s', $config['server']['listen_ip'], $config['server']['listen_port']);
@@ -147,7 +148,8 @@ EOS;
             SWOOLE_SOCK_UNIX_DGRAM  => 'Unix Socket Dgram',
             SWOOLE_SOCK_UNIX_STREAM => 'Unix Socket Stream',
         ];
-        foreach ($config['server']['sockets'] as $key => $socket) {
+        $sockets = isset($config['server']['sockets']) ? $config['server']['sockets'] : [];
+        foreach ($sockets as $key => $socket) {
             $name = 'Port#' . ($key + 1) . ' ';
             $name .= isset($socketTypeNames[$socket['type']]) ? $socketTypeNames[$socket['type']] : 'Unknown socket';
             $tableRows [] = [
