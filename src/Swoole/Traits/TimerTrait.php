@@ -21,6 +21,7 @@ trait TimerTrait
             $this->setProcessTitle(sprintf('%s laravels: timer process', $config['process_prefix']));
             $this->initLaravel($laravelConfig, $swoole);
             $timerIds = [];
+            $running = false;
             foreach ($config['jobs'] as $jobClass) {
                 if (is_array($jobClass) && isset($jobClass[0])) {
                     $job = new $jobClass[0](isset($jobClass[1]) ? $jobClass[1] : []);
@@ -38,10 +39,12 @@ trait TimerTrait
                 if (empty($job->interval())) {
                     throw new \Exception(sprintf('The interval of %s cannot be empty', get_class($job)));
                 }
-                $timerId = swoole_timer_tick($job->interval(), function () use ($job) {
+                $timerId = swoole_timer_tick($job->interval(), function () use ($job, &$running) {
+                    $running = true;
                     $this->callWithCatchException(function () use ($job) {
                         $job->run();
                     });
+                    $running = false;
                 });
                 $timerIds[] = $timerId;
                 $job->setTimerId($timerId);
@@ -54,11 +57,18 @@ trait TimerTrait
                 }
             }
 
-            \swoole_process::signal(SIGUSR1, function ($signo) use ($timerIds, $process) {
+            \swoole_process::signal(SIGUSR1, function ($signo) use ($timerIds, $process, $running) {
                 foreach ($timerIds as $timerId) {
                     swoole_timer_clear($timerId);
                 }
-                $process->exit(0);
+                if ($running) {
+                    // 30s timeout
+                    swoole_timer_after(30 * 1000, function () use ($process) {
+                        $process->exit(0);
+                    });
+                } else {
+                    $process->exit(0);
+                }
             });
         };
 
