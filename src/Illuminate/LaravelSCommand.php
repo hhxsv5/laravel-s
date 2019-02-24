@@ -26,8 +26,6 @@ class LaravelSCommand extends Command
                 break;
             case 'config':
                 $this->prepareConfig();
-                $this->showInfo();
-                break;
             case 'info':
                 $this->showInfo();
                 break;
