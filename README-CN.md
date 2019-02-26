@@ -623,6 +623,7 @@ class TestCronJob extends CronJob
 ```
 
 3.注意在构建服务器集群时，会启动多个`定时器`，要确保只启动一个定期器，避免重复执行定时任务。
+
 4.LaravelS `v3.4.0`开始支持热重启[reload]`定时器`进程，LaravelS 在收到`SIGUSR1`信号后会等待`max_wait_time`(默认5)秒再结束进程，然后`Manager`进程会重新拉起`定时器`进程。
 
 ## 修改代码后自动Reload

@@ -608,6 +608,7 @@ class TestCronJob extends CronJob
 ```
 
 3.Note: it will launch multiple timers when build the server cluster, so you need to make sure that launch one timer only to avoid running repetitive task.
+
 4.LaravelS `v3.4.0` starts to support the hot restart [reload] `Timer` process. After LaravelS receives the `SIGUSR1` signal, it waits for `max_wait_time`(default 5) seconds to end the process, then the `Manager` process will pull up the `Timer` process again.
 
 ## Reload automatically when code is modified
