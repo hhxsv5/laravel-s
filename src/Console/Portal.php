@@ -209,18 +209,19 @@ EOS;
         }
 
         // Reload timer process
-        $pidFile = $config['server']['timer']['pid_file'];
-        $pid = file_get_contents($pidFile);
-        if (!$pid || !self::kill($pid, 0)) {
-            $this->error("Swoole Timer [PID={$pid}] does not exist, or permission denied.");
-            return;
-        }
+        if (!empty($config['server']['timer']['enable'])) {
+            $pidFile = $config['server']['timer']['pid_file'];
+            $pid = file_get_contents($pidFile);
+            if (!$pid || !self::kill($pid, 0)) {
+                $this->error("Swoole Timer [PID={$pid}] does not exist, or permission denied.");
+                return;
+            }
 
-        if (self::kill($pid, SIGUSR1)) {
-            $now = date('Y-m-d H:i:s');
-            $this->info("Swoole Timer [PID={$pid}] is reloaded at {$now}.");
-        } else {
-            $this->error("Swoole Timer [PID={$pid}] is reloaded failed.");
+            if (self::kill($pid, SIGUSR1)) {
+                $this->info("Swoole Timer [PID={$pid}] is reloaded.");
+            } else {
+                $this->error("Swoole Timer [PID={$pid}] is reloaded failed.");
+            }
         }
     }
 

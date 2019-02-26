@@ -31,4 +31,11 @@ interface CustomProcessInterface
      * @return int
      */
     public static function getPipeType();
+
+    /**
+     * Trigger this method on receiving the signal SIGUSR1
+     * @param \swoole_process $process
+     * @return mixed
+     */
+    public static function onReload(\swoole_process $process);
 }
