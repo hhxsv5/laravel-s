@@ -31,15 +31,16 @@ trait CustomProcessTrait
             }
             $processHandler = function (\swoole_process $worker) use ($swoole, $processPrefix, $process, $laravelConfig) {
                 $name = $process::getName() ?: 'custom';
+                $this->setProcessTitle(sprintf('%s laravels: %s process', $processPrefix, $name));
+                $this->initLaravel($laravelConfig, $swoole);
+                $maxTry = 10;
+                $i = 0;
+
                 \swoole_process::signal(SIGUSR1, function () use ($process, $name, $worker) {
                     $this->info(sprintf('Reloading the process %s [pid=%d].', $name, $worker->pid));
                     $process::onReload($worker);
                 });
 
-                $this->setProcessTitle(sprintf('%s laravels: %s process', $processPrefix, $name));
-                $this->initLaravel($laravelConfig, $swoole);
-                $maxTry = 10;
-                $i = 0;
                 do {
                     $this->callWithCatchException(function () use ($process, $swoole) {
                         return $process::callback($swoole);
@@ -47,7 +48,7 @@ trait CustomProcessTrait
                     ++$i;
                     sleep(1);
                 } while ($i < $maxTry);
-                $this->warning(
+                $this->error(
                     sprintf(
                         'The custom process "%s" reaches the maximum number of retries %d times, and will be restarted by the manager process.',
                         $name,
