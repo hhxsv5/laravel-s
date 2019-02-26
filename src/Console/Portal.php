@@ -202,8 +202,7 @@ EOS;
         }
 
         if (self::kill($pid, SIGUSR1)) {
-            $now = date('Y-m-d H:i:s');
-            $this->info("Swoole [PID={$pid}] is reloaded at {$now}.");
+            $this->info("Swoole [PID={$pid}] is reloaded.");
         } else {
             $this->error("Swoole [PID={$pid}] is reloaded failed.");
         }
@@ -218,9 +217,9 @@ EOS;
             }
 
             if (self::kill($pid, SIGUSR1)) {
-                $this->info("Swoole Timer [PID={$pid}] is reloaded.");
+                $this->info("Timer Process [PID={$pid}] is reloaded.");
             } else {
-                $this->error("Swoole Timer [PID={$pid}] is reloaded failed.");
+                $this->error("Timer Process [PID={$pid}] is reloaded failed.");
             }
         }
     }
