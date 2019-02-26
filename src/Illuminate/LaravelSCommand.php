@@ -222,6 +222,9 @@ EOS;
         if (empty($svrConf['timer']['pid_file'])) {
             $svrConf['timer']['pid_file'] = storage_path('laravels-timer.pid');
         }
+        if (empty($svrConf['timer']['max_wait_time'])) {
+            $svrConf['timer']['max_wait_time'] = 5;
+        }
         return 0;
     }
 

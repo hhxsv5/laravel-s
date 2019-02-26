@@ -54,11 +54,13 @@ trait TimerTrait
                 }
             }
 
-            \swoole_process::signal(SIGUSR1, function ($signo) use (&$timerIds) {
+            \swoole_process::signal(SIGUSR1, function ($signo) use ($config, $timerIds, $process) {
                 foreach ($timerIds as $timerId) {
                     swoole_timer_clear($timerId);
                 }
-                $timerIds = [];
+                swoole_timer_after($config['max_wait_time'] * 1000, function () use ($process) {
+                    $process->exit(0);
+                });
             });
         };
 

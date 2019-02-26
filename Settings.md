@@ -34,6 +34,8 @@
 
 - `processes`: `array` The custom process list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#custom-process).
 
+- `timer`: `array` The millisecond timer, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#millisecond-cron-job).
+
 - `events`: `array` The customized asynchronous event list of listener binding, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#customized-asynchronous-events).
 
 - `swoole_tables`: `array` The defined of `swoole_table` list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#use-swoole_table).
