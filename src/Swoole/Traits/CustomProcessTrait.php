@@ -30,15 +30,25 @@ trait CustomProcessTrait
                 );
             }
             $processHandler = function (\swoole_process $worker) use ($swoole, $processPrefix, $process, $laravelConfig) {
-                declare(ticks=1);
                 $name = $process::getName() ?: 'custom';
-                pcntl_signal(SIGUSR1, function () use ($process, $name, $worker) {
-                    $this->info(sprintf('Reloading the process %s [pid=%d].', $name, $worker->pid));
-                    $process::onReload($worker);
-                });
-
                 $this->setProcessTitle(sprintf('%s laravels: %s process', $processPrefix, $name));
                 $this->initLaravel($laravelConfig, $swoole);
+
+                swoole_event_add($worker->pipe, function ($pipe) use ($name, $process, $worker) {
+                    $recv = $worker->read();
+                    //echo "From Master: $recv\n";
+
+                    if ($recv === 'signal:SIGUSR1') {
+                        $this->info(sprintf('Reloading the process %s [pid=%d].', $name, $worker->pid));
+                        $process::onReload($worker);
+
+                        // send data to master
+                        $worker->write('reload:done');
+
+                        swoole_event_del($pipe);
+                    }
+                });
+
                 $maxTry = 10;
                 $i = 0;
                 do {
