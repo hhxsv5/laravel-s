@@ -904,7 +904,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
             // 管道类型：0不创建管道，1创建SOCK_STREAM类型管道，2创建SOCK_DGRAM类型管道
             return 0;
         }
-        public static function callback(\swoole_server $swoole)
+        public static function callback(\swoole_server $swoole, \swoole_process $process)
         {
             // 进程运行的代码，不能退出，一旦退出Manager进程会自动再次创建该进程。
             \Log::info(__METHOD__, [posix_getpid(), $swoole->stats()]);

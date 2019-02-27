@@ -13,9 +13,10 @@ interface CustomProcessInterface
     /**
      * The run callback of process
      * @param \swoole_server $swoole
+     * @param \swoole_process $process
      * @return void
      */
-    public static function callback(\swoole_server $swoole);
+    public static function callback(\swoole_server $swoole, \swoole_process $process);
 
     /**
      * Whether redirect stdin/stdout

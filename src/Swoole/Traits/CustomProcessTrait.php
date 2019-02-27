@@ -30,21 +30,19 @@ trait CustomProcessTrait
                 );
             }
             $processHandler = function (\swoole_process $worker) use ($swoole, $processPrefix, $process, $laravelConfig) {
+                declare(ticks=1);
                 $name = $process::getName() ?: 'custom';
-                $this->setProcessTitle(sprintf('%s laravels: %s process', $processPrefix, $name));
-                $this->initLaravel($laravelConfig, $swoole);
-                $maxTry = 10;
-                $i = 0;
-
-                \swoole_process::signal(SIGUSR1, function () use ($process, $name, $worker) {
+                pcntl_signal(SIGUSR1, function () use ($process, $name, $worker) {
                     $this->info(sprintf('Reloading the process %s [pid=%d].', $name, $worker->pid));
                     $process::onReload($worker);
                 });
 
+                $this->setProcessTitle(sprintf('%s laravels: %s process', $processPrefix, $name));
+                $this->initLaravel($laravelConfig, $swoole);
+                $maxTry = 10;
+                $i = 0;
                 do {
-                    $this->callWithCatchException(function () use ($process, $swoole) {
-                        return $process::callback($swoole);
-                    });
+                    $this->callWithCatchException([$process, 'callback'], [$swoole, $worker]);
                     ++$i;
                     sleep(1);
                 } while ($i < $maxTry);

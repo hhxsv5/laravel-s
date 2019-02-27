@@ -889,7 +889,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
             // The type of pipeline: 0 no pipeline, 1 \SOCK_STREAM, 2 \SOCK_DGRAM
             return 0;
         }
-        public static function callback(\swoole_server $swoole)
+        public static function callback(\swoole_server $swoole, \swoole_process $process)
         {
             // The callback method cannot exit. Once exited, Manager process will automatically create the process 
             \Log::info(__METHOD__, [posix_getpid(), $swoole->stats()]);
