@@ -877,8 +877,9 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ```php
     namespace App\Processes;
     use App\Tasks\TestTask;
-    use Hhxsv5\LaravelS\Swoole\Task\Task;
     use Hhxsv5\LaravelS\Swoole\Process\CustomProcessInterface;
+    use Hhxsv5\LaravelS\Swoole\Task\Task;
+    use Swoole\Coroutine;
     use Swoole\Http\Server;
     use Swoole\Process;
     class TestProcess implements CustomProcessInterface
