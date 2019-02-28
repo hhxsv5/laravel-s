@@ -40,8 +40,8 @@ Table of Contents
 * [异步的任务队列](#异步的任务队列)
 * [毫秒级定时任务](#毫秒级定时任务)
 * [修改代码后自动Reload](#修改代码后自动reload)
-* [在你的项目中使用SwooleServer实例](#在你的项目中使用SwooleServer实例)
-* [使用SwooleTable](#使用SwooleTable)
+* [在你的项目中使用SwooleServer实例](#在你的项目中使用swooleserver实例)
+* [使用SwooleTable](#使用swooletable)
 * [多端口混合协议](#多端口混合协议)
 * [协程](#协程)
 * [自定义进程](#自定义进程)
@@ -318,7 +318,7 @@ class WebSocketService implements WebSocketHandlerInterface
 // ...
 ```
 
-3.使用`SwooleTable`绑定FD与UserId，可选的，[Swoole Table示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E4%BD%BF%E7%94%A8SwooleTable)。也可以用其他全局存储服务，例如Redis/Memcached/MySQL，但需要注意多个`Swoole Server`实例时FD可能冲突。
+3.使用`SwooleTable`绑定FD与UserId，可选的，[Swoole Table示例](#使用swooletable)。也可以用其他全局存储服务，例如Redis/Memcached/MySQL，但需要注意多个`Swoole Server`实例时FD可能冲突。
 
 4.与Nginx配合使用（推荐）
 > 参考 [WebSocket代理](http://nginx.org/en/docs/http/websocket.html)
