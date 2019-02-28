@@ -48,7 +48,6 @@ Table of Contents
 * [其他特性](#其他特性)
 * [注意事项](#注意事项)
 * [用户与案例](#用户与案例)
-* [待办事项](#待办事项)
 * [其他选择](#其他选择)
 * [打赏](#打赏)
     * [感谢](#感谢)
@@ -1104,10 +1103,6 @@ class WorkerStartEvent implements WorkerStartInterface
     <img src="https://user-images.githubusercontent.com/7278743/46941544-eda11580-d09d-11e8-8c3a-16c567655277.png" height="300px" alt="修机匠手机上门维修服务">
 
 - 亿健APP
-
-## 待办事项
-
-1. 针对MySQL/Redis的连接池。
 
 ## 其他选择
 

@@ -44,7 +44,6 @@ Table of Contents
 * [Other features](#other-features)
 * [Important notices](#important-notices)
 * [Users and cases](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E7%94%A8%E6%88%B7%E4%B8%8E%E6%A1%88%E4%BE%8B)
-* [Todo list](#todo-list)
 * [Alternatives](#alternatives)
 * [License](#license)
 
@@ -1063,10 +1062,6 @@ class WorkerStartEvent implements WorkerStartInterface
 - [Linux kernel parameter adjustment](https://wiki.swoole.com/wiki/page/p-server/sysctl.html)
 
 - [Pressure test](https://wiki.swoole.com/wiki/page/62.html)
-
-## Todo list
-
-1. Connection pool for MySQL/Redis.
 
 ## Alternatives
 
