@@ -60,7 +60,7 @@ class LaravelSCommand extends Command
     {
         $this->showLogo();
         $this->showComponents();
-        $this->showDashboard();
+        $this->showProtocols();
     }
 
     protected function showLogo()
@@ -112,9 +112,9 @@ EOS;
         ]);
     }
 
-    protected function showDashboard()
+    protected function showProtocols()
     {
-        $this->comment('>>> Dashboard');
+        $this->comment('>>> Protocols');
 
         $config = (array)json_decode(file_get_contents(base_path('storage/laravels.json')), true);
         $socketType = isset($config['server']['socket_type']) ? $config['server']['socket_type'] : SWOOLE_SOCK_TCP;
