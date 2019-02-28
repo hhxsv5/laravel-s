@@ -919,7 +919,8 @@ public function onClose(Server $server, $fd, $reactorId)
             \Log::info(__METHOD__, [posix_getpid(), $swoole->stats()]);
             while (true) {
                 \Log::info('Do something');
-                sleep(1);
+                // sleep(1); // Swoole < 2.1
+                Coroutine::sleep(1); // Swoole>=2.1 callback()方法已自动创建协程。
                 // 自定义进程中也可以投递Task，但不支持Task的finish()回调。
                 // 注意：
                 // 1.参数2需传true
@@ -930,7 +931,7 @@ public function onClose(Server $server, $fd, $reactorId)
                 // throw new \Exception('an exception');
             }
         }
-        // Require LaravelS >= v3.4.0
+        // 要求：LaravelS >= v3.4.0 并且 callback() 必须是异步非阻塞程序。
         public static function onReload(Server $swoole, Process $process)
         {
             // Stop the process...

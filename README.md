@@ -759,7 +759,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
         [
             'host'     => '127.0.0.1',
             'port'     => 5291,
-            'type'     => SWOOLE_SOCK_TCP,// Socket type: SWOOLE_SOCK_TCP/SWOOLE_SOCK_UDP
+            'type'     => SWOOLE_SOCK_TCP,// Socket type: SWOOLE_SOCK_TCP/SWOOLE_SOCK_TCP6/SWOOLE_SOCK_UDP/SWOOLE_SOCK_UDP6/SWOOLE_UNIX_DGRAM/SWOOLE_UNIX_STREAM
             'settings' => [// Swoole settings：https://www.swoole.co.uk/docs/modules/swoole-server-methods#swoole_server-addlistener
                 'open_eof_check' => true,
                 'package_eof'    => "\r\n",
@@ -904,7 +904,8 @@ To make our main server support more protocols not just Http and WebSocket, we b
             \Log::info(__METHOD__, [posix_getpid(), $swoole->stats()]);
             while (true) {
                 \Log::info('Do something');
-                sleep(1);
+                // sleep(1); // Swoole < 2.1
+                Coroutine::sleep(1); // Swoole>=2.1 Coroutine will be automatically created for callback().
                  // Deliver task in custom process, but NOT support callback finish() of task.
                 // Note:
                 // 1.Set parameter 2 to true
@@ -915,7 +916,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
                 // throw new \Exception('an exception');
             }
         }
-        // Require LaravelS >= v3.4.0
+        // Requirements: LaravelS >= v3.4.0 & callback() must be async non-blocking program.
         public static function onReload(Server $swoole, Process $process)
         {
             // Stop the process...
