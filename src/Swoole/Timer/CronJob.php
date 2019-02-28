@@ -66,7 +66,7 @@ abstract class CronJob implements CronJobInterface
     public function stop()
     {
         if (!empty($this->timerId)) {
-            \swoole_timer_clear($this->timerId);
+            swoole_timer_clear($this->timerId);
         }
     }
 

@@ -2,9 +2,11 @@
 
 namespace Hhxsv5\LaravelS\Swoole\Events;
 
+use Swoole\Http\Server;
+
 interface WorkerStartInterface
 {
     public function __construct();
 
-    public function handle(\swoole_http_server $server, $workerId);
+    public function handle(Server $server, $workerId);
 }

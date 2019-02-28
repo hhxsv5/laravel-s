@@ -2,6 +2,9 @@
 
 namespace Hhxsv5\LaravelS\Swoole\Process;
 
+use Swoole\Http\Server;
+use Swoole\Process;
+
 interface CustomProcessInterface
 {
     /**
@@ -12,11 +15,11 @@ interface CustomProcessInterface
 
     /**
      * The run callback of process
-     * @param \swoole_server $swoole
-     * @param \swoole_process $process
+     * @param Server $swoole
+     * @param Process $process
      * @return void
      */
-    public static function callback(\swoole_server $swoole, \swoole_process $process);
+    public static function callback(Server $swoole, Process $process);
 
     /**
      * Whether redirect stdin/stdout
@@ -35,8 +38,8 @@ interface CustomProcessInterface
 
     /**
      * Trigger this method on receiving the signal SIGUSR1
-     * @param \swoole_process $process
+     * @param Process $process
      * @return mixed
      */
-    public static function onReload(\swoole_process $process);
+    public static function onReload(Process $process);
 }

@@ -3,7 +3,6 @@
 namespace Hhxsv5\LaravelS;
 
 use Hhxsv5\LaravelS\Illuminate\Laravel;
-use Hhxsv5\LaravelS\Swoole\Coroutine\Context;
 use Hhxsv5\LaravelS\Swoole\DynamicResponse;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
 use Hhxsv5\LaravelS\Swoole\Request;
@@ -16,6 +15,10 @@ use Hhxsv5\LaravelS\Swoole\Traits\LogTrait;
 use Hhxsv5\LaravelS\Swoole\Traits\ProcessTitleTrait;
 use Hhxsv5\LaravelS\Swoole\Traits\TimerTrait;
 use Illuminate\Http\Request as IlluminateRequest;
+use Swoole\Http\Request as SwooleRequest;
+use Swoole\Http\Response as SwooleResponse;
+use Swoole\Http\Server as HttpServer;
+use Swoole\WebSocket\Server as WebSocketServer;
 use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -80,7 +83,7 @@ class LaravelS extends Server
                 });
             };
 
-            $this->swoole->on('Open', function (\swoole_websocket_server $server, \swoole_http_request $request) use ($eventHandler) {
+            $this->swoole->on('Open', function (WebSocketServer $server, SwooleRequest $request) use ($eventHandler) {
                 // Start Laravel's lifetime, then support session ...middleware.
                 $this->laravel->resetSession();
                 $laravelRequest = $this->convertRequest($this->laravel, $request);
@@ -92,7 +95,7 @@ class LaravelS extends Server
         }
     }
 
-    public function onWorkerStart(\swoole_http_server $server, $workerId)
+    public function onWorkerStart(HttpServer $server, $workerId)
     {
         parent::onWorkerStart($server, $workerId);
 
@@ -105,7 +108,7 @@ class LaravelS extends Server
         $this->fireEvent('workerStart', WorkerStartInterface::class, func_get_args());
     }
 
-    protected function convertRequest(Laravel $laravel, \swoole_http_request $request)
+    protected function convertRequest(Laravel $laravel, SwooleRequest $request)
     {
         $rawGlobals = $laravel->getRawGlobals();
         $server = isset($rawGlobals['_SERVER']) ? $rawGlobals['_SERVER'] : [];
@@ -113,7 +116,7 @@ class LaravelS extends Server
         return (new Request($request))->toIlluminateRequest($server, $env);
     }
 
-    public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
+    public function onRequest(SwooleRequest $request, SwooleResponse $response)
     {
         parent::onRequest($request, $response);
         try {
@@ -133,9 +136,9 @@ class LaravelS extends Server
 
     /**
      * @param \Exception|\Throwable $e
-     * @param \swoole_http_response $response
+     * @param SwooleResponse $response
      */
-    protected function handleException($e, \swoole_http_response $response)
+    protected function handleException($e, SwooleResponse $response)
     {
         $error = sprintf(
             'onRequest: Uncaught exception "%s"([%d]%s) at %s:%s, %s%s',
@@ -156,7 +159,7 @@ class LaravelS extends Server
         }
     }
 
-    protected function handleStaticResource(Laravel $laravel, IlluminateRequest $laravelRequest, \swoole_http_response $swooleResponse)
+    protected function handleStaticResource(Laravel $laravel, IlluminateRequest $laravelRequest, SwooleResponse $swooleResponse)
     {
         // For Swoole < 1.9.17
         if (!empty($this->conf['handle_static'])) {
@@ -171,7 +174,7 @@ class LaravelS extends Server
         return false;
     }
 
-    protected function handleDynamicResource(Laravel $laravel, IlluminateRequest $laravelRequest, \swoole_http_response $swooleResponse)
+    protected function handleDynamicResource(Laravel $laravel, IlluminateRequest $laravelRequest, SwooleResponse $swooleResponse)
     {
         $laravelResponse = $laravel->handleDynamic($laravelRequest);
         $laravelResponse->headers->set('Server', $this->conf['server'], true);

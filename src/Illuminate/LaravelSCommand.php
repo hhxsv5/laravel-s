@@ -3,6 +3,7 @@
 namespace Hhxsv5\LaravelS\Illuminate;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 
 class LaravelSCommand extends Command
 {
@@ -85,7 +86,7 @@ EOS;
         $laravelSVersion = '-';
         $cfg = (array)json_decode(file_get_contents(base_path('composer.lock')), true);
         if (isset($cfg['packages'])) {
-            $packages = array_merge($cfg['packages'], array_get($cfg, 'packages-dev', []));
+            $packages = array_merge($cfg['packages'], Arr::get($cfg, 'packages-dev', []));
             foreach ($packages as $package) {
                 if (isset($package['name']) && $package['name'] === 'hhxsv5/laravel-s') {
                     $laravelSVersion = ltrim($package['version'], 'vV');
@@ -180,7 +181,7 @@ EOS;
         $laravelConf = [
             'root_path'          => $svrConf['laravel_base_path'],
             'static_path'        => $svrConf['swoole']['document_root'],
-            'register_providers' => array_unique((array)array_get($svrConf, 'register_providers', [])),
+            'register_providers' => array_unique((array)Arr::get($svrConf, 'register_providers', [])),
             'is_lumen'           => $this->isLumen(),
             '_SERVER'            => $_SERVER,
             '_ENV'               => $_ENV,

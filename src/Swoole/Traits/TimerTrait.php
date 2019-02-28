@@ -3,6 +3,8 @@
 namespace Hhxsv5\LaravelS\Swoole\Traits;
 
 use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
+use Swoole\Http\Server;
+use Swoole\Process;
 
 trait TimerTrait
 {
@@ -10,13 +12,13 @@ trait TimerTrait
     use LaravelTrait;
     use LogTrait;
 
-    public function addTimerProcess(\swoole_server $swoole, array $config, array $laravelConfig)
+    public function addTimerProcess(Server $swoole, array $config, array $laravelConfig)
     {
         if (empty($config['enable']) || empty($config['jobs'])) {
             return;
         }
 
-        $startTimer = function (\swoole_process $process) use ($swoole, $config, $laravelConfig) {
+        $startTimer = function (Process $process) use ($swoole, $config, $laravelConfig) {
             file_put_contents($config['pid_file'], $process->pid);
             $this->setProcessTitle(sprintf('%s laravels: timer process', $config['process_prefix']));
             $this->initLaravel($laravelConfig, $swoole);
@@ -54,7 +56,7 @@ trait TimerTrait
                 }
             }
 
-            \swoole_process::signal(SIGUSR1, function ($signo) use ($config, $timerIds, $process) {
+            Process::signal(SIGUSR1, function ($signo) use ($config, $timerIds, $process) {
                 foreach ($timerIds as $timerId) {
                     swoole_timer_clear($timerId);
                 }
@@ -64,7 +66,7 @@ trait TimerTrait
             });
         };
 
-        $timerProcess = new \swoole_process($startTimer, false, false);
+        $timerProcess = new Process($startTimer, false, false);
         if ($swoole->addProcess($timerProcess)) {
             return $timerProcess;
         }

@@ -3,13 +3,14 @@
 namespace Hhxsv5\LaravelS\Swoole;
 
 use Illuminate\Http\Request as IlluminateRequest;
+use Swoole\Http\Request as SwooleRequest;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class Request
 {
     protected $swooleRequest;
 
-    public function __construct(\swoole_http_request $request)
+    public function __construct(SwooleRequest $request)
     {
         $this->swooleRequest = $request;
     }

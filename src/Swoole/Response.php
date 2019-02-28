@@ -4,6 +4,7 @@
 namespace Hhxsv5\LaravelS\Swoole;
 
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Swoole\Http\Response as SwooleResponse;
 
 abstract class Response implements ResponseInterface
 {
@@ -11,7 +12,7 @@ abstract class Response implements ResponseInterface
 
     protected $laravelResponse;
 
-    public function __construct(\swoole_http_response $swooleResponse, SymfonyResponse $laravelResponse)
+    public function __construct(SwooleResponse $swooleResponse, SymfonyResponse $laravelResponse)
     {
         $this->swooleResponse = $swooleResponse;
         $this->laravelResponse = $laravelResponse;
