@@ -61,6 +61,7 @@ class LaravelSCommand extends Command
         $this->showLogo();
         $this->showComponents();
         $this->showProtocols();
+        $this->comment('>>> Feedback: <options=underscore>https://github.com/hhxsv5/laravel-s</>');
     }
 
     protected function showLogo()
@@ -161,8 +162,6 @@ EOS;
             ];
         }
         $this->table(['Protocol', 'Status', 'Handler', 'Listen At'], $tableRows);
-
-        $this->comment('>>> Feedback: <options=underscore>https://github.com/hhxsv5/laravel-s</>');
     }
 
     protected function prepareConfig()
