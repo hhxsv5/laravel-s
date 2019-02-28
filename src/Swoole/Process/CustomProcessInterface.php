@@ -38,8 +38,9 @@ interface CustomProcessInterface
 
     /**
      * Trigger this method on receiving the signal SIGUSR1
+     * @param Server $swoole
      * @param Process $process
      * @return mixed
      */
-    public static function onReload(Process $process);
+    public static function onReload(Server $swoole, Process $process);
 }

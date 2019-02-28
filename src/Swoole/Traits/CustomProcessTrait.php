@@ -36,9 +36,9 @@ trait CustomProcessTrait
                 $this->setProcessTitle(sprintf('%s laravels: %s process', $processPrefix, $name));
                 $this->initLaravel($laravelConfig, $swoole);
 
-                Process::signal(SIGUSR1, function ($signo) use ($name, $process, $worker) {
+                Process::signal(SIGUSR1, function ($signo) use ($name, $process, $worker, $swoole) {
                     $this->info(sprintf('Reloading the process %s [pid=%d].', $name, $worker->pid));
-                    $process::onReload($worker);
+                    $process::onReload($swoole, $worker);
                 });
 
                 $runProcess = function () use ($name, $process, $swoole, $worker) {

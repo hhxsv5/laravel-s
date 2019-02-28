@@ -916,7 +916,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
             }
         }
         // Require LaravelS >= v3.4.0
-        public static function onReload(Process $process)
+        public static function onReload(Server $swoole, Process $process)
         {
             // Stop the process...
             // Then end process

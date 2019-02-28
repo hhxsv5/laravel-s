@@ -931,7 +931,7 @@ public function onClose(Server $server, $fd, $reactorId)
             }
         }
         // Require LaravelS >= v3.4.0
-        public static function onReload(Process $process)
+        public static function onReload(Server $swoole, Process $process)
         {
             // Stop the process...
             // Then end process
