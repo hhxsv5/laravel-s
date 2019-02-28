@@ -422,7 +422,7 @@ server {
 ### 系统事件
 > 通常，你可以在这些事件中重置或销毁一些全局或静态的变量，也可以修改当前的请求和响应。
 
-- `laravels.received_request` 将Swoole\Http\Request转成`Illuminate\Http\Request`后，在Laravel内核处理请求前。
+- `laravels.received_request` 将`Swoole\Http\Request`转成`Illuminate\Http\Request`后，在Laravel内核处理请求前。
 
     ```php
     // 修改`app/Providers/EventServiceProvider.php`, 添加下面监听代码到boot方法中
@@ -619,6 +619,7 @@ class TestCronJob extends CronJob
             // [\App\Jobs\Timer\TestCronJob::class, [1000, true]], // 注册时传入参数
             \App\Jobs\Timer\TestCronJob::class, // 重载对应的方法来返回参数
         ],
+        'max_wait_time' => 5, // Reload时最大等待时间
     ],
     // ...
 ];
@@ -626,7 +627,7 @@ class TestCronJob extends CronJob
 
 3.注意在构建服务器集群时，会启动多个`定时器`，要确保只启动一个定期器，避免重复执行定时任务。
 
-4.LaravelS `v3.4.0`开始支持热重启[reload]`定时器`进程，LaravelS 在收到`SIGUSR1`信号后会等待`max_wait_time`(默认5)秒再结束进程，然后`Manager`进程会重新拉起`定时器`进程。
+4.LaravelS `v3.4.0`开始支持热重启[Reload]`定时器`进程，LaravelS 在收到`SIGUSR1`信号后会等待`max_wait_time`(默认5)秒再结束进程，然后`Manager`进程会重新拉起`定时器`进程。
 
 ## 修改代码后自动Reload
 

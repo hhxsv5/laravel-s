@@ -414,7 +414,7 @@ server {
 ### System events
 > Usually, you can reset/destroy some `global/static` variables, or change the current `Request/Response` object.
 
-- `laravels.received_request` After LaravelS parsed Swoole\Http\Request to `Illuminate\Http\Request`, before Laravel's Kernel handles this request.
+- `laravels.received_request` After LaravelS parsed `Swoole\Http\Request` to `Illuminate\Http\Request`, before Laravel's Kernel handles this request.
 
     ```php
     // Edit file `app/Providers/EventServiceProvider.php`, add the following code into method `boot`
@@ -604,6 +604,7 @@ class TestCronJob extends CronJob
             // [\App\Jobs\Timer\TestCronJob::class, [1000, true]], // Pass in parameters when registering
             \App\Jobs\Timer\TestCronJob::class, // Override the corresponding method to return the configuration
         ],
+        'max_wait_time' => 5, // Max waiting time of reloading
     ],
     // ...
 ];
@@ -611,7 +612,7 @@ class TestCronJob extends CronJob
 
 3.Note: it will launch multiple timers when build the server cluster, so you need to make sure that launch one timer only to avoid running repetitive task.
 
-4.LaravelS `v3.4.0` starts to support the hot restart [reload] `Timer` process. After LaravelS receives the `SIGUSR1` signal, it waits for `max_wait_time`(default 5) seconds to end the process, then the `Manager` process will pull up the `Timer` process again.
+4.LaravelS `v3.4.0` starts to support the hot restart [Reload] `Timer` process. After LaravelS receives the `SIGUSR1` signal, it waits for `max_wait_time`(default 5) seconds to end the process, then the `Manager` process will pull up the `Timer` process again.
 
 ## Reload automatically when code is modified
 
