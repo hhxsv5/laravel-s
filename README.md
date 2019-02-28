@@ -895,7 +895,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
         }
         public static function getPipeType()
         {
-            // The type of pipeline: 0 no pipeline, 1 \SOCK_STREAM, 2 \SOCK_DGRAM
+            // The type of pipeline: 0 no pipeline, 1 SOCK_STREAM, 2 SOCK_DGRAM
             return 0;
         }
         public static function callback(Server $swoole, Process $process)
