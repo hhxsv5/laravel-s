@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Swoole\Socket;
 
-use Swoole\Http\Server;
+use Swoole\Server;
 
 interface UdpInterface
 {
