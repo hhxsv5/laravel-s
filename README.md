@@ -715,7 +715,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ```php
     namespace App\Sockets;
     use Hhxsv5\LaravelS\Swoole\Socket\TcpSocket;
-    use Swoole\Http\Server;
+    use Swoole\Server;
     class TestTcpSocket extends TcpSocket
     {
         public function onConnect(Server $server, $fd, $reactorId)
