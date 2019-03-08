@@ -41,13 +41,18 @@ trait CustomProcessTrait
                     $process::onReload($swoole, $worker);
                 });
 
-                $runProcess = function () use ($name, $process, $swoole, $worker) {
+                $enableCoroutine = class_exists('Swoole\Coroutine');
+                $runProcess = function () use ($name, $process, $swoole, $worker, $enableCoroutine) {
                     $maxTry = 10;
                     $i = 0;
                     do {
                         $this->callWithCatchException([$process, 'callback'], [$swoole, $worker]);
                         ++$i;
-                        sleep(1);
+                        if ($enableCoroutine) {
+                            \Swoole\Coroutine::sleep(1);
+                        } else {
+                            sleep(1);
+                        }
                     } while ($i < $maxTry);
                     $this->error(
                         sprintf(
@@ -57,7 +62,7 @@ trait CustomProcessTrait
                         )
                     );
                 };
-                class_exists('Swoole\Coroutine') ? go($runProcess) : $runProcess();;
+                $enableCoroutine ? go($runProcess) : $runProcess();;
             };
             $customProcess = new Process(
                 $processHandler,
