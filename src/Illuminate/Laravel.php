@@ -94,6 +94,12 @@ class Laravel
         } else {
             $this->app->make(ConsoleKernel::class)->bootstrap();
         }
+
+        foreach ($this->conf['cleaners'] as $cleanerCls) {
+            $this->app->singleton($cleanerCls, function ($app) use ($cleanerCls) {
+                return new $cleanerCls();
+            });
+        }
     }
 
     public function loadAllConfigurations()
@@ -252,6 +258,7 @@ class Laravel
             $cleaner = $this->app->make($cleanerCls);
             $cleaner->clean($this->app);
         }
+
         $this->cleanProviders($this->conf['register_providers']);
     }
 
