@@ -4,9 +4,25 @@ namespace Hhxsv5\LaravelS\Swoole\Traits;
 
 use Hhxsv5\LaravelS\LaravelS;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+use Symfony\Component\Console\Style\OutputStyle;
 
 trait LogTrait
 {
+    /**
+     * @var OutputStyle $outputStyle
+     */
+    protected static $outputStyle;
+
+    public static function setOutputStyle(OutputStyle $outputStyle)
+    {
+        static::$outputStyle = $outputStyle;
+    }
+
+    public static function getOutputStyle()
+    {
+        return static::$outputStyle;
+    }
+
     public function logException(\Exception $e)
     {
         $this->log(
