@@ -16,16 +16,14 @@ class Portal extends Command
 {
     use LogTrait;
 
+
+    /**@var string */
     protected $basePath;
 
-    /**
-     * @var InputInterface $input
-     */
+    /**@var InputInterface */
     protected $input;
 
-    /**
-     * @var OutputInterface $output
-     */
+    /**@var OutputInterface */
     protected $output;
 
     public function __construct($basePath)

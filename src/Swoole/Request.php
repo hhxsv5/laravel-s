@@ -16,6 +16,7 @@ class Request
     }
 
     /**
+     * Convert SwooleRequest to IlluminateRequest
      * @param array $rawServer
      * @param array $rawEnv
      * @return IlluminateRequest

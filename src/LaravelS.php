@@ -44,12 +44,10 @@ class LaravelS extends Server
         ProcessTitleTrait::setProcessTitle insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
         LaravelTrait::initLaravel insteadof TimerTrait, CustomProcessTrait;
     }
-
+    /**@var array */
     protected $laravelConf;
 
-    /**
-     * @var Laravel $laravel
-     */
+    /**@var Laravel */
     protected $laravel;
 
     public function __construct(array $svrConf, array $laravelConf)
@@ -191,9 +189,7 @@ class LaravelS extends Server
         return true;
     }
 
-    /**
-     * @var OutputStyle $outputStyle
-     */
+    /**@var OutputStyle */
     protected static $outputStyle;
 
     public static function setOutputStyle(OutputStyle $outputStyle)

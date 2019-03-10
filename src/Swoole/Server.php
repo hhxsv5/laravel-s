@@ -20,15 +20,16 @@ class Server
     use LogTrait;
     use ProcessTitleTrait;
 
+    /**@var array */
     protected $conf;
 
-    /**
-     * @var HttpServer|WebSocketServer
-     */
+    /**@var HttpServer|WebSocketServer */
     protected $swoole;
 
+    /**@var bool */
     protected $enableWebSocket = false;
 
+    /**@var array */
     protected $attachedSockets = [];
 
     protected function __construct(array $conf)

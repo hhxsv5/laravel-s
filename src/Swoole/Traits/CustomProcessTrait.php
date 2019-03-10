@@ -18,9 +18,7 @@ trait CustomProcessTrait
             Laravel::autoload($laravelConfig['root_path']);
         }
 
-        /**
-         * @var []CustomProcessInterface $processList
-         */
+        /**@var []CustomProcessInterface $processList */
         $processList = [];
         foreach ($processes as $process) {
             if (!isset(class_implements($process)[CustomProcessInterface::class])) {
