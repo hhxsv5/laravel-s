@@ -986,9 +986,11 @@ class WorkerStartEvent implements WorkerStartInterface
 
     - Common solutions:
 
-        1. `Reset` status of singleton instances by `Middleware`.
+        1. Write a `XxxCleaner` class to clean up the singleton object state. This class implements the interface `Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface` and then registers it in `cleaners` of `laravels.php`.
 
-        2. Re-register `ServiceProvider`, add `XxxServiceProvider` into `register_providers` of file `laravels.php`. So that reinitialize singleton instances in ervery request [Refer](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
+        2. `Reset` status of singleton instances by `Middleware`.
+
+        1. Re-register `ServiceProvider`, add `XxxServiceProvider` into `register_providers` of file `laravels.php`. So that reinitialize singleton instances in ervery request [Refer](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
 - [Known issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md)
 

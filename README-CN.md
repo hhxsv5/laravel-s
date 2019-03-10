@@ -1001,9 +1001,11 @@ class WorkerStartEvent implements WorkerStartInterface
 
     - 常见的解决方案：
 
-        1. 用一个`中间件`来`重置`单例对象的状态。
+        1. 写一个`XxxCleaner`类来清理单例对象状态，此类需实现接口`Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface`，然后注册到`laravels.php`的`cleaners`中。
+        
+        2. 用一个`中间件`来`重置`单例对象的状态。
 
-        2. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
+        3. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
 - [常见问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md)
 
