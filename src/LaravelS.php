@@ -88,7 +88,7 @@ class LaravelS extends Server
                 $this->laravel->handleDynamic($laravelRequest);
                 $eventHandler('onOpen', func_get_args());
                 $this->laravel->saveSession();
-                $this->laravel->cleanSession();
+                $this->laravel->clean();
             });
         }
     }

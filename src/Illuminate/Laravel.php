@@ -286,13 +286,6 @@ class Laravel
         return $this->app->make($abstract, $parameters);
     }
 
-    public function cleanSession()
-    {
-        /**@var \Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface $cleaner */
-        $cleaner = $this->app->make(SessionCleaner::class);
-        $cleaner->clean($this->app);
-    }
-
     public function saveSession()
     {
         if ($this->app->offsetExists('session')) {

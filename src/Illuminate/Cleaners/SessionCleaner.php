@@ -13,6 +13,7 @@ class SessionCleaner implements CleanerInterface
         if (!$app->offsetExists('session')) {
             return;
         }
+
         $ref = new \ReflectionObject($app['session']);
         $drivers = $ref->getProperty('drivers');
         $drivers->setAccessible(true);
