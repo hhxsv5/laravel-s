@@ -43,7 +43,7 @@
 - `cleaners`: `array` The list of cleaners for `each request` is used to clean up some residual global variables, singleton objects, and static properties to avoid data pollution between requests. The order of cleanup is consistent with the order of the arrays. The default cleaner generated after publishing configuration is required and cannot be deleted.
     ```php
     //...
-    'register_providers' => [
+    'cleaners' => [
         Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
         Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
         Hhxsv5\LaravelS\Illuminate\Cleaners\RequestCleaner::class,

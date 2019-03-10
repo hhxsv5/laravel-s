@@ -43,7 +43,7 @@
 - `cleaners`：`array` `每次请求`的清理器列表，用于清理一些残留的全局变量、单例对象、静态属性，避免多次请求间数据污染。清理的顺序与数组的顺序保持一致。发布配置后生成的默认清理器是必须的，不能删除。
     ```php
     //...
-    'register_providers' => [
+    'cleaners' => [
         Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
         Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
         Hhxsv5\LaravelS\Illuminate\Cleaners\RequestCleaner::class,
