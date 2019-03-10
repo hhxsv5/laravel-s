@@ -14,9 +14,13 @@ class AuthCleaner implements CleanerInterface
             return;
         }
         $ref = new \ReflectionObject($app['auth']);
-        $drivers = $ref->getProperty('drivers');
-        $drivers->setAccessible(true);
-        $drivers->setValue($app['auth'], []);
+        if ($ref->hasProperty('guards')) {
+            $guards = $ref->getProperty('guards');
+        } else {
+            $guards = $ref->getProperty('drivers');
+        }
+        $guards->setAccessible(true);
+        $guards->setValue($app['auth'], []);
 
         $app->forgetInstance('auth.driver');
         Facade::clearResolvedInstance('auth.driver');
