@@ -258,7 +258,8 @@ class Laravel
     public function fireEvent($name, array $params = [])
     {
         $params[] = $this->app;
-        return $this->app['events']->fire($name, $params);
+        return method_exists('dispatch', $this->app['events']) ?
+            $this->app['events']->dispatch($name, $params) : $this->app['events']->fire($name, $params);
     }
 
     public function bindRequest(IlluminateRequest $request)
