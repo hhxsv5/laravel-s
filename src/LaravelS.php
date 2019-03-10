@@ -19,6 +19,7 @@ use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
 use Swoole\Http\Server as HttpServer;
 use Swoole\WebSocket\Server as WebSocketServer;
+use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
@@ -40,8 +41,6 @@ class LaravelS extends Server
         LogTrait::warning insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
         LogTrait::error insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
         LogTrait::callWithCatchException insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
-        LogTrait::getOutputStyle insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
-        LogTrait::setOutputStyle insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
         ProcessTitleTrait::setProcessTitle insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
         LaravelTrait::initLaravel insteadof TimerTrait, CustomProcessTrait;
     }
@@ -190,5 +189,20 @@ class LaravelS extends Server
         $response = null;
         unset($response);
         return true;
+    }
+
+    /**
+     * @var OutputStyle $outputStyle
+     */
+    protected static $outputStyle;
+
+    public static function setOutputStyle(OutputStyle $outputStyle)
+    {
+        static::$outputStyle = $outputStyle;
+    }
+
+    public static function getOutputStyle()
+    {
+        return static::$outputStyle;
     }
 }
