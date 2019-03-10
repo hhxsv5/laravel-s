@@ -46,6 +46,11 @@ return [
     ],
     'register_providers'       => [
     ],
+    'cleaners'                 => [
+        Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
+        Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
+        Hhxsv5\LaravelS\Illuminate\Cleaners\RequestCleaner::class,
+    ],
     'swoole'                   => [
         'daemonize'          => env('LARAVELS_DAEMONIZE', false),
         'dispatch_mode'      => 2,

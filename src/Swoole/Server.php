@@ -280,7 +280,7 @@ class Server
         }
     }
 
-    public function onRequest(SwooleRequest $request, SwooleResponse $response)
+    public function onRequest(SwooleRequest $swooleRequest, SwooleResponse $swooleResponse)
     {
 
     }
