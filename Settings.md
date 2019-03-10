@@ -40,12 +40,23 @@
 
 - `swoole_tables`: `array` The defined of `swoole_table` list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#use-swoole_table).
 
-- `register_providers`: `array` The `Service Provider` list, will be re-registered `every request`, and run method `boot()` if it exists. Usually, be used to clear the `Service Provider` which registers `Singleton` instances.
+- `cleaners`: `array` The list of cleaners for `each request` is used to clean up some residual global variables, singleton objects, and static properties to avoid data pollution between requests. The order of cleanup is consistent with the order of the arrays. The default cleaner generated after publishing configuration is required and cannot be deleted.
     ```php
     //...
     'register_providers' => [
-        //eg: re-register ServiceProvider of jwt
-        \Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
+        Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
+        Hhxsv5\LaravelS\Illuminate\Cleaners\RequestCleaner::class,
+        //...
+    ],
+    //...
+    ```
+
+- `register_providers`: `array` The `Service Provider` list, will be re-registered `each request`, and run method `boot()` if it exists. Usually, be used to clear the `Service Provider` which registers `Singleton` instances.
+    ```php
+    //...
+    'register_providers' => [
+        \Xxx\Yyy\XxxServiceProvider::class,
     ],
     //...
     ```
