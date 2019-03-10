@@ -18,16 +18,13 @@ return [
         'excluded_dirs' => [],
         'log'           => true,
     ],
-    'event_handlers'           => [
-    ],
+    'event_handlers'           => [],
     'websocket'                => [
         'enable' => false,
         //'handler' => XxxWebSocketHandler::class,
     ],
-    'sockets'                  => [
-    ],
-    'processes'                => [
-    ],
+    'sockets'                  => [],
+    'processes'                => [],
     'timer'                    => [
         'enable'        => false,
         'jobs'          => [
@@ -40,16 +37,14 @@ return [
         'pid_file'      => storage_path('laravels-timer.pid'),
         'max_wait_time' => 5,
     ],
-    'events'                   => [
-    ],
-    'swoole_tables'            => [
-    ],
-    'register_providers'       => [
-    ],
+    'events'                   => [],
+    'swoole_tables'            => [],
+    'register_providers'       => [],
     'cleaners'                 => [
         Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
         Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
         Hhxsv5\LaravelS\Illuminate\Cleaners\RequestCleaner::class,
+        // ...
     ],
     'swoole'                   => [
         'daemonize'          => env('LARAVELS_DAEMONIZE', false),
