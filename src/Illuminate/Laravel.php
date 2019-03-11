@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Illuminate;
 
-use Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner;
+use Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
@@ -97,6 +97,14 @@ class Laravel
 
         foreach ($this->conf['cleaners'] as $cleanerCls) {
             $this->app->singleton($cleanerCls, function ($app) use ($cleanerCls) {
+                if (!isset(class_implements($cleanerCls)[CleanerInterface::class])) {
+                    throw new \Exception(sprintf(
+                            '%s must implement the interface %s',
+                            $cleanerCls,
+                            CleanerInterface::class
+                        )
+                    );
+                }
                 return new $cleanerCls();
             });
         }
@@ -254,7 +262,7 @@ class Laravel
     public function clean()
     {
         foreach ($this->conf['cleaners'] as $cleanerCls) {
-            /**@var \Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface $cleaner */
+            /**@var CleanerInterface $cleaner */
             $cleaner = $this->app->make($cleanerCls);
             $cleaner->clean($this->app);
         }
