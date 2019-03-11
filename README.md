@@ -947,7 +947,9 @@ Supported events:
 
 | Event | Interface | When happened |
 | -------- | -------- | -------- |
-| WorkerStart | Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface | Occurs when the Worker process/Task process starts, and the Laravel initialization has been completed. |
+| WorkerStart | Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface | Occurs when the Worker/Task process starts, and the Laravel initialization has been completed. |
+| WorkerStop | Hhxsv5\LaravelS\Swoole\Events\WorkerStopInterface | Occurs when the Worker/Task process exits normally. |
+| WorkerError | Hhxsv5\LaravelS\Swoole\Events\WorkerErrorInterface | Occurs when an exception or fatal error occurs in the Worker/Task process. |
 
 1.Create an event class to implement the corresponding interface.
 ```php
@@ -961,10 +963,8 @@ class WorkerStartEvent implements WorkerStartInterface
     }
     public function handle(Server $server, $workerId)
     {
-        // Eg: Initialize a connection pool object, bound to the Swoole Server object, accessible via app('swoole')->connectionPool
-        if (!isset($server->connectionPool)) {
-            $server->connectionPool = new ConnectionPool();
-        }
+        // Initialize a database connection pool
+        // DatabaseConnectionPool::init();
     }
 }
 ```

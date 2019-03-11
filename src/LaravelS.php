@@ -4,7 +4,9 @@ namespace Hhxsv5\LaravelS;
 
 use Hhxsv5\LaravelS\Illuminate\Laravel;
 use Hhxsv5\LaravelS\Swoole\DynamicResponse;
+use Hhxsv5\LaravelS\Swoole\Events\WorkerErrorInterface;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
+use Hhxsv5\LaravelS\Swoole\Events\WorkerStopInterface;
 use Hhxsv5\LaravelS\Swoole\Request;
 use Hhxsv5\LaravelS\Swoole\Server;
 use Hhxsv5\LaravelS\Swoole\StaticResponse;
@@ -102,8 +104,24 @@ class LaravelS extends Server
         // Delay to include Laravel's autoload.php
         $this->laravel = $this->initLaravel($this->laravelConf, $this->swoole);
 
-        // Fire workerStart event
-        $this->fireEvent('workerStart', WorkerStartInterface::class, func_get_args());
+        // Fire WorkerStart event
+        $this->fireEvent('WorkerStart', WorkerStartInterface::class, func_get_args());
+    }
+
+    public function onWorkerStop(HttpServer $server, $workerId)
+    {
+        parent::onWorkerStop($server, $workerId);
+
+        // Fire WorkerStop event
+        $this->fireEvent('WorkerStop', WorkerStopInterface::class, func_get_args());
+    }
+
+    public function onWorkerError(HttpServer $server, $workerId, $workerPId, $exitCode, $signal)
+    {
+        parent::onWorkerError($server, $workerId, $workerPId, $exitCode, $signal);
+
+        // Fire WorkerError event
+        $this->fireEvent('WorkerError', WorkerErrorInterface::class, func_get_args());
     }
 
     protected function convertRequest(Laravel $laravel, SwooleRequest $request)

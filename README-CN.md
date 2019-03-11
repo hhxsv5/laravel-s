@@ -963,7 +963,9 @@ public function onClose(Server $server, $fd, $reactorId)
 
 | 事件 | 需实现的接口 | 发生时机 |
 | -------- | -------- | -------- |
-| WorkerStart | Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface | 发生在Worker进程/Task进程启动时，并且已经完成Laravel初始化 |
+| WorkerStart | Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface | 发生在Worker/Task进程启动时，并且已经完成Laravel初始化 |
+| WorkerStop | Hhxsv5\LaravelS\Swoole\Events\WorkerStopInterface | 发生在Worker/Task进程正常退出时。 |
+| WorkerError | Hhxsv5\LaravelS\Swoole\Events\WorkerErrorInterface | 发生在Worker/Task进程发生异常或致命错误时。 |
 
 1.创建事件处理类，实现相应的接口。
 ```php
@@ -977,10 +979,8 @@ class WorkerStartEvent implements WorkerStartInterface
     }
     public function handle(Server $server, $workerId)
     {
-        // 例如：初始化一个连接池对象，绑定到Swoole Server对象上，其他地方可通过app('swoole')->connectionPool访问
-        if (!isset($server->connectionPool)) {
-            $server->connectionPool = new ConnectionPool();
-        }
+        // 初始化一个数据库连接池对象
+        // DatabaseConnectionPool::init();
     }
 }
 ```
