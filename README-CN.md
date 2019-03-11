@@ -566,6 +566,7 @@ var_dump($ret);//判断是否投递成功
 ```php
 namespace App\Jobs\Timer;
 use App\Tasks\TestTask;
+use Swoole\Coroutine;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
 use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 class TestCronJob extends CronJob
@@ -586,6 +587,8 @@ class TestCronJob extends CronJob
     {
         \Log::info(__METHOD__, ['start', $this->i, microtime(true)]);
         // do something
+        // sleep(1); // Swoole < 2.1
+        Coroutine::sleep(1); // Swoole>=2.1 run()方法已自动创建协程。
         $this->i++;
         \Log::info(__METHOD__, ['end', $this->i, microtime(true)]);
 

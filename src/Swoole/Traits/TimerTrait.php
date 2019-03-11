@@ -40,19 +40,20 @@ trait TimerTrait
                 if (empty($job->interval())) {
                     throw new \Exception(sprintf('The interval of %s cannot be empty', get_class($job)));
                 }
-                $timerId = swoole_timer_tick($job->interval(), function () use ($job) {
-                    $this->callWithCatchException(function () use ($job) {
-                        $job->run();
-                    });
-                });
-                $timerIds[] = $timerId;
-                $job->setTimerId($timerId);
-                if ($job->isImmediate()) {
-                    swoole_timer_after(1, function () use ($job) {
+                $runProcess = function () use ($job) {
+                    $runCallback = function () use ($job) {
                         $this->callWithCatchException(function () use ($job) {
                             $job->run();
                         });
-                    });
+                    };
+                    class_exists('Swoole\Coroutine') ? go($runCallback) : $runCallback();
+                };
+
+                $timerId = swoole_timer_tick($job->interval(), $runProcess);
+                $timerIds[] = $timerId;
+                $job->setTimerId($timerId);
+                if ($job->isImmediate()) {
+                    swoole_timer_after(1, $runProcess);
                 }
             }
 

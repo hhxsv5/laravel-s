@@ -552,6 +552,7 @@ var_dump($ret);// Return true if sucess, otherwise false
 ```php
 namespace App\Jobs\Timer;
 use App\Tasks\TestTask;
+use Swoole\Coroutine;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
 use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 class TestCronJob extends CronJob
@@ -572,6 +573,8 @@ class TestCronJob extends CronJob
     {
         \Log::info(__METHOD__, ['start', $this->i, microtime(true)]);
         // do something
+        // sleep(1); // Swoole < 2.1
+        Coroutine::sleep(1); // Swoole>=2.1 Coroutine will be automatically created for run().
         $this->i++;
         \Log::info(__METHOD__, ['end', $this->i, microtime(true)]);
 
