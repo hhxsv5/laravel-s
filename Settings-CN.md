@@ -46,6 +46,7 @@
     'cleaners' => [
         Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
         Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
+        //Hhxsv5\LaravelS\Illuminate\Cleaners\JWTCleaner::class, // 如果你使用包"tymon/jwt-auth"，请解除这行注释
         Hhxsv5\LaravelS\Illuminate\Cleaners\RequestCleaner::class,
         //...
     ],
