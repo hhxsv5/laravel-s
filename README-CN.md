@@ -588,7 +588,7 @@ class TestCronJob extends CronJob
         \Log::info(__METHOD__, ['start', $this->i, microtime(true)]);
         // do something
         // sleep(1); // Swoole < 2.1
-        Coroutine::sleep(1); // Swoole>=2.1 run()方法已自动创建协程。
+        Coroutine::sleep(1); // Swoole>=2.1 run()方法已自动创建了协程。
         $this->i++;
         \Log::info(__METHOD__, ['end', $this->i, microtime(true)]);
 
@@ -925,7 +925,7 @@ public function onClose(Server $server, $fd, $reactorId)
             while (true) {
                 \Log::info('Do something');
                 // sleep(1); // Swoole < 2.1
-                Coroutine::sleep(1); // Swoole>=2.1 callback()方法已自动创建协程。
+                Coroutine::sleep(1); // Swoole>=2.1 callback()方法已自动创建了协程。
                 // 自定义进程中也可以投递Task，但不支持Task的finish()回调。
                 // 注意：
                 // 1.参数2需传true
