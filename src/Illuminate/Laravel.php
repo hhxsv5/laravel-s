@@ -95,7 +95,8 @@ class Laravel
             $this->app->make(ConsoleKernel::class)->bootstrap();
         }
 
-        foreach ($this->conf['cleaners'] as $cleanerCls) {
+        $cleaners = isset($this->conf['cleaners']) ? $this->conf['cleaners'] : [];
+        foreach ($cleaners as $cleanerCls) {
             $this->app->singleton($cleanerCls, function ($app) use ($cleanerCls) {
                 if (!isset(class_implements($cleanerCls)[CleanerInterface::class])) {
                     throw new \Exception(sprintf(
