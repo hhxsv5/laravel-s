@@ -22,7 +22,7 @@ trait CustomProcessTrait
         $processList = [];
         foreach ($processes as $process) {
             if (!isset(class_implements($process)[CustomProcessInterface::class])) {
-                throw new \Exception(sprintf(
+                throw new \InvalidArgumentException(sprintf(
                         '%s must implement the interface %s',
                         $process,
                         CustomProcessInterface::class

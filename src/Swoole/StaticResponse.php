@@ -29,7 +29,7 @@ class StaticResponse extends Response
             $path = $file->getRealPath();
             if (filesize($path) > 0) {
                 if (version_compare(swoole_version(), '1.7.21', '<')) {
-                    throw new \Exception('sendfile() require Swoole >= 1.7.21');
+                    throw new \RuntimeException('sendfile() require Swoole >= 1.7.21');
                 }
                 $this->swooleResponse->sendfile($path);
             } else {

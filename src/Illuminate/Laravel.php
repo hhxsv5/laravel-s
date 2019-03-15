@@ -96,17 +96,17 @@ class Laravel
         }
 
         $cleaners = isset($this->conf['cleaners']) ? $this->conf['cleaners'] : [];
-        foreach ($cleaners as $cleanerCls) {
-            $this->app->singleton($cleanerCls, function ($app) use ($cleanerCls) {
-                if (!isset(class_implements($cleanerCls)[CleanerInterface::class])) {
-                    throw new \Exception(sprintf(
+        foreach ($cleaners as $cleaner) {
+            $this->app->singleton($cleaner, function ($app) use ($cleaner) {
+                if (!isset(class_implements($cleaner)[CleanerInterface::class])) {
+                    throw new \InvalidArgumentException(sprintf(
                             '%s must implement the interface %s',
-                            $cleanerCls,
+                            $cleaner,
                             CleanerInterface::class
                         )
                     );
                 }
-                return new $cleanerCls();
+                return new $cleaner();
             });
         }
     }

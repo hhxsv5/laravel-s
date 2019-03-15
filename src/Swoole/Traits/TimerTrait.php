@@ -30,7 +30,7 @@ trait TimerTrait
                     $job = new $jobClass();
                 }
                 if (!($job instanceof CronJob)) {
-                    throw new \Exception(sprintf(
+                    throw new \InvalidArgumentException(sprintf(
                             '%s must extend the abstract class %s',
                             get_class($job),
                             CronJob::class
@@ -38,7 +38,7 @@ trait TimerTrait
                     );
                 }
                 if (empty($job->interval())) {
-                    throw new \Exception(sprintf('The interval of %s cannot be empty', get_class($job)));
+                    throw new \InvalidArgumentException(sprintf('The interval of %s cannot be empty', get_class($job)));
                 }
                 $runProcess = function () use ($job) {
                     $runCallback = function () use ($job) {

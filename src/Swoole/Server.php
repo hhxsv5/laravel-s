@@ -175,7 +175,7 @@ class Server
         $handlerClass = $this->conf['websocket']['handler'];
         $t = new $handlerClass();
         if (!($t instanceof WebSocketHandlerInterface)) {
-            throw new \Exception(sprintf('%s must implement the interface %s', get_class($t), WebSocketHandlerInterface::class));
+            throw new \InvalidArgumentException(sprintf('%s must implement the interface %s', get_class($t), WebSocketHandlerInterface::class));
         }
         $handler = $t;
         return $handler;
@@ -190,7 +190,7 @@ class Server
         }
         $t = new $handlerClass($port);
         if (!($t instanceof PortInterface)) {
-            throw new \Exception(sprintf('%s must extend the abstract class TcpSocket/UdpSocket', get_class($t)));
+            throw new \InvalidArgumentException(sprintf('%s must extend the abstract class TcpSocket/UdpSocket', get_class($t)));
         }
         $handlers[$portHash] = $t;
         return $handlers[$portHash];
@@ -321,7 +321,7 @@ class Server
              */
             $listener = new $listenerClass();
             if (!($listener instanceof Listener)) {
-                throw new \Exception(sprintf('%s must extend the abstract class %s', $listenerClass, Listener::class));
+                throw new \InvalidArgumentException(sprintf('%s must extend the abstract class %s', $listenerClass, Listener::class));
             }
             $this->callWithCatchException(function () use ($listener, $event) {
                 $listener->handle($event);
@@ -343,7 +343,7 @@ class Server
         if (isset($this->conf['event_handlers'][$event])) {
             $eventHandler = $this->conf['event_handlers'][$event];
             if (!isset(class_implements($eventHandler)[$interface])) {
-                throw new \Exception(sprintf(
+                throw new \InvalidArgumentException(sprintf(
                         '%s must implement the interface %s',
                         $eventHandler,
                         $interface
