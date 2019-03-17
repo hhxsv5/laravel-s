@@ -37,6 +37,12 @@ class Laravel
     public function __construct(array $conf = [])
     {
         $this->conf = $conf;
+
+        // Merge $_ENV $_SERVER
+        $server = isset($this->conf['_SERVER']) ? $this->conf['_SERVER'] : [];
+        $env = isset($this->conf['_ENV']) ? $this->conf['_ENV'] : [];
+        $this->rawGlobals['_SERVER'] = array_merge($_SERVER, $server);
+        $this->rawGlobals['_ENV'] = array_merge($_ENV, $env);
     }
 
     public function prepareLaravel()
@@ -57,12 +63,6 @@ class Laravel
         if (!$this->conf['is_lumen']) {
             $kernel = $app->make(HttpKernel::class);
         }
-
-        // Merge $_ENV $_SERVER
-        $server = isset($this->conf['_SERVER']) ? $this->conf['_SERVER'] : [];
-        $env = isset($this->conf['_ENV']) ? $this->conf['_ENV'] : [];
-        $this->rawGlobals['_SERVER'] = array_merge($_SERVER, $server);
-        $this->rawGlobals['_ENV'] = array_merge($_ENV, $env);
 
         // Load all Configurations for Lumen
         if ($this->conf['is_lumen']) {
