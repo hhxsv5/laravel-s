@@ -37,7 +37,9 @@ abstract class Response implements ResponseInterface
     public function sendCookies()
     {
         $hasIsRaw = null;
-        foreach ($this->laravelResponse->headers->getCookies() as $cookie) {
+        /**@var \Symfony\Component\HttpFoundation\Cookie[] $cookies */
+        $cookies = $this->laravelResponse->headers->getCookies();
+        foreach ($cookies as $cookie) {
             if ($hasIsRaw === null) {
                 $hasIsRaw = method_exists($cookie, 'isRaw');
             }
