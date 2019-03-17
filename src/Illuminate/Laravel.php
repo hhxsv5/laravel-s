@@ -3,6 +3,9 @@
 namespace Hhxsv5\LaravelS\Illuminate;
 
 use Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface;
+use Hhxsv5\LaravelS\Illuminate\Cleaners\ConfigCleaner;
+use Hhxsv5\LaravelS\Illuminate\Cleaners\CookieCleaner;
+use Hhxsv5\LaravelS\Illuminate\Cleaners\RequestCleaner;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
@@ -17,6 +20,9 @@ class Laravel
 
     /**@var Container */
     protected $snapshotApp;
+
+    /**@var \ReflectionObject */
+    protected $reflectionApp;
 
     /**@var HttpKernel */
     protected $kernel;
@@ -34,6 +40,13 @@ class Laravel
     /**@var array */
     private $rawGlobals = [];
 
+    /**@var array */
+    protected static $defaultCleaners = [
+        ConfigCleaner::class,
+        CookieCleaner::class,
+        RequestCleaner::class,
+    ];
+
     public function __construct(array $conf = [])
     {
         $this->conf = $conf;
@@ -43,19 +56,32 @@ class Laravel
         $env = isset($this->conf['_ENV']) ? $this->conf['_ENV'] : [];
         $this->rawGlobals['_SERVER'] = array_merge($_SERVER, $server);
         $this->rawGlobals['_ENV'] = array_merge($_ENV, $env);
+
+        // Add default cleaners
+        $this->conf['cleaners'] = isset($this->conf['cleaners']) ? $this->conf['cleaners'] : [];
+        $this->conf['cleaners'] = array_unique(array_merge($this->conf['cleaners'], self::$defaultCleaners));
     }
 
     public function prepareLaravel()
     {
-
         list($this->app, $this->kernel) = $this->createAppKernel();
-        list($this->snapshotApp,) = $this->createAppKernel();
+        $this->snapshotApp = clone $this->app;
+
+        $this->reflectionApp = new \ReflectionObject($this->app);
+
+        // Save snapshots for app
+        $instances = $this->reflectionApp->getProperty('instances');
+        $instances->setAccessible(true);
+        $instances = array_merge($this->app->getBindings(), $instances->getValue($this->app));
+        foreach ($instances as $key => $value) {
+            $this->snapshotApp->offsetSet($key, is_object($value) ? clone $value : $value);
+        }
     }
 
     public function createAppKernel()
     {
         // Register autoload
-        static::autoload($this->conf['root_path']);
+        self::autoload($this->conf['root_path']);
 
         // Make kernel for Laravel
         $kernel = null;
@@ -139,11 +165,10 @@ class Laravel
                 $content = (string)$response;
             }
 
-            $laravelReflect = new \ReflectionObject($this->app);
-            $middleware = $laravelReflect->getProperty('middleware');
+            $middleware = $this->reflectionApp->getProperty('middleware');
             $middleware->setAccessible(true);
             if (!empty($middleware->getValue($this->app))) {
-                $callTerminableMiddleware = $laravelReflect->getMethod('callTerminableMiddleware');
+                $callTerminableMiddleware = $this->reflectionApp->getMethod('callTerminableMiddleware');
                 $callTerminableMiddleware->setAccessible(true);
                 $callTerminableMiddleware->invoke($this->app, $response);
             }
@@ -209,8 +234,7 @@ class Laravel
     protected function cleanProviders(array $providers, $force = false)
     {
         if ($this->conf['is_lumen']) {
-            $laravelReflect = new \ReflectionObject($this->app);
-            $loadedProviders = $laravelReflect->getProperty('loadedProviders');
+            $loadedProviders = $this->reflectionApp->getProperty('loadedProviders');
             $loadedProviders->setAccessible(true);
             $oldLoadedProviders = $loadedProviders->getValue($this->app);
         }
