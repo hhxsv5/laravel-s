@@ -40,14 +40,13 @@
 
 - `swoole_tables`：`array` 定义的`swoole_table`列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E4%BD%BF%E7%94%A8swoole_table)。
 
-- `cleaners`：`array` `每次请求`的清理器列表，用于清理一些残留的全局变量、单例对象、静态属性，避免多次请求间数据污染。这些清理器类必须实现接口`Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface`。清理的顺序与数组的顺序保持一致。发布配置后生成的默认清理器是必须的，不能删除。
+- `cleaners`：`array` `每次请求`的清理器列表，用于清理一些残留的全局变量、单例对象、静态属性，避免多次请求间数据污染。这些清理器类必须实现接口`Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface`。清理的顺序与数组的顺序保持一致。[这些清理器](https://github.com/hhxsv5/laravel-s/blob/master/src/Illuminate/Laravel.php#L44)默认已启用。
     ```php
     //...
     'cleaners' => [
         //Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class, // 如果你的项目中使用到了Session或Authentication，请解除这行注释
         //Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class, // 如果你的项目中使用到了Authentication或Passport，请解除这行注释
         //Hhxsv5\LaravelS\Illuminate\Cleaners\JWTCleaner::class, // 如果你的项目中使用到了包"tymon/jwt-auth"，请解除这行注释
-        Hhxsv5\LaravelS\Illuminate\Cleaners\RequestCleaner::class,
         //...
     ],
     //...

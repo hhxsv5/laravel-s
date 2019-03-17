@@ -40,14 +40,13 @@
 
 - `swoole_tables`: `array` The defined of `swoole_table` list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#use-swoole_table).
 
-- `cleaners`: `array` The list of cleaners for `each request` is used to clean up some residual global variables, singleton objects, and static properties to avoid data pollution between requests, these classes must implement interface `Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface`. The order of cleanup is consistent with the order of the arrays. The default cleaner generated after publishing configuration is required and cannot be deleted.
+- `cleaners`: `array` The list of cleaners for `each request` is used to clean up some residual global variables, singleton objects, and static properties to avoid data pollution between requests, these classes must implement interface `Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface`. The order of cleanup is consistent with the order of the arrays. [Some cleaners](https://github.com/hhxsv5/laravel-s/blob/master/src/Illuminate/Laravel.php#L44) enabled by default.
     ```php
     //...
     'cleaners' => [
         //Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class, // If you use the session/authentication in your project, please uncomment this line
         //Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,    // If you use the authentication/passport in your project, please uncomment this line
         //Hhxsv5\LaravelS\Illuminate\Cleaners\JWTCleaner::class,     // If you use the package "tymon/jwt-auth" in your project, please uncomment this line
-        Hhxsv5\LaravelS\Illuminate\Cleaners\RequestCleaner::class,
         //...
     ],
     //...
