@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Facade;
 
 class SessionCleaner implements CleanerInterface
 {
-    public function clean(Container $app)
+    public function clean(Container $app, Container $snapshot)
     {
         if (!$app->offsetExists('session')) {
             return;

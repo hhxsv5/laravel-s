@@ -14,7 +14,7 @@ class JWTCleaner implements CleanerInterface
         'tymon.jwt.claim.factory',
     ];
 
-    public function clean(Container $app)
+    public function clean(Container $app, Container $snapshot)
     {
         foreach ($this->instances as $instance) {
             $app->forgetInstance($instance);

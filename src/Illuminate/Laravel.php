@@ -15,11 +15,11 @@ class Laravel
     /**@var Container */
     protected $app;
 
+    /**@var Container */
+    protected $snapshotApp;
+
     /**@var HttpKernel */
     protected $kernel;
-
-    /**@var array */
-    protected $snapshots = [];
 
     /**@var array */
     protected $conf = [];
@@ -41,13 +41,75 @@ class Laravel
 
     public function prepareLaravel()
     {
+
+        list($this->app, $this->kernel) = $this->createAppKernel();
+        list($this->snapshotApp,) = $this->createAppKernel();
+    }
+
+    public function createAppKernel()
+    {
+        // Register autoload
         static::autoload($this->conf['root_path']);
-        $this->createApp();
-        $this->createKernel();
-        $this->setLaravel();
-        $this->loadAllConfigurations();
-        $this->bootstrap();
-        $this->saveSnapshots();
+
+        // Make kernel for Laravel
+        $kernel = null;
+        $app = require $this->conf['root_path'] . '/bootstrap/app.php';
+        if (!$this->conf['is_lumen']) {
+            $kernel = $app->make(HttpKernel::class);
+        }
+
+        // Merge $_ENV $_SERVER
+        $server = isset($this->conf['_SERVER']) ? $this->conf['_SERVER'] : [];
+        $env = isset($this->conf['_ENV']) ? $this->conf['_ENV'] : [];
+        $this->rawGlobals['_SERVER'] = array_merge($_SERVER, $server);
+        $this->rawGlobals['_ENV'] = array_merge($_ENV, $env);
+
+        // Load all Configurations for Lumen
+        if ($this->conf['is_lumen']) {
+            $cfgPaths = [
+                // Framework default configuration
+                $this->conf['root_path'] . '/vendor/laravel/lumen-framework/config/',
+                // App configuration
+                $this->conf['root_path'] . '/config/',
+            ];
+            $keys = [];
+            foreach ($cfgPaths as $cfgPath) {
+                $configs = (array)glob($cfgPath . '*.php');
+                foreach ($configs as $config) {
+                    $config = substr(basename($config), 0, -4);
+                    $keys[$config] = $config;
+                }
+            }
+            foreach ($keys as $key) {
+                $app->configure($key);
+            }
+        }
+
+        // Boot
+        if ($this->conf['is_lumen']) {
+            if (method_exists($app, 'boot')) {
+                $app->boot();
+            }
+        } else {
+            $app->make(ConsoleKernel::class)->bootstrap();
+        }
+
+        // Bind singleton cleaners
+        foreach ($this->conf['cleaners'] as $cleaner) {
+            $app->singleton($cleaner, function ($app) use ($cleaner) {
+                if (!isset(class_implements($cleaner)[CleanerInterface::class])) {
+                    throw new \InvalidArgumentException(sprintf(
+                            '%s must implement the interface %s',
+                            $cleaner,
+                            CleanerInterface::class
+                        )
+                    );
+                }
+                return new $cleaner();
+            });
+        }
+
+        return [$app, $kernel];
     }
 
     public static function autoload($rootPath)
@@ -60,96 +122,6 @@ class Laravel
         }
     }
 
-    protected function createApp()
-    {
-        $this->app = require $this->conf['root_path'] . '/bootstrap/app.php';
-    }
-
-    protected function createKernel()
-    {
-        if (!$this->conf['is_lumen']) {
-            $this->kernel = $this->app->make(HttpKernel::class);
-        }
-    }
-
-    protected function setLaravel()
-    {
-        // Load configuration laravel.php manually for Lumen
-        if ($this->conf['is_lumen'] && file_exists($this->conf['root_path'] . '/config/laravels.php')) {
-            $this->app->configure('laravels');
-        }
-
-        $server = isset($this->conf['_SERVER']) ? $this->conf['_SERVER'] : [];
-        $env = isset($this->conf['_ENV']) ? $this->conf['_ENV'] : [];
-        $this->rawGlobals['_SERVER'] = array_merge($_SERVER, $server);
-        $this->rawGlobals['_ENV'] = array_merge($_ENV, $env);
-    }
-
-    protected function bootstrap()
-    {
-        if ($this->conf['is_lumen']) {
-            if (method_exists($this->app, 'boot')) {
-                $this->app->boot();
-            }
-        } else {
-            $this->app->make(ConsoleKernel::class)->bootstrap();
-        }
-
-        foreach ($this->conf['cleaners'] as $cleaner) {
-            $this->app->singleton($cleaner, function ($app) use ($cleaner) {
-                if (!isset(class_implements($cleaner)[CleanerInterface::class])) {
-                    throw new \InvalidArgumentException(sprintf(
-                            '%s must implement the interface %s',
-                            $cleaner,
-                            CleanerInterface::class
-                        )
-                    );
-                }
-                return new $cleaner();
-            });
-        }
-    }
-
-    public function loadAllConfigurations()
-    {
-        if (!$this->conf['is_lumen']) {
-            return;
-        }
-
-        $cfgPaths = [
-            // Framework default configuration
-            $this->conf['root_path'] . '/vendor/laravel/lumen-framework/config/',
-            // App configuration
-            $this->conf['root_path'] . '/config/',
-        ];
-        $keys = [];
-        foreach ($cfgPaths as $cfgPath) {
-            $configs = (array)glob($cfgPath . '*.php');
-            foreach ($configs as $config) {
-                $config = substr(basename($config), 0, -4);
-                $keys[$config] = $config;
-            }
-        }
-        foreach ($keys as $key) {
-            $this->app->configure($key);
-        }
-    }
-
-    protected function saveSnapshots()
-    {
-        $this->snapshots['config'] = $this->app['config']->all();
-    }
-
-    protected function applySnapshots()
-    {
-        $this->app['config']->set($this->snapshots['config']);
-        if (isset($this->app['cookie'])) {
-            foreach ($this->app['cookie']->getQueuedCookies() as $name => $cookie) {
-                $this->app['cookie']->unqueue($name);
-            }
-        }
-    }
-
     public function getRawGlobals()
     {
         return $this->rawGlobals;
@@ -157,8 +129,6 @@ class Laravel
 
     public function handleDynamic(IlluminateRequest $request)
     {
-        $this->applySnapshots();
-
         ob_start();
 
         if ($this->conf['is_lumen']) {
@@ -264,7 +234,7 @@ class Laravel
         foreach ($this->conf['cleaners'] as $cleanerCls) {
             /**@var CleanerInterface $cleaner */
             $cleaner = $this->app->make($cleanerCls);
-            $cleaner->clean($this->app);
+            $cleaner->clean($this->app, $this->snapshotApp);
         }
 
         $this->cleanProviders($this->conf['register_providers']);

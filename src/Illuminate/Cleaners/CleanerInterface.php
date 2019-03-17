@@ -7,5 +7,5 @@ use Illuminate\Container\Container;
 
 interface CleanerInterface
 {
-    public function clean(Container $app);
+    public function clean(Container $app, Container $snapshot);
 }
