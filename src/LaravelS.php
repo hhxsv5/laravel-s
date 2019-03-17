@@ -195,15 +195,13 @@ class LaravelS extends Server
         $laravelResponse = $laravel->handleDynamic($laravelRequest);
         $laravelResponse->headers->set('Server', $this->conf['server'], true);
         $laravel->fireEvent('laravels.generated_response', [$laravelRequest, $laravelResponse]);
-        $laravel->clean();
         if ($laravelResponse instanceof BinaryFileResponse) {
             $response = new StaticResponse($swooleResponse, $laravelResponse);
         } else {
             $response = new DynamicResponse($swooleResponse, $laravelResponse);
         }
         $response->send($this->conf['enable_gzip']);
-        $response = null;
-        unset($response);
+        $laravel->clean();
         return true;
     }
 
