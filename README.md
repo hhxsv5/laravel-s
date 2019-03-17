@@ -151,7 +151,7 @@ stdout_logfile=/opt/www/laravel-s-test/storage/logs/supervisord-stdout.log
 ```
 
 ## Cooperate with Nginx (Recommended)
-> [Demo](https://github.com/hhxsv5/docker/blob/master/compose/nginx).
+> [Demo](https://github.com/hhxsv5/docker/blob/master/nginx/conf.d/laravels.conf).
 
 ```nginx
 gzip on;
