@@ -8,5 +8,5 @@ interface WorkerErrorInterface
 {
     public function __construct();
 
-    public function handle(Server $server, $server, $workerId, $workerPId, $exitCode, $signal);
+    public function handle(Server $server, $workerId, $workerPId, $exitCode, $signal);
 }
