@@ -1170,6 +1170,7 @@ class WorkerStartEvent implements WorkerStartInterface
 | Alex | 20 |
 | X | 20 |
 | *洋 | 20 |
+| *洋 | 20 |
 
 ## License
 
