@@ -84,10 +84,10 @@ Table of Contents
 ## Install
 
 1.Require package via [Composer](https://getcomposer.org/)([packagist](https://packagist.org/packages/hhxsv5/laravel-s)).
-    ```bash
-    composer require "hhxsv5/laravel-s:~3.4.0" -vvv
-    # Make sure that your composer.lock file is under the VCS
-    ```
+```bash
+composer require "hhxsv5/laravel-s:~3.4.0" -vvv
+# Make sure that your composer.lock file is under the VCS
+```
 
 2.Register service provider(pick one of two).
 
