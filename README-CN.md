@@ -1106,9 +1106,11 @@ class WorkerStartEvent implements WorkerStartInterface
 
 ## 用户与案例
 
-- [医联用户端Passport](https://www.medlinker.com/)：WEB站、M站、APP、小程序的账户体系服务。
+- [KuCoin](https://www.kcs.top/ucenter/signup?rcode=Kyv3hd)
+
+- [医联](https://www.medlinker.com/)：WEB站、M站、APP、小程序的账户体系服务。
     
-    <img src="https://user-images.githubusercontent.com/7278743/46649457-af05e980-cbcb-11e8-94a1-b13d743d33fd.png" height="300px" alt="医联Passport服务">
+    <img src="https://user-images.githubusercontent.com/7278743/46649457-af05e980-cbcb-11e8-94a1-b13d743d33fd.png" height="300px" alt="医联">
 
 - [ITOK在线客服平台](http://demo.topitsm.com)：用户IT工单的处理跟踪及在线实时沟通。
     
