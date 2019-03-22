@@ -117,11 +117,6 @@ php artisan laravels publish
 # 配置文件：config/laravels.php
 # 二进制文件：bin/laravels bin/fswatch
 ```
-`使用Lumen时的特别说明`: 你不需要手动加载配置`laravels.php`，LaravelS底层已自动加载。
-```php
-// 不必手动加载，但加载了也不会有问题
-$app->configure('laravels');
-```
 
 4.修改配置`config/laravels.php`：监听的IP、端口等，请参考[配置项](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 

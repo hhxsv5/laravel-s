@@ -111,11 +111,6 @@ php artisan laravels publish
 # Configuration: config/laravels.php
 # Binary: bin/laravels bin/fswatch
 ```
-`Special for Lumen`: you `DO NOT` need to load this configuration manually in `bootstrap/app.php` file, LaravelS will load it automatically.
-```php
-// Unnecessary to call configure()
-$app->configure('laravels');
-```
 
 4.Change `config/laravels.php`: listen_ip, listen_port, refer [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
