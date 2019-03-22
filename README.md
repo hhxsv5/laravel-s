@@ -303,7 +303,7 @@ class WebSocketService implements WebSocketHandlerInterface
 ],
 // ...
 ```
-3.Use `swoole_table` to bind FD & UserId, optional, [Swoole Table Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#use-swooletable). Also you can use the other global storage services, like Redis/Memcached/MySQL, but be careful that FD will be possible conflicting between multiple `Swoole Servers`.
+3.Use `SwooleTable` to bind FD & UserId, optional, [Swoole Table Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#use-swooletable). Also you can use the other global storage services, like Redis/Memcached/MySQL, but be careful that FD will be possible conflicting between multiple `Swoole Servers`.
 
 4.Cooperate with Nginx (Recommended)
 > Refer [WebSocket Proxy](http://nginx.org/en/docs/http/websocket.html)
@@ -736,7 +736,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
     }
     ```
 
-    These `Socket` connections share the same worker processes with your `HTTP`/`WebSocket` connections. So it won't be a problem at all if you want to deliver tasks, use `swoole_table`, even Laravel components such as DB, Eloquent and so on.
+    These `Socket` connections share the same worker processes with your `HTTP`/`WebSocket` connections. So it won't be a problem at all if you want to deliver tasks, use `SwooleTable`, even Laravel components such as DB, Eloquent and so on.
     At the same time, you can access `Swoole\Server\Port` object directly by member property `swoolePort`.
 
     ```php

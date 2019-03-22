@@ -665,7 +665,7 @@ var_dump($swoole->stats());// 单例
 > Swoole启动之前会创建定义的所有Table。
 
 ```php
-// 在"config/laravels.php"配置`swoole_table`
+// 在"config/laravels.php"配置
 [
     // ...
     'swoole_tables'  => [
@@ -753,7 +753,7 @@ public function onClose(Server $server, $fd, $reactorId)
     }
     ```
 
-    这些连接和主服务器上的HTTP/WebSocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的`异步任务投递`、`swoole_table`、Laravel提供的组件如`DB`、`Eloquent`等。同时，如果需要使用该协议端口的`Swoole\Server\Port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
+    这些连接和主服务器上的HTTP/WebSocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的`异步任务投递`、`SwooleTable`、Laravel提供的组件如`DB`、`Eloquent`等。同时，如果需要使用该协议端口的`Swoole\Server\Port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
 
     ```php
     public function onReceive(Server $server, $fd, $reactorId, $data)
