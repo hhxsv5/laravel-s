@@ -84,11 +84,10 @@ Table of Contents
 ## Install
 
 1.Require package via [Composer](https://getcomposer.org/)([packagist](https://packagist.org/packages/hhxsv5/laravel-s)).
-
-```bash
-composer require "hhxsv5/laravel-s:~3.4.0" -vvv
-# Make sure that your composer.lock file is under the VCS
-```
+    ```bash
+    composer require "hhxsv5/laravel-s:~3.4.0" -vvv
+    # Make sure that your composer.lock file is under the VCS
+    ```
 
 2.Register service provider(pick one of two).
 
@@ -112,7 +111,6 @@ php artisan laravels publish
 # Configuration: config/laravels.php
 # Binary: bin/laravels bin/fswatch
 ```
-
 `Special for Lumen`: you `DO NOT` need to load this configuration manually in `bootstrap/app.php` file, LaravelS will load it automatically.
 ```php
 // Unnecessary to call configure()
@@ -237,9 +235,9 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
     ProxyRequests Off
     ProxyPreserveHost On
     <Proxy balancer://laravels>  
-        BalancerMember http://192.168.1.1:8011 loadfactor=7
-        #BalancerMember http://192.168.1.2:8011 loadfactor=3
-        #BalancerMember http://192.168.1.3:8011 loadfactor=1 status=+H
+        BalancerMember http://192.168.1.1:5200 loadfactor=7
+        #BalancerMember http://192.168.1.2:5200 loadfactor=3
+        #BalancerMember http://192.168.1.3:5200 loadfactor=1 status=+H
         ProxySet lbmethod=byrequests
     </Proxy>
     #ProxyPass / balancer://laravels/

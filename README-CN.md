@@ -90,11 +90,10 @@ Table of Contents
 ## 安装
 
 1.通过[Composer](https://getcomposer.org/)安装([packagist](https://packagist.org/packages/hhxsv5/laravel-s))。有可能找不到`3.0`版本，解决方案移步[#81](https://github.com/hhxsv5/laravel-s/issues/81)。
-
-```bash
-composer require "hhxsv5/laravel-s:~3.4.0" -vvv
-# 确保你的composer.lock文件是在版本控制中
-```
+    ```bash
+    composer require "hhxsv5/laravel-s:~3.4.0" -vvv
+    # 确保你的composer.lock文件是在版本控制中
+    ```
 
 2.注册Service Provider（以下两步二选一）。
 
@@ -118,7 +117,6 @@ php artisan laravels publish
 # 配置文件：config/laravels.php
 # 二进制文件：bin/laravels bin/fswatch
 ```
-
 `使用Lumen时的特别说明`: 你不需要手动加载配置`laravels.php`，LaravelS底层已自动加载。
 ```php
 // 不必手动加载，但加载了也不会有问题
@@ -243,9 +241,9 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
     ProxyRequests Off
     ProxyPreserveHost On
     <Proxy balancer://laravels>  
-        BalancerMember http://192.168.1.1:8011 loadfactor=7
-        #BalancerMember http://192.168.1.2:8011 loadfactor=3
-        #BalancerMember http://192.168.1.3:8011 loadfactor=1 status=+H
+        BalancerMember http://192.168.1.1:5200 loadfactor=7
+        #BalancerMember http://192.168.1.2:5200 loadfactor=3
+        #BalancerMember http://192.168.1.3:5200 loadfactor=1 status=+H
         ProxySet lbmethod=byrequests
     </Proxy>
     #ProxyPass / balancer://laravels/
