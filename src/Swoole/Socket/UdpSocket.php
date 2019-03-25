@@ -2,17 +2,17 @@
 
 namespace Hhxsv5\LaravelS\Swoole\Socket;
 
+use Swoole\Server;
+use Swoole\Server\Port;
+
 abstract class UdpSocket implements PortInterface, UdpInterface
 {
-    /**
-     * @var  \swoole_server_port
-     */
     protected $swoolePort;
 
-    public function __construct(\swoole_server_port $port)
+    public function __construct(Port $port)
     {
         $this->swoolePort = $port;
     }
 
-    abstract public function onPacket(\swoole_server $server, $data, array $clientInfo);
+    abstract public function onPacket(Server $server, $data, array $clientInfo);
 }

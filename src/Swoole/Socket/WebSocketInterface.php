@@ -2,11 +2,15 @@
 
 namespace Hhxsv5\LaravelS\Swoole\Socket;
 
+use Swoole\Http\Request;
+use Swoole\WebSocket\Frame;
+use Swoole\WebSocket\Server;
+
 interface WebSocketInterface
 {
-    public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request);
+    public function onOpen(Server $server, Request $request);
 
-    public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame);
+    public function onMessage(Server $server, Frame $frame);
 
-    public function onClose(\swoole_websocket_server $server, $fd, $reactorId);
+    public function onClose(Server $server, $fd, $reactorId);
 }

@@ -3,6 +3,7 @@
 namespace Hhxsv5\LaravelS\Illuminate;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 
 class LaravelSCommand extends Command
 {
@@ -26,7 +27,6 @@ class LaravelSCommand extends Command
                 break;
             case 'config':
                 $this->prepareConfig();
-                break;
             case 'info':
                 $this->showInfo();
                 break;
@@ -59,6 +59,14 @@ class LaravelSCommand extends Command
 
     protected function showInfo()
     {
+        $this->showLogo();
+        $this->showComponents();
+        $this->showProtocols();
+        $this->comment('>>> Feedback: <options=underscore>https://github.com/hhxsv5/laravel-s</>');
+    }
+
+    protected function showLogo()
+    {
         static $logo = <<<EOS
  _                               _  _____ 
 | |                             | |/ ____|
@@ -69,11 +77,16 @@ class LaravelSCommand extends Command
                                            
 EOS;
         $this->info($logo);
-        $this->comment('Speed up your Laravel/Lumen');
+        $this->info('Speed up your Laravel/Lumen');
+    }
+
+    protected function showComponents()
+    {
+        $this->comment('>>> Components');
         $laravelSVersion = '-';
-        $cfg = json_decode(file_get_contents(base_path('composer.lock')), true);
+        $cfg = (array)json_decode(file_get_contents(base_path('composer.lock')), true);
         if (isset($cfg['packages'])) {
-            $packages = array_merge($cfg['packages'], array_get($cfg, 'packages-dev', []));
+            $packages = array_merge($cfg['packages'], Arr::get($cfg, 'packages-dev', []));
             foreach ($packages as $package) {
                 if (isset($package['name']) && $package['name'] === 'hhxsv5/laravel-s') {
                     $laravelSVersion = ltrim($package['version'], 'vV');
@@ -83,22 +96,73 @@ EOS;
         }
         $this->table(['Component', 'Version'], [
             [
-                'Component' => 'PHP',
-                'Version'   => phpversion(),
+                'PHP',
+                phpversion(),
             ],
             [
-                'Component' => 'Swoole',
-                'Version'   => swoole_version(),
+                'Swoole',
+                swoole_version(),
             ],
             [
-                'Component' => 'LaravelS',
-                'Version'   => $laravelSVersion,
+                'LaravelS',
+                $laravelSVersion,
             ],
             [
-                'Component' => $this->getApplication()->getName() . ' [<info>' . env('APP_ENV') . '</info>]',
-                'Version'   => $this->getApplication()->getVersion(),
+                $this->getApplication()->getName() . ' [<info>' . env('APP_ENV') . '</info>]',
+                $this->getApplication()->getVersion(),
             ],
         ]);
+    }
+
+    protected function showProtocols()
+    {
+        $this->comment('>>> Protocols');
+
+        $config = (array)json_decode(file_get_contents(base_path('storage/laravels.json')), true);
+        $socketType = isset($config['server']['socket_type']) ? $config['server']['socket_type'] : SWOOLE_SOCK_TCP;
+        if (in_array($socketType, [SWOOLE_SOCK_UNIX_DGRAM, SWOOLE_SOCK_UNIX_STREAM])) {
+            $listenAt = $config['server']['listen_ip'];
+        } else {
+            $listenAt = sprintf('%s:%s', $config['server']['listen_ip'], $config['server']['listen_port']);
+        }
+
+        $tableRows = [
+            [
+                'Main HTTP',
+                '<info>On</info>',
+                $this->getApplication()->getName(),
+                $listenAt,
+            ],
+        ];
+        if (!empty($config['server']['websocket']['enable'])) {
+            $tableRows [] = [
+                'Main WebSocket',
+                '<info>On</info>',
+                $config['server']['websocket']['handler'],
+                $listenAt,
+            ];
+        }
+
+        $socketTypeNames = [
+            SWOOLE_SOCK_TCP         => 'TCP IPV4 Socket',
+            SWOOLE_SOCK_TCP6        => 'TCP IPV6 Socket',
+            SWOOLE_SOCK_UDP         => 'UDP IPV4 Socket',
+            SWOOLE_SOCK_UDP6        => 'TCP IPV6 Socket',
+            SWOOLE_SOCK_UNIX_DGRAM  => 'Unix Socket Dgram',
+            SWOOLE_SOCK_UNIX_STREAM => 'Unix Socket Stream',
+        ];
+        $sockets = isset($config['server']['sockets']) ? $config['server']['sockets'] : [];
+        foreach ($sockets as $key => $socket) {
+            $name = 'Port#' . $key . ' ';
+            $name .= isset($socketTypeNames[$socket['type']]) ? $socketTypeNames[$socket['type']] : 'Unknown socket';
+            $tableRows [] = [
+                $name,
+                '<info>On</info>',
+                $socket['handler'],
+                sprintf('%s:%s', $socket['host'], $socket['port']),
+            ];
+        }
+        $this->table(['Protocol', 'Status', 'Handler', 'Listen At'], $tableRows);
     }
 
     protected function prepareConfig()
@@ -117,16 +181,16 @@ EOS;
         $laravelConf = [
             'root_path'          => $svrConf['laravel_base_path'],
             'static_path'        => $svrConf['swoole']['document_root'],
-            'register_providers' => array_unique((array)array_get($svrConf, 'register_providers', [])),
+            'cleaners'           => array_unique((array)Arr::get($svrConf, 'cleaners', [])),
+            'register_providers' => array_unique((array)Arr::get($svrConf, 'register_providers', [])),
             'is_lumen'           => $this->isLumen(),
             '_SERVER'            => $_SERVER,
             '_ENV'               => $_ENV,
         ];
 
         $config = ['server' => $svrConf, 'laravel' => $laravelConf];
-        $config = json_encode($config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        file_put_contents(base_path('storage/laravels.json'), $config);
-        return 0;
+        $jsonConfig = json_encode($config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        return file_put_contents(base_path('storage/laravels.json'), $jsonConfig) > 0 ? 0 : 1;
     }
 
     protected function preSet(array &$svrConf)
@@ -156,6 +220,12 @@ EOS;
         if (empty($svrConf['swoole']['pid_file'])) {
             $svrConf['swoole']['pid_file'] = storage_path('laravels.pid');
         }
+        if (empty($svrConf['timer']['pid_file'])) {
+            $svrConf['timer']['pid_file'] = storage_path('laravels-timer.pid');
+        }
+        if (empty($svrConf['timer']['max_wait_time'])) {
+            $svrConf['timer']['max_wait_time'] = 5;
+        }
         return 0;
     }
 
@@ -181,9 +251,23 @@ EOS;
         $basePath = config('laravels.laravel_base_path') ?: base_path();
         $configPath = $basePath . '/config/laravels.php';
         $todoList = [
-            ['from' => realpath(__DIR__ . '/../../config/laravels.php'), 'to' => $configPath, 'mode' => 0644],
-            ['from' => realpath(__DIR__ . '/../../bin/laravels'), 'to' => $basePath . '/bin/laravels', 'mode' => 0755, 'link' => true],
-            ['from' => realpath(__DIR__ . '/../../bin/fswatch'), 'to' => $basePath . '/bin/fswatch', 'mode' => 0755, 'link' => true],
+            [
+                'from' => realpath(__DIR__ . '/../../config/laravels.php'),
+                'to'   => $configPath,
+                'mode' => 0644,
+            ],
+            [
+                'from' => realpath(__DIR__ . '/../../bin/laravels'),
+                'to'   => $basePath . '/bin/laravels',
+                'mode' => 0755,
+                'link' => true,
+            ],
+            [
+                'from' => realpath(__DIR__ . '/../../bin/fswatch'),
+                'to'   => $basePath . '/bin/fswatch',
+                'mode' => 0755,
+                'link' => true,
+            ],
         ];
         if (file_exists($configPath)) {
             $choice = $this->anticipate($configPath . ' already exists, do you want to override it ? Y/N',

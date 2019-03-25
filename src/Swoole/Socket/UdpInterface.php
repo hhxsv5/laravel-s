@@ -2,7 +2,9 @@
 
 namespace Hhxsv5\LaravelS\Swoole\Socket;
 
+use Swoole\Server;
+
 interface UdpInterface
 {
-    public function onPacket(\swoole_server $server, $data, array $clientInfo);
+    public function onPacket(Server $server, $data, array $clientInfo);
 }

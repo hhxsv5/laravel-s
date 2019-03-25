@@ -16,16 +16,14 @@ class Portal extends Command
 {
     use LogTrait;
 
+
+    /**@var string */
     protected $basePath;
 
-    /**
-     * @var InputInterface $input
-     */
+    /**@var InputInterface */
     protected $input;
 
-    /**
-     * @var OutputInterface $output
-     */
+    /**@var OutputInterface */
     protected $output;
 
     public function __construct($basePath)
@@ -112,32 +110,23 @@ EOS;
         foreach ($options as $key => $value) {
             $optionStr .= sprintf('--%s%s ', $key, is_bool($value) ? '' : ('=' . $value));
         }
-        $cmd = trim('laravels config ' . $optionStr);
-        $this->runArtisanCommand($cmd);
-
-        $this->showInfo();
+        $this->runArtisanCommand(trim('laravels config ' . $optionStr));
 
         // Here we go...
         $config = $this->getConfig();
 
-        if (in_array($config['server']['socket_type'], [SWOOLE_SOCK_UNIX_DGRAM, SWOOLE_SOCK_UNIX_STREAM])) {
-            $listenAt = $config['server']['listen_ip'];
-        } else {
-            $listenAt = sprintf('%s:%s', $config['server']['listen_ip'], $config['server']['listen_port']);
-        }
-
         if (!$config['server']['ignore_check_pid'] && file_exists($config['server']['swoole']['pid_file'])) {
             $pid = (int)file_get_contents($config['server']['swoole']['pid_file']);
             if ($pid > 0 && self::kill($pid, 0)) {
-                $this->warning(sprintf('Swoole[PID=%d] is already running at %s.', $pid, $listenAt));
+                $this->warning(sprintf('Swoole[PID=%d] is already running.', $pid));
                 return 1;
             }
         }
 
         if ($config['server']['swoole']['daemonize']) {
-            $this->info(sprintf('Swoole is running in daemon mode, and listening at %s, see "ps -ef|grep laravels".', $listenAt));
+            $this->trace('Swoole is running in daemon mode, see "ps -ef|grep laravels".');
         } else {
-            $this->info(sprintf('Swoole is listening at %s, press Ctrl+C to quit.', $listenAt));
+            $this->trace('Swoole is running, press Ctrl+C to quit.');
         }
 
         (new LaravelS($config['server'], $config['laravel']))->run();
@@ -203,6 +192,7 @@ EOS;
             return;
         }
 
+        // Reload worker process
         $pid = file_get_contents($pidFile);
         if (!$pid || !self::kill($pid, 0)) {
             $this->error("Swoole [PID={$pid}] does not exist, or permission denied.");
@@ -210,10 +200,25 @@ EOS;
         }
 
         if (self::kill($pid, SIGUSR1)) {
-            $now = date('Y-m-d H:i:s');
-            $this->info("Swoole [PID={$pid}] is reloaded at {$now}.");
+            $this->info("Swoole [PID={$pid}] is reloaded.");
         } else {
             $this->error("Swoole [PID={$pid}] is reloaded failed.");
+        }
+
+        // Reload timer process
+        if (!empty($config['server']['timer']['enable'])) {
+            $pidFile = $config['server']['timer']['pid_file'];
+            $pid = file_get_contents($pidFile);
+            if (!$pid || !self::kill($pid, 0)) {
+                $this->error("Swoole Timer [PID={$pid}] does not exist, or permission denied.");
+                return;
+            }
+
+            if (self::kill($pid, SIGUSR1)) {
+                $this->info("Timer Process [PID={$pid}] is reloaded.");
+            } else {
+                $this->error("Timer Process [PID={$pid}] is reloaded failed.");
+            }
         }
     }
 

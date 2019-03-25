@@ -4,6 +4,7 @@
 namespace Hhxsv5\LaravelS\Swoole;
 
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Swoole\Http\Response as SwooleResponse;
 
 abstract class Response implements ResponseInterface
 {
@@ -11,7 +12,7 @@ abstract class Response implements ResponseInterface
 
     protected $laravelResponse;
 
-    public function __construct(\swoole_http_response $swooleResponse, SymfonyResponse $laravelResponse)
+    public function __construct(SwooleResponse $swooleResponse, SymfonyResponse $laravelResponse)
     {
         $this->swooleResponse = $swooleResponse;
         $this->laravelResponse = $laravelResponse;
@@ -35,8 +36,15 @@ abstract class Response implements ResponseInterface
 
     public function sendCookies()
     {
-        foreach ($this->laravelResponse->headers->getCookies() as $cookie) {
-            $this->swooleResponse->cookie(
+        $hasIsRaw = null;
+        /**@var \Symfony\Component\HttpFoundation\Cookie[] $cookies */
+        $cookies = $this->laravelResponse->headers->getCookies();
+        foreach ($cookies as $cookie) {
+            if ($hasIsRaw === null) {
+                $hasIsRaw = method_exists($cookie, 'isRaw');
+            }
+            $setCookie = $hasIsRaw && $cookie->isRaw() ? 'rawcookie' : 'cookie';
+            $this->swooleResponse->$setCookie(
                 $cookie->getName(),
                 $cookie->getValue(),
                 $cookie->getExpiresTime(),

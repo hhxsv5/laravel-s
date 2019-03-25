@@ -2,15 +2,17 @@
 
 namespace Hhxsv5\LaravelS\Swoole\Socket;
 
+use Swoole\Server;
+
 interface TcpInterface
 {
-    public function onConnect(\swoole_server $server, $fd, $reactorId);
+    public function onConnect(Server $server, $fd, $reactorId);
 
-    public function onClose(\swoole_server $server, $fd, $reactorId);
+    public function onClose(Server $server, $fd, $reactorId);
 
-    public function onReceive(\swoole_server $server, $fd, $reactorId, $data);
+    public function onReceive(Server $server, $fd, $reactorId, $data);
 
-    public function onBufferFull(\swoole_server $server, $fd);
+    public function onBufferFull(Server $server, $fd);
 
-    public function onBufferEmpty(\swoole_server $server, $fd);
+    public function onBufferEmpty(Server $server, $fd);
 }

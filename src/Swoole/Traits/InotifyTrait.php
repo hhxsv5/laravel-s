@@ -3,13 +3,15 @@
 namespace Hhxsv5\LaravelS\Swoole\Traits;
 
 use Hhxsv5\LaravelS\Swoole\Inotify;
+use Swoole\Http\Server;
+use Swoole\Process;
 
 trait InotifyTrait
 {
     use ProcessTitleTrait;
     use LogTrait;
 
-    public function addInotifyProcess(\swoole_server $swoole, array $config)
+    public function addInotifyProcess(Server $swoole, array $config)
     {
         if (empty($config['enable'])) {
             return;
@@ -68,7 +70,7 @@ trait InotifyTrait
             $inotify->start();
         };
 
-        $inotifyProcess = new \swoole_process($autoReload, false, false);
+        $inotifyProcess = new Process($autoReload, false, false);
         if ($swoole->addProcess($inotifyProcess)) {
             return $inotifyProcess;
         }

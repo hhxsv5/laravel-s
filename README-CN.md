@@ -40,15 +40,14 @@ Table of Contents
 * [异步的任务队列](#异步的任务队列)
 * [毫秒级定时任务](#毫秒级定时任务)
 * [修改代码后自动Reload](#修改代码后自动reload)
-* [在你的项目中使用swoole_server实例](#在你的项目中使用swoole_server实例)
-* [使用swoole_table](#使用swoole_table)
+* [在你的项目中使用SwooleServer实例](#在你的项目中使用swooleserver实例)
+* [使用SwooleTable](#使用swooletable)
 * [多端口混合协议](#多端口混合协议)
 * [协程](#协程)
 * [自定义进程](#自定义进程)
 * [其他特性](#其他特性)
 * [注意事项](#注意事项)
 * [用户与案例](#用户与案例)
-* [待办事项](#待办事项)
 * [其他选择](#其他选择)
 * [打赏](#打赏)
     * [感谢](#感谢)
@@ -91,9 +90,8 @@ Table of Contents
 ## 安装
 
 1.通过[Composer](https://getcomposer.org/)安装([packagist](https://packagist.org/packages/hhxsv5/laravel-s))。有可能找不到`3.0`版本，解决方案移步[#81](https://github.com/hhxsv5/laravel-s/issues/81)。
-
 ```bash
-composer require "hhxsv5/laravel-s:~3.3" -vvv
+composer require "hhxsv5/laravel-s:~3.4.0" -vvv
 # 确保你的composer.lock文件是在版本控制中
 ```
 
@@ -120,12 +118,6 @@ php artisan laravels publish
 # 二进制文件：bin/laravels bin/fswatch
 ```
 
-`使用Lumen时的特别说明`: 你不需要手动加载配置`laravels.php`，LaravelS底层已自动加载。
-```php
-// 不必手动加载，但加载了也不会有问题
-$app->configure('laravels');
-```
-
 4.修改配置`config/laravels.php`：监听的IP、端口等，请参考[配置项](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
 ## 运行
@@ -138,7 +130,7 @@ $app->configure('laravels');
 | `start` | 启动LaravelS，展示已启动的进程列表 "*ps -ef&#124;grep laravels*"。支持选项 "*-d&#124;--daemonize*" 以守护进程的方式运行，此选项将覆盖`laravels.php`中`swoole.daemonize`设置；支持选项 "*-e&#124;--env*" 用来指定运行的环境，如`--env=testing`将会优先使用配置文件`.env.testing`，这个特性要求`Laravel 5.2+` |
 | `stop` | 停止LaravelS |
 | `restart` | 重启LaravelS，支持选项 "*-d&#124;--daemonize*" 和 "*-e&#124;--env*" |
-| `reload` | 平滑重启所有Task/Worker进程，这些进程内包含了你的业务代码，不会重启Master/Manger/Timer/Custom进程 |
+| `reload` | 平滑重启所有Task/Worker/Timer进程(这些进程内包含了你的业务代码)，并触发自定义进程的`onReload`方法，不会重启Master/Manger进程 |
 | `info` | 显示组件的版本信息 |
 | `help` | 显示帮助信息 |
 
@@ -158,7 +150,7 @@ stdout_logfile=/opt/www/laravel-s-test/storage/logs/supervisord-stdout.log
 ```
 
 ## 与Nginx配合使用（推荐）
-> [示例](https://github.com/hhxsv5/docker/blob/master/compose/nginx)。
+> [示例](https://github.com/hhxsv5/docker/blob/master/nginx/conf.d/laravels.conf)。
 
 ```nginx
 gzip on;
@@ -244,9 +236,9 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
     ProxyRequests Off
     ProxyPreserveHost On
     <Proxy balancer://laravels>  
-        BalancerMember http://192.168.1.1:8011 loadfactor=7
-        #BalancerMember http://192.168.1.2:8011 loadfactor=3
-        #BalancerMember http://192.168.1.3:8011 loadfactor=1 status=+H
+        BalancerMember http://192.168.1.1:5200 loadfactor=7
+        #BalancerMember http://192.168.1.2:5200 loadfactor=3
+        #BalancerMember http://192.168.1.3:5200 loadfactor=1 status=+H
         ProxySet lbmethod=byrequests
     </Proxy>
     #ProxyPass / balancer://laravels/
@@ -270,6 +262,9 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 ```php
 namespace App\Services;
 use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
+use Swoole\Http\Request;
+use Swoole\WebSocket\Frame;
+use Swoole\WebSocket\Server;
 /**
  * @see https://wiki.swoole.com/wiki/page/400.html
  */
@@ -279,20 +274,20 @@ class WebSocketService implements WebSocketHandlerInterface
     public function __construct()
     {
     }
-    public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
+    public function onOpen(Server $server, Request $request)
     {
         // 在触发onOpen事件之前Laravel的生命周期已经完结，所以Laravel的Request是可读的，Session是可读写的
-        \Log::info('New WebSocket connection', [$request->fd, request()->all(), session()->getId(), session('xxx'), session(['yyy' => time()])]);
+        // \Log::info('New WebSocket connection', [$request->fd, request()->all(), session()->getId(), session('xxx'), session(['yyy' => time()])]);
         $server->push($request->fd, 'Welcome to LaravelS');
         // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
-    public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame)
+    public function onMessage(Server $server, Frame $frame)
     {
-        \Log::info('Received message', [$frame->fd, $frame->data, $frame->opcode, $frame->finish]);
+        // \Log::info('Received message', [$frame->fd, $frame->data, $frame->opcode, $frame->finish]);
         $server->push($frame->fd, date('Y-m-d H:i:s'));
         // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
-    public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
+    public function onClose(Server $server, $fd, $reactorId)
     {
         // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
@@ -316,7 +311,7 @@ class WebSocketService implements WebSocketHandlerInterface
 // ...
 ```
 
-3.使用`swoole_table`绑定FD与UserId，可选的，[Swoole Table示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E4%BD%BF%E7%94%A8swoole_table)。也可以用其他全局存储服务，例如Redis/Memcached/MySQL，但需要注意多个`Swoole Server`实例时FD可能冲突。
+3.使用`SwooleTable`绑定FD与UserId，可选的，[Swoole Table示例](#使用swooletable)。也可以用其他全局存储服务，例如Redis/Memcached/MySQL，但需要注意多个`Swoole Server`实例时FD可能冲突。
 
 4.与Nginx配合使用（推荐）
 > 参考 [WebSocket代理](http://nginx.org/en/docs/http/websocket.html)
@@ -420,7 +415,7 @@ server {
 ### 系统事件
 > 通常，你可以在这些事件中重置或销毁一些全局或静态的变量，也可以修改当前的请求和响应。
 
-- `laravels.received_request` 将`swoole_http_request`转成`Illuminate\Http\Request`后，在Laravel内核处理请求前。
+- `laravels.received_request` 将`Swoole\Http\Request`转成`Illuminate\Http\Request`后，在Laravel内核处理请求前。
 
     ```php
     // 修改`app/Providers/EventServiceProvider.php`, 添加下面监听代码到boot方法中
@@ -431,7 +426,7 @@ server {
     });
     ```
 
-- `laravels.generated_response` 在Laravel内核处理完请求后，将`Illuminate\Http\Response`转成`swoole_http_response`之前(下一步将响应给客户端)。
+- `laravels.generated_response` 在Laravel内核处理完请求后，将`Illuminate\Http\Response`转成`Swoole\Http\Response`之前(下一步将响应给客户端)。
 
     ```php
     // 修改`app/Providers/EventServiceProvider.php`, 添加下面监听代码到boot方法中
@@ -564,6 +559,7 @@ var_dump($ret);//判断是否投递成功
 ```php
 namespace App\Jobs\Timer;
 use App\Tasks\TestTask;
+use Swoole\Coroutine;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
 use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 class TestCronJob extends CronJob
@@ -584,6 +580,8 @@ class TestCronJob extends CronJob
     {
         \Log::info(__METHOD__, ['start', $this->i, microtime(true)]);
         // do something
+        // sleep(1); // Swoole < 2.1
+        Coroutine::sleep(1); // Swoole>=2.1 run()方法已自动创建了协程。
         $this->i++;
         \Log::info(__METHOD__, ['end', $this->i, microtime(true)]);
 
@@ -617,12 +615,15 @@ class TestCronJob extends CronJob
             // [\App\Jobs\Timer\TestCronJob::class, [1000, true]], // 注册时传入参数
             \App\Jobs\Timer\TestCronJob::class, // 重载对应的方法来返回参数
         ],
+        'max_wait_time' => 5, // Reload时最大等待时间
     ],
     // ...
 ];
 ```
 
 3.注意在构建服务器集群时，会启动多个`定时器`，要确保只启动一个定期器，避免重复执行定时任务。
+
+4.LaravelS `v3.4.0`开始支持热重启[Reload]`定时器`进程，LaravelS 在收到`SIGUSR1`信号后会等待`max_wait_time`(默认5)秒再结束进程，然后`Manager`进程会重新拉起`定时器`进程。
 
 ## 修改代码后自动Reload
 
@@ -647,24 +648,24 @@ class TestCronJob extends CronJob
     ./bin/fswatch ./app
     ```
 
-## 在你的项目中使用`swoole_server`实例
+## 在你的项目中使用`SwooleServer`实例
 
 ```php
 /**
- * 如果启用WebSocket server，$swoole是`swoole_websocket_server`的实例，否则是是`\swoole_http_server`的实例
- * @var \swoole_http_server|\swoole_websocket_server $swoole
+ * 如果启用WebSocket server，$swoole是`Swoole\WebSocket\Server`的实例，否则是是`Swoole\Http\Server`的实例
+ * @var \Swoole\WebSocket\Server|\Swoole\Http\Server $swoole
  */
 $swoole = app('swoole');
 var_dump($swoole->stats());// 单例
 ```
 
-## 使用`swoole_table`
+## 使用`SwooleTable`
 
-1.定义`swoole_table`，支持定义多个Table。
+1.定义Table，支持定义多个Table。
 > Swoole启动之前会创建定义的所有Table。
 
 ```php
-// 在"config/laravels.php"配置`swoole_table`
+// 在"config/laravels.php"配置
 [
     // ...
     'swoole_tables'  => [
@@ -672,7 +673,7 @@ var_dump($swoole->stats());// 单例
         'ws' => [// Key为Table名称，使用时会自动添加Table后缀，避免重名。这里定义名为wsTable的Table
             'size'   => 102400,//Table的最大行数
             'column' => [// Table的列定义
-                ['name' => 'value', 'type' => \swoole_table::TYPE_INT, 'size' => 8],
+                ['name' => 'value', 'type' => \Swoole\Table::TYPE_INT, 'size' => 8],
             ],
         ],
         //...继续定义其他Table
@@ -681,11 +682,15 @@ var_dump($swoole->stats());// 单例
 ];
 ```
 
-2.访问`swoole_table`：所有的Table实例均绑定在`swoole_server`上，通过`app('swoole')->xxxTable`访问。
+2.访问Table：所有的Table实例均绑定在`SwooleServer`上，通过`app('swoole')->xxxTable`访问。
 
 ```php
+use Swoole\Http\Request;
+use Swoole\WebSocket\Frame;
+use Swoole\WebSocket\Server;
+
 // 场景：WebSocket中UserId与FD绑定
-public function onOpen(\swoole_websocket_server $server, \swoole_http_request $request)
+public function onOpen(Server $server, Request $request)
 {
     // var_dump(app('swoole') === $server);// 同一实例
     $userId = mt_rand(1000, 10000);
@@ -693,7 +698,7 @@ public function onOpen(\swoole_websocket_server $server, \swoole_http_request $r
     app('swoole')->wsTable->set('fd:' . $request->fd, ['value' => $userId]);// 绑定fd到uid的映射
     $server->push($request->fd, 'Welcome to LaravelS');
 }
-public function onMessage(\swoole_websocket_server $server, \swoole_websocket_frame $frame)
+public function onMessage(Server $server, Frame $frame)
 {
     foreach (app('swoole')->wsTable as $key => $row) {
         if (strpos($key, 'uid:') === 0 && $server->exist($row['value'])) {
@@ -701,7 +706,7 @@ public function onMessage(\swoole_websocket_server $server, \swoole_websocket_fr
         }
     }
 }
-public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
+public function onClose(Server $server, $fd, $reactorId)
 {
     $uid = app('swoole')->wsTable->get('fd:' . $fd);
     if ($uid !== false) {
@@ -723,14 +728,15 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
     ```php
     namespace App\Sockets;
     use Hhxsv5\LaravelS\Swoole\Socket\TcpSocket;
+    use Swoole\Server;
     class TestTcpSocket extends TcpSocket
     {
-        public function onConnect(\swoole_server $server, $fd, $reactorId)
+        public function onConnect(Server $server, $fd, $reactorId)
         {
             \Log::info('New TCP connection', [$fd]);
             $server->send($fd, 'Welcome to LaravelS.');
         }
-        public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
+        public function onReceive(Server $server, $fd, $reactorId, $data)
         {
             \Log::info('Received data', [$fd, $data]);
             $server->send($fd, 'LaravelS: ' . $data);
@@ -739,7 +745,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
                 $server->close($fd);
             }
         }
-        public function onClose(\swoole_server $server, $fd, $reactorId)
+        public function onClose(Server $server, $fd, $reactorId)
         {
             \Log::info('Close TCP connection', [$fd]);
             $server->send($fd, 'Goodbye');
@@ -747,12 +753,12 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
     }
     ```
 
-    这些连接和主服务器上的HTTP/WebSocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的`异步任务投递`、`swoole_table`、Laravel提供的组件如`DB`、`Eloquent`等。同时，如果需要使用该协议端口的`swoole_server_port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
+    这些连接和主服务器上的HTTP/WebSocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的`异步任务投递`、`SwooleTable`、Laravel提供的组件如`DB`、`Eloquent`等。同时，如果需要使用该协议端口的`Swoole\Server\Port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
 
     ```php
-    public function onReceive(\swoole_server $server, $fd, $reactorId, $data)
+    public function onReceive(Server $server, $fd, $reactorId, $data)
     {
-        $port = $this->swoolePort; //获得`swoole_server_port`对象
+        $port = $this->swoolePort; //获得`Swoole\Server\Port`对象
     }
     ```
 
@@ -847,7 +853,7 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 > [Swoole原始文档](https://wiki.swoole.com/wiki/page/749.html)
 
-- 警告：Laravel/Lumen中存在大量单例和静态属性，在协程下是`不安全`的，不建议打开协程。
+- 警告：Laravel/Lumen中存在大量单例和静态属性，在协程下是`不安全`的，`不建议`打开协程，但`自定义进程、定时器`中可使用协程。
 
 - 启用协程，默认是关闭的。
     
@@ -883,8 +889,11 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
     ```php
     namespace App\Processes;
     use App\Tasks\TestTask;
-    use Hhxsv5\LaravelS\Swoole\Task\Task;
     use Hhxsv5\LaravelS\Swoole\Process\CustomProcessInterface;
+    use Hhxsv5\LaravelS\Swoole\Task\Task;
+    use Swoole\Coroutine;
+    use Swoole\Http\Server;
+    use Swoole\Process;
     class TestProcess implements CustomProcessInterface
     {
         public static function getName()
@@ -902,13 +911,14 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
             // 管道类型：0不创建管道，1创建SOCK_STREAM类型管道，2创建SOCK_DGRAM类型管道
             return 0;
         }
-        public static function callback(\swoole_server $swoole)
+        public static function callback(Server $swoole, Process $process)
         {
             // 进程运行的代码，不能退出，一旦退出Manager进程会自动再次创建该进程。
             \Log::info(__METHOD__, [posix_getpid(), $swoole->stats()]);
             while (true) {
                 \Log::info('Do something');
-                sleep(1);
+                // sleep(1); // Swoole < 2.1
+                Coroutine::sleep(1); // Swoole>=2.1 callback()方法已自动创建了协程。
                 // 自定义进程中也可以投递Task，但不支持Task的finish()回调。
                 // 注意：
                 // 1.参数2需传true
@@ -918,6 +928,13 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
                 // 上层会捕获callback中抛出的异常，并记录到Swoole日志，如果异常数达到10次，此进程会退出，Manager进程会重新创建进程，所以建议开发者自行try/catch捕获，避免创建进程过于频繁。
                 // throw new \Exception('an exception');
             }
+        }
+        // 要求：LaravelS >= v3.4.0 并且 callback() 必须是异步非阻塞程序。
+        public static function onReload(Server $swoole, Process $process)
+        {
+            // Stop the process...
+            // Then end process
+            $process->exit(0);
         }
     }
     ```
@@ -942,23 +959,24 @@ public function onClose(\swoole_websocket_server $server, $fd, $reactorId)
 
 | 事件 | 需实现的接口 | 发生时机 |
 | -------- | -------- | -------- |
-| WorkerStart | Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface | 发生在Worker进程/Task进程启动时，并且已经完成Laravel初始化 |
+| WorkerStart | Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface | 发生在Worker/Task进程启动时，并且已经完成Laravel初始化 |
+| WorkerStop | Hhxsv5\LaravelS\Swoole\Events\WorkerStopInterface | 发生在Worker/Task进程正常退出时。 |
+| WorkerError | Hhxsv5\LaravelS\Swoole\Events\WorkerErrorInterface | 发生在Worker/Task进程发生异常或致命错误时。 |
 
 1.创建事件处理类，实现相应的接口。
 ```php
 namespace App\Events;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
+use Swoole\Http\Server;
 class WorkerStartEvent implements WorkerStartInterface
 {
     public function __construct()
     {
     }
-    public function handle(\swoole_http_server $server, $workerId)
+    public function handle(Server $server, $workerId)
     {
-        // 例如：初始化一个连接池对象，绑定到Swoole Server对象上，其他地方可通过app('swoole')->connectionPool访问
-        if (!isset($server->connectionPool)) {
-            $server->connectionPool = new ConnectionPool();
-        }
+        // 初始化一个数据库连接池对象
+        // DatabaseConnectionPool::init();
     }
 }
 ```
@@ -977,11 +995,15 @@ class WorkerStartEvent implements WorkerStartInterface
 
     - Swoole Server下，所有单例对象会常驻于内存，这个时候单例对象的生命周期与FPM不同，请求开始=>实例化单例=>请求结束=>单例对象依旧保留，需要开发者自己维护单例的状态。
 
+    - 如果你的项目中使用到了Session、Authentication、JWT，请根据情况解除`laravels.php`中`cleaners`的注释。
+
     - 常见的解决方案：
 
-        1. 用一个`中间件`来`重置`单例对象的状态。
+        1. 写一个`XxxCleaner`类来清理单例对象状态，此类需实现接口`Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface`，然后注册到`laravels.php`的`cleaners`中。
+        
+        2. 用一个`中间件`来`重置`单例对象的状态。
 
-        2. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
+        3. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
 - [常见问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md)
 
@@ -1077,9 +1099,11 @@ class WorkerStartEvent implements WorkerStartInterface
 
 ## 用户与案例
 
-- [医联用户端Passport](https://www.medlinker.com/)：WEB站、M站、APP、小程序的账户体系服务。
+- [KuCoin](https://www.kcs.top/ucenter/signup?rcode=Kyv3hd)
+
+- [医联](https://www.medlinker.com/)：WEB站、M站、APP、小程序的账户体系服务。
     
-    <img src="https://user-images.githubusercontent.com/7278743/46649457-af05e980-cbcb-11e8-94a1-b13d743d33fd.png" height="300px" alt="医联Passport服务">
+    <img src="https://user-images.githubusercontent.com/7278743/46649457-af05e980-cbcb-11e8-94a1-b13d743d33fd.png" height="300px" alt="医联">
 
 - [ITOK在线客服平台](http://demo.topitsm.com)：用户IT工单的处理跟踪及在线实时沟通。
     
@@ -1102,10 +1126,6 @@ class WorkerStartEvent implements WorkerStartInterface
     <img src="https://user-images.githubusercontent.com/7278743/46941544-eda11580-d09d-11e8-8c3a-16c567655277.png" height="300px" alt="修机匠手机上门维修服务">
 
 - 亿健APP
-
-## 待办事项
-
-1. 针对MySQL/Redis的连接池。
 
 ## 其他选择
 
@@ -1143,6 +1163,9 @@ class WorkerStartEvent implements WorkerStartInterface
 | *俊 | 20 |
 | *哲 | 20 |
 | Alex | 20 |
+| X | 20 |
+| *洋 | 20 |
+| *洋 | 20 |
 
 ## License
 

@@ -8,21 +8,28 @@ use Hhxsv5\LaravelS\Swoole\Task\Listener;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
 use Hhxsv5\LaravelS\Swoole\Traits\LogTrait;
 use Hhxsv5\LaravelS\Swoole\Traits\ProcessTitleTrait;
+use Swoole\Http\Request as SwooleRequest;
+use Swoole\Http\Response as SwooleResponse;
+use Swoole\Http\Server as HttpServer;
+use Swoole\Server\Port;
+use Swoole\Table;
+use Swoole\WebSocket\Server as WebSocketServer;
 
 class Server
 {
     use LogTrait;
     use ProcessTitleTrait;
 
+    /**@var array */
     protected $conf;
 
-    /**
-     * @var \swoole_http_server|\swoole_websocket_server
-     */
+    /**@var HttpServer|WebSocketServer */
     protected $swoole;
 
+    /**@var bool */
     protected $enableWebSocket = false;
 
+    /**@var array */
     protected $attachedSockets = [];
 
     protected function __construct(array $conf)
@@ -36,9 +43,9 @@ class Server
 
         $ip = isset($conf['listen_ip']) ? $conf['listen_ip'] : '127.0.0.1';
         $port = isset($conf['listen_port']) ? $conf['listen_port'] : 5200;
-        $socketType = isset($conf['socket_type']) ? (int)$conf['socket_type'] : \SWOOLE_SOCK_TCP;
+        $socketType = isset($conf['socket_type']) ? (int)$conf['socket_type'] : SWOOLE_SOCK_TCP;
 
-        if ($socketType === \SWOOLE_SOCK_UNIX_STREAM) {
+        if ($socketType === SWOOLE_SOCK_UNIX_STREAM) {
             $socketDir = dirname($ip);
             if (!file_exists($socketDir)) {
                 mkdir($socketDir);
@@ -48,11 +55,11 @@ class Server
         $settings = isset($conf['swoole']) ? $conf['swoole'] : [];
         $settings['enable_static_handler'] = !empty($conf['handle_static']);
 
-        $serverClass = $this->enableWebSocket ? \swoole_websocket_server::class : \swoole_http_server::class;
+        $serverClass = $this->enableWebSocket ? WebSocketServer::class : HttpServer::class;
         if (isset($settings['ssl_cert_file'], $settings['ssl_key_file'])) {
-            $this->swoole = new $serverClass($ip, $port, \SWOOLE_PROCESS, $socketType | \SWOOLE_SSL);
+            $this->swoole = new $serverClass($ip, $port, SWOOLE_PROCESS, $socketType | SWOOLE_SSL);
         } else {
-            $this->swoole = new $serverClass($ip, $port, \SWOOLE_PROCESS, $socketType);
+            $this->swoole = new $serverClass($ip, $port, SWOOLE_PROCESS, $socketType);
         }
 
         $this->swoole->set($settings);
@@ -121,7 +128,7 @@ class Server
     {
         foreach ($this->attachedSockets as $socket) {
             $port = $this->swoole->addListener($socket['host'], $socket['port'], $socket['type']);
-            if (!($port instanceof \swoole_server_port)) {
+            if (!($port instanceof Port)) {
                 $errno = method_exists($this->swoole, 'getLastError') ? $this->swoole->getLastError() : 'unknown';
                 $errstr = sprintf('listen %s:%s failed: errno=%s', $socket['host'], $socket['port'], $errno);
                 $this->error($errstr);
@@ -168,13 +175,13 @@ class Server
         $handlerClass = $this->conf['websocket']['handler'];
         $t = new $handlerClass();
         if (!($t instanceof WebSocketHandlerInterface)) {
-            throw new \Exception(sprintf('%s must implement the interface %s', get_class($t), WebSocketHandlerInterface::class));
+            throw new \InvalidArgumentException(sprintf('%s must implement the interface %s', get_class($t), WebSocketHandlerInterface::class));
         }
         $handler = $t;
         return $handler;
     }
 
-    protected function getSocketHandler(\swoole_server_port $port, $handlerClass)
+    protected function getSocketHandler(Port $port, $handlerClass)
     {
         static $handlers = [];
         $portHash = spl_object_hash($port);
@@ -183,7 +190,7 @@ class Server
         }
         $t = new $handlerClass($port);
         if (!($t instanceof PortInterface)) {
-            throw new \Exception(sprintf('%s must extend the abstract class TcpSocket/UdpSocket', get_class($t)));
+            throw new \InvalidArgumentException(sprintf('%s must extend the abstract class TcpSocket/UdpSocket', get_class($t)));
         }
         $handlers[$portHash] = $t;
         return $handlers[$portHash];
@@ -193,7 +200,7 @@ class Server
     {
         $tables = isset($this->conf['swoole_tables']) ? (array)$this->conf['swoole_tables'] : [];
         foreach ($tables as $name => $table) {
-            $t = new \swoole_table($table['size']);
+            $t = new Table($table['size']);
             foreach ($table['column'] as $column) {
                 if (isset($column['size'])) {
                     $t->column($column['name'], $column['type'], $column['size']);
@@ -203,11 +210,11 @@ class Server
             }
             $t->create();
             $name .= 'Table'; // Avoid naming conflicts
-            $this->swoole->$name = $t;
+            $this->swoole->{$name} = $t;
         }
     }
 
-    public function onStart(\swoole_http_server $server)
+    public function onStart(HttpServer $server)
     {
         foreach (spl_autoload_functions() as $function) {
             spl_autoload_unregister($function);
@@ -215,27 +222,27 @@ class Server
 
         $this->setProcessTitle(sprintf('%s laravels: master process', $this->conf['process_prefix']));
 
-        if (version_compare(\swoole_version(), '1.9.5', '<')) {
+        if (version_compare(swoole_version(), '1.9.5', '<')) {
             file_put_contents($this->conf['swoole']['pid_file'], $server->master_pid);
         }
     }
 
-    public function onShutdown(\swoole_http_server $server)
+    public function onShutdown(HttpServer $server)
     {
 
     }
 
-    public function onManagerStart(\swoole_http_server $server)
+    public function onManagerStart(HttpServer $server)
     {
         $this->setProcessTitle(sprintf('%s laravels: manager process', $this->conf['process_prefix']));
     }
 
-    public function onManagerStop(\swoole_http_server $server)
+    public function onManagerStop(HttpServer $server)
     {
 
     }
 
-    public function onWorkerStart(\swoole_http_server $server, $workerId)
+    public function onWorkerStart(HttpServer $server, $workerId)
     {
         if ($workerId >= $server->setting['worker_num']) {
             $process = 'task worker';
@@ -257,29 +264,29 @@ class Server
         clearstatcache();
     }
 
-    public function onWorkerStop(\swoole_http_server $server, $workerId)
+    public function onWorkerStop(HttpServer $server, $workerId)
     {
 
     }
 
-    public function onWorkerError(\swoole_http_server $server, $workerId, $workerPId, $exitCode, $signal)
+    public function onWorkerError(HttpServer $server, $workerId, $workerPId, $exitCode, $signal)
     {
         $this->error(sprintf('worker[%d] error: exitCode=%s, signal=%s', $workerId, $exitCode, $signal));
     }
 
-    public function onPipeMessage(\swoole_http_server $server, $srcWorkerId, $message)
+    public function onPipeMessage(HttpServer $server, $srcWorkerId, $message)
     {
         if ($message instanceof Task) {
             $this->onTask($server, uniqid('', true), $srcWorkerId, $message);
         }
     }
 
-    public function onRequest(\swoole_http_request $request, \swoole_http_response $response)
+    public function onRequest(SwooleRequest $swooleRequest, SwooleResponse $swooleResponse)
     {
 
     }
 
-    public function onTask(\swoole_http_server $server, $taskId, $srcWorkerId, $data)
+    public function onTask(HttpServer $server, $taskId, $srcWorkerId, $data)
     {
         if ($data instanceof Event) {
             $this->handleEvent($data);
@@ -290,7 +297,7 @@ class Server
         }
     }
 
-    public function onFinish(\swoole_http_server $server, $taskId, $data)
+    public function onFinish(HttpServer $server, $taskId, $data)
     {
         if ($data instanceof Task) {
             $data->finish();
@@ -314,7 +321,7 @@ class Server
              */
             $listener = new $listenerClass();
             if (!($listener instanceof Listener)) {
-                throw new \Exception(sprintf('%s must extend the abstract class %s', $listenerClass, Listener::class));
+                throw new \InvalidArgumentException(sprintf('%s must extend the abstract class %s', $listenerClass, Listener::class));
             }
             $this->callWithCatchException(function () use ($listener, $event) {
                 $listener->handle($event);
@@ -336,7 +343,7 @@ class Server
         if (isset($this->conf['event_handlers'][$event])) {
             $eventHandler = $this->conf['event_handlers'][$event];
             if (!isset(class_implements($eventHandler)[$interface])) {
-                throw new \Exception(sprintf(
+                throw new \InvalidArgumentException(sprintf(
                         '%s must implement the interface %s',
                         $eventHandler,
                         $interface

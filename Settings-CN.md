@@ -34,16 +34,29 @@
 
 - `processes`：`array` 配置自定义进程列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%9B%E7%A8%8B)。
 
+- `timer`：`array` 配置毫秒定时器，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E6%AF%AB%E7%A7%92%E7%BA%A7%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1)。
+
 - `events`：`array` 自定义的异步事件和监听的绑定列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E5%BC%82%E6%AD%A5%E4%BA%8B%E4%BB%B6)。
 
 - `swoole_tables`：`array` 定义的`swoole_table`列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E4%BD%BF%E7%94%A8swoole_table)。
+
+- `cleaners`：`array` `每次请求`的清理器列表，用于清理一些残留的全局变量、单例对象、静态属性，避免多次请求间数据污染。这些清理器类必须实现接口`Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface`。清理的顺序与数组的顺序保持一致。[这些清理器](https://github.com/hhxsv5/laravel-s/blob/master/src/Illuminate/Laravel.php#L44)默认已启用。
+    ```php
+    //...
+    'cleaners' => [
+        //Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class, // 如果你的项目中使用到了Session或Authentication，请解除这行注释
+        //Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class, // 如果你的项目中使用到了Authentication或Passport，请解除这行注释
+        //Hhxsv5\LaravelS\Illuminate\Cleaners\JWTCleaner::class, // 如果你的项目中使用到了包"tymon/jwt-auth"，请解除这行注释
+        //...
+    ],
+    //...
+    ```
 
 - `register_providers`：`array` `每次请求`需要重新注册的`Service Provider`列表，若存在`boot()`方法，会自动执行。一般用于清理`注册了单例的ServiceProvider`。
     ```php
     //...
     'register_providers' => [
-        //例如：重新注册jwt的ServiceProvider
-        \Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        \Xxx\Yyy\XxxServiceProvider::class,
     ],
     //...
     ```

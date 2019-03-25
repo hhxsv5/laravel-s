@@ -6,7 +6,6 @@ use Illuminate\Support\ServiceProvider;
 
 class LaravelSServiceProvider extends ServiceProvider
 {
-
     public function boot()
     {
         $this->publishes([
