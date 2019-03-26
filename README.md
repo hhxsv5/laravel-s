@@ -172,7 +172,7 @@ server {
     index index.html index.htm;
     # Nginx handles the static resources(recommend enabling gzip), LaravelS handles the dynamic resource.
     location / {
-        try_files $uri @laravels;
+        try_files $uri $uri/ @laravels;
     }
     # Response 404 directly when request the PHP file, to avoid exposing public/*.php
     #location ~* \.php$ {
@@ -332,7 +332,7 @@ server {
     index index.html index.htm;
     # Nginx handles the static resources(recommend enabling gzip), LaravelS handles the dynamic resource.
     location / {
-        try_files $uri @laravels;
+        try_files $uri $uri/ @laravels;
     }
     # Response 404 directly when request the PHP file, to avoid exposing public/*.php
     #location ~* \.php$ {

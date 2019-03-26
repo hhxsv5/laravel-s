@@ -178,7 +178,7 @@ server {
     index index.html index.htm;
     # Nginx处理静态资源(建议开启gzip)，LaravelS处理动态资源。
     location / {
-        try_files $uri @laravels;
+        try_files $uri $uri/ @laravels;
     }
     # 当请求PHP文件时直接响应404，防止暴露public/*.php
     #location ~* \.php$ {
@@ -340,7 +340,7 @@ server {
     index index.html index.htm;
     # Nginx处理静态资源(建议开启gzip)，LaravelS处理动态资源。
     location / {
-        try_files $uri @laravels;
+        try_files $uri $uri/ @laravels;
     }
     # 当请求PHP文件时直接响应404，防止暴露public/*.php
     #location ~* \.php$ {
