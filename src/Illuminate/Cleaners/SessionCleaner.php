@@ -4,6 +4,7 @@ namespace Hhxsv5\LaravelS\Illuminate\Cleaners;
 
 
 use Illuminate\Container\Container;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Facade;
 
 class SessionCleaner implements CleanerInterface
@@ -21,5 +22,9 @@ class SessionCleaner implements CleanerInterface
 
         $app->forgetInstance('session.store');
         Facade::clearResolvedInstance('session.store');
+
+        /**@var Redirector $redirect */
+        $redirect = $app->offsetGet('redirect');
+        $redirect->setSession($app->make('session.store'));
     }
 }
