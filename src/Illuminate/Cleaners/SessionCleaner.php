@@ -23,8 +23,10 @@ class SessionCleaner implements CleanerInterface
         $app->forgetInstance('session.store');
         Facade::clearResolvedInstance('session.store');
 
-        /**@var Redirector $redirect */
-        $redirect = $app->offsetGet('redirect');
-        $redirect->setSession($app->make('session.store'));
+        if ($app->offsetExists('redirect')) {
+            /**@var Redirector $redirect */
+            $redirect = $app->offsetGet('redirect');
+            $redirect->setSession($app->make('session.store'));
+        }
     }
 }
