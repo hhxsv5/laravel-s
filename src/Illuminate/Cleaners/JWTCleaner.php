@@ -12,6 +12,7 @@ class JWTCleaner implements CleanerInterface
         'tymon.jwt.auth',
         'tymon.jwt.parser',
         'tymon.jwt.claim.factory',
+        'tymon.jwt.manager',
     ];
 
     public function clean(Container $app, Container $snapshot)
