@@ -257,7 +257,7 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 ## 启用WebSocket服务器
 > WebSocket服务器监听的IP和端口与Http服务器相同。
 
-1.创建WebSocket Handler类，并实现接口`WebSocketHandlerInterface`。start时会自动实例化，不需要手动创建示例。
+1.创建WebSocket Handler类，并实现接口`WebSocketHandlerInterface`。start时会自动实例化，不需要手动创建实例。
 
 ```php
 namespace App\Services;
