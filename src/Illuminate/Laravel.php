@@ -24,6 +24,9 @@ class Laravel
     /**@var \ReflectionObject */
     protected $reflectionApp;
 
+    /**@var int */
+    protected $registerNumberOfParameters;
+
     /**@var HttpKernel */
     protected $kernel;
 
@@ -68,6 +71,7 @@ class Laravel
         $this->snapshotApp = clone $this->app;
 
         $this->reflectionApp = new \ReflectionObject($this->app);
+        $this->registerNumberOfParameters = $this->reflectionApp->getMethod('register')->getNumberOfParameters();
 
         // Save snapshots for app
         $instances = $this->reflectionApp->getProperty('instances');
@@ -231,7 +235,7 @@ class Laravel
         return $response;
     }
 
-    protected function cleanProviders(array $providers, $force = false)
+    protected function cleanProviders(array $providers)
     {
         if ($this->conf['is_lumen']) {
             $loadedProviders = $this->reflectionApp->getProperty('loadedProviders');
@@ -240,11 +244,23 @@ class Laravel
         }
 
         foreach ($providers as $provider) {
-            if ($force || class_exists($provider, false)) {
+            if (class_exists($provider, false)) {
                 if ($this->conf['is_lumen']) {
                     unset($oldLoadedProviders[get_class(new $provider($this->app))]);
                 }
-                $this->app->register($provider, [], true);
+                switch ($this->registerNumberOfParameters) {
+                    case 1:
+                        $this->app->register($provider);
+                        break;
+                    case 2:
+                        $this->app->register($provider, true);
+                        break;
+                    case 3:
+                        $this->app->register($provider, [], true);
+                        break;
+                    default:
+                        throw new \RuntimeException('The number of parameters of the register method is unknown.');
+                }
             }
         }
 
