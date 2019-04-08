@@ -244,7 +244,7 @@ class Laravel
                 if ($this->conf['is_lumen']) {
                     unset($oldLoadedProviders[get_class(new $provider($this->app))]);
                 }
-                $this->app->register($provider, [], true);
+                $this->app->version() >= '5.7' ? $this->app->register($provider, true) : $this->app->register($provider, [], true);
             }
         }
 
