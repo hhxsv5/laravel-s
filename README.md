@@ -45,7 +45,7 @@ Table of Contents
 * [Important notices](#important-notices)
 * [Users and cases](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E7%94%A8%E6%88%B7%E4%B8%8E%E6%A1%88%E4%BE%8B)
 * [Alternatives](#alternatives)
-* [Support on Beerpay](#support-on-beerpay)
+* [Support Us](#support-us)
 * [License](#license)
 
 ## Features
@@ -1088,10 +1088,14 @@ class WorkerStartEvent implements WorkerStartInterface
 
 - [swooletw/laravel-swoole](https://github.com/swooletw/laravel-swoole)
 
-## Support on Beerpay
-Hey dude! Help me out for a couple of :beers:!
+## Support us
 
-[![Beerpay](https://beerpay.io/hhxsv5/laravel-s/badge.svg?style=beer-square)](https://beerpay.io/hhxsv5/laravel-s)  [![Beerpay](https://beerpay.io/hhxsv5/laravel-s/make-wish.svg?style=flat-square)](https://beerpay.io/hhxsv5/laravel-s?focus=wish)
+| Currency | Address |
+| -------- | -------- |
+| BTC | 3KX6LTJcbgiKKaHGC7zySVdMmFXvjikQ3U |
+| ETH | 0xccab8324d33a978a7ac040049e09100029123d71 |
+| LTC | LPhrmK1ZvjnP3ckd9j6QQV7BvjzjrWyTes |
+| USDT | 18dhqenUw3ib3QUzUxXJ1WdCa4tZus4cv3 |
 
 ## License
 
