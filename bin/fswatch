@@ -9,7 +9,7 @@ echo "Restarting LaravelS..."
 
 echo "Starting fswatch..."
 LOCKING=0
-fswatch -e ".*" -i "\\.php$" -m poll_monitor -r ${WORK_DIR} | while read file
+fswatch -e ".*" -i "\\.php$" -r ${WORK_DIR} | while read file
 do
     if [[ ! ${file} =~ .php$ ]] ;then
         continue
