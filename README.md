@@ -45,6 +45,7 @@ Table of Contents
 * [Important notices](#important-notices)
 * [Users and cases](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E7%94%A8%E6%88%B7%E4%B8%8E%E6%A1%88%E4%BE%8B)
 * [Alternatives](#alternatives)
+* [Support on Beerpay](#support-on-beerpay)
 * [License](#license)
 
 ## Features
@@ -1087,11 +1088,11 @@ class WorkerStartEvent implements WorkerStartInterface
 
 - [swooletw/laravel-swoole](https://github.com/swooletw/laravel-swoole)
 
-## License
-
-[MIT](https://github.com/hhxsv5/laravel-s/blob/master/LICENSE)
-
 ## Support on Beerpay
 Hey dude! Help me out for a couple of :beers:!
 
 [![Beerpay](https://beerpay.io/hhxsv5/laravel-s/badge.svg?style=beer-square)](https://beerpay.io/hhxsv5/laravel-s)  [![Beerpay](https://beerpay.io/hhxsv5/laravel-s/make-wish.svg?style=flat-square)](https://beerpay.io/hhxsv5/laravel-s?focus=wish)
+
+## License
+
+[MIT](https://github.com/hhxsv5/laravel-s/blob/master/LICENSE)
