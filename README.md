@@ -1090,3 +1090,8 @@ class WorkerStartEvent implements WorkerStartInterface
 ## License
 
 [MIT](https://github.com/hhxsv5/laravel-s/blob/master/LICENSE)
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/hhxsv5/laravel-s/badge.svg?style=beer-square)](https://beerpay.io/hhxsv5/laravel-s)  [![Beerpay](https://beerpay.io/hhxsv5/laravel-s/make-wish.svg?style=flat-square)](https://beerpay.io/hhxsv5/laravel-s?focus=wish)
