@@ -817,7 +817,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ],
     ```
 
-    - WebSocket: The main server must be a WebSocket Server, so `websocket.enable` needs to be set to `true`.
+    - WebSocket: The main server must `turn on WebSocket`, that is, set `websocket.enable` to `true`.
     ```php
     'sockets' => [
         [

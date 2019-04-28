@@ -832,7 +832,7 @@ public function onClose(Server $server, $fd, $reactorId)
     ],
     ```
 
-    - WebSocket：主服务器必须为WebSocket Server，所以需要将`websocket.enable`置为`true`。
+    - WebSocket：主服务器必须`开启WebSocket`，即需要将`websocket.enable`置为`true`。
     ```php
     'sockets' => [
         [
