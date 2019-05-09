@@ -75,6 +75,11 @@ class Inotify
         $this->bind($wd, $path);
 
         if (is_dir($path)) {
+            $wd = inotify_add_watch($this->fd, $path, $this->watchMask);
+            if ($wd === false) {
+                return false;
+            }
+            $this->bind($wd, $path);
             $files = scandir($path);
             foreach ($files as $file) {
                 if ($file === '.' || $file === '..' || $this->isExcluded($file)) {
@@ -83,15 +88,6 @@ class Inotify
                 $file = $path . DIRECTORY_SEPARATOR . $file;
                 if (is_dir($file)) {
                     $this->_watch($file);
-                }
-
-                $fileType = strrchr($file, '.');
-                if (isset($this->fileTypes[$fileType])) {
-                    $wd = inotify_add_watch($this->fd, $file, $this->watchMask);
-                    if ($wd === false) {
-                        return false;
-                    }
-                    $this->bind($wd, $file);
                 }
             }
         }

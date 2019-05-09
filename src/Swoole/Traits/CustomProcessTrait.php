@@ -20,16 +20,24 @@ trait CustomProcessTrait
 
         /**@var []CustomProcessInterface $processList */
         $processList = [];
-        foreach ($processes as $process) {
-            if (!isset(class_implements($process)[CustomProcessInterface::class])) {
+        foreach ($processes as $item) {
+            if (empty($item['class'])) {
                 throw new \InvalidArgumentException(sprintf(
-                        '%s must implement the interface %s',
-                        $process,
-                        CustomProcessInterface::class
+                        'process class name must be specified'
                     )
                 );
             }
+            $process = $item['class'];
             $processHandler = function (Process $worker) use ($swoole, $processPrefix, $process, $laravelConfig) {
+                if (!isset(class_implements($process)[CustomProcessInterface::class])) {
+                    $this->error(
+                        sprintf(
+                            '%s must implement the interface %s',
+                            $process,
+                            CustomProcessInterface::class
+                        )
+                    );
+                }
                 $name = $process::getName() ?: 'custom';
                 $this->setProcessTitle(sprintf('%s laravels: %s process', $processPrefix, $name));
                 $this->initLaravel($laravelConfig, $swoole);
@@ -64,8 +72,8 @@ trait CustomProcessTrait
             };
             $customProcess = new Process(
                 $processHandler,
-                $process::isRedirectStdinStdout(),
-                $process::getPipeType()
+                $item['redirect'] ?? false,
+                $item['pipe'] ?? 0
             );
             if ($swoole->addProcess($customProcess)) {
                 $processList[] = $customProcess;
