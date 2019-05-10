@@ -17,16 +17,27 @@ trait CustomProcessTrait
         /**@var []CustomProcessInterface $processList */
         $processList = [];
         foreach ($processes as $item) {
-            if (empty($item['class'])) {
-                throw new \InvalidArgumentException(sprintf(
-                        'process class name must be specified'
-                    )
-                );
+            if (is_string($item)) {
+                // Backwards compatible
+                Laravel::autoload($laravelConfig['root_path']);
+                $process = $item;
+                $redirect = $process::isRedirectStdinStdout();
+                $pipe = $process::getPipeType();
+            } else {
+                if (empty($item['class'])) {
+                    throw new \InvalidArgumentException(sprintf(
+                            'process class name must be specified'
+                        )
+                    );
+                }
+                $process = $item['class'];
+                $redirect = isset($item['redirect']) ? $item['redirect'] : false;
+                $pipe = isset($item['pipe']) ? $item['pipe'] : 0;
             }
-            $process = $item['class'];
+
             $processHandler = function (Process $worker) use ($swoole, $processPrefix, $process, $laravelConfig) {
                 if (!isset(class_implements($process)[CustomProcessInterface::class])) {
-                    $this->error(
+                    throw new \InvalidArgumentException(
                         sprintf(
                             '%s must implement the interface %s',
                             $process,
@@ -68,8 +79,8 @@ trait CustomProcessTrait
             };
             $customProcess = new Process(
                 $processHandler,
-                isset($item['redirect']) ? $item['redirect'] : false,
-                isset($item['pipe']) ? $item['pipe'] : 0
+                $redirect,
+                $pipe
             );
             if ($swoole->addProcess($customProcess)) {
                 $processList[] = $customProcess;

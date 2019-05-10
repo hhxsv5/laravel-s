@@ -35,7 +35,8 @@
   "require": {
     "php": ">=5.5.9",
     "symfony/console": ">=2.7.0",
-    "ext-json": "*"
+    "ext-json": "*",
+    "ext-pcntl": "*"
   },
   "suggest": {
     "ext-swoole": "Event-driven asynchronous & concurrent & coroutine networking engine with high performance for PHP, require >= 1.7.19.",
