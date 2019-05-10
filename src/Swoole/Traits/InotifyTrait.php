@@ -29,11 +29,11 @@ trait InotifyTrait
             return;
         }
 
-        $autoReload = function () use ($swoole, $config, $laravelConf) {
+        $autoReload = function () use ($config, $laravelConf) {
             $log = !empty($config['log']);
             $this->setProcessTitle(sprintf('%s laravels: inotify process', $config['process_prefix']));
             $inotify = new Inotify($config['watch_path'], IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVE,
-                function ($event) use ($swoole, $log, $laravelConf) {
+                function ($event) use ($log, $laravelConf) {
                     // $swoole->reload();
                     $reloadCmd = trim(sprintf('%s -c "%s" %s/bin/laravels reload', PHP_BINARY, php_ini_loaded_file(), $laravelConf['root_path']));
                     Portal::runCommand($reloadCmd);
