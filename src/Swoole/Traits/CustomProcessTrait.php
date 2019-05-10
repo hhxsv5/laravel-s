@@ -14,6 +14,11 @@ trait CustomProcessTrait
 
     public function addCustomProcesses(Server $swoole, $processPrefix, array $processes, array $laravelConfig)
     {
+        $pidfile = dirname($swoole->setting['pid_file']) . '/laravels-custom-processes.pid';
+        if (file_exists($pidfile)) {
+            unlink($pidfile);
+        }
+
         /**@var []CustomProcessInterface $processList */
         $processList = [];
         foreach ($processes as $item) {
@@ -35,9 +40,8 @@ trait CustomProcessTrait
                 $pipe = isset($item['pipe']) ? $item['pipe'] : 0;
             }
 
-            $processHandler = function (Process $worker) use ($swoole, $processPrefix, $process, $laravelConfig) {
-                // Send the pipe message to save all pids of custom processes to the file.
-                $swoole->sendMessage(['custom_process_pid' => $worker->pid], 0);
+            $processHandler = function (Process $worker) use ($pidfile, $swoole, $processPrefix, $process, $laravelConfig) {
+                file_put_contents($pidfile, $worker->pid . "\n", FILE_APPEND | LOCK_EX);
                 $this->initLaravel($laravelConfig, $swoole);
                 if (!isset(class_implements($process)[CustomProcessInterface::class])) {
                     throw new \InvalidArgumentException(
@@ -51,8 +55,11 @@ trait CustomProcessTrait
                 $name = $process::getName() ?: 'custom';
                 $this->setProcessTitle(sprintf('%s laravels: %s process', $processPrefix, $name));
 
-                Process::signal(SIGUSR1, function ($signo) use ($name, $process, $worker, $swoole) {
+                Process::signal(SIGUSR1, function ($signo) use ($name, $process, $worker, $pidfile, $swoole) {
                     $this->info(sprintf('Reloading the process %s [pid=%d].', $name, $worker->pid));
+                    if (file_exists($pidfile)) {
+                        unlink($pidfile);
+                    }
                     $process::onReload($swoole, $worker);
                 });
 

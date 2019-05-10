@@ -208,7 +208,7 @@ EOS;
 
         // Reload custom processes
         $pidFile = dirname($pidFile) . '/laravels-custom-processes.pid';
-        $pids = (array)explode(',', file_get_contents($pidFile));
+        $pids = (array)explode("\n", trim(file_get_contents($pidFile)));
         foreach ($pids as $pid) {
             if (!$pid || !self::kill($pid, 0)) {
                 $this->error("Custom process[PID={$pid}] does not exist, or permission denied.");

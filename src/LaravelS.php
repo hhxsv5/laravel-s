@@ -70,7 +70,6 @@ class LaravelS extends Server
 
         $processes = isset($this->conf['processes']) ? $this->conf['processes'] : [];
         $this->swoole->customProcesses = $this->addCustomProcesses($this->swoole, $svrConf['process_prefix'], $processes, $this->laravelConf);
-        $this->swoole->customProcessPids = [];
     }
 
     protected function bindWebSocketEvent()
@@ -123,24 +122,6 @@ class LaravelS extends Server
 
         // Fire WorkerError event
         $this->fireEvent('WorkerError', WorkerErrorInterface::class, func_get_args());
-    }
-
-    public function onPipeMessage(HttpServer $server, $srcWorkerId, $message)
-    {
-        // Save the PID file of the custom processes
-        if (isset($message['custom_process_pid'])) {
-            $server->customProcessPids[] = $message['custom_process_pid'];
-            $processCount = count($server->customProcesses);
-            $pidCount = count($server->customProcessPids);
-            if ($pidCount !== $processCount) {
-                return;
-            }
-            $pidfile = dirname($server->setting['pid_file']) . '/laravels-custom-processes.pid';
-            file_put_contents($pidfile, implode(',', $server->customProcessPids));
-            return;
-        }
-
-        parent::onPipeMessage($server, $srcWorkerId, $message);
     }
 
     protected function convertRequest(Laravel $laravel, SwooleRequest $request)
