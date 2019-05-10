@@ -36,6 +36,7 @@ trait CustomProcessTrait
             }
 
             $processHandler = function (Process $worker) use ($swoole, $processPrefix, $process, $laravelConfig) {
+                $this->initLaravel($laravelConfig, $swoole);
                 if (!isset(class_implements($process)[CustomProcessInterface::class])) {
                     throw new \InvalidArgumentException(
                         sprintf(
@@ -47,7 +48,6 @@ trait CustomProcessTrait
                 }
                 $name = $process::getName() ?: 'custom';
                 $this->setProcessTitle(sprintf('%s laravels: %s process', $processPrefix, $name));
-                $this->initLaravel($laravelConfig, $swoole);
 
                 Process::signal(SIGUSR1, function ($signo) use ($name, $process, $worker, $swoole) {
                     $this->info(sprintf('Reloading the process %s [pid=%d].', $name, $worker->pid));
