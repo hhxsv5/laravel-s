@@ -22,21 +22,6 @@ interface CustomProcessInterface
     public static function callback(Server $swoole, Process $process);
 
     /**
-     * Whether redirect stdin/stdout
-     * @return bool
-     */
-    public static function isRedirectStdinStdout();
-
-    /**
-     * The type of pipeline
-     * 0: no pipeline
-     * 1: \SOCK_STREAM
-     * 2: \SOCK_DGRAM
-     * @return int
-     */
-    public static function getPipeType();
-
-    /**
      * Trigger this method on receiving the signal SIGUSR1
      * @param Server $swoole
      * @param Process $process

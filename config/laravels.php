@@ -24,7 +24,13 @@ return [
         //'handler' => XxxWebSocketHandler::class,
     ],
     'sockets'                  => [],
-    'processes'                => [],
+    'processes'                => [
+        // [
+        //     'class' => \App\Processes\TestProcess::class,
+        //     'redirect' => false, // Whether redirect stdin/stdout, true or false
+        //     'pipe' => 0 // The type of pipeline, 0: no pipeline 1: \SOCK_STREAM 2: \SOCK_DGRAM
+        // ]
+    ],
     'timer'                    => [
         'enable'        => false,
         'jobs'          => [
