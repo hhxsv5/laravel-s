@@ -36,6 +36,8 @@ trait CustomProcessTrait
             }
 
             $processHandler = function (Process $worker) use ($swoole, $processPrefix, $process, $laravelConfig) {
+                // Send the pipe message to save all pids of custom processes to the file.
+                $swoole->sendMessage(['custom_process_pid' => $worker->pid], 0);
                 $this->initLaravel($laravelConfig, $swoole);
                 if (!isset(class_implements($process)[CustomProcessInterface::class])) {
                     throw new \InvalidArgumentException(

@@ -40,7 +40,6 @@ return [
             // [\App\Jobs\XxxCronJob::class, [1000, true]], // Pass in parameters when registering
             // \App\Jobs\XxxCronJob::class, // Override the corresponding method to return the configuration
         ],
-        'pid_file'      => storage_path('laravels-timer.pid'),
         'max_wait_time' => 5,
     ],
     'events'                   => [],
