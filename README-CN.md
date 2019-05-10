@@ -901,16 +901,6 @@ public function onClose(Server $server, $fd, $reactorId)
             // 进程名称
             return 'test';
         }
-        public static function isRedirectStdinStdout()
-        {
-            // 是否重定向输入输出
-            return false;
-        }
-        public static function getPipeType()
-        {
-            // 管道类型：0不创建管道，1创建SOCK_STREAM类型管道，2创建SOCK_DGRAM类型管道
-            return 0;
-        }
         public static function callback(Server $swoole, Process $process)
         {
             // 进程运行的代码，不能退出，一旦退出Manager进程会自动再次创建该进程。
@@ -945,7 +935,11 @@ public function onClose(Server $server, $fd, $reactorId)
     // 修改文件 config/laravels.php
     // ...
     'processes' => [
-        \App\Processes\TestProcess::class,
+        [
+            'class'    => \App\Processes\TestProcess::class,
+            'redirect' => false, // 是否重定向输入输出
+            'pipe'     => 0 // 管道类型：0不创建管道，1创建SOCK_STREAM类型管道，2创建SOCK_DGRAM类型管道
+        ],
     ],
     ```
 

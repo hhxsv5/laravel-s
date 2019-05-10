@@ -886,16 +886,6 @@ To make our main server support more protocols not just Http and WebSocket, we b
             // The name of process
             return 'test';
         }
-        public static function isRedirectStdinStdout()
-        {
-            // Whether redirect stdin/stdout
-            return false;
-        }
-        public static function getPipeType()
-        {
-            // The type of pipeline: 0 no pipeline, 1 SOCK_STREAM, 2 SOCK_DGRAM
-            return 0;
-        }
         public static function callback(Server $swoole, Process $process)
         {
             // The callback method cannot exit. Once exited, Manager process will automatically create the process 
@@ -930,7 +920,11 @@ To make our main server support more protocols not just Http and WebSocket, we b
     // Edit `config/laravels.php`
     // ...
     'processes' => [
-        \App\Processes\TestProcess::class,
+        [
+            'class'    => \App\Processes\TestProcess::class,
+            'redirect' => false, // Whether redirect stdin/stdout, true or false
+            'pipe'     => 0 // The type of pipeline, 0: no pipeline 1: SOCK_STREAM 2: SOCK_DGRAM
+        ],
     ],
     ```
 
