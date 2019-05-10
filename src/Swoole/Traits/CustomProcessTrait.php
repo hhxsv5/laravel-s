@@ -57,9 +57,6 @@ trait CustomProcessTrait
 
                 Process::signal(SIGUSR1, function ($signo) use ($name, $process, $worker, $pidfile, $swoole) {
                     $this->info(sprintf('Reloading the process %s [pid=%d].', $name, $worker->pid));
-                    if (file_exists($pidfile)) {
-                        unlink($pidfile);
-                    }
                     $process::onReload($swoole, $worker);
                 });
 
