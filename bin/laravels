@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+
 /**
  * 本autoloader只用来拉取laravelS
  * Class Psr4Autoloader
@@ -144,15 +145,16 @@ class Psr4Autoloader
         return false;
     }
 }
-$basePath   = realpath(__DIR__ . '/../');
-$loader     = new Psr4Autoloader();
+
+$basePath = realpath(__DIR__ . '/../');
+$loader = new Psr4Autoloader();
 $loader->register();
 $loader->addNamespace('Hhxsv5\LaravelS', $basePath . '/vendor/hhxsv5/laravel-s/src');
 $loader->addNamespace('Symfony\Component\Console', $basePath . '/vendor/symfony/console');
 $loader->addNamespace('Symfony\Contracts', $basePath . '/vendor/symfony/contracts');
 
-$command    = new Hhxsv5\LaravelS\Console\Portal($basePath);
-$input      = new Symfony\Component\Console\Input\ArgvInput();
-$output     = new Symfony\Component\Console\Output\ConsoleOutput();
-$code       = $command->run($input, $output);
+$command = new Hhxsv5\LaravelS\Console\Portal($basePath);
+$input = new Symfony\Component\Console\Input\ArgvInput();
+$output = new Symfony\Component\Console\Output\ConsoleOutput();
+$code = $command->run($input, $output);
 exit($code);

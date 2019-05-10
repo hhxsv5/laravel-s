@@ -14,10 +14,6 @@ trait CustomProcessTrait
 
     public function addCustomProcesses(Server $swoole, $processPrefix, array $processes, array $laravelConfig)
     {
-        if (!empty($processes)) {
-            Laravel::autoload($laravelConfig['root_path']);
-        }
-
         /**@var []CustomProcessInterface $processList */
         $processList = [];
         foreach ($processes as $item) {
@@ -72,8 +68,8 @@ trait CustomProcessTrait
             };
             $customProcess = new Process(
                 $processHandler,
-                $item['redirect'] ?? false,
-                $item['pipe'] ?? 0
+                isset($item['redirect']) ? $item['redirect'] : false,
+                isset($item['pipe']) ? $item['pipe'] : 0
             );
             if ($swoole->addProcess($customProcess)) {
                 $processList[] = $customProcess;
