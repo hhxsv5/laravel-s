@@ -58,5 +58,8 @@
     "bin/fswatch"
   ],
   "prefer-stable": true,
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "require-dev": {
+    "swoole/ide-helper": "@dev"
+  }
 }
