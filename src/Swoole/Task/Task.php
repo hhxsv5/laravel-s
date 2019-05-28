@@ -26,9 +26,6 @@ abstract class Task
         if ($delay <= 0) {
             throw new \InvalidArgumentException('The delay must be greater than 0');
         }
-        if ($delay >= 86400) {
-            throw new \InvalidArgumentException('The max delay is 86400s');
-        }
         $this->delay = $delay;
         return $this;
     }
