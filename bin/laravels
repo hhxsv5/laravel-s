@@ -151,6 +151,7 @@ $loader = new Psr4Autoloader();
 $loader->register();
 $loader->addNamespace('Hhxsv5\LaravelS', $basePath . '/vendor/hhxsv5/laravel-s/src');
 $loader->addNamespace('Symfony\Component\Console', $basePath . '/vendor/symfony/console');
+$loader->addNamespace('Symfony\Contracts\Service', $basePath . '/vendor/symfony/service-contracts');
 $loader->addNamespace('Symfony\Contracts', $basePath . '/vendor/symfony/contracts');
 
 $command = new Hhxsv5\LaravelS\Console\Portal($basePath);
