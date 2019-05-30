@@ -8,10 +8,6 @@ use Swoole\Process;
 
 trait TimerTrait
 {
-    use ProcessTitleTrait;
-    use LaravelTrait;
-    use LogTrait;
-
     public function addTimerProcess(Server $swoole, array $config, array $laravelConfig)
     {
         if (empty($config['enable']) || empty($config['jobs'])) {

@@ -35,17 +35,8 @@ class LaravelS extends Server
     /**
      * Fix conflicts of traits
      */
-    use InotifyTrait, LaravelTrait, LogTrait, ProcessTitleTrait, TimerTrait, CustomProcessTrait {
-        LogTrait::log insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
-        LogTrait::logException insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
-        LogTrait::trace insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
-        LogTrait::info insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
-        LogTrait::warning insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
-        LogTrait::error insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
-        LogTrait::callWithCatchException insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
-        ProcessTitleTrait::setProcessTitle insteadof InotifyTrait, TimerTrait, CustomProcessTrait;
-        LaravelTrait::initLaravel insteadof TimerTrait, CustomProcessTrait;
-    }
+    use InotifyTrait, LaravelTrait, LogTrait, ProcessTitleTrait, TimerTrait, CustomProcessTrait;
+
     /**@var array */
     protected $laravelConf;
 

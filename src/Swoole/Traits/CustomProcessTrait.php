@@ -9,9 +9,6 @@ use Swoole\Process;
 
 trait CustomProcessTrait
 {
-    use ProcessTitleTrait;
-    use LogTrait;
-
     public function addCustomProcesses(Server $swoole, $processPrefix, array $processes, array $laravelConfig)
     {
         $pidfile = dirname($swoole->setting['pid_file']) . '/laravels-custom-processes.pid';

@@ -9,9 +9,6 @@ use Swoole\Process;
 
 trait InotifyTrait
 {
-    use ProcessTitleTrait;
-    use LogTrait;
-
     public function addInotifyProcess(Server $swoole, array $config, array $laravelConf)
     {
         if (empty($config['enable'])) {
