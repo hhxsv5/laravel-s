@@ -96,6 +96,7 @@ class ReflectionApp
     public function setLoadedProviders(array $loadedProviders)
     {
         $reflectLoadedProviders = $this->reflectLoadedProviders();
+        $reflectLoadedProviders->setAccessible(true);
         $reflectLoadedProviders->setValue($this->app, $loadedProviders);
     }
 
