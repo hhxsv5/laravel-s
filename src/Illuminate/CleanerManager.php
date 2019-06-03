@@ -56,7 +56,7 @@ class CleanerManager
     /**
      * Add cleaners.
      *
-     * @param array|CleanerInterface $cleaner
+     * @param CleanerInterface[]|CleanerInterface $cleaner
      */
     protected function addCleaner($cleaner)
     {
