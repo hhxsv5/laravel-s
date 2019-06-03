@@ -2,10 +2,13 @@
 
 namespace Hhxsv5\LaravelS\Illuminate;
 
+use Illuminate\Container\Container;
+use Symfony\Component\HttpFoundation\Response;
+
 class ReflectionApp
 {
     /**
-     * @var \Illuminate\Contracts\Container\Container
+     * @var Container
      */
     protected $app;
 
@@ -17,9 +20,9 @@ class ReflectionApp
     /**
      * ReflectionApp constructor.
      *
-     * @param \Illuminate\Contracts\Container\Container $app
+     * @param Container $app
      */
-    public function __construct($app)
+    public function __construct(Container $app)
     {
         $this->app = $app;
 
@@ -30,6 +33,7 @@ class ReflectionApp
      * Get all bindings from application container.
      *
      * @return array
+     * @throws \ReflectionException
      */
     public function instances()
     {
@@ -43,9 +47,10 @@ class ReflectionApp
     /**
      * Call terminable middleware of Lumen.
      *
-     * @param \Symfony\Component\HttpFoundation\Response $response
+     * @param Response $response
+     * @throws \ReflectionException
      */
-    public function callTerminableMiddleware($response)
+    public function callTerminableMiddleware(Response $response)
     {
         $middleware = $this->reflectionApp->getProperty('middleware');
         $middleware->setAccessible(true);
@@ -61,6 +66,7 @@ class ReflectionApp
      * The parameter count of 'register' method in app container.
      *
      * @return int
+     * @throws \ReflectionException
      */
     public function registerMethodParameterCount()
     {
@@ -71,6 +77,7 @@ class ReflectionApp
      * Get 'loadedProviders' of application container.
      *
      * @return array
+     * @throws \ReflectionException
      */
     public function loadedProviders()
     {
@@ -84,6 +91,7 @@ class ReflectionApp
      * Set 'loadedProviders' of application container.
      *
      * @param array $loadedProviders
+     * @throws \ReflectionException
      */
     public function setLoadedProviders(array $loadedProviders)
     {
@@ -95,6 +103,7 @@ class ReflectionApp
      * Get the reflect loadedProviders of application container.
      *
      * @return \ReflectionProperty
+     * @throws \ReflectionException
      */
     protected function reflectLoadedProviders()
     {

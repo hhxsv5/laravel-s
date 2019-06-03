@@ -6,18 +6,18 @@ use Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\ConfigCleaner;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\CookieCleaner;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\RequestCleaner;
+use Illuminate\Container\Container;
 
 class CleanerManager
 {
     /**
-     * @var \Illuminate\Contracts\Container\Container
+     * @var Container
      */
     protected $app;
 
     /**
      * All cleaners
-     *
-     * @var \Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface[]
+     * @var CleanerInterface[]
      */
     protected $cleaners = [
         ConfigCleaner::class,
@@ -38,10 +38,10 @@ class CleanerManager
     /**
      * CleanerManager constructor.
      *
-     * @param \Illuminate\Contracts\Container\Container $app
+     * @param Container $app
      * @param array $config
      */
-    public function __construct($app, array $config)
+    public function __construct(Container $app, array $config)
     {
         $this->app = $app;
         $this->config = $config;
@@ -56,7 +56,7 @@ class CleanerManager
     /**
      * Add cleaners.
      *
-     * @param array|\Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface $cleaner
+     * @param array|CleanerInterface $cleaner
      */
     protected function addCleaner($cleaner)
     {
@@ -98,7 +98,8 @@ class CleanerManager
     /**
      * Clean Providers.
      *
-     * @param \Hhxsv5\LaravelS\Illuminate\ReflectionApp $reflectionApp
+     * @param ReflectionApp $reflectionApp
+     * @throws \ReflectionException
      */
     protected function cleanProviders(ReflectionApp $reflectionApp)
     {
@@ -144,12 +145,14 @@ class CleanerManager
     /**
      * Clean app after request finished.
      *
-     * @param \Illuminate\Contracts\Container\Container $snapshotApp
-     * @param \Hhxsv5\LaravelS\Illuminate\ReflectionApp $reflectionApp
+     * @param Container $snapshotApp
+     * @param ReflectionApp $reflectionApp
+     * @throws \ReflectionException
      */
     public function clean($snapshotApp, ReflectionApp $reflectionApp)
     {
         foreach ($this->cleaners as $cleanerCls) {
+            /**@var CleanerInterface $cleaner */
             $cleaner = $this->app->make($cleanerCls);
             $cleaner->clean($this->app, $snapshotApp);
         }

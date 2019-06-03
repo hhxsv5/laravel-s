@@ -2,7 +2,6 @@
 
 namespace Hhxsv5\LaravelS\Illuminate\Cleaners;
 
-
 use Illuminate\Container\Container;
 
 interface CleanerInterface

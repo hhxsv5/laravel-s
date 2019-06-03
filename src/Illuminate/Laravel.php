@@ -36,9 +36,7 @@ class Laravel
     /**@var array */
     private $rawGlobals = [];
 
-    /**
-     * @var \Hhxsv5\LaravelS\Illuminate\CleanerManager
-     */
+    /**@var CleanerManager */
     protected $cleanerManager;
 
     public function __construct(array $conf = [])
@@ -101,10 +99,7 @@ class Laravel
         return [$app, $kernel];
     }
 
-    /**
-     * @param \Illuminate\Contracts\Container\Container $app
-     */
-    private function configureLumen($app)
+    private function configureLumen(Container $app)
     {
         $cfgPaths = [
             // Framework default configuration
@@ -245,11 +240,6 @@ class Laravel
         }
     }
 
-    /**
-     * Check if is Lumen
-     *
-     * @return bool
-     */
     protected function isLumen()
     {
         return $this->conf['is_lumen'];
