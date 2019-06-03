@@ -73,7 +73,7 @@ class Laravel
         }
     }
 
-    public function createAppKernel()
+    protected function createAppKernel()
     {
         // Register autoload
         self::autoload($this->conf['root_path']);
@@ -99,7 +99,7 @@ class Laravel
         return [$app, $kernel];
     }
 
-    private function configureLumen(Container $app)
+    protected function configureLumen(Container $app)
     {
         $cfgPaths = [
             // Framework default configuration
