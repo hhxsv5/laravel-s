@@ -82,8 +82,6 @@ class ReflectionApp
     public function loadedProviders()
     {
         $loadedProviders = $this->reflectLoadedProviders();
-        $loadedProviders->setAccessible(true);
-
         return $loadedProviders->getValue($this->app);
     }
 
@@ -96,7 +94,6 @@ class ReflectionApp
     public function setLoadedProviders(array $loadedProviders)
     {
         $reflectLoadedProviders = $this->reflectLoadedProviders();
-        $reflectLoadedProviders->setAccessible(true);
         $reflectLoadedProviders->setValue($this->app, $loadedProviders);
     }
 
@@ -108,6 +105,8 @@ class ReflectionApp
      */
     protected function reflectLoadedProviders()
     {
-        return $this->reflectionApp->getProperty('loadedProviders');
+        $loadedProviders = $this->reflectionApp->getProperty('loadedProviders');
+        $loadedProviders->setAccessible(true);
+        return $loadedProviders;
     }
 }
