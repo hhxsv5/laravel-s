@@ -988,6 +988,8 @@ class WorkerStartEvent implements WorkerStartInterface
 
 - [Known issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md)
 
+- Debugging method: Logging, [Laravel Dump Server](https://github.com/beyondcode/laravel-dump-server)(Laravel 5.7 has been integrated by default).
+
 - Should get all request information from `Illuminate\Http\Request` Object, $_ENV is readable, $_SERVER is partially readable, `CANNOT USE` $_GET/$_POST/$_FILES/$_COOKIE/$_REQUEST/$_SESSION/$GLOBALS.
 
     ```php

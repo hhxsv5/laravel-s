@@ -1002,6 +1002,8 @@ class WorkerStartEvent implements WorkerStartInterface
 
 - [常见问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md)
 
+- 调试方式：记录日志、[Laravel Dump Server](https://github.com/beyondcode/laravel-dump-server)（Laravel 5.7已默认集成）
+
 - 应通过`Illuminate\Http\Request`对象来获取请求信息，$_ENV是可读取的，$_SERVER是部分可读的，`不能使用`$_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST、$_SESSION、$GLOBALS。
 
     ```php
@@ -1017,7 +1019,7 @@ class WorkerStartEvent implements WorkerStartInterface
     }
     ```
 
-- 推荐通过返回`Illuminate\Http\Response`对象来响应请求，兼容echo、vardump()、print_r()，`不能使用`函数像 dd()、exit()、die()、header()、setcookie()、http_response_code()。
+- 推荐通过返回`Illuminate\Http\Response`对象来响应请求，兼容echo、vardump()、print_r()，`不能使用`函数 dd()、exit()、die()、header()、setcookie()、http_response_code()。
 
     ```php
     public function json()
