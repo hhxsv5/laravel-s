@@ -111,6 +111,8 @@ class LaravelS extends Server
     {
         parent::onWorkerError($server, $workerId, $workerPId, $exitCode, $signal);
 
+        Laravel::autoload($this->laravelConf['root_path']);
+
         // Fire WorkerError event
         $this->fireEvent('WorkerError', WorkerErrorInterface::class, func_get_args());
     }
