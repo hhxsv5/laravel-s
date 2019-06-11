@@ -75,6 +75,11 @@ return [
         'enable_coroutine'   => false,
         'http_compression'   => false,
 
+        // Slow log
+        // 'request_slowlog_timeout' => 2,
+        // 'request_slowlog_file'    => storage_path(sprintf('logs/slow-%s.log', date('Y-m'))),
+        // 'trace_event_worker'      => true,
+
         /**
          * More settings of Swoole
          * @see https://wiki.swoole.com/wiki/page/274.html  Chinese
