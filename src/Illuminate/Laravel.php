@@ -167,14 +167,13 @@ class Laravel
 
         // prefer content in response, secondly ob
         if (strlen($content) === 0 && ob_get_length() > 0) {
-            $obContent = ob_get_contents();
             if ($response instanceof StreamedResponse) {
                 $reflect = new \ReflectionClass(StreamedResponse::class);
                 $contentProperty = $reflect->getProperty('content');
                 $contentProperty->setAccessible(true);
-                $contentProperty->setValue($response, $obContent);
+                $contentProperty->setValue($response, ob_get_contents());
             } else {
-                $response->setContent($obContent);
+                $response->setContent(ob_get_contents());
             }
         }
 
