@@ -23,10 +23,9 @@ class DynamicResponse extends Response
     public function sendContent()
     {
         if ($this->laravelResponse instanceof StreamedResponse) {
-            $reflect = new \ReflectionClass(StreamedResponse::class);
-            $contentProperty = $reflect->getProperty('content');
-            $contentProperty->setAccessible(true);
-            $content = $contentProperty->getValue($this->laravelResponse);
+            ob_start();
+            $this->laravelResponse = $this->laravelResponse->sendContent();
+            $content = ob_get_clean();
         } else {
             $content = $this->laravelResponse->getContent();
         }

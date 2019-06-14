@@ -8,7 +8,6 @@ use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Http\Request as IlluminateRequest;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Laravel
 {
@@ -144,10 +143,7 @@ class Laravel
 
         if ($this->isLumen()) {
             $response = $this->app->dispatch($request);
-            if ($response instanceof StreamedResponse) {
-                $content = '';
-                $response = $response->sendContent();
-            } elseif ($response instanceof SymfonyResponse) {
+            if ($response instanceof SymfonyResponse) {
                 $content = $response->getContent();
             } else {
                 $content = (string)$response;
@@ -156,25 +152,13 @@ class Laravel
             $this->reflectionApp->callTerminableMiddleware($response);
         } else {
             $response = $this->kernel->handle($request);
-            if ($response instanceof StreamedResponse) {
-                $content = '';
-                $response = $response->sendContent();
-            } else {
-                $content = $response->getContent();
-            }
+            $content = $response->getContent();
             $this->kernel->terminate($request, $response);
         }
 
         // prefer content in response, secondly ob
         if (strlen($content) === 0 && ob_get_length() > 0) {
-            if ($response instanceof StreamedResponse) {
-                $reflect = new \ReflectionClass(StreamedResponse::class);
-                $contentProperty = $reflect->getProperty('content');
-                $contentProperty->setAccessible(true);
-                $contentProperty->setValue($response, ob_get_contents());
-            } else {
-                $response->setContent(ob_get_contents());
-            }
+            $response->setContent(ob_get_contents());
         }
 
         ob_end_clean();
