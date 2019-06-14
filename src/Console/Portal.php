@@ -102,6 +102,11 @@ EOS;
 
     public function start()
     {
+        if (!extension_loaded('swoole')) {
+            $this->error('LaravelS requires swoole extension, try to `pecl install swoole` and `php --ri swoole`.');
+            return 1;
+        }
+
         // Initialize configuration config/laravels.json
         $options = $this->input->getOptions();
         unset($options['env']);
