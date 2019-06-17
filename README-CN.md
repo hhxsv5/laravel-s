@@ -991,6 +991,12 @@ class WorkerStartEvent implements WorkerStartInterface
     - Swoole Server下，所有单例对象会常驻于内存，这个时候单例对象的生命周期与FPM不同，请求开始=>实例化单例=>请求结束=>单例对象依旧保留，需要开发者自己维护单例的状态。
 
     - 如果你的项目中使用到了Session、Authentication、JWT，请根据情况解除`laravels.php`中`cleaners`的注释。
+    
+    - 在 laravel-s 中，所有控制器都是单例，在控制器里面设置的属性在请求结束后也会保留下来，在后续请求都可以获取到这些设置的属性。这在大部分情况都不是我们想要的效果。
+        - 如果想要迁移到 laravel-s，或者找出潜在的问题，可以使用下面的命令。它可以列出你的路由中所有关联的控制器的所有属性：
+        ```bash
+        php artisan laravels:list-properties
+        ```
 
     - 常见的解决方案：
 
