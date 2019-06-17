@@ -2,6 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Illuminate;
 
+use Hhxsv5\LaravelS\Console\ListPropertiesCommand;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelSServiceProvider extends ServiceProvider
@@ -19,7 +20,10 @@ class LaravelSServiceProvider extends ServiceProvider
             __DIR__ . '/../../config/laravels.php', 'laravels'
         );
 
-        $this->commands(LaravelSCommand::class);
+        $this->commands([
+            LaravelSCommand::class,
+            ListPropertiesCommand::class,
+        ]);
     }
 
 }
