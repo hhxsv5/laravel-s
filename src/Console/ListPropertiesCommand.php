@@ -3,7 +3,6 @@
 namespace Hhxsv5\LaravelS\Console;
 
 use Illuminate\Console\Command;
-use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
 
 /**
@@ -13,7 +12,7 @@ use Illuminate\Support\Collection;
  */
 class ListPropertiesCommand extends Command
 {
-    public $signature = 'laravels:list-properties';
+    public $signature = 'laravels:list-properties {--api-version=}';
 
     public $description = 'List all properties of all controllers (not include parent\'s).';
 
@@ -42,15 +41,22 @@ class ListPropertiesCommand extends Command
     {
         $properties = $this->allControllerProperties();
 
-        $properties->each(function ($properties, $action) {
-            $controllerName = explode('@', $action)[0];
+        $properties->each(function (Collection $properties) {
+            $properties->groupBy('controller')
+                ->map(function (Collection $properties, $controller) {
+                    // Controller name
+                    $this->comment($controller);
 
-            $this->comment($controllerName);
+                    $properties = $properties->map(function ($property) {
+                        unset($property['controller']);
+                        return $property;
+                    })->toArray();
 
-            $this->table(
-                $this->headers(),
-                $properties
-            );
+                    $this->table(
+                        $this->headers(),
+                        $properties
+                    );
+                });
         });
     }
 
@@ -74,37 +80,39 @@ class ListPropertiesCommand extends Command
     {
         $controllers = $this->allControllers();
 
-        $properties = $controllers
-            ->map(function (Controller $controller) {
+        /** @var \Illuminate\Routing\Controller|\Laravel\Lumen\Routing\Controller $controller */
+        return $controllers
+            ->map(function ($controller) {
+                $parentProperties = [];
+
                 // Get related controller's properties
                 $reflectController = new \ReflectionClass($controller);
                 $properties = $reflectController->getProperties();
 
                 // Get parent's properties
                 $parent = get_parent_class(get_class($controller));
-                $reflectParentController = new \ReflectionClass($parent);
-                $parentProperties = collect($reflectParentController->getProperties())
-                    ->map
-                    ->getName()
-                    ->flip()
-                    ->toArray();
+                if ($parent) {
+                    $reflectParentController = new \ReflectionClass($parent);
+                    $parentProperties = collect($reflectParentController->getProperties())
+                        ->map
+                        ->getName()
+                        ->flip()
+                        ->toArray();
+                }
 
                 return collect($properties)
                     ->map(function (\ReflectionProperty $reflectionProperty) use ($controller, $parentProperties) {
                         // Exclude parent's properties
                         if (!array_key_exists($reflectionProperty->getName(), $parentProperties)) {
                             return [
+                                'controller' => get_class($controller),
                                 'name' => $reflectionProperty->getName(),
-                                'property' => $this->resolveModifiers($reflectionProperty)  . '$' . $reflectionProperty->getName(),
+                                'property' => $this->resolveModifiers($reflectionProperty) . '$' . $reflectionProperty->getName(),
                             ];
                         }
                     })
-                    ->filter()
-                    ->toArray();
-
+                    ->filter();
             });
-
-        return $properties;
     }
 
     /**
@@ -115,9 +123,17 @@ class ListPropertiesCommand extends Command
      */
     private function allControllers()
     {
-        $actionList = $this->actionList();
+        if ($this->isLumen()) {
+            $controllers = $this->lumenControllers();
+        } else {
+            $controllers = $this->laravelControllers();
+        }
 
-        return collect($actionList)->map->getController();
+        if ($this->isIntegrateWithDingo()) {
+            $controllers = $controllers->merge($this->dingoControllers());
+        }
+
+        return $controllers;
     }
 
     /**
@@ -126,14 +142,78 @@ class ListPropertiesCommand extends Command
      * @return array
      * @throws \ReflectionException
      */
-    private function actionList()
+    private function laravelControllers()
     {
         $routeCollection = app('router')->getRoutes();
 
         $actionListReflectProperty = new \ReflectionProperty(get_class($routeCollection), 'actionList');
         $actionListReflectProperty->setAccessible(true);
 
-        return $actionListReflectProperty->getValue($routeCollection);
+        $routes = $actionListReflectProperty->getValue($routeCollection);
+
+        return collect($routes)->map->getController();
+    }
+
+    /**
+     * Get controllers used in routes for Lumen.
+     *
+     * @return Collection
+     */
+    private function lumenControllers()
+    {
+        $routes = app('router')->getRoutes();
+
+        return collect($routes)
+            ->map(function ($route) {
+                $controllerClass = $this->resolveController($route);
+                if ($controllerClass) {
+                    return app($controllerClass);
+                }
+            })
+            ->unique()
+            ->filter()
+            ->values();
+    }
+
+    /**
+     * Get all controllers used in routes for dingo/api.
+     *
+     * @return Collection
+     */
+    private function dingoControllers()
+    {
+        $routes = app('api.router')->getRoutes();
+        $version = $this->resolveApiVersion();
+
+        if (!isset($routes[$version])) {
+            throw new \RuntimeException("Dingo Api Version {$version} not defined.");
+        }
+
+        // Get all routes of specify version.
+        $routes = $routes[$version];
+
+        return collect($routes)
+            ->map
+            ->getController()
+            ->filter()
+            ->unique()
+            ->values();
+    }
+
+    /**
+     * Get related controller of Lumen route.
+     *
+     * @param array $lumenRoute
+     * @return string|null
+     */
+    private function resolveController($lumenRoute)
+    {
+        // Something like "App\Http\Controllers\SomeController@index"
+        $uses = array_get($lumenRoute, 'action.uses');
+
+        if (strpos($uses, '@') !== false) {
+            return explode('@', $uses)[0];
+        }
     }
 
     /**
@@ -155,5 +235,45 @@ class ListPropertiesCommand extends Command
         }
 
         return $reflectionProperty->isStatic() ? "{$prefix} static " : $prefix . ' ';
+    }
+
+    /**
+     * Determine if is integrate with dingo/api.
+     *
+     * @return bool
+     */
+    private function isIntegrateWithDingo()
+    {
+        return app()->bound('api.router');
+    }
+
+    /**
+     * Resolve dingo api version from commandline options or get default version defined in .env
+     *
+     * @return string
+     */
+    private function resolveApiVersion()
+    {
+        return $this->option('api-version') ?: $this->currentApiVersion();
+    }
+
+    /**
+     * Get default api version.
+     *
+     * @return string
+     */
+    private function currentApiVersion()
+    {
+        return config('api.version', 'v1');
+    }
+
+    /**
+     * Determine if is lumen framework.
+     *
+     * @return bool
+     */
+    private function isLumen()
+    {
+        return str_contains(strtolower(app()->version()), 'lumen');
     }
 }
