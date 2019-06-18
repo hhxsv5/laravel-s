@@ -976,11 +976,11 @@ class WorkerStartEvent implements WorkerStartInterface
 
     - Under Swoole Server, All singleton instances will be held in memory, different lifetime from FPM, request start=>instantiate instance=>request end=>do not recycle singleton instance. So need developer to maintain status of singleton instances in ervery request.
     
-    - All controllers are singleton in laravel-s, the properties defined in controller will be retained after the request is finished. This is not what we want in most cases.
-        - If you want to migrate to laravel-s, or want find out potential problems, you can use the command below. It can list all properties of all controllers related your routes:
-        ```bash
-        php artisan laravels:list-properties
-        ```
+    - All controllers are singleton in LaravelS, the properties defined in controllers will be retained after the request is finished. This is not what we want in most cases. If you want to migrate to LaravelS, or find out potential problems, you can use the command below, it can list all properties of all controllers related your routes.
+
+    ```bash
+    php artisan laravels:list-properties
+    ```
 
     - If Session/Authentication/JWT is used in your project, please uncomment the `cleaners` in `laravels.php` as appropriate.
 
