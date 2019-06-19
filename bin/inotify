@@ -10,7 +10,7 @@ echo "Restarting LaravelS..."
 echo "Starting inotifywait..."
 LOCKING=0
 
-inotifywait  --event modify -mrq   ${WORK_DIR}  | while read file
+inotifywait --event modify --event create --event move --event delete -mrq   ${WORK_DIR}  | while read file
 
 do
     if [[ ! ${file} =~ .php$ ]] ;then
