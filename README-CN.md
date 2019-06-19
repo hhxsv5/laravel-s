@@ -1102,7 +1102,7 @@ class WorkerStartEvent implements WorkerStartInterface
 
 ## 用户与案例
 
-- [KuCoin](https://www.kcs.top/ucenter/signup?rcode=Kyv3hd)
+- [KuCoin](https://www.kcs.top/ucenter/signup?rcode=vHR6yH)
 
 - [医联](https://www.medlinker.com/)：WEB站、M站、APP、小程序的账户体系服务。
     
