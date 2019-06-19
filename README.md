@@ -635,7 +635,7 @@ class TestCronJob extends CronJob
     ./bin/fswatch ./app
     ```
 
-- Via `inotifywatch`, support Linux.
+- Via `inotifywait`, support Linux.
 
     1.Install [inotify-tools](https://github.com/rvoicilas/inotify-tools).
 
