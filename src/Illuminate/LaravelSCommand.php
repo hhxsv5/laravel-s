@@ -265,6 +265,12 @@ EOS;
                 'mode' => 0755,
                 'link' => true,
             ],
+            [
+                'from' => realpath(__DIR__ . '/../../bin/inotify'),
+                'to'   => $basePath . '/bin/inotify',
+                'mode' => 0755,
+                'link' => true,
+            ],
         ];
         if (file_exists($configPath)) {
             $choice = $this->anticipate($configPath . ' already exists, do you want to override it ? Y/N',
