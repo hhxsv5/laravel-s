@@ -635,6 +635,20 @@ class TestCronJob extends CronJob
     ./bin/fswatch ./app
     ```
 
+- Via `inotifywait`, support Linux.
+
+    1.Install [inotify-tools](https://github.com/rvoicilas/inotify-tools).
+
+    2.Run command in your project root directory.
+
+    ```bash
+    # Watch current directory
+    ./bin/inotify
+    # Watch app directory
+    ./bin/inotify ./app
+    ```
+
+
 ## Get the instance of `SwooleServer` in your project
 
 ```php
