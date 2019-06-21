@@ -214,7 +214,8 @@ class Laravel
         $this->cleanerManager->clean($this->snapshotApp, $this->reflectionApp);
     }
 
-    public function cleanProviders(){
+    public function cleanProviders()
+    {
         $this->cleanerManager->cleanProviders($this->reflectionApp);
     }
 

@@ -299,7 +299,6 @@ EOS;
                 } else {
                     copy($todo['from'], $todo['to']);
                 }
-
             }
             chmod($todo['to'], $todo['mode']);
             $this->line("<info>{$operation} file</info> <comment>[{$todo['from']}]</comment> <info>To</info> <comment>[{$todo['to']}]</comment>");

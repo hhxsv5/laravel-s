@@ -69,5 +69,4 @@ abstract class CronJob implements CronJobInterface
             swoole_timer_clear($this->timerId);
         }
     }
-
 }
