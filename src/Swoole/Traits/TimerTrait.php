@@ -69,5 +69,4 @@ trait TimerTrait
             return $timerProcess;
         }
     }
-
 }

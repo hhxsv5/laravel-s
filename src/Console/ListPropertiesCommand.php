@@ -101,7 +101,6 @@ class ListPropertiesCommand extends Command
                     })
                     ->filter()
                     ->toArray();
-
             });
 
         return $properties;
