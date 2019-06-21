@@ -988,7 +988,7 @@ class WorkerStartEvent implements WorkerStartInterface
 
     - Under FPM mode, singleton instances will be instantiated and recycled in every request, request start=>instantiate instance=>request end=>recycled instance.
 
-    - Under Swoole Server, All singleton instances will be held in memory, different lifetime from FPM, request start=>instantiate instance=>request end=>do not recycle singleton instance. So need developer to maintain status of singleton instances in ervery request.
+    - Under Swoole Server, All singleton instances will be held in memory, different lifetime from FPM, request start=>instantiate instance=>request end=>do not recycle singleton instance. So need developer to maintain status of singleton instances in every request.
     
     - All controllers are singleton in LaravelS, the properties defined in controllers will be retained after the request is finished. This is not what we want in most cases. If you want to migrate to LaravelS, or find out potential problems, you can use the command below, it can list all properties of all controllers related your routes.
 
@@ -1004,7 +1004,7 @@ class WorkerStartEvent implements WorkerStartInterface
 
         2. `Reset` status of singleton instances by `Middleware`.
 
-        1. Re-register `ServiceProvider`, add `XxxServiceProvider` into `register_providers` of file `laravels.php`. So that reinitialize singleton instances in ervery request [Refer](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
+        1. Re-register `ServiceProvider`, add `XxxServiceProvider` into `register_providers` of file `laravels.php`. So that reinitialize singleton instances in every request [Refer](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
 - [Known issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md)
 
