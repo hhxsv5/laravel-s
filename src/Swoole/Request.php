@@ -86,5 +86,4 @@ class Request
 
         return $request;
     }
-
 }

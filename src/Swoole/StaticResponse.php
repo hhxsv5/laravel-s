@@ -12,7 +12,6 @@ class StaticResponse extends Response
 
     public function gzip()
     {
-
     }
 
     /**

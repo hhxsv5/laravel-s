@@ -229,7 +229,6 @@ class Server
 
     public function onShutdown(HttpServer $server)
     {
-
     }
 
     public function onManagerStart(HttpServer $server)
@@ -239,7 +238,6 @@ class Server
 
     public function onManagerStop(HttpServer $server)
     {
-
     }
 
     public function onWorkerStart(HttpServer $server, $workerId)
@@ -266,7 +264,6 @@ class Server
 
     public function onWorkerStop(HttpServer $server, $workerId)
     {
-
     }
 
     public function onWorkerError(HttpServer $server, $workerId, $workerPId, $exitCode, $signal)
@@ -283,7 +280,6 @@ class Server
 
     public function onRequest(SwooleRequest $swooleRequest, SwooleResponse $swooleResponse)
     {
-
     }
 
     public function onTask(HttpServer $server, $taskId, $srcWorkerId, $data)

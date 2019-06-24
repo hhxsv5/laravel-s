@@ -78,6 +78,7 @@ class LaravelS extends Server
                 // Start Laravel's lifetime, then support session ...middleware.
                 $laravelRequest = $this->convertRequest($this->laravel, $request);
                 $this->laravel->bindRequest($laravelRequest);
+                $this->laravel->cleanProviders();
                 $this->laravel->handleDynamic($laravelRequest);
                 $eventHandler('onOpen', func_get_args());
                 $this->laravel->saveSession();
@@ -185,6 +186,7 @@ class LaravelS extends Server
 
     protected function handleDynamicResource(Laravel $laravel, IlluminateRequest $laravelRequest, SwooleResponse $swooleResponse)
     {
+        $laravel->cleanProviders();
         $laravelResponse = $laravel->handleDynamic($laravelRequest);
         $laravelResponse->headers->set('Server', $this->conf['server'], true);
         $laravel->fireEvent('laravels.generated_response', [$laravelRequest, $laravelResponse]);

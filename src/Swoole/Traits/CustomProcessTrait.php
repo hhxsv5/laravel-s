@@ -78,7 +78,7 @@ trait CustomProcessTrait
                         )
                     );
                 };
-                $enableCoroutine ? go($runProcess) : $runProcess();;
+                $enableCoroutine ? go($runProcess) : $runProcess();
             };
             $customProcess = new Process(
                 $processHandler,
@@ -91,5 +91,4 @@ trait CustomProcessTrait
         }
         return $processList;
     }
-
 }

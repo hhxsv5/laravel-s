@@ -43,7 +43,7 @@ trait InotifyTrait
                             case IN_DELETE:
                                 $action = 'delete';
                                 break;
-                            case IN_MODIFY :
+                            case IN_MODIFY:
                                 $action = 'modify';
                                 break;
                             case IN_MOVE:
@@ -75,5 +75,4 @@ trait InotifyTrait
             return $inotifyProcess;
         }
     }
-
 }

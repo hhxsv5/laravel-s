@@ -25,5 +25,4 @@ class LaravelSServiceProvider extends ServiceProvider
             ListPropertiesCommand::class,
         ]);
     }
-
 }

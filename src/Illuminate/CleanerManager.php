@@ -101,7 +101,7 @@ class CleanerManager
      * @param ReflectionApp $reflectionApp
      * @throws \ReflectionException
      */
-    protected function cleanProviders(ReflectionApp $reflectionApp)
+    public function cleanProviders(ReflectionApp $reflectionApp)
     {
         $loadedProviders = $reflectionApp->loadedProviders();
 
@@ -156,7 +156,5 @@ class CleanerManager
             $cleaner = $this->app->make($cleanerCls);
             $cleaner->clean($this->app, $snapshotApp);
         }
-
-        $this->cleanProviders($reflectionApp);
     }
 }

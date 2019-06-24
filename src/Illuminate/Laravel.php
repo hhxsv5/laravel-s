@@ -214,6 +214,11 @@ class Laravel
         $this->cleanerManager->clean($this->snapshotApp, $this->reflectionApp);
     }
 
+    public function cleanProviders()
+    {
+        $this->cleanerManager->cleanProviders($this->reflectionApp);
+    }
+
     public function fireEvent($name, array $params = [])
     {
         $params[] = $this->app;
