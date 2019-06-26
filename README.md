@@ -852,7 +852,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 > [Swoole Coroutine](https://www.swoole.co.uk/coroutine)
 
-- Warning: There are a large number of singletons and static properties in Laravel/Lumen, which are `unsafe` in coroutine. It is `NOT` recommended to enable coroutine, but coroutine can be used in `custom processes and cron job`.
+- Warning: The order of code execution in the coroutine is out of order. The data of the request level should be isolated by the coroutine ID. However, there are many singleton and static attributes in Laravel/Lumen, the data between different requests will affect each other, it's `Unsafe`. For example, the database connection is a singleton, the same database connection shares the same PDO resource. This is fine in the synchronous blocking mode, but it is not possible in the asynchronous coroutine. Each query needs to create different connections and maintain IO state of different connections, which requires a connection pool. So `DO NOT` enable the coroutine, only the custom process can use the coroutine.
 
 - Enable Coroutine, default disable.
     

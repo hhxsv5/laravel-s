@@ -8,6 +8,7 @@ use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Http\Request as IlluminateRequest;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Laravel
 {
@@ -157,7 +158,7 @@ class Laravel
         }
 
         // prefer content in response, secondly ob
-        if (strlen($content) === 0 && ob_get_length() > 0) {
+        if (!($response instanceof StreamedResponse) && strlen($content) === 0 && ob_get_length() > 0) {
             $response->setContent(ob_get_contents());
         }
 
