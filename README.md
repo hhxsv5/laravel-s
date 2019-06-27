@@ -155,7 +155,7 @@ gzip_comp_level 2;
 gzip_types text/plain text/css text/javascript application/json application/javascript application/x-javascript application/xml application/x-httpd-php image/jpeg image/gif image/png font/ttf font/otf image/svg+xml;
 gzip_vary on;
 gzip_disable "msie6";
-upstream laravels {
+upstream swoole {
     # Connect IP:Port
     server 127.0.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
     # Connect UnixSocket Stream file, tips: put the socket file in the /dev/shm directory to get better performance
@@ -195,7 +195,7 @@ server {
         proxy_set_header Server-Name $server_name;
         proxy_set_header Server-Addr $server_addr;
         proxy_set_header Server-Port $server_port;
-        proxy_pass http://laravels;
+        proxy_pass http://swoole;
     }
 }
 ```
@@ -315,7 +315,7 @@ map $http_upgrade $connection_upgrade {
     default upgrade;
     ''      close;
 }
-upstream laravels {
+upstream swoole {
     # Connect IP:Port
     server 127.0.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
     # Connect UnixSocket Stream file, tips: put the socket file in the /dev/shm directory to get better performance
@@ -360,7 +360,7 @@ server {
         proxy_set_header Server-Port $server_port;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
-        proxy_pass http://laravels;
+        proxy_pass http://swoole;
     }
     location @laravels {
         # proxy_connect_timeout 60s;
@@ -377,7 +377,7 @@ server {
         proxy_set_header Server-Name $server_name;
         proxy_set_header Server-Addr $server_addr;
         proxy_set_header Server-Port $server_port;
-        proxy_pass http://laravels;
+        proxy_pass http://swoole;
     }
 }
 ```

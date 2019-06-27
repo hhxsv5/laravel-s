@@ -160,7 +160,7 @@ gzip_comp_level 2;
 gzip_types text/plain text/css text/javascript application/json application/javascript application/x-javascript application/xml application/x-httpd-php image/jpeg image/gif image/png font/ttf font/otf image/svg+xml;
 gzip_vary on;
 gzip_disable "msie6";
-upstream laravels {
+upstream swoole {
     # 通过 IP:Port 连接
     server 127.0.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
     # 通过 UnixSocket Stream 连接，小诀窍：将socket文件放在/dev/shm目录下，可获得更好的性能
@@ -200,7 +200,7 @@ server {
         proxy_set_header Server-Name $server_name;
         proxy_set_header Server-Addr $server_addr;
         proxy_set_header Server-Port $server_port;
-        proxy_pass http://laravels;
+        proxy_pass http://swoole;
     }
 }
 ```
@@ -322,7 +322,7 @@ map $http_upgrade $connection_upgrade {
     default upgrade;
     ''      close;
 }
-upstream laravels {
+upstream swoole {
     # 通过 IP:Port 连接
     server 127.0.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
     # 通过 UnixSocket Stream 连接，小诀窍：将socket文件放在/dev/shm目录下，可获得更好的性能
@@ -367,7 +367,7 @@ server {
         proxy_set_header Server-Port $server_port;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
-        proxy_pass http://laravels;
+        proxy_pass http://swoole;
     }
     location @laravels {
         # proxy_connect_timeout 60s;
@@ -384,7 +384,7 @@ server {
         proxy_set_header Server-Name $server_name;
         proxy_set_header Server-Addr $server_addr;
         proxy_set_header Server-Port $server_port;
-        proxy_pass http://laravels;
+        proxy_pass http://swoole;
     }
 }
 ```
@@ -1170,6 +1170,7 @@ class WorkerStartEvent implements WorkerStartInterface
 | *洋 | 20 |
 | *洋 | 20 |
 | *强 | 50 |
+| Anthony | 18.88 |
 
 ## License
 
