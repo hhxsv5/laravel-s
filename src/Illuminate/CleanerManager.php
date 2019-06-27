@@ -180,7 +180,7 @@ class CleanerManager
             if ($reflection->hasProperty('controller')) { // For Laravel 5.3
                 $controller = $reflection->getProperty('controller');
                 $controller->setAccessible(true);
-                if (empty($this->whiteListControllers) || !isset($this->whiteListControllers[get_class($controller->getValue($route))])) {
+                if (empty($this->whiteListControllers) || (($instance = $controller->getValue($route)) && !isset($this->whiteListControllers[get_class($instance)]))) {
                     $controller->setValue($route, null);
                 }
             }
