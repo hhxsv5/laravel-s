@@ -50,9 +50,10 @@ public function notify(Request $request)
 
 2.每次请求处理后重新注册`FlashServiceProvider`，配置[register_providers](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
-## 单例的控制器
+## 控制器单例问题
 
-1.错误用法。
+- Laravel 5.3+ 控制器是被绑定在`Router`下的`Route`中，而`Router`是单例，控制器只会被构造`一次`，所以不能在构造方法中初始化`请求级数据`，下面展示`错误的用法`。
+
 ```php
 namespace App\Http\Controllers;
 class TestController extends Controller
@@ -60,7 +61,7 @@ class TestController extends Controller
     protected $userId;
     public function __construct()
     {
-        // 错误的用法：因控制器是单例，会常驻于内存，$userId只会被赋值一次，后续请求会误读取之前请求$userId
+        // 错误的用法：因控制器只被构造一次，然后常驻于内存，所以$userId只会被赋值一次，后续请求会误读取之前请求$userId
         $this->userId = session('userId');
     }
     public function testAction()
@@ -70,7 +71,10 @@ class TestController extends Controller
 }
 ```
 
-2.正确用法。
+- 两种解决方法(二选一)
+
+1.避免在构造函数中初始化`请求级`的数据，应在具体`Action`中读取，这样编码风格更合理，建议这样写。
+
 ```php
 namespace App\Http\Controllers;
 class TestController extends Controller
@@ -84,6 +88,18 @@ class TestController extends Controller
         // 通过调用$this->getUserId()读取$userId
     }
 }
+```
+
+2.使用`LaravelS`提供的`自动销毁控制器`机制。
+
+```php
+// config/laravels.php
+'destroy_controllers'      => [
+    'enable'        => true, // 启用自动销毁控制器
+    'excluded_list' => [
+        //\App\Http\Controllers\TestController::class, // 排除销毁的控制器类列表
+    ],
+],
 ```
 
 ## 不能使用这些函数
