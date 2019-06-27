@@ -26,9 +26,16 @@ class CleanerManager
     ];
 
     /**
+     * Service providers to be cleaned up
      * @var array
      */
-    protected $providers;
+    protected $providers = [];
+
+    /**
+     * White list of controllers to be destroyed
+     * @var array
+     */
+    protected $whiteListControllers = [];
 
     /**
      * @var array
@@ -45,31 +52,18 @@ class CleanerManager
     {
         $this->app = $app;
         $this->config = $config;
-
-        $cleaners = isset($this->config['cleaners']) ? $this->config['cleaners'] : [];
-        $this->addCleaner($cleaners);
-
-        $this->registerCleaners();
-        $this->registerCleanProviders($config['register_providers']);
-    }
-
-    /**
-     * Add cleaners.
-     *
-     * @param CleanerInterface[]|CleanerInterface $cleaner
-     */
-    protected function addCleaner($cleaner)
-    {
-        $cleaners = is_array($cleaner) ? $cleaner : [$cleaner];
-
-        $this->cleaners = array_unique(array_merge($cleaners, $this->cleaners));
+        $this->registerCleaners(isset($this->config['cleaners']) ? $this->config['cleaners'] : []);
+        $this->registerCleanProviders(isset($config['register_providers']) ? $config['register_providers'] : []);
+        $this->registerCleanControllerWhiteList(isset($this->config['destroy_controllers']['excluded_list']) ? $this->config['destroy_controllers']['excluded_list'] : []);
     }
 
     /**
      * Register singleton cleaners to application container.
+     * @param array $cleaners
      */
-    protected function registerCleaners()
+    protected function registerCleaners(array $cleaners)
     {
+        $this->cleaners = array_unique(array_merge($cleaners, $this->cleaners));
         foreach ($this->cleaners as $cleaner) {
             $this->app->singleton($cleaner, function () use ($cleaner) {
                 if (!isset(class_implements($cleaner)[CleanerInterface::class])) {
@@ -86,13 +80,28 @@ class CleanerManager
     }
 
     /**
+     * Clean app after request finished.
+     *
+     * @param Container $snapshotApp
+     */
+    public function clean($snapshotApp)
+    {
+        foreach ($this->cleaners as $cleanerCls) {
+            /**@var CleanerInterface $cleaner */
+            $cleaner = $this->app->make($cleanerCls);
+            $cleaner->clean($this->app, $snapshotApp);
+        }
+    }
+
+
+    /**
      * Register providers for cleaning.
      *
-     * @param array $registerProviders
+     * @param array providers
      */
-    protected function registerCleanProviders($registerProviders = [])
+    protected function registerCleanProviders(array $providers = [])
     {
-        $this->providers = $registerProviders;
+        $this->providers = $providers;
     }
 
     /**
@@ -133,6 +142,52 @@ class CleanerManager
     }
 
     /**
+     * Register white list of controllers for cleaning.
+     *
+     * @param array providers
+     */
+    protected function registerCleanControllerWhiteList(array $controllers = [])
+    {
+        $controllers = array_unique($controllers);
+        $this->whiteListControllers = array_combine($controllers, $controllers);
+    }
+
+    /**
+     * Clean controllers.
+     */
+    public function cleanControllers()
+    {
+        if ($this->isLumen()) {
+            return;
+        }
+
+        if (empty($this->config['destroy_controllers']['enable'])) {
+            return;
+        }
+
+        /**@var \Illuminate\Routing\Route $route */
+        $route = $this->app['router']->current();
+        if (!$route) {
+            return;
+        }
+
+        if (isset($route->controller)) { // For Laravel 5.4+
+            if (empty($this->whiteListControllers) || !isset($this->whiteListControllers[get_class($route->controller)])) {
+                unset($route->controller);
+            }
+        } else {
+            $reflection = new \ReflectionClass(get_class($route));
+            if ($reflection->hasProperty('controller')) { // For Laravel 5.3
+                $controller = $reflection->getProperty('controller');
+                $controller->setAccessible(true);
+                if (empty($this->whiteListControllers) || !isset($this->whiteListControllers[get_class($controller->getValue($route))])) {
+                    $controller->setValue($route, null);
+                }
+            }
+        }
+    }
+
+    /**
      * Determine if is lumen.
      *
      * @return bool
@@ -140,21 +195,5 @@ class CleanerManager
     protected function isLumen()
     {
         return $this->config['is_lumen'];
-    }
-
-    /**
-     * Clean app after request finished.
-     *
-     * @param Container $snapshotApp
-     * @param ReflectionApp $reflectionApp
-     * @throws \ReflectionException
-     */
-    public function clean($snapshotApp, ReflectionApp $reflectionApp)
-    {
-        foreach ($this->cleaners as $cleanerCls) {
-            /**@var CleanerInterface $cleaner */
-            $cleaner = $this->app->make($cleanerCls);
-            $cleaner->clean($this->app, $snapshotApp);
-        }
     }
 }

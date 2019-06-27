@@ -212,7 +212,8 @@ class Laravel
 
     public function clean()
     {
-        $this->cleanerManager->clean($this->snapshotApp, $this->reflectionApp);
+        $this->cleanerManager->clean($this->snapshotApp);
+        $this->cleanerManager->cleanControllers();
     }
 
     public function cleanProviders()

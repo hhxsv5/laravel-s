@@ -179,13 +179,14 @@ EOS;
         }
 
         $laravelConf = [
-            'root_path'          => $svrConf['laravel_base_path'],
-            'static_path'        => $svrConf['swoole']['document_root'],
-            'cleaners'           => array_unique((array)Arr::get($svrConf, 'cleaners', [])),
-            'register_providers' => array_unique((array)Arr::get($svrConf, 'register_providers', [])),
-            'is_lumen'           => $this->isLumen(),
-            '_SERVER'            => $_SERVER,
-            '_ENV'               => $_ENV,
+            'root_path'           => $svrConf['laravel_base_path'],
+            'static_path'         => $svrConf['swoole']['document_root'],
+            'cleaners'            => array_unique((array)Arr::get($svrConf, 'cleaners', [])),
+            'register_providers'  => array_unique((array)Arr::get($svrConf, 'register_providers', [])),
+            'destroy_controllers' => Arr::get($svrConf, 'destroy_controllers', []),
+            'is_lumen'            => $this->isLumen(),
+            '_SERVER'             => $_SERVER,
+            '_ENV'                => $_ENV,
         ];
 
         $config = ['server' => $svrConf, 'laravel' => $laravelConf];
