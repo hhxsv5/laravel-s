@@ -119,7 +119,7 @@ php artisan laravels publish
 ## Run
 > `php bin/laravels {start|stop|restart|reload|info|help}`
 
-`Please read the notices carefully before running`, [Important notices](https://github.com/hhxsv5/laravel-s#important-notices).
+`Please read the notices carefully before running`, [Important notices](https://github.com/hhxsv5/laravel-s#important-notices)(IMPORTANT).
 
 | Command | Description |
 | --------- | --------- |
@@ -1006,7 +1006,7 @@ class WorkerStartEvent implements WorkerStartInterface
 
         1. Re-register `ServiceProvider`, add `XxxServiceProvider` into `register_providers` of file `laravels.php`. So that reinitialize singleton instances in every request [Refer](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
-- [Known issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md)
+- [Known issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md): a package of known issues and solutions.
 
 - Debugging method: Logging, [Laravel Dump Server](https://github.com/beyondcode/laravel-dump-server)(Laravel 5.7 has been integrated by default).
 

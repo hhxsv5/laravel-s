@@ -50,7 +50,7 @@ public function notify(Request $request)
 
 2.每次请求处理后重新注册`FlashServiceProvider`，配置[register_providers](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
-## 控制器单例问题
+## 单例控制器
 
 - Laravel 5.3+ 控制器是被绑定在`Router`下的`Route`中，而`Router`是单例，控制器只会被构造`一次`，所以不能在构造方法中初始化`请求级数据`，下面展示`错误的用法`。
 

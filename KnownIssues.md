@@ -46,7 +46,7 @@ public function notify(Request $request)
 
 2.Re-register `FlashServiceProvider` after handling request, Refer [register_providers](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
-## Controller singleton problem
+## Singleton controller
 
 - Laravel 5.3+ controller is bound to `Route` under `Router`, and `Router` is a singleton, controller will only be constructed `once`, so you cannot initialize `request-level data` in the constructor, the following shows you the `wrong` usage.
 
@@ -69,7 +69,7 @@ class TestController extends Controller
 
 - Two solutions (choose one)
 
-1.Avoid initializing `request-level' data in the constructor, which should be read in the concrete `Action`. This coding style is more reasonable, it is recommended to do so.
+1.Avoid initializing `request-level` data in the constructor, which should be read in the concrete `Action`. This coding style is more reasonable, it is recommended to do so.
 
 ```php
 namespace App\Http\Controllers;

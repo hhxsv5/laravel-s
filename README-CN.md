@@ -124,7 +124,7 @@ php artisan laravels publish
 ## 运行
 > `php bin/laravels {start|stop|restart|reload|info|help}`
 
-`在运行之前，请先仔细阅读：`[注意事项](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)。
+`在运行之前，请先仔细阅读：`[注意事项](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)(非常重要)。
 
 | 命令 | 说明 |
 | --------- | --------- |
@@ -1006,7 +1006,7 @@ class WorkerStartEvent implements WorkerStartInterface
 
         3. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
-- [常见问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md)
+- [常见问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md)：一揽子的已知问题和解决方案。
 
 - 调试方式：记录日志、[Laravel Dump Server](https://github.com/beyondcode/laravel-dump-server)（Laravel 5.7已默认集成）
 
