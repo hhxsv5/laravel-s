@@ -61,4 +61,6 @@
     //...
     ```
 
+- `destroy_controllers`: `array` Automatically destroy the controllers after each request to solve the problem of the singleton controllers, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md#singleton-controller).
+
 - `swoole`: `array` Swoole's `original` configuration items, refer [Swoole Configuration](https://www.swoole.co.uk/docs/modules/swoole-server/configuration).

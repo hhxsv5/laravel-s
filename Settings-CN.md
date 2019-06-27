@@ -61,4 +61,6 @@
     //...
     ```
 
+- `destroy_controllers`：`array` 每次请求后自动销毁控制器，解决单例控制器的问题，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md#%E5%8D%95%E4%BE%8B%E6%8E%A7%E5%88%B6%E5%99%A8)。
+
 - `swoole`：`array` Swoole的`原始`配置项，请参考[Swoole配置项](https://wiki.swoole.com/wiki/page/274.html)。
