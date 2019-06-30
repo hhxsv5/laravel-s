@@ -43,7 +43,7 @@ class Request
         ];
 
         $_ENV = $rawEnv;
-        $__SERVER = $rawServer;
+        $_SERVER = $rawServer;
         foreach ($headers as $key => $value) {
             // Fix client && server's info
             if (isset($headerServerMapping[$key])) {
@@ -54,28 +54,28 @@ class Request
             }
         }
         $server = array_change_key_case($server, CASE_UPPER);
-        $__SERVER = array_merge($__SERVER, $server);
-        if (isset($__SERVER['REQUEST_SCHEME']) && $__SERVER['REQUEST_SCHEME'] === 'https') {
-            $__SERVER['HTTPS'] = 'on';
+        $_SERVER = array_merge($_SERVER, $server);
+        if (isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] === 'https') {
+            $_SERVER['HTTPS'] = 'on';
         }
 
         // Fix REQUEST_URI with QUERY_STRING
-        if (strpos($__SERVER['REQUEST_URI'], '?') === false
-            && isset($__SERVER['QUERY_STRING'])
-            && strlen($__SERVER['QUERY_STRING']) > 0
+        if (strpos($_SERVER['REQUEST_URI'], '?') === false
+            && isset($_SERVER['QUERY_STRING'])
+            && strlen($_SERVER['QUERY_STRING']) > 0
         ) {
-            $__SERVER['REQUEST_URI'] .= '?' . $__SERVER['QUERY_STRING'];
+            $_SERVER['REQUEST_URI'] .= '?' . $_SERVER['QUERY_STRING'];
         }
 
         // Fix argv & argc
-        if (!isset($__SERVER['argv'])) {
-            $__SERVER['argv'] = isset($GLOBALS['argv']) ? $GLOBALS['argv'] : [];
-            $__SERVER['argc'] = isset($GLOBALS['argc']) ? $GLOBALS['argc'] : 0;
+        if (!isset($_SERVER['argv'])) {
+            $_SERVER['argv'] = isset($GLOBALS['argv']) ? $GLOBALS['argv'] : [];
+            $_SERVER['argc'] = isset($GLOBALS['argc']) ? $GLOBALS['argc'] : 0;
         }
 
         // Initialize laravel request
         IlluminateRequest::enableHttpMethodParameterOverride();
-        $request = IlluminateRequest::createFromBase(new \Symfony\Component\HttpFoundation\Request($__GET, $__POST, [], $__COOKIE, $__FILES, $__SERVER, $this->swooleRequest->rawContent()));
+        $request = IlluminateRequest::createFromBase(new \Symfony\Component\HttpFoundation\Request($__GET, $__POST, [], $__COOKIE, $__FILES, $_SERVER, $this->swooleRequest->rawContent()));
 
         if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')
             && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), ['PUT', 'DELETE', 'PATCH'])
