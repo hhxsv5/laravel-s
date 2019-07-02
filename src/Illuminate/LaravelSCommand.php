@@ -108,7 +108,7 @@ EOS;
                 $laravelSVersion,
             ],
             [
-                $this->getApplication()->getName() . ' [<info>' . env('APP_ENV') . '</info>]',
+                $this->getApplication()->getName() . ' [<info>' . env('APP_ENV', config('app.env')) . '</info>]',
                 $this->getApplication()->getVersion(),
             ],
         ]);
