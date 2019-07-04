@@ -967,11 +967,30 @@ public function onClose(Server $server, $fd, $reactorId)
 
 | 事件 | 需实现的接口 | 发生时机 |
 | -------- | -------- | -------- |
+| BeforeStart | Hhxsv5\LaravelS\Swoole\Events\BeforeStartInterface | 发生在Master进程启动之前，`此事件中不应处理复杂的业务逻辑，只能做一些初始化的简单工作`。|
 | WorkerStart | Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface | 发生在Worker/Task进程启动时，并且已经完成Laravel初始化 |
 | WorkerStop | Hhxsv5\LaravelS\Swoole\Events\WorkerStopInterface | 发生在Worker/Task进程正常退出时。 |
 | WorkerError | Hhxsv5\LaravelS\Swoole\Events\WorkerErrorInterface | 发生在Worker/Task进程发生异常或致命错误时。 |
 
 1.创建事件处理类，实现相应的接口。
+```php
+namespace App\Events;
+use Hhxsv5\LaravelS\Swoole\Events\BeforeStartInterface;
+use Swoole\Atomic;
+use Swoole\Http\Server;
+class BeforeStartEvent implements BeforeStartInterface
+{
+    public function __construct()
+    {
+    }
+    public function handle(Server $server)
+    {
+        // 初始化一个全局计数器(跨进程的可用)
+        $server->atomicCount = new Atomic(2233);
+    }
+}
+```
+
 ```php
 namespace App\Events;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
@@ -992,6 +1011,7 @@ class WorkerStartEvent implements WorkerStartInterface
 ```php
 // 修改文件 config/laravels.php
 'event_handlers' => [
+    'BeforeStart' => \App\Events\BeforeStartEvent::class,
     'WorkerStart' => \App\Events\WorkerStartEvent::class,
 ],
 ```

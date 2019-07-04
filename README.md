@@ -953,11 +953,30 @@ Supported events:
 
 | Event | Interface | When happened |
 | -------- | -------- | -------- |
+| BeforeStart | Hhxsv5\LaravelS\Swoole\Events\BeforeStartInterface | Occurs before the Master process starts, `this event should not handle complex business logic, and can only do some simple work of initialization`. |
 | WorkerStart | Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface | Occurs when the Worker/Task process starts, and the Laravel initialization has been completed. |
 | WorkerStop | Hhxsv5\LaravelS\Swoole\Events\WorkerStopInterface | Occurs when the Worker/Task process exits normally. |
 | WorkerError | Hhxsv5\LaravelS\Swoole\Events\WorkerErrorInterface | Occurs when an exception or fatal error occurs in the Worker/Task process. |
 
 1.Create an event class to implement the corresponding interface.
+```php
+namespace App\Events;
+use Hhxsv5\LaravelS\Swoole\Events\BeforeStartInterface;
+use Swoole\Atomic;
+use Swoole\Http\Server;
+class BeforeStartEvent implements BeforeStartInterface
+{
+    public function __construct()
+    {
+    }
+    public function handle(Server $server)
+    {
+        // Initialize a global counter (available across processes)
+        $server->atomicCount = new Atomic(2233);
+    }
+}
+```
+
 ```php
 namespace App\Events;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
@@ -978,6 +997,7 @@ class WorkerStartEvent implements WorkerStartInterface
 ```php
 // Edit `config/laravels.php`
 'event_handlers' => [
+    'BeforeStart' => \App\Events\BeforeStartEvent::class,
     'WorkerStart' => \App\Events\WorkerStartEvent::class,
 ],
 ```

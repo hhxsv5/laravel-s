@@ -4,6 +4,7 @@ namespace Hhxsv5\LaravelS;
 
 use Hhxsv5\LaravelS\Illuminate\Laravel;
 use Hhxsv5\LaravelS\Swoole\DynamicResponse;
+use Hhxsv5\LaravelS\Swoole\Events\BeforeStartInterface;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerErrorInterface;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerStopInterface;
@@ -61,6 +62,9 @@ class LaravelS extends Server
 
         $processes = isset($this->conf['processes']) ? $this->conf['processes'] : [];
         $this->swoole->customProcesses = $this->addCustomProcesses($this->swoole, $svrConf['process_prefix'], $processes, $this->laravelConf);
+
+        // Fire BeforeStart event
+        $this->fireEvent('BeforeStart', BeforeStartInterface::class, [$this->swoole]);
     }
 
     protected function bindWebSocketEvent()
