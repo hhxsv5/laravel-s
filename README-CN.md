@@ -987,6 +987,8 @@ class BeforeStartEvent implements BeforeStartInterface
     {
         // 初始化一个全局计数器(跨进程的可用)
         $server->atomicCount = new Atomic(2233);
+
+        // 控制器中调用：app('swoole')->atomicCount->get();
     }
 }
 ```

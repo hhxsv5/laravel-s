@@ -973,6 +973,8 @@ class BeforeStartEvent implements BeforeStartInterface
     {
         // Initialize a global counter (available across processes)
         $server->atomicCount = new Atomic(2233);
+
+        // Invoked in controller: app('swoole')->atomicCount->get();
     }
 }
 ```
