@@ -2,7 +2,6 @@
 
 namespace Hhxsv5\LaravelS\Illuminate;
 
-use Hhxsv5\LaravelS\Console\ListPropertiesCommand;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelSServiceProvider extends ServiceProvider

@@ -1027,12 +1027,6 @@ class WorkerStartEvent implements WorkerStartInterface
 
     - 如果你的项目中使用到了Session、Authentication、JWT，请根据情况解除`laravels.php`中`cleaners`的注释。
     
-    - 在 LaravelS 中，所有控制器都是单例，控制器里面设置的属性在请求结束后也会保留下来，在后续请求中都可以获取到之前请求设置的属性，这在大部分情况都不是我们想要的效果。如果想要迁移到 LaravelS，或者找出潜在的问题，可以使用下面的命令。它可以列出你的路由中所有关联的控制器的所有属性：
-    
-    ```bash
-    php artisan laravels:list-properties
-    ```
-
     - 常见的解决方案：
 
         1. 写一个`XxxCleaner`类来清理单例对象状态，此类需实现接口`Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface`，然后注册到`laravels.php`的`cleaners`中。

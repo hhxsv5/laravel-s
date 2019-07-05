@@ -71,6 +71,11 @@ class TestController extends Controller
 
 1.Avoid initializing `request-level` data in the constructor, which should be read in the concrete `Action`. This coding style is more reasonable, it is recommended to do so.
 
+```bash
+# List all properties of all controllers related your routes.
+php artisan laravels:list-properties
+```
+
 ```php
 namespace App\Http\Controllers;
 class TestController extends Controller

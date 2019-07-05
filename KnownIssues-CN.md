@@ -75,6 +75,11 @@ class TestController extends Controller
 
 1.避免在构造函数中初始化`请求级`的数据，应在具体`Action`中读取，这样编码风格更合理，建议这样写。
 
+```bash
+# 列出你的路由中所有关联的控制器的所有属性
+php artisan laravels:list-properties
+```
+
 ```php
 namespace App\Http\Controllers;
 class TestController extends Controller
