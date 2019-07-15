@@ -8,6 +8,7 @@
                                            
 ```
 > 🚀`LaravelS` is a glue that is used to quickly integrate `Swoole` into `Laravel` or `Lumen`, and then give them better performance and more possibilities.
+> Please `Watch` this repository to get the latest updates.
 
 [![Latest Stable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/stable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
 [![Latest Unstable Version](https://poser.pugx.org/hhxsv5/laravel-s/v/unstable.svg)](https://packagist.org/packages/hhxsv5/laravel-s)
