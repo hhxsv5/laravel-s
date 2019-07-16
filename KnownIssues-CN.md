@@ -99,6 +99,7 @@ class TestController extends Controller
 
 ```php
 // config/laravels.php
+// 将enable置为true、excluded_list置为[]，则表示自动销毁所有控制器
 'destroy_controllers'      => [
     'enable'        => true, // 启用自动销毁控制器
     'excluded_list' => [

@@ -95,6 +95,7 @@ class TestController extends Controller
 
 ```php
 // config/laravels.php
+// Set enable to true and exclude_list to [], which means that all controllers are automatically destroyed.
 'destroy_controllers'      => [
     'enable'        => true, // Enable automatic destruction controller
     'excluded_list' => [
