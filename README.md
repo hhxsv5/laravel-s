@@ -128,7 +128,7 @@ php artisan laravels publish
 | `start` | Start LaravelS, list the processes by "*ps -ef&#124;grep laravels*". Support the option "*-d&#124;--daemonize*" to run as a daemon; Support the option "*-e&#124;--env*" to specify the environment to run, such as `--env=testing` will use the configuration file `.env.testing` firstly, this feature requires `Laravel 5.2+` |
 | `stop` | Stop LaravelS |
 | `restart` | Restart LaravelS, support the options "*-d&#124;--daemonize*" and "*-e&#124;--env*" |
-| `reload` | Reload all Task/Worker/Timer processes which contain your business codes, and trigger the method `onReload` of Custom process, CANNOT reload Master/Manger processes |
+| `reload` | Reload all Task/Worker/Timer processes which contain your business codes, and trigger the method `onReload` of Custom process, CANNOT reload Master/Manger processes, `ONLY` restart by calling `restart` after modifying `config/laravels.php` |
 | `info` | Display component version information |
 | `help` | Display help information |
 
