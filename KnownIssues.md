@@ -46,6 +46,27 @@ public function notify(Request $request)
 
 2.Re-register `FlashServiceProvider` after handling request, Refer [register_providers](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
+## Use package [laravel/telescope](https://github.com/laravel/telescope)
+> Because Swoole is running in `cli` mode, `RequestWatcher` does not recognize the ignored route properly.
+
+Solution:
+
+1.Add environment variable `APP_RUNNING_IN_CONSOLE=false` to `.env`;
+
+2.Modify code.
+
+```php
+// Edit file `app/Providers/EventServiceProvider.php`, add the following code into method `boot`
+// use Laravel\Telescope\Telescope;
+// use Illuminate\Support\Facades\Event;
+Event::listen('laravels.received_request', function ($request, $app) {
+    $reflection = new \ReflectionClass(Telescope::class);
+    $handlingApprovedRequest = $reflection->getMethod('handlingApprovedRequest');
+    $handlingApprovedRequest->setAccessible(true);
+    $handlingApprovedRequest->invoke(null, $app) ? Telescope::startRecording() : Telescope::stopRecording();
+});
+```
+
 ## Singleton controller
 
 - Laravel 5.3+ controller is bound to `Route` under `Router`, and `Router` is a singleton, controller will only be constructed `once`, so you cannot initialize `request-level data` in the constructor, the following shows you the `wrong` usage.

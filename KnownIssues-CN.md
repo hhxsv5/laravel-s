@@ -50,6 +50,27 @@ public function notify(Request $request)
 
 2.每次请求处理后重新注册`FlashServiceProvider`，配置[register_providers](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
+## 使用包 [laravel/telescope](https://github.com/laravel/telescope)
+> 因Swoole运行在`cli`模式，导致`RequestWatcher`不能正常识别忽略的路由。
+
+解决方案：
+
+1.`.env`中增加环境变量`APP_RUNNING_IN_CONSOLE=false`；
+
+2.修改代码。
+
+```php
+// 修改`app/Providers/EventServiceProvider.php`, 添加下面监听代码到boot方法中
+// use Laravel\Telescope\Telescope;
+// use Illuminate\Support\Facades\Event;
+Event::listen('laravels.received_request', function ($request, $app) {
+    $reflection = new \ReflectionClass(Telescope::class);
+    $handlingApprovedRequest = $reflection->getMethod('handlingApprovedRequest');
+    $handlingApprovedRequest->setAccessible(true);
+    $handlingApprovedRequest->invoke(null, $app) ? Telescope::startRecording() : Telescope::stopRecording();
+});
+```
+
 ## 单例控制器
 
 - Laravel 5.3+ 控制器是被绑定在`Router`下的`Route`中，而`Router`是单例，控制器只会被构造`一次`，所以不能在构造方法中初始化`请求级数据`，下面展示`错误的用法`。
