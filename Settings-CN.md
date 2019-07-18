@@ -47,6 +47,7 @@
         //Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class, // 如果你的项目中使用到了Session或Authentication，请解除这行注释
         //Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class, // 如果你的项目中使用到了Authentication或Passport，请解除这行注释
         //Hhxsv5\LaravelS\Illuminate\Cleaners\JWTCleaner::class, // 如果你的项目中使用到了包"tymon/jwt-auth"，请解除这行注释
+        //Hhxsv5\LaravelS\Illuminate\Cleaners\MenuCleaner::class, // 如果你的项目中使用到了包"spatie/laravel-menu"，请解除这行注释
         //...
     ],
     //...
