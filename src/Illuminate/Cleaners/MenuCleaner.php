@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Facade;
 
 class MenuCleaner implements CleanerInterface
 {
-
     public function clean(Container $app, Container $snapshot)
     {
         $app->forgetInstance('Lavary\Menu\Menu');
