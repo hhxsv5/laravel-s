@@ -737,7 +737,7 @@ public function onClose(Server $server, $fd, $reactorId)
 
 > 更多的信息，请参考[Swoole增加监听的端口](https://wiki.swoole.com/wiki/page/16.html)与[多端口混合协议](https://wiki.swoole.com/wiki/page/525.html)
 
-为了使我们的主服务器能支持除`HTTP`和`WebSocket`外的更多协议，我们引入了`Swoole`的`多端口混合协议`特性，在LaravelS中称为`Socket`。现在，可以很方便地在`Laravel`上被构建`TCP/UDP`应用。
+为了使我们的主服务器能支持除`HTTP`和`WebSocket`外的更多协议，我们引入了`Swoole`的`多端口混合协议`特性，在LaravelS中称为`Socket`。现在，可以很方便地在`Laravel`上构建`TCP/UDP`应用。
 
 1. 创建Socket处理类，继承`Hhxsv5\LaravelS\Swoole\Socket\{TcpSocket|UdpSocket|Http|WebSocket}`
 
