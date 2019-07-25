@@ -28,7 +28,7 @@
 
 ```php
 // config/laravels.php
-'register_providers'       => [
+'register_providers' => [
     Arrilot\Widgets\ServiceProvider::class,
 ],
 ```

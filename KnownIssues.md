@@ -28,7 +28,7 @@ Add environment variable `APP_RUNNING_IN_CONSOLE=false` to `.env`.
 
 ```php
 // config/laravels.php
-'register_providers'       => [
+'register_providers' => [
     Arrilot\Widgets\ServiceProvider::class,
 ],
 ```
