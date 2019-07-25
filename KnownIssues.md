@@ -24,7 +24,7 @@
 Add environment variable `APP_RUNNING_IN_CONSOLE=false` to `.env`.
 
 ## Use package [the-control-group/voyager](https://github.com/the-control-group/voyager)
-> `voyager` dependencies [arrilot/laravel-widgets](https://github.com/arrilot/laravel-widgets), where `WidgetGroupCollection` is a singleton, [appending widget] (https://github.com/ Arrilot/laravel-widgets/blob/master/src/WidgetGroup.php#L270) will cause them to repeat the display, you need to reset the singleton by re-registering the ServiceProvider.
+> `voyager` dependencies [arrilot/laravel-widgets](https://github.com/arrilot/laravel-widgets), where `WidgetGroupCollection` is a singleton, [appending widget](https://github.com/Arrilot/laravel-widgets/blob/master/src/WidgetGroup.php#L270) will cause them to repeat the display, you need to reset the singleton by re-registering the ServiceProvider.
 
 ```php
 // config/laravels.php
