@@ -19,11 +19,18 @@
 ```
 
 ## 使用包 [barryvdh/laravel-debugbar](https://github.com/barryvdh/laravel-debugbar)
-> 官方不支持`cli`模式，需手动注释掉此判断，但启用后不排除会有其他问题。
+> 官方不支持`cli`模式，需通过修改环境变量`APP_RUNNING_IN_CONSOLE`为非`cli`，但启用后不排除会有其他问题。
+
+`.env`中增加环境变量`APP_RUNNING_IN_CONSOLE=false`。
+
+## 使用包 [the-control-group/voyager](https://github.com/the-control-group/voyager)
+> `voyager`依赖包[arrilot/laravel-widgets](https://github.com/arrilot/laravel-widgets)，而其中`WidgetGroupCollection`是单例，[追加Widget](https://github.com/arrilot/laravel-widgets/blob/master/src/WidgetGroup.php#L270)会造成它们重复展示，通过重新注册ServiceProvider来重置此单例。
 
 ```php
-// 搜索 runningInConsole()，并注释掉该判断
-$this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this->app->environment('testing');
+// config/laravels.php
+'register_providers'       => [
+    Arrilot\Widgets\ServiceProvider::class,
+],
 ```
 
 ## 使用包 [overtrue/wechat](https://github.com/overtrue/wechat)

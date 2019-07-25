@@ -19,12 +19,20 @@
 ```
 
 ## Use package [barryvdh/laravel-debugbar](https://github.com/barryvdh/laravel-debugbar)
-> Not support `cli` mode officially, you need to remove the logic of `runningInConsole`, but there may be some other issues.
+> Not support `cli` mode officially, you need to add the environment variable `APP_RUNNING_IN_CONSOLE` to be non-cli`, but there may be some other issues.
+
+Add environment variable `APP_RUNNING_IN_CONSOLE=false` to `.env`.
+
+## Use package [the-control-group/voyager](https://github.com/the-control-group/voyager)
+> `voyager` dependencies [arrilot/laravel-widgets](https://github.com/arrilot/laravel-widgets), where `WidgetGroupCollection` is a singleton, [appending widget] (https://github.com/ Arrilot/laravel-widgets/blob/master/src/WidgetGroup.php#L270) will cause them to repeat the display, you need to reset the singleton by re-registering the ServiceProvider.
 
 ```php
-// Search runningInConsole(), then annotate it
-$this->enabled = $configEnabled /*&& !$this->app->runningInConsole()*/ && !$this->app->environment('testing');
+// config/laravels.php
+'register_providers'       => [
+    Arrilot\Widgets\ServiceProvider::class,
+],
 ```
+
 ## Use package [overtrue/wechat](https://github.com/overtrue/wechat)
 > The asynchronous notification callback will be failing, because `$app['request']` is empty, give it a value.
 
