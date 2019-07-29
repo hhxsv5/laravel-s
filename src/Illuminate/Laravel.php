@@ -173,6 +173,7 @@ class Laravel
         if (isset(self::$staticBlackList[$uri])) {
             return false;
         }
+        $uri = urldecode($uri);
 
         $publicPath = $this->conf['static_path'];
         $requestFile = $publicPath . $uri;
