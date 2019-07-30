@@ -109,11 +109,11 @@ composer require "hhxsv5/laravel-s:~3.5.0" -vvv
     ```
 
 3.Publish configuration and binaries.
-> *Suggest that do publish after upgrade LaravelS every time*
+> *After upgrading LaravelS, you need to republish; click [here](https://github.com/hhxsv5/laravel-s/releases) to see the change notes of each version.*
 ```bash
 php artisan laravels publish
 # Configuration: config/laravels.php
-# Binary: bin/laravels bin/fswatch
+# Binary: bin/laravels bin/fswatch bin/inotify
 ```
 
 4.Change `config/laravels.php`: listen_ip, listen_port, refer [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).

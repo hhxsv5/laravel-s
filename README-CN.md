@@ -114,11 +114,11 @@ composer require "hhxsv5/laravel-s:~3.5.0" -vvv
     ```
 
 3.发布配置和二进制文件。
-> *每次升级LaravelS后，需重新发布*
+> *每次升级LaravelS后，需重新publish；点击[Release](https://github.com/hhxsv5/laravel-s/releases)去了解各个版本的变更记录。*
 ```bash
 php artisan laravels publish
 # 配置文件：config/laravels.php
-# 二进制文件：bin/laravels bin/fswatch
+# 二进制文件：bin/laravels bin/fswatch bin/inotify
 ```
 
 4.修改配置`config/laravels.php`：监听的IP、端口等，请参考[配置项](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
