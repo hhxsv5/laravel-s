@@ -1203,6 +1203,7 @@ class WorkerStartEvent implements WorkerStartInterface
 | *强 | 50 |
 | Anthony | 18.88 |
 | *官龙 | 100 |
+| 0o飞舞o0木木 *科 | 288 |
 
 ## License
 
