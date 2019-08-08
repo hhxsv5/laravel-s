@@ -1014,8 +1014,6 @@ class WorkerStartEvent implements WorkerStartInterface
 
     - Under Swoole Server, All singleton instances will be held in memory, different lifetime from FPM, request start=>instantiate instance=>request end=>do not recycle singleton instance. So need developer to maintain status of singleton instances in every request.
 
-    - If Session/Authentication/JWT is used in your project, please uncomment the `cleaners` in `laravels.php` as appropriate.
-
     - Common solutions:
 
         1. Write a `XxxCleaner` class to clean up the singleton object state. This class implements the interface `Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface` and then registers it in `cleaners` of `laravels.php`.
@@ -1023,6 +1021,8 @@ class WorkerStartEvent implements WorkerStartInterface
         2. `Reset` status of singleton instances by `Middleware`.
 
         1. Re-register `ServiceProvider`, add `XxxServiceProvider` into `register_providers` of file `laravels.php`. So that reinitialize singleton instances in every request [Refer](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
+    
+    - LaravelS has built in some [Cleaners](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
 - [Known issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md): a package of known issues and solutions.
 

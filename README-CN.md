@@ -1026,8 +1026,6 @@ class WorkerStartEvent implements WorkerStartInterface
     - 传统FPM下，单例模式的对象的生命周期仅在每次请求中，请求开始=>实例化单例=>请求结束后=>单例对象资源回收。
 
     - Swoole Server下，所有单例对象会常驻于内存，这个时候单例对象的生命周期与FPM不同，请求开始=>实例化单例=>请求结束=>单例对象依旧保留，需要开发者自己维护单例的状态。
-
-    - 如果你的项目中使用到了Session、Authentication、JWT，请根据情况解除`laravels.php`中`cleaners`的注释。
     
     - 常见的解决方案：
 
@@ -1036,6 +1034,8 @@ class WorkerStartEvent implements WorkerStartInterface
         2. 用一个`中间件`来`重置`单例对象的状态。
 
         3. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
+
+    - LaravelS 已经内置了一些[Cleaner](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
 - [常见问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md)：一揽子的已知问题和解决方案。
 
