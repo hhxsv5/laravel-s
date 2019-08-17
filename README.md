@@ -705,6 +705,15 @@ class WebSocketService implements WebSocketHandlerInterface
     public function onOpen(Server $server, Request $request)
     {
         // var_dump(app('swoole') === $server);// The same instance
+        /**
+         * Get the currently logged in user
+         * This feature requires that the path to establish a WebSocket connection go through middleware such as Authenticate.
+         * E.g:
+         * Browser side: var ws = new WebSocket("ws://127.0.0.1:5200/ws");
+         * Then the /ws route in Laravel needs to add the middleware like Authenticate.
+         */
+        // $user = Auth::user();
+        // $userId = $user ? $user->id : 0; // 0 means a guest user who is not logged in
         $userId = mt_rand(1000, 10000);
         $this->wsTable->set('uid:' . $userId, ['value' => $request->fd]);// Bind map uid to fd
         $this->wsTable->set('fd:' . $request->fd, ['value' => $userId]);// Bind map fd to uid
