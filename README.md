@@ -686,35 +686,49 @@ var_dump($swoole->stats());// Singleton
 ```
 
 2.Access `Table`: all table instances will be bound on `SwooleServer`, access by `app('swoole')->xxxTable`.
+
 ```php
+namespace App\Services;
+use Hhxsv5\LaravelS\Swoole\WebsocketHandlerInterface;
 use Swoole\Http\Request;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
-// Scene：bind UserId & FD in WebSocket
-public function onOpen(Server $server, Request $request)
+class WebSocketService implements WebSocketHandlerInterface
 {
-    // var_dump(app('swoole') === $server);// The same instance
-    $userId = mt_rand(1000, 10000);
-    app('swoole')->wsTable->set('uid:' . $userId, ['value' => $request->fd]);// Bind map uid to fd
-    app('swoole')->wsTable->set('fd:' . $request->fd, ['value' => $userId]);// Bind map fd to uid
-    $server->push($request->fd, 'Welcome to LaravelS');
-}
-public function onMessage(Server $server, Frame $frame)
-{
-    foreach (app('swoole')->wsTable as $key => $row) {
-        if (strpos($key, 'uid:') === 0 && $server->exist($row['value'])) {
-            $server->push($row['value'], 'Broadcast: ' . date('Y-m-d H:i:s'));// Broadcast
+    /**@var \Swoole\Table $wsTable */
+    private $wsTable;
+    public function __construct()
+    {
+        $this->wsTable = app('swoole')->wsTable;
+    }
+    // Scene：bind UserId & FD in WebSocket
+    public function onOpen(Server $server, Request $request)
+    {
+        // var_dump(app('swoole') === $server);// The same instance
+        $userId = mt_rand(1000, 10000);
+        $this->wsTable->set('uid:' . $userId, ['value' => $request->fd]);// Bind map uid to fd
+        $this->wsTable->set('fd:' . $request->fd, ['value' => $userId]);// Bind map fd to uid
+        $server->push($request->fd, "Welcome to LaravelS #{$request->fd}");
+    }
+    public function onMessage(Server $server, Frame $frame)
+    {
+        // Broadcast
+        foreach ($this->wsTable as $key => $row) {
+            if (strpos($key, 'uid:') === 0 && $server->isEstablished($row['value'])) {
+                $content = sprintf('Broadcast: new message "%s" from #%d', $frame->data, $frame->fd);
+                $server->push($row['value'], $content);
+            }
         }
     }
-}
-public function onClose(Server $server, $fd, $reactorId)
-{
-    $uid = app('swoole')->wsTable->get('fd:' . $fd);
-    if ($uid !== false) {
-        app('swoole')->wsTable->del('uid:' . $uid['value']); // Unbind uid map
+    public function onClose(Server $server, $fd, $reactorId)
+    {
+        $uid = $this->wsTable->get('fd:' . $fd);
+        if ($uid !== false) {
+            $this->wsTable->del('uid:' . $uid['value']); // Unbind uid map
+        }
+        $this->wsTable->del('fd:' . $fd);// Unbind fd map
+        $server->push($fd, "Goodbye #{$fd}");
     }
-    app('swoole')->wsTable->del('fd:' . $fd);// Unbind fd map
-    $server->push($fd, 'Goodbye');
 }
 ```
 
