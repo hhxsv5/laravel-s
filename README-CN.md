@@ -279,7 +279,8 @@ class WebSocketService implements WebSocketHandlerInterface
     }
     public function onOpen(Server $server, Request $request)
     {
-        // 在触发onOpen事件之前Laravel的生命周期已经完结，所以Laravel的Request是可读的，Session是可读写的
+        // 在触发onOpen事件之前，建立WebSocket的HTTP请求已经经过了Laravel的路由，所以Laravel的Request、Auth等信息是可读的，Session是可读写的，但仅限在onOpen事件中。
+        // 只能在onOpen中读取请求相关的信息，比如LaravelRequest、Auth:user()。
         // \Log::info('New WebSocket connection', [$request->fd, request()->all(), session()->getId(), session('xxx'), session(['yyy' => time()])]);
         $server->push($request->fd, 'Welcome to LaravelS');
         // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
