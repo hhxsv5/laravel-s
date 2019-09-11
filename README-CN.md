@@ -1117,6 +1117,7 @@ class WorkerStartEvent implements WorkerStartInterface
     ```php
     // config/database.php
     'redis' => [
+            'client' => env('REDIS_CLIENT', 'phpredis'), // 推荐使用phpredis，以获得更好的性能
             'default' => [
                 'host'       => env('REDIS_HOST', 'localhost'),
                 'password'   => env('REDIS_PASSWORD', null),
