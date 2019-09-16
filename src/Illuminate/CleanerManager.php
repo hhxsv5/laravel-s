@@ -5,6 +5,7 @@ namespace Hhxsv5\LaravelS\Illuminate;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\ConfigCleaner;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\CookieCleaner;
+use Hhxsv5\LaravelS\Illuminate\Cleaners\EventCleaner;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\RequestCleaner;
 use Illuminate\Container\Container;
 
@@ -22,6 +23,7 @@ class CleanerManager
     protected $cleaners = [
         ConfigCleaner::class,
         CookieCleaner::class,
+        EventCleaner::class,
         RequestCleaner::class,
     ];
 
