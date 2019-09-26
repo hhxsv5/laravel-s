@@ -4,8 +4,8 @@ namespace Hhxsv5\LaravelS;
 
 use Hhxsv5\LaravelS\Illuminate\Laravel;
 use Hhxsv5\LaravelS\Swoole\DynamicResponse;
+use Hhxsv5\LaravelS\Swoole\Events\ServerStartInterface;
 use Hhxsv5\LaravelS\Swoole\Events\ServerStopInterface;
-use Hhxsv5\LaravelS\Swoole\Events\MasterStartInterface;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerErrorInterface;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerStopInterface;
@@ -63,6 +63,12 @@ class LaravelS extends Server
 
         $processes = isset($this->conf['processes']) ? $this->conf['processes'] : [];
         $this->swoole->customProcesses = $this->addCustomProcesses($this->swoole, $svrConf['process_prefix'], $processes, $this->laravelConf);
+
+        // Fire ServerStart event
+        if (isset($this->conf['event_handlers']['ServerStart'])) {
+            Laravel::autoload($this->laravelConf['root_path']);
+            $this->fireEvent('ServerStart', ServerStartInterface::class, [$this->swoole]);
+        }
     }
 
     protected function bindWebSocketEvent()
@@ -87,17 +93,6 @@ class LaravelS extends Server
                 $this->laravel->clean();
             });
         }
-    }
-
-    public function onStart(HttpServer $server)
-    {
-        // Fire MasterStart event
-        if (isset($this->conf['event_handlers']['MasterStart'])) {
-            Laravel::autoload($this->laravelConf['root_path']);
-            $this->fireEvent('MasterStart', MasterStartInterface::class, [$server]);
-        }
-
-        parent::onStart($server);
     }
 
     public function onShutdown(HttpServer $server)

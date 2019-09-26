@@ -979,7 +979,7 @@ Supported events:
 
 | Event | Interface | When happened |
 | -------- | -------- | -------- |
-| MasterStart | Hhxsv5\LaravelS\Swoole\Events\MasterStartInterface | Occurs when the Master process is starting, `this event should not handle complex business logic, and can only do some simple work of initialization`. |
+| ServerStart | Hhxsv5\LaravelS\Swoole\Events\ServerStartInterface | Occurs when the Master process is starting, `this event should not handle complex business logic, and can only do some simple work of initialization`. |
 | ServerStop | Hhxsv5\LaravelS\Swoole\Events\ServerStopInterface | Occurs when the server exits normally, `CANNOT use async or coroutine related APIs in this event`. |
 | WorkerStart | Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface | Occurs after the Worker/Task process is started, and the Laravel initialization has been completed. |
 | WorkerStop | Hhxsv5\LaravelS\Swoole\Events\WorkerStopInterface | Occurs after the Worker/Task process exits normally |
@@ -988,10 +988,10 @@ Supported events:
 1.Create an event class to implement the corresponding interface.
 ```php
 namespace App\Events;
-use Hhxsv5\LaravelS\Swoole\Events\MasterStartInterface;
+use Hhxsv5\LaravelS\Swoole\Events\ServerStartInterface;
 use Swoole\Atomic;
 use Swoole\Http\Server;
-class MasterStartEvent implements MasterStartInterface
+class ServerStartEvent implements ServerStartInterface
 {
     public function __construct()
     {
@@ -1026,7 +1026,7 @@ class WorkerStartEvent implements WorkerStartInterface
 ```php
 // Edit `config/laravels.php`
 'event_handlers' => [
-    'MasterStart' => \App\Events\MasterStartEvent::class,
+    'ServerStart' => \App\Events\ServerStartEvent::class,
     'WorkerStart' => \App\Events\WorkerStartEvent::class,
 ],
 ```
