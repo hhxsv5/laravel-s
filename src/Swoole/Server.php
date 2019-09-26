@@ -213,10 +213,6 @@ class Server
 
     public function onStart(HttpServer $server)
     {
-        foreach (spl_autoload_functions() as $function) {
-            spl_autoload_unregister($function);
-        }
-
         $this->setProcessTitle(sprintf('%s laravels: master process', $this->conf['process_prefix']));
 
         if (version_compare(swoole_version(), '1.9.5', '<')) {
