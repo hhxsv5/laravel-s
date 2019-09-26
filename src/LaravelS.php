@@ -62,12 +62,6 @@ class LaravelS extends Server
 
         $processes = isset($this->conf['processes']) ? $this->conf['processes'] : [];
         $this->swoole->customProcesses = $this->addCustomProcesses($this->swoole, $svrConf['process_prefix'], $processes, $this->laravelConf);
-
-        // Fire BeforeStart event
-        if (isset($this->conf['event_handlers']['BeforeStart'])) {
-            Laravel::autoload($this->laravelConf['root_path']);
-            $this->fireEvent('BeforeStart', BeforeStartInterface::class, [$this->swoole]);
-        }
     }
 
     protected function bindWebSocketEvent()
@@ -92,6 +86,17 @@ class LaravelS extends Server
                 $this->laravel->clean();
             });
         }
+    }
+
+    public function onStart(HttpServer $server)
+    {
+        // Fire BeforeStart event
+        if (isset($this->conf['event_handlers']['BeforeStart'])) {
+            Laravel::autoload($this->laravelConf['root_path']);
+            $this->fireEvent('BeforeStart', BeforeStartInterface::class, [$this->swoole]);
+        }
+
+        parent::onStart($server);
     }
 
     public function onWorkerStart(HttpServer $server, $workerId)
