@@ -979,18 +979,19 @@ Supported events:
 
 | Event | Interface | When happened |
 | -------- | -------- | -------- |
-| BeforeStart | Hhxsv5\LaravelS\Swoole\Events\BeforeStartInterface | Occurs before the Master process starts, `this event should not handle complex business logic, and can only do some simple work of initialization`. |
-| WorkerStart | Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface | Occurs when the Worker/Task process starts, and the Laravel initialization has been completed. |
-| WorkerStop | Hhxsv5\LaravelS\Swoole\Events\WorkerStopInterface | Occurs when the Worker/Task process exits normally. |
-| WorkerError | Hhxsv5\LaravelS\Swoole\Events\WorkerErrorInterface | Occurs when an exception or fatal error occurs in the Worker/Task process. |
+| MasterStart | Hhxsv5\LaravelS\Swoole\Events\MasterStartInterface | Occurs when the Master process is starting, `this event should not handle complex business logic, and can only do some simple work of initialization`. |
+| ServerStop | Hhxsv5\LaravelS\Swoole\Events\ServerStopInterface | Occurs when the server exits normally, `CANNOT use async or coroutine related APIs in this event`. |
+| WorkerStart | Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface | Occurs after the Worker/Task process is started, and the Laravel initialization has been completed. |
+| WorkerStop | Hhxsv5\LaravelS\Swoole\Events\WorkerStopInterface | Occurs after the Worker/Task process exits normally |
+| WorkerError | Hhxsv5\LaravelS\Swoole\Events\WorkerErrorInterface | Occurs when an exception or fatal error occurs in the Worker/Task process |
 
 1.Create an event class to implement the corresponding interface.
 ```php
 namespace App\Events;
-use Hhxsv5\LaravelS\Swoole\Events\BeforeStartInterface;
+use Hhxsv5\LaravelS\Swoole\Events\MasterStartInterface;
 use Swoole\Atomic;
 use Swoole\Http\Server;
-class BeforeStartEvent implements BeforeStartInterface
+class MasterStartEvent implements MasterStartInterface
 {
     public function __construct()
     {
@@ -1025,7 +1026,7 @@ class WorkerStartEvent implements WorkerStartInterface
 ```php
 // Edit `config/laravels.php`
 'event_handlers' => [
-    'BeforeStart' => \App\Events\BeforeStartEvent::class,
+    'MasterStart' => \App\Events\MasterStartEvent::class,
     'WorkerStart' => \App\Events\WorkerStartEvent::class,
 ],
 ```

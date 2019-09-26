@@ -4,7 +4,8 @@ namespace Hhxsv5\LaravelS;
 
 use Hhxsv5\LaravelS\Illuminate\Laravel;
 use Hhxsv5\LaravelS\Swoole\DynamicResponse;
-use Hhxsv5\LaravelS\Swoole\Events\BeforeStartInterface;
+use Hhxsv5\LaravelS\Swoole\Events\ServerStopInterface;
+use Hhxsv5\LaravelS\Swoole\Events\MasterStartInterface;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerErrorInterface;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerStopInterface;
@@ -90,13 +91,24 @@ class LaravelS extends Server
 
     public function onStart(HttpServer $server)
     {
-        // Fire BeforeStart event
-        if (isset($this->conf['event_handlers']['BeforeStart'])) {
+        // Fire MasterStart event
+        if (isset($this->conf['event_handlers']['MasterStart'])) {
             Laravel::autoload($this->laravelConf['root_path']);
-            $this->fireEvent('BeforeStart', BeforeStartInterface::class, [$this->swoole]);
+            $this->fireEvent('MasterStart', MasterStartInterface::class, [$server]);
         }
 
         parent::onStart($server);
+    }
+
+    public function onShutdown(HttpServer $server)
+    {
+        parent::onShutdown($server);
+
+        // Fire ServerStop event
+        if (isset($this->conf['event_handlers']['ServerStop'])) {
+            Laravel::autoload($this->laravelConf['root_path']);
+            $this->fireEvent('ServerStop', ServerStopInterface::class, [$server]);
+        }
     }
 
     public function onWorkerStart(HttpServer $server, $workerId)

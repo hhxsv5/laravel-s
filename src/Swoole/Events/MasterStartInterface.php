@@ -4,7 +4,7 @@ namespace Hhxsv5\LaravelS\Swoole\Events;
 
 use Swoole\Http\Server;
 
-interface BeforeStartInterface
+interface MasterStartInterface
 {
     public function __construct();
 
