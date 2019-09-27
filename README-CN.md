@@ -977,6 +977,7 @@ class WebSocketService implements WebSocketHandlerInterface
             'class'    => \App\Processes\TestProcess::class,
             'redirect' => false, // 是否重定向输入输出
             'pipe'     => 0 // 管道类型：0不创建管道，1创建SOCK_STREAM类型管道，2创建SOCK_DGRAM类型管道
+            'enable'   => true // 是否启用，默认true
         ],
     ],
     ```
