@@ -32,6 +32,9 @@ trait CustomProcessTrait
                         )
                     );
                 }
+                if (isset($item['enable']) && !$item['enable']) {
+                    continue;
+                }
                 $process = $item['class'];
                 $redirect = isset($item['redirect']) ? $item['redirect'] : false;
                 $pipe = isset($item['pipe']) ? $item['pipe'] : 0;
