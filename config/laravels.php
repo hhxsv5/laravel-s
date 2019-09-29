@@ -47,9 +47,17 @@ return [
     'swoole_tables'            => [],
     'register_providers'       => [],
     'cleaners'                 => [
-        //Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class, // If you use the session or authentication in your project, please uncomment this line
-        //Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,    // If you use the authentication or passport in your project, please uncomment this line
-        //Hhxsv5\LaravelS\Illuminate\Cleaners\JWTCleaner::class,     // If you use the package "tymon/jwt-auth" in your project, please uncomment this line
+        // If you use the session/authentication/passport in your project
+        // Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
+        // Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
+
+        // If you use the package "tymon/jwt-auth" in your project
+        // Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
+        // Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
+        // Hhxsv5\LaravelS\Illuminate\Cleaners\JWTCleaner::class,
+
+        // If you use the package "spatie/laravel-menu" in your project
+        // Hhxsv5\LaravelS\Illuminate\Cleaners\MenuCleaner::class,
         // ...
     ],
     'destroy_controllers'      => [
