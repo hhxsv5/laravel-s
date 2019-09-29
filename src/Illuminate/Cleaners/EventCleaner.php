@@ -3,15 +3,21 @@
 namespace Hhxsv5\LaravelS\Illuminate\Cleaners;
 
 use Illuminate\Container\Container;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Facade;
+use Illuminate\Events\Dispatcher;
 
 class EventCleaner implements CleanerInterface
 {
+    protected $reflection;
+
+    public function __construct()
+    {
+        $this->reflection = new \ReflectionClass(Dispatcher::class);
+    }
+
     public function clean(Container $app, Container $snapshot)
     {
-        $app->forgetInstance('events');
-        Facade::clearResolvedInstance('events');
-        Model::setEventDispatcher($app['events']);
+        $listeners = $this->reflection->getProperty('listeners');
+        $listeners->setAccessible(true);
+        $listeners->setValue($app['events'], []);
     }
 }
