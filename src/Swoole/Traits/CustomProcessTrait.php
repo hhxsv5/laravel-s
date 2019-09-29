@@ -11,7 +11,7 @@ trait CustomProcessTrait
 {
     public function addCustomProcesses(Server $swoole, $processPrefix, array $processes, array $laravelConfig)
     {
-        $pidfile = dirname($swoole->setting['pid_file']) . '/laravels-custom-processes.pid';
+        $pidfile = dirname($swoole->setting['pid_file']) . '/laravels-processes.pid';
         if (file_exists($pidfile)) {
             unlink($pidfile);
         }
