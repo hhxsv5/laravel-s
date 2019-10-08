@@ -674,7 +674,7 @@ var_dump($swoole->stats());// Singleton
     // ...
     'swoole_tables'  => [
         // Scene：bind UserId & FD in WebSocket
-        'ws' => [// The Key is table name, will add suffix "Table" to avoid naming conficts. Here defined a table named "wsTable"
+        'ws' => [// The Key is table name, will add suffix "Table" to avoid naming conflicts. Here defined a table named "wsTable"
             'size'   => 102400,// The max size
             'column' => [// Define the columns
                 ['name' => 'value', 'type' => \Swoole\Table::TYPE_INT, 'size' => 8],
