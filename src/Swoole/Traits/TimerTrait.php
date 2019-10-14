@@ -5,6 +5,7 @@ namespace Hhxsv5\LaravelS\Swoole\Traits;
 use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 use Swoole\Http\Server;
 use Swoole\Process;
+use Swoole\Timer;
 
 trait TimerTrait
 {
@@ -46,19 +47,19 @@ trait TimerTrait
                     class_exists('Swoole\Coroutine') ? go($runCallback) : $runCallback();
                 };
 
-                $timerId = swoole_timer_tick($job->interval(), $runProcess);
+                $timerId = Timer::tick($job->interval(), $runProcess);
                 $timerIds[] = $timerId;
                 $job->setTimerId($timerId);
                 if ($job->isImmediate()) {
-                    swoole_timer_after(1, $runProcess);
+                    Timer::after(1, $runProcess);
                 }
             }
 
             Process::signal(SIGUSR1, function ($signo) use ($config, $timerIds, $process) {
                 foreach ($timerIds as $timerId) {
-                    swoole_timer_clear($timerId);
+                    Timer::clear($timerId);
                 }
-                swoole_timer_after($config['max_wait_time'] * 1000, function () use ($process) {
+                Timer::after($config['max_wait_time'] * 1000, function () use ($process) {
                     $process->exit(0);
                 });
             });

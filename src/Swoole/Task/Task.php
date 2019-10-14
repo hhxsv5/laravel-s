@@ -3,6 +3,7 @@
 namespace Hhxsv5\LaravelS\Swoole\Task;
 
 use Illuminate\Queue\SerializesModels;
+use Swoole\Timer;
 
 abstract class Task
 {
@@ -78,7 +79,7 @@ abstract class Task
             }
         };
         if ($task->delay > 0) {
-            swoole_timer_after($task->delay * 1000, $deliver);
+            Timer::after($task->delay * 1000, $deliver);
             return true;
         } else {
             return $deliver();

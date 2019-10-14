@@ -2,6 +2,8 @@
 
 namespace Hhxsv5\LaravelS\Swoole\Timer;
 
+use Swoole\Timer;
+
 abstract class CronJob implements CronJobInterface
 {
     /**
@@ -65,8 +67,8 @@ abstract class CronJob implements CronJobInterface
 
     public function stop()
     {
-        if ($this->timerId && swoole_timer_exists($this->timerId)) {
-            swoole_timer_clear($this->timerId);
+        if ($this->timerId && Timer::exists($this->timerId)) {
+            Timer::clear($this->timerId);
         }
     }
 }
