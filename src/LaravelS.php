@@ -182,7 +182,7 @@ class LaravelS extends Server
         $this->error($error);
         try {
             $response->status(500);
-            $response->end('Oops! An unexpected error occurred: ' . $e->getMessage());
+            $response->end('Oops! An unexpected error occurred');
         } catch (\Exception $e) {
             $this->logException($e);
         }
