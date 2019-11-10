@@ -164,8 +164,16 @@ EOS;
                     sleep(1);
                     $time++;
                 }
-                if (file_exists($pidFile)) {
-                    unlink($pidFile);
+                $basePath = dirname($pidFile);
+                $deleteFiles = [
+                    $pidFile,
+                    $basePath . '/laravels-custom-processes.pid',
+                    $basePath . '/laravels-timer-process.pid',
+                ];
+                foreach ($deleteFiles as $deleteFile) {
+                    if (file_exists($deleteFile)) {
+                        unlink($deleteFile);
+                    }
                 }
                 $this->info("Swoole [PID={$pid}] is stopped.");
                 return 0;
