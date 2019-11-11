@@ -296,7 +296,7 @@ EOS;
     public static function kill($pid, $sig)
     {
         try {
-            return Process::kill($pid, $sig);
+            return Process::kill((int) $pid, $sig);
         } catch (\Exception $e) {
             return false;
         }
