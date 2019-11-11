@@ -101,7 +101,7 @@ class LaravelS extends Server
 
         // Fire ServerStop event
         if (isset($this->conf['event_handlers']['ServerStop'])) {
-            Laravel::autoload($this->laravelConf['root_path']);
+            $this->laravel = $this->initLaravel($this->laravelConf, $this->swoole);
             $this->fireEvent('ServerStop', ServerStopInterface::class, [$server]);
         }
     }
