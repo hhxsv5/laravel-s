@@ -205,14 +205,12 @@ EOS;
             return;
         }
 
-        // Reload worker process
+        // Reload worker processes
         $pid = file_get_contents($pidFile);
         if (!$pid || !self::kill($pid, 0)) {
             $this->error("Swoole [PID={$pid}] does not exist, or permission denied.");
             return;
         }
-
-        // Reload worker processes
         if (self::kill($pid, SIGUSR1)) {
             $this->info("Swoole [PID={$pid}] is reloaded.");
         } else {
