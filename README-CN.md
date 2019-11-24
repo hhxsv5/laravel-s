@@ -665,7 +665,7 @@ class TestCronJob extends CronJob
     ./bin/inotify ./app
     ```
 
-- 当以上方法都不行时，终极解决方案：将`max_request`设置为`1`，这样每个`Worker`进程处理完一个请求就会重启，这种方法的性能非常差，`故仅限在开发环境使用`。
+- 当以上方法都不行时，终极解决方案：配置`max_request=1,worker_num=1`，这样`Worker`进程处理完一个请求就会重启，这种方法的性能非常差，`故仅限在开发环境使用`。
 
 ## 在你的项目中使用`SwooleServer`实例
 
