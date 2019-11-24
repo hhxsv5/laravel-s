@@ -651,6 +651,7 @@ class TestCronJob extends CronJob
     ./bin/inotify ./app
     ```
 
+- When the above methods does not work, the ultimate solution: set `max_request` to `1`, so that each `Worker` process will restart after processing a request. The performance of this method is very poor, `so only development environment use`.
 
 ## Get the instance of `SwooleServer` in your project
 
