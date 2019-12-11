@@ -1,6 +1,6 @@
 <?php
 
-namespace Hhxsv5\LaravelS\Swoole\Traits;
+namespace Hhxsv5\LaravelS\Swoole\Process;
 
 trait ProcessTitleTrait
 {

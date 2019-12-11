@@ -1,9 +1,8 @@
 <?php
 
-namespace Hhxsv5\LaravelS\Swoole\Traits;
+namespace Hhxsv5\LaravelS\Swoole;
 
 use Hhxsv5\LaravelS\Console\Portal;
-use Hhxsv5\LaravelS\Swoole\Inotify;
 use Swoole\Http\Server;
 use Swoole\Process;
 
@@ -31,7 +30,6 @@ trait InotifyTrait
             $this->setProcessTitle(sprintf('%s laravels: inotify process', $config['process_prefix']));
             $inotify = new Inotify($config['watch_path'], IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVE,
                 function ($event) use ($log, $laravelConf) {
-                    // $swoole->reload();
                     $reloadCmd = trim(sprintf('%s -c "%s" %s/bin/laravels reload', PHP_BINARY, php_ini_loaded_file(), $laravelConf['root_path']));
                     Portal::runCommand($reloadCmd);
                     if ($log) {
@@ -70,9 +68,9 @@ trait InotifyTrait
             $inotify->start();
         };
 
-        $inotifyProcess = new Process($autoReload, false, false);
-        if ($swoole->addProcess($inotifyProcess)) {
-            return $inotifyProcess;
+        $process = new Process($autoReload, false, false);
+        if ($swoole->addProcess($process)) {
+            return $process;
         }
     }
 }

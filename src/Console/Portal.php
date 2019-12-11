@@ -2,8 +2,8 @@
 
 namespace Hhxsv5\LaravelS\Console;
 
+use Hhxsv5\LaravelS\Illuminate\LogTrait;
 use Hhxsv5\LaravelS\LaravelS;
-use Hhxsv5\LaravelS\Swoole\Traits\LogTrait;
 use Swoole\Process;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

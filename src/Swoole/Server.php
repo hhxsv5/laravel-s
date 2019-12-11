@@ -2,12 +2,12 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
+use Hhxsv5\LaravelS\Illuminate\LogTrait;
+use Hhxsv5\LaravelS\Swoole\Process\ProcessTitleTrait;
 use Hhxsv5\LaravelS\Swoole\Socket\PortInterface;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
-use Hhxsv5\LaravelS\Swoole\Traits\LogTrait;
-use Hhxsv5\LaravelS\Swoole\Traits\ProcessTitleTrait;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
 use Swoole\Http\Server as HttpServer;

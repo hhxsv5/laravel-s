@@ -3,21 +3,21 @@
 namespace Hhxsv5\LaravelS;
 
 use Hhxsv5\LaravelS\Illuminate\Laravel;
+use Hhxsv5\LaravelS\Illuminate\LaravelTrait;
+use Hhxsv5\LaravelS\Illuminate\LogTrait;
 use Hhxsv5\LaravelS\Swoole\DynamicResponse;
 use Hhxsv5\LaravelS\Swoole\Events\ServerStartInterface;
 use Hhxsv5\LaravelS\Swoole\Events\ServerStopInterface;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerErrorInterface;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerStopInterface;
+use Hhxsv5\LaravelS\Swoole\InotifyTrait;
+use Hhxsv5\LaravelS\Swoole\Process\CustomProcessTrait;
+use Hhxsv5\LaravelS\Swoole\Process\ProcessTitleTrait;
 use Hhxsv5\LaravelS\Swoole\Request;
 use Hhxsv5\LaravelS\Swoole\Server;
 use Hhxsv5\LaravelS\Swoole\StaticResponse;
-use Hhxsv5\LaravelS\Swoole\Traits\CustomProcessTrait;
-use Hhxsv5\LaravelS\Swoole\Traits\InotifyTrait;
-use Hhxsv5\LaravelS\Swoole\Traits\LaravelTrait;
-use Hhxsv5\LaravelS\Swoole\Traits\LogTrait;
-use Hhxsv5\LaravelS\Swoole\Traits\ProcessTitleTrait;
-use Hhxsv5\LaravelS\Swoole\Traits\TimerTrait;
+use Hhxsv5\LaravelS\Swoole\Timer\TimerTrait;
 use Illuminate\Http\Request as IlluminateRequest;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;

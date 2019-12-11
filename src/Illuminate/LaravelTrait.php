@@ -1,8 +1,7 @@
 <?php
 
-namespace Hhxsv5\LaravelS\Swoole\Traits;
+namespace Hhxsv5\LaravelS\Illuminate;
 
-use Hhxsv5\LaravelS\Illuminate\Laravel;
 use Swoole\Http\Server;
 
 trait LaravelTrait

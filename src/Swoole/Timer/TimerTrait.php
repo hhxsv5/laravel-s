@@ -1,8 +1,7 @@
 <?php
 
-namespace Hhxsv5\LaravelS\Swoole\Traits;
+namespace Hhxsv5\LaravelS\Swoole\Timer;
 
-use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 use Swoole\Http\Server;
 use Swoole\Process;
 use Swoole\Timer;

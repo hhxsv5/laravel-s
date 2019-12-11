@@ -1,9 +1,8 @@
 <?php
 
-namespace Hhxsv5\LaravelS\Swoole\Traits;
+namespace Hhxsv5\LaravelS\Swoole\Process;
 
 use Hhxsv5\LaravelS\Illuminate\Laravel;
-use Hhxsv5\LaravelS\Swoole\Process\CustomProcessInterface;
 use Swoole\Http\Server;
 use Swoole\Process;
 
