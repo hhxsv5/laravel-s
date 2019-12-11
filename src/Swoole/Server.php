@@ -305,9 +305,7 @@ class Server
             $listenerClasses = (array)$listenerClasses;
         }
         foreach ($listenerClasses as $listenerClass) {
-            /**
-             * @var Listener $listener
-             */
+            /**@var Listener $listener */
             $listener = new $listenerClass();
             if (!($listener instanceof Listener)) {
                 throw new \InvalidArgumentException(sprintf('%s must extend the abstract class %s', $listenerClass, Listener::class));

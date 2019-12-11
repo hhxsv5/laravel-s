@@ -15,7 +15,7 @@ trait TaskTrait
 
     public function delay($delay)
     {
-        if ($delay <= 0) {
+        if ($delay !== null && $delay <= 0) {
             throw new \InvalidArgumentException('The delay must be greater than 0');
         }
         $this->delay = $delay;
