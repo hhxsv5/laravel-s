@@ -469,10 +469,8 @@ class TestListener1 extends Listener
         \Log::info(__CLASS__ . ':handle start', [$event->getData()]);
         sleep(2);// Simulate the slow codes
         // Deliver task in CronJob, but NOT support callback finish() of task.
-        // Note:
-        // 1.Set parameter 2 to true
-        // 2.Modify task_ipc_mode to 1 or 2 in config/laravels.php, see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
-        $ret = Task::deliver(new TestTask('task data'), true);
+        // Note: Modify task_ipc_mode to 1 or 2 in config/laravels.php, see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
+        $ret = Task::deliver(new TestTask('task data'));
         var_dump($ret);
         // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
     }
@@ -498,7 +496,10 @@ class TestListener1 extends Listener
 ```php
 // Create instance of event and fire it, "fire" is asynchronous.
 use Hhxsv5\LaravelS\Swoole\Task\Event;
-$success = Event::fire(new TestEvent('event data'));
+$event = new TestEvent('event data');
+// $event->delay(10); // Delay 10 seconds
+// $event->setTries(3); // When an error occurs, try 3 times in total
+$success = Event::fire($event);
 var_dump($success);// Return true if sucess, otherwise false
 ```
 
@@ -539,6 +540,7 @@ class TestTask extends Task
 use Hhxsv5\LaravelS\Swoole\Task\Task;
 $task = new TestTask('task data');
 // $task->delay(3);// delay 3 seconds to deliver task
+// $task->setTries(3); // When an error occurs, try 3 times in total
 $ret = Task::deliver($task);
 var_dump($ret);// Return true if sucess, otherwise false
 ```
@@ -580,10 +582,8 @@ class TestCronJob extends CronJob
             \Log::info(__METHOD__, ['stop', $this->i, microtime(true)]);
             $this->stop(); // Stop this cron job
             // Deliver task in CronJob, but NOT support callback finish() of task.
-            // Note:
-            // 1.Set parameter 2 to true
-            // 2.Modify task_ipc_mode to 1 or 2 in config/laravels.php, see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
-            $ret = Task::deliver(new TestTask('task data'), true);
+            // Note: Modify task_ipc_mode to 1 or 2 in config/laravels.php, see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
+            $ret = Task::deliver(new TestTask('task data'));
             var_dump($ret);
         }
         // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
@@ -937,10 +937,8 @@ To make our main server support more protocols not just Http and WebSocket, we b
                 // sleep(1); // Swoole < 2.1
                 Coroutine::sleep(1); // Swoole>=2.1 Coroutine will be automatically created for callback().
                  // Deliver task in custom process, but NOT support callback finish() of task.
-                // Note:
-                // 1.Set parameter 2 to true
-                // 2.Modify task_ipc_mode to 1 or 2 in config/laravels.php, see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
-                $ret = Task::deliver(new TestTask('task data'), true);
+                // Note: Modify task_ipc_mode to 1 or 2 in config/laravels.php, see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
+                $ret = Task::deliver(new TestTask('task data'));
                 var_dump($ret);
                 // The upper layer will capture the exception thrown in the callback and record it to the Swoole log. If the number of exceptions reaches 10, the process will exit and the Manager process will re-create the process. Therefore, developers are encouraged to try/catch to avoid creating the process too frequently.
                 // throw new \Exception('an exception');

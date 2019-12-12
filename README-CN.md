@@ -478,10 +478,8 @@ class TestListener1 extends Listener
         \Log::info(__CLASS__ . ':handle start', [$event->getData()]);
         sleep(2);// 模拟一些慢速的事件处理
         // 监听器中也可以投递Task，但不支持Task的finish()回调。
-        // 注意：
-        // 1.参数2需传true
-        // 2.config/laravels.php中修改配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/wiki/page/296.html
-        $ret = Task::deliver(new TestTask('task data'), true);
+        // 注意：config/laravels.php中修改配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/wiki/page/296.html
+        $ret = Task::deliver(new TestTask('task data'));
         var_dump($ret);
         // throw new \Exception('an exception');// handle时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
@@ -509,8 +507,11 @@ class TestListener1 extends Listener
 ```php
 // 实例化TestEvent并通过fire触发，此操作是异步的，触发后立即返回，由Task进程继续处理监听器中的handle逻辑
 use Hhxsv5\LaravelS\Swoole\Task\Event;
-$success = Event::fire(new TestEvent('event data'));
-var_dump($success);//判断是否触发成功
+$event = new TestEvent('event data');
+// $event->delay(10); // 延迟10秒触发
+// $event->setTries(3); // 出现异常时，累计尝试3次
+$success = Event::fire($event);
+var_dump($success);// 判断是否触发成功
 ```
 
 ## 异步的任务队列
@@ -551,7 +552,8 @@ class TestTask extends Task
 // 实例化TestTask并通过deliver投递，此操作是异步的，投递后立即返回，由Task进程继续处理TestTask中的handle逻辑
 use Hhxsv5\LaravelS\Swoole\Task\Task;
 $task = new TestTask('task data');
-// $task->delay(3);// 延迟3秒投放任务
+// $task->delay(3); // 延迟3秒投放任务
+// $task->setTries(3); // 出现异常时，累计尝试3次
 $ret = Task::deliver($task);
 var_dump($ret);//判断是否投递成功
 ```
@@ -593,10 +595,8 @@ class TestCronJob extends CronJob
             \Log::info(__METHOD__, ['stop', $this->i, microtime(true)]);
             $this->stop(); // 终止此任务
             // CronJob中也可以投递Task，但不支持Task的finish()回调。
-            // 注意：
-            // 1.参数2需传true
-            // 2.config/laravels.php中修改配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/wiki/page/296.html
-            $ret = Task::deliver(new TestTask('task data'), true);
+            // 注意：修改config/laravels.php，配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/wiki/page/296.html
+            $ret = Task::deliver(new TestTask('task data'));
             var_dump($ret);
         }
         // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
@@ -950,10 +950,8 @@ class WebSocketService implements WebSocketHandlerInterface
                 // sleep(1); // Swoole < 2.1
                 Coroutine::sleep(1); // Swoole>=2.1 callback()方法已自动创建了协程。
                 // 自定义进程中也可以投递Task，但不支持Task的finish()回调。
-                // 注意：
-                // 1.参数2需传true
-                // 2.config/laravels.php中修改配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/wiki/page/296.html
-                $ret = Task::deliver(new TestTask('task data'), true);
+                // 注意：修改config/laravels.php，配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/wiki/page/296.html
+                $ret = Task::deliver(new TestTask('task data'));
                 var_dump($ret);
                 // 上层会捕获callback中抛出的异常，并记录到Swoole日志，如果异常数达到10次，此进程会退出，Manager进程会重新创建进程，所以建议开发者自行try/catch捕获，避免创建进程过于频繁。
                 // throw new \Exception('an exception');
