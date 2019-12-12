@@ -43,7 +43,7 @@ class StaticResponse extends Response
                 }
 
                 if ($deleteFile) {
-                    $fp = fopen($file->getPathname(), 'rb');
+                    $fp = fopen($path, 'rb');
 
                     for ($offset = 0, $limit = floor(1.99 * 1024 * 1024); $offset < $size; $offset += $limit) {
                         fseek($fp, $offset, SEEK_SET);
@@ -54,8 +54,8 @@ class StaticResponse extends Response
 
                     fclose($fp);
 
-                    if (file_exists($file->getPathname())) {
-                        unlink($file->getPathname());
+                    if (file_exists($path)) {
+                        unlink($path);
                     }
                 } else {
                     $this->swooleResponse->sendfile($path);
