@@ -4,10 +4,9 @@ namespace Hhxsv5\LaravelS\Swoole\Task;
 
 use Illuminate\Queue\SerializesModels;
 
-abstract class Event
+abstract class Event extends BaseTask
 {
     use SerializesModels;
-    use TaskTrait;
 
     /**
      * Trigger an event

@@ -4,7 +4,7 @@ namespace Hhxsv5\LaravelS\Swoole\Task;
 
 use Swoole\Timer;
 
-trait TaskTrait
+abstract class BaseTask
 {
     /**
      * The number of seconds before the task should be delayed.
@@ -36,7 +36,7 @@ trait TaskTrait
      * @param mixed $task The task object
      * @return bool|mixed
      */
-    public function task($task)
+    protected function task($task)
     {
         $deliver = function () use ($task) {
             /**@var \Swoole\Http\Server $swoole */

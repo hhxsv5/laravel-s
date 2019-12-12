@@ -4,10 +4,9 @@ namespace Hhxsv5\LaravelS\Swoole\Task;
 
 use Illuminate\Queue\SerializesModels;
 
-abstract class Task
+abstract class Task extends BaseTask
 {
     use SerializesModels;
-    use TaskTrait;
 
     /**
      * The logic of handling task
@@ -20,7 +19,7 @@ abstract class Task
      * @param Task $task The task object
      * @return bool
      */
-    public static function deliver(Task $task)
+    public static function deliver(self $task)
     {
         return $task->task($task);
     }

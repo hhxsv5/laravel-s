@@ -5,6 +5,7 @@ namespace Hhxsv5\LaravelS\Swoole;
 use Hhxsv5\LaravelS\Illuminate\LogTrait;
 use Hhxsv5\LaravelS\Swoole\Process\ProcessTitleTrait;
 use Hhxsv5\LaravelS\Swoole\Socket\PortInterface;
+use Hhxsv5\LaravelS\Swoole\Task\BaseTask;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
@@ -266,7 +267,7 @@ class Server
 
     public function onPipeMessage(HttpServer $server, $srcWorkerId, $message)
     {
-        if ($message instanceof Task || $message instanceof Event) {
+        if ($message instanceof BaseTask) {
             $this->onTask($server, null, $srcWorkerId, $message);
         }
     }
@@ -280,7 +281,8 @@ class Server
         if ($data instanceof Event) {
             $this->handleEvent($data);
         } elseif ($data instanceof Task) {
-            if ($this->handleTask($data) && method_exists($data, 'finish')) {
+            $this->handleTask($data);
+            if (method_exists($data, 'finish')) {
                 return $data;
             }
         }
