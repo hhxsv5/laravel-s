@@ -266,8 +266,8 @@ class Server
 
     public function onPipeMessage(HttpServer $server, $srcWorkerId, $message)
     {
-        if ($message instanceof Task) {
-            $this->onTask($server, uniqid('', true), $srcWorkerId, $message);
+        if ($message instanceof Task || $message instanceof Event) {
+            $this->onTask($server, null, $srcWorkerId, $message);
         }
     }
 
