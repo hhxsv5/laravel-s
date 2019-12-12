@@ -30,7 +30,19 @@ class StaticResponse extends Response
                 if (version_compare(swoole_version(), '1.7.21', '<')) {
                     throw new \RuntimeException('sendfile() require Swoole >= 1.7.21');
                 }
+
                 $this->swooleResponse->sendfile($path);
+
+                // Support deleteFileAfterSend: https://github.com/symfony/http-foundation/blob/5.0/BinaryFileResponse.php#L305
+                $reflection = new \ReflectionObject($this->laravelResponse);
+                try {
+                    $deleteFileAfterSend = $reflection->getProperty('deleteFileAfterSend');
+                    $deleteFileAfterSend->setAccessible(true);
+                    if ($deleteFileAfterSend->getValue($this->laravelResponse) && file_exists($file->getPathname())) {
+                        unlink($file->getPathname());
+                    }
+                } catch (\Exception $e) {
+                }
             } else {
                 $this->swooleResponse->end();
             }
