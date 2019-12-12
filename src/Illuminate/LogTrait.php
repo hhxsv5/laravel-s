@@ -73,13 +73,17 @@ trait LogTrait
         $this->log($msg, 'ERROR');
     }
 
-    public function callWithCatchException(callable $callback, array $args = [])
+    public function callWithCatchException(callable $callback, array $args = [], $tries = 1)
     {
-        try {
-            return call_user_func_array($callback, $args);
-        } catch (\Exception $e) {
-            $this->logException($e);
-            return false;
-        }
+        $try = 0;
+        do {
+            $try++;
+            try {
+                return call_user_func_array($callback, $args);
+            } catch (\Exception $e) {
+                $this->logException($e);
+            }
+        } while ($try < $tries);
+        return false;
     }
 }

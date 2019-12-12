@@ -8,27 +8,60 @@ abstract class BaseTask
 {
     /**
      * The number of seconds before the task should be delayed.
-     *
-     * @var int|null
+     * @var int
      */
-    protected $delay;
+    protected $delay = 0;
 
+    /**
+     * The number of tries.
+     * @var int
+     */
+    protected $tries = 1;
+
+    /**
+     * Delay in seconds, null means no delay.
+     * @param int $delay
+     * @return $this
+     */
     public function delay($delay)
     {
-        if ($delay !== null && $delay <= 0) {
-            throw new \InvalidArgumentException('The delay must be greater than 0');
+        if ($delay < 0) {
+            throw new \InvalidArgumentException('The delay must be greater than or equal to 0');
         }
-        $this->delay = $delay;
+        $this->delay = (int)$delay;
         return $this;
     }
 
     /**
-     * Delay in seconds, null means no delay.
-     * @return int|null
+     * Return the delay time.
+     * @return int
      */
     public function getDelay()
     {
         return $this->delay;
+    }
+
+    /**
+     * Set the number of tries.
+     * @param int $tries
+     * @return $this
+     */
+    public function setTries($tries)
+    {
+        if ($tries < 1) {
+            throw new \InvalidArgumentException('The number of attempts must be greater than or equal to 1');
+        }
+        $this->tries = (int)$tries;
+        return $this;
+    }
+
+    /**
+     * Get the number of tries.
+     * @return int
+     */
+    public function getTries()
+    {
+        return $this->tries;
     }
 
     /**
@@ -62,7 +95,7 @@ abstract class BaseTask
                 return $taskId !== false;
             }
         };
-        if ($this->delay !== null && $this->delay > 0) {
+        if ($this->delay > 0) {
             Timer::after($this->delay * 1000, $deliver);
             return true;
         } else {

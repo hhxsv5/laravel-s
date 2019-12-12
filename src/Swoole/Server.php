@@ -281,8 +281,7 @@ class Server
         if ($data instanceof Event) {
             $this->handleEvent($data);
         } elseif ($data instanceof Task) {
-            $this->handleTask($data);
-            if (method_exists($data, 'finish')) {
+            if ($this->handleTask($data) && method_exists($data, 'finish')) {
                 return $data;
             }
         }
@@ -299,13 +298,10 @@ class Server
     {
         $eventClass = get_class($event);
         if (!isset($this->conf['events'][$eventClass])) {
-            return;
+            return false;
         }
 
-        $listenerClasses = $this->conf['events'][$eventClass];
-        if (!is_array($listenerClasses)) {
-            $listenerClasses = (array)$listenerClasses;
-        }
+        $listenerClasses = (array)$this->conf['events'][$eventClass];
         foreach ($listenerClasses as $listenerClass) {
             /**@var Listener $listener */
             $listener = new $listenerClass();
@@ -314,8 +310,9 @@ class Server
             }
             $this->callWithCatchException(function () use ($listener, $event) {
                 $listener->handle($event);
-            });
+            }, [], $event->getTries());
         }
+        return true;
     }
 
     protected function handleTask(Task $task)
@@ -323,7 +320,7 @@ class Server
         return $this->callWithCatchException(function () use ($task) {
             $task->handle();
             return true;
-        });
+        }, [], $task->getTries());
     }
 
     protected function fireEvent($event, $interface, array $arguments)
