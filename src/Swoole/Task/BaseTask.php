@@ -74,7 +74,8 @@ abstract class BaseTask
         $deliver = function () use ($task) {
             /**@var \Swoole\Http\Server $swoole */
             $swoole = app('swoole');
-            if ($swoole->taskworker) {
+            // The worker_id of timer process is -1
+            if ($swoole->worker_id === -1 || $swoole->taskworker) {
                 $taskWorkerNum = isset($swoole->setting['task_worker_num']) ? (int)$swoole->setting['task_worker_num'] : 0;
                 if ($taskWorkerNum < 2) {
                     throw new \InvalidArgumentException('LaravelS: async task needs to set task_worker_num >= 2');
