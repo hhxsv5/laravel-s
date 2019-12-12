@@ -51,6 +51,7 @@ trait CustomProcessTrait
                         )
                     );
                 }
+                /**@var CustomProcessInterface $process */
                 $name = $process::getName() ?: 'custom';
                 $this->setProcessTitle(sprintf('%s laravels: %s process', $processPrefix, $name));
 
