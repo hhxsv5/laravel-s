@@ -45,7 +45,7 @@ class StaticResponse extends Response
                 if ($deleteFile) {
                     $fp = fopen($path, 'rb');
 
-                    for ($offset = 0, $limit = floor(0.99 * $this->chunkLimit); $offset < $size; $offset += $limit) {
+                    for ($offset = 0, $limit = (int)(0.99 * $this->chunkLimit); $offset < $size; $offset += $limit) {
                         fseek($fp, $offset, SEEK_SET);
                         $chunk = fread($fp, $limit);
                         $this->swooleResponse->write($chunk);

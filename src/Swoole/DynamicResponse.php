@@ -35,7 +35,7 @@ class DynamicResponse extends Response
         }
 
         if ($len > $this->chunkLimit) {
-            for ($offset = 0, $limit = floor(0.6 * $this->chunkLimit); $offset < $len; $offset += $limit) {
+            for ($offset = 0, $limit = (int)(0.6 * $this->chunkLimit); $offset < $len; $offset += $limit) {
                 $chunk = substr($content, $offset, $limit);
                 $this->swooleResponse->write($chunk);
             }
