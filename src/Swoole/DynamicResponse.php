@@ -6,8 +6,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DynamicResponse extends Response
 {
-    const CHUNK_LIMIT = 2097152; // 2M
-
     /**
      * @throws \Exception
      */
@@ -36,8 +34,8 @@ class DynamicResponse extends Response
             return;
         }
 
-        if ($len > self::CHUNK_LIMIT) {
-            for ($offset = 0, $limit = 1024 * 1024; $offset < $len; $offset += $limit) {
+        if ($len > $this->chunkLimit) {
+            for ($offset = 0, $limit = floor(0.6 * $this->chunkLimit); $offset < $len; $offset += $limit) {
                 $chunk = substr($content, $offset, $limit);
                 $this->swooleResponse->write($chunk);
             }

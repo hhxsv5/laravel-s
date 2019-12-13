@@ -3,11 +3,13 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Swoole\Http\Response as SwooleResponse;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 abstract class Response implements ResponseInterface
 {
+    protected $chunkLimit = 2097152; // 2 * 1024 * 1024
+
     protected $swooleResponse;
 
     protected $laravelResponse;
@@ -16,6 +18,11 @@ abstract class Response implements ResponseInterface
     {
         $this->swooleResponse = $swooleResponse;
         $this->laravelResponse = $laravelResponse;
+    }
+
+    public function setChunkLimit($chunkLimit)
+    {
+        $this->chunkLimit = $chunkLimit;
     }
 
     public function sendStatusCode()

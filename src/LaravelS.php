@@ -196,7 +196,9 @@ class LaravelS extends Server
             if ($laravelResponse !== false) {
                 $laravelResponse->headers->set('Server', $this->conf['server'], true);
                 $laravel->fireEvent('laravels.generated_response', [$laravelRequest, $laravelResponse]);
-                (new StaticResponse($swooleResponse, $laravelResponse))->send($this->conf['enable_gzip']);
+                $response = new StaticResponse($swooleResponse, $laravelResponse);
+                $response->setChunkLimit($this->conf['swoole']['buffer_output_size']);
+                $response->send($this->conf['enable_gzip']);
                 return true;
             }
         }
@@ -214,6 +216,7 @@ class LaravelS extends Server
         } else {
             $response = new DynamicResponse($swooleResponse, $laravelResponse);
         }
+        $response->setChunkLimit($this->conf['swoole']['buffer_output_size']);
         $response->send($this->conf['enable_gzip']);
         $laravel->clean();
         return true;
