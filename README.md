@@ -923,6 +923,9 @@ To make our main server support more protocols not just Http and WebSocket, we b
     use Swoole\Process;
     class TestProcess implements CustomProcessInterface
     {
+        /**
+         * @var bool Quit tag for Reload updates
+         */
         private static $quit = false;
 
         public static function getName()
@@ -933,9 +936,8 @@ To make our main server support more protocols not just Http and WebSocket, we b
         public static function callback(Server $swoole, Process $process)
         {
             // The callback method cannot exit. Once exited, Manager process will automatically create the process 
-            \Log::info(__METHOD__, [posix_getpid(), $swoole->stats()]);
             while (!self::$quit) {
-                \Log::info('Do something');
+                \Log::info('Test process: running');
                 // sleep(1); // Swoole < 2.1
                 Coroutine::sleep(1); // Swoole>=2.1: Coroutine & Runtime will be automatically enabled for callback().
                  // Deliver task in custom process, but NOT support callback finish() of task.
@@ -951,9 +953,9 @@ To make our main server support more protocols not just Http and WebSocket, we b
         {
             // Stop the process...
             // Then end process
-            \Log::info('custome process: reloading');
+            \Log::info('Test process: reloading');
             self::$quit = true;
-            // $process->exit(0);
+            // $process->exit(0); // Force exit process
         }
     }
     ```
