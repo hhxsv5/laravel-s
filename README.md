@@ -226,8 +226,8 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 
     LoadModule proxy_module /yyypath/modules/mod_proxy.so
     LoadModule proxy_module /yyypath/modules/mod_proxy_balancer.so
-    LoadModule proxy_module /yyypath/modules/mod_lbmethod_byrequests.so.so
-    LoadModule proxy_module /yyypath/modules/mod_proxy_http.so.so
+    LoadModule proxy_module /yyypath/modules/mod_lbmethod_byrequests.so
+    LoadModule proxy_module /yyypath/modules/mod_proxy_http.so
     LoadModule proxy_module /yyypath/modules/mod_slotmem_shm.so
     LoadModule proxy_module /yyypath/modules/mod_rewrite.so
 
