@@ -56,30 +56,20 @@ trait CustomProcessTrait
                 $this->setProcessTitle(sprintf('%s laravels: %s process', $processPrefix, $name));
 
                 Process::signal(SIGUSR1, function ($signo) use ($name, $process, $worker, $pidfile, $swoole) {
-                    $this->info(sprintf('Reloading the process %s [pid=%d].', $name, $worker->pid));
+                    $this->info(sprintf('Reloading %s process[pid=%d].', $name, $worker->pid));
                     $process::onReload($swoole, $worker);
                 });
 
                 $enableCoroutine = class_exists('Swoole\Coroutine');
                 $runProcess = function () use ($name, $process, $swoole, $worker, $enableCoroutine) {
-                    $maxTry = 10;
-                    $i = 0;
-                    do {
-                        $this->callWithCatchException([$process, 'callback'], [$swoole, $worker]);
-                        ++$i;
-                        if ($enableCoroutine) {
-                            \Swoole\Coroutine::sleep(1);
-                        } else {
-                            sleep(1);
-                        }
-                    } while ($i < $maxTry);
-                    $this->error(
-                        sprintf(
-                            'The custom process "%s" reaches the maximum number of retries %d times, and will be restarted by the manager process.',
-                            $name,
-                            $maxTry
-                        )
-                    );
+                    $this->callWithCatchException([$process, 'callback'], [$swoole, $worker]);
+                    // Avoid frequent process creation
+                    if ($enableCoroutine) {
+                        \Swoole\Coroutine::sleep(3);
+                        swoole_event_exit();
+                    } else {
+                        sleep(3);
+                    }
                 };
                 $enableCoroutine ? go($runProcess) : $runProcess();
             };

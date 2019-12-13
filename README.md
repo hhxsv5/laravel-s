@@ -923,6 +923,8 @@ To make our main server support more protocols not just Http and WebSocket, we b
     use Swoole\Process;
     class TestProcess implements CustomProcessInterface
     {
+        private static $quit = false;
+
         public static function getName()
         {
             // The name of process
@@ -932,7 +934,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
         {
             // The callback method cannot exit. Once exited, Manager process will automatically create the process 
             \Log::info(__METHOD__, [posix_getpid(), $swoole->stats()]);
-            while (true) {
+            while (!self::$quit) {
                 \Log::info('Do something');
                 // sleep(1); // Swoole < 2.1
                 Coroutine::sleep(1); // Swoole>=2.1 Coroutine will be automatically created for callback().
@@ -940,7 +942,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
                 // Note: Modify task_ipc_mode to 1 or 2 in config/laravels.php, see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
                 $ret = Task::deliver(new TestTask('task data'));
                 var_dump($ret);
-                // The upper layer will capture the exception thrown in the callback and record it to the Swoole log. If the number of exceptions reaches 10, the process will exit and the Manager process will re-create the process. Therefore, developers are encouraged to try/catch to avoid creating the process too frequently.
+                // The upper layer will catch the exception thrown in the callback and record it in the Swoole log, and then this process will exit. The Manager process will re-create the process after 3 seconds, so developers need to try / catch to catch the exception by themselves to avoid frequent process creation.
                 // throw new \Exception('an exception');
             }
         }
@@ -949,7 +951,9 @@ To make our main server support more protocols not just Http and WebSocket, we b
         {
             // Stop the process...
             // Then end process
-            $process->exit(0);
+            \Log::info('custome process: reloading');
+            self::$quit = true;
+            // $process->exit(0);
         }
     }
     ```

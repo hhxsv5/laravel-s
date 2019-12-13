@@ -936,6 +936,8 @@ class WebSocketService implements WebSocketHandlerInterface
     use Swoole\Process;
     class TestProcess implements CustomProcessInterface
     {
+        private static $quit = false;
+
         public static function getName()
         {
             // 进程名称
@@ -945,7 +947,7 @@ class WebSocketService implements WebSocketHandlerInterface
         {
             // 进程运行的代码，不能退出，一旦退出Manager进程会自动再次创建该进程。
             \Log::info(__METHOD__, [posix_getpid(), $swoole->stats()]);
-            while (true) {
+            while (!self::$quit) {
                 \Log::info('Do something');
                 // sleep(1); // Swoole < 2.1
                 Coroutine::sleep(1); // Swoole>=2.1 callback()方法已自动创建了协程。
@@ -953,7 +955,7 @@ class WebSocketService implements WebSocketHandlerInterface
                 // 注意：修改config/laravels.php，配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/wiki/page/296.html
                 $ret = Task::deliver(new TestTask('task data'));
                 var_dump($ret);
-                // 上层会捕获callback中抛出的异常，并记录到Swoole日志，如果异常数达到10次，此进程会退出，Manager进程会重新创建进程，所以建议开发者自行try/catch捕获，避免创建进程过于频繁。
+                // 上层会捕获callback中抛出的异常，并记录到Swoole日志，然后此进程会退出，3秒后Manager进程会重新创建进程，所以需要开发者自行try/catch捕获异常，避免频繁创建进程。
                 // throw new \Exception('an exception');
             }
         }
@@ -962,7 +964,9 @@ class WebSocketService implements WebSocketHandlerInterface
         {
             // Stop the process...
             // Then end process
-            $process->exit(0);
+            \Log::info('custome process: reloading');
+            self::$quit = true;
+            // $process->exit(0);
         }
     }
     ```
