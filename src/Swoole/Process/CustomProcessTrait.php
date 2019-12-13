@@ -60,18 +60,20 @@ trait CustomProcessTrait
                     $process::onReload($swoole, $worker);
                 });
 
-                $enableCoroutine = class_exists('Swoole\Coroutine');
-                $runProcess = function () use ($name, $process, $swoole, $worker, $enableCoroutine) {
+                $coroutineAvailable = class_exists('Swoole\Coroutine');
+                $coroutineRuntimeAvailable = class_exists('Swoole\Runtime');
+                $runProcess = function () use ($name, $process, $swoole, $worker, $coroutineAvailable, $coroutineRuntimeAvailable) {
+                    $coroutineRuntimeAvailable && \Swoole\Runtime::enableCoroutine();
                     $this->callWithCatchException([$process, 'callback'], [$swoole, $worker]);
                     // Avoid frequent process creation
-                    if ($enableCoroutine) {
+                    if ($coroutineAvailable) {
                         \Swoole\Coroutine::sleep(3);
                         swoole_event_exit();
                     } else {
                         sleep(3);
                     }
                 };
-                $enableCoroutine ? go($runProcess) : $runProcess();
+                $coroutineAvailable ? go($runProcess) : $runProcess();
             };
             $customProcess = new Process(
                 $processHandler,
