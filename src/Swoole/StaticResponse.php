@@ -25,7 +25,7 @@ class StaticResponse extends Response
         if ($this->laravelResponse->getStatusCode() == BinaryFileResponse::HTTP_NOT_MODIFIED) {
             $this->swooleResponse->end();
         } else {
-            $path = $file->getRealPath();
+            $path = $file->getPathname();
             $size = filesize($path);
             if ($size > 0) {
                 if (version_compare(swoole_version(), '1.7.21', '<')) {
