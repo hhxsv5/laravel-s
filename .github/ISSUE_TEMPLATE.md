@@ -10,7 +10,7 @@
 
     `TODO`
 
-3. A `reproducible` code block and `steps`
+3. Some `reproducible` code blocks and `steps`
 
     ```PHP
     // TODO: your code
