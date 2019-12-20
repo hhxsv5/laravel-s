@@ -138,9 +138,9 @@ php artisan laravels publish
 | File | Description |
 | --------- | --------- |
 | storage/laravels.json | LaravelS's `runtime` configuration file |
-| storage/laravels.pid | PID file of Master process, it's needed by the `stop/restart/reload` commands |
-| storage/laravels-timer-process.pid | PID file of the timer Timer process, it's needed by the `reload` command |
-| storage/laravels-custom-processes.pid | PID file of all custom processes, it's needed by the `reload` command |
+| storage/laravels.pid | PID file of Master process, to implement `stop/restart/reload` functions |
+| storage/laravels-timer-process.pid | PID file of the Timer process, to implement `reload` function |
+| storage/laravels-custom-processes.pid | PID file of all custom processes, to implement `reload` function |
 
 ## Deploy
 > It is recommended to supervise the main process through [Supervisord](http://supervisord.org/), the premise is without option `-d` and to set `swoole.daemonize` to `false`.

@@ -142,9 +142,9 @@ php artisan laravels publish
 | 文件 | 说明 |
 | --------- | --------- |
 | storage/laravels.json | LaravelS的`运行时`配置文件 |
-| storage/laravels.pid | Master进程的PID文件，`stop/restart/reload`命令需要它 |
-| storage/laravels-timer-process.pid | 定时器Timer进程的PID文件，`reload`命令需要它 |
-| storage/laravels-custom-processes.pid | 所有自定义进程的PID文件，`reload`命令需要它 |
+| storage/laravels.pid | Master进程的PID文件，用于实现`stop/restart/reload`功能 |
+| storage/laravels-timer-process.pid | 定时器Timer进程的PID文件，用于实现`reload`功能 |
+| storage/laravels-custom-processes.pid | 所有自定义进程的PID文件，用于实现`reload`功能 |
 
 ## 部署
 > 建议通过[Supervisord](http://supervisord.org/)监管主进程，前提是不能加`-d`选项并且设置`swoole.daemonize`为`false`。
