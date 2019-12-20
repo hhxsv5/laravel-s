@@ -124,9 +124,10 @@ php artisan laravels publish
 4.修改配置`config/laravels.php`：监听的IP、端口等，请参考[配置项](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
 ## 运行
-> `php bin/laravels {start|stop|restart|reload|info|help}`
+> `在运行之前，请先仔细阅读：`[注意事项](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)(这非常重要)。
 
-`在运行之前，请先仔细阅读：`[注意事项](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)(非常重要)。
+- 操作命令
+> `php bin/laravels {start|stop|restart|reload|info|help}`
 
 | 命令 | 说明 |
 | --------- | --------- |
@@ -136,6 +137,16 @@ php artisan laravels publish
 | `reload` | 平滑重启所有Task/Worker/Timer进程(这些进程内包含了你的业务代码)，并触发自定义进程的`onReload`方法，不会重启Master/Manger进程；修改`config/laravels.php`后，你`只能`调用`restart`来实现重启 |
 | `info` | 显示组件的版本信息 |
 | `help` | 显示帮助信息 |
+
+- `运行时`文件
+> `start`时会自动执行`artisan laravels config`并生成这些文件，建议将它们加到`.gitignore`中。
+
+| 文件 | 说明 |
+| --------- | --------- |
+| `storage/laravels.json` | LaravelS的`运行时`配置文件 |
+| `storage/laravels.pid` | Master进程的PID文件，`stop/restart/reload`命令需要它 |
+| `storage/laravels-timer-process.pid` | 定时器Timer进程的PID文件，`reload`命令需要它 |
+| `storage/laravels-custom-processes.pid` | 所有自定义进程的PID文件，`reload`命令需要它 |
 
 ## 部署
 > 建议通过[Supervisord](http://supervisord.org/)监管主进程，前提是不能加`-d`选项并且设置`swoole.daemonize`为`false`。

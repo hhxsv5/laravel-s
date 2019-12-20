@@ -119,9 +119,10 @@ php artisan laravels publish
 4.Change `config/laravels.php`: listen_ip, listen_port, refer [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
 ## Run
-> `php bin/laravels {start|stop|restart|reload|info|help}`
+> `Please read the notices carefully before running`, [Important notices](https://github.com/hhxsv5/laravel-s#important-notices)(IMPORTANT).
 
-`Please read the notices carefully before running`, [Important notices](https://github.com/hhxsv5/laravel-s#important-notices)(IMPORTANT).
+- Commands
+> `php bin/laravels {start|stop|restart|reload|info|help}`
 
 | Command | Description |
 | --------- | --------- |
@@ -131,6 +132,17 @@ php artisan laravels publish
 | `reload` | Reload all Task/Worker/Timer processes which contain your business codes, and trigger the method `onReload` of Custom process, CANNOT reload Master/Manger processes. After modifying `config/laravels.php`, you can `only` call `restart` to restart |
 | `info` | Display component version information |
 | `help` | Display help information |
+
+
+- `Runtime` files
+> `start` will automatically execute `artisan laravels config` and generate these files, it's recommended to add them to `.gitignore`.
+
+| File | Description |
+| --------- | --------- |
+| `storage/laravels.json` | LaravelS's `runtime` configuration file |
+| `storage/laravels.pid` | PID file of Master process, it's needed by the `stop/restart/reload` commands |
+| `storage/laravels-timer-process.pid` | PID file of the timer Timer process, it's needed by the `reload` command |
+| `storage/laravels-custom-processes.pid` | PID file of all custom processes, it's needed by the `reload` command |
 
 ## Deploy
 > It is recommended to supervise the main process through [Supervisord](http://supervisord.org/), the premise is without option `-d` and to set `swoole.daemonize` to `false`.
