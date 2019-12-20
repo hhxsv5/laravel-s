@@ -121,7 +121,7 @@ php artisan laravels publish
 ## Run
 > `Please read the notices carefully before running`, [Important notices](https://github.com/hhxsv5/laravel-s#important-notices)(IMPORTANT).
 
-- Commands: `php bin/laravels {start|stop|restart|reload|info|help}`
+- Commands: `php bin/laravels {start|stop|restart|reload|info|help}`.
 
 | Command | Description |
 | --------- | --------- |
@@ -133,7 +133,7 @@ php artisan laravels publish
 | help | Display help information |
 
 
-- `Runtime` files: `start` will automatically execute `artisan laravels config` and generate these files, it's recommended to add them to `.gitignore`
+- `Runtime` files: `start` will automatically execute `artisan laravels config` and generate these files, it's recommended to add them to `.gitignore`.
 
 | File | Description |
 | --------- | --------- |
