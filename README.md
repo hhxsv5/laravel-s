@@ -126,12 +126,12 @@ php artisan laravels publish
 
 | Command | Description |
 | --------- | --------- |
-| `start` | Start LaravelS, list the processes by "*ps -ef&#124;grep laravels*". Support the option "*-d&#124;--daemonize*" to run as a daemon; Support the option "*-e&#124;--env*" to specify the environment to run, such as `--env=testing` will use the configuration file `.env.testing` firstly, this feature requires `Laravel 5.2+` |
-| `stop` | Stop LaravelS |
-| `restart` | Restart LaravelS, support the options "*-d&#124;--daemonize*" and "*-e&#124;--env*" |
-| `reload` | Reload all Task/Worker/Timer processes which contain your business codes, and trigger the method `onReload` of Custom process, CANNOT reload Master/Manger processes. After modifying `config/laravels.php`, you can `only` call `restart` to restart |
-| `info` | Display component version information |
-| `help` | Display help information |
+| start | Start LaravelS, list the processes by "*ps -ef&#124;grep laravels*". Support the option "*-d&#124;--daemonize*" to run as a daemon; Support the option "*-e&#124;--env*" to specify the environment to run, such as `--env=testing` will use the configuration file `.env.testing` firstly, this feature requires `Laravel 5.2+` |
+| stop | Stop LaravelS |
+| restart | Restart LaravelS, support the options "*-d&#124;--daemonize*" and "*-e&#124;--env*" |
+| reload | Reload all Task/Worker/Timer processes which contain your business codes, and trigger the method `onReload` of Custom process, CANNOT reload Master/Manger processes. After modifying `config/laravels.php`, you can `only` call `restart` to restart |
+| info | Display component version information |
+| help | Display help information |
 
 
 - `Runtime` files
@@ -139,10 +139,10 @@ php artisan laravels publish
 
 | File | Description |
 | --------- | --------- |
-| `storage/laravels.json` | LaravelS's `runtime` configuration file |
-| `storage/laravels.pid` | PID file of Master process, it's needed by the `stop/restart/reload` commands |
-| `storage/laravels-timer-process.pid` | PID file of the timer Timer process, it's needed by the `reload` command |
-| `storage/laravels-custom-processes.pid` | PID file of all custom processes, it's needed by the `reload` command |
+| storage/laravels.json | LaravelS's `runtime` configuration file |
+| storage/laravels.pid | PID file of Master process, it's needed by the `stop/restart/reload` commands |
+| storage/laravels-timer-process.pid | PID file of the timer Timer process, it's needed by the `reload` command |
+| storage/laravels-custom-processes.pid | PID file of all custom processes, it's needed by the `reload` command |
 
 ## Deploy
 > It is recommended to supervise the main process through [Supervisord](http://supervisord.org/), the premise is without option `-d` and to set `swoole.daemonize` to `false`.

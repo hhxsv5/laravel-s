@@ -131,22 +131,22 @@ php artisan laravels publish
 
 | 命令 | 说明 |
 | --------- | --------- |
-| `start` | 启动LaravelS，展示已启动的进程列表 "*ps -ef&#124;grep laravels*"。支持选项 "*-d&#124;--daemonize*" 以守护进程的方式运行，此选项将覆盖`laravels.php`中`swoole.daemonize`设置；支持选项 "*-e&#124;--env*" 用来指定运行的环境，如`--env=testing`将会优先使用配置文件`.env.testing`，这个特性要求`Laravel 5.2+` |
-| `stop` | 停止LaravelS |
-| `restart` | 重启LaravelS，支持选项 "*-d&#124;--daemonize*" 和 "*-e&#124;--env*" |
-| `reload` | 平滑重启所有Task/Worker/Timer进程(这些进程内包含了你的业务代码)，并触发自定义进程的`onReload`方法，不会重启Master/Manger进程；修改`config/laravels.php`后，你`只能`调用`restart`来实现重启 |
-| `info` | 显示组件的版本信息 |
-| `help` | 显示帮助信息 |
+| start | 启动LaravelS，展示已启动的进程列表 "*ps -ef&#124;grep laravels*"。支持选项 "*-d&#124;--daemonize*" 以守护进程的方式运行，此选项将覆盖`laravels.php`中`swoole.daemonize`设置；支持选项 "*-e&#124;--env*" 用来指定运行的环境，如`--env=testing`将会优先使用配置文件`.env.testing`，这个特性要求`Laravel 5.2+` |
+| stop | 停止LaravelS |
+| restart | 重启LaravelS，支持选项 "*-d&#124;--daemonize*" 和 "*-e&#124;--env*" |
+| reload | 平滑重启所有Task/Worker/Timer进程(这些进程内包含了你的业务代码)，并触发自定义进程的`onReload`方法，不会重启Master/Manger进程；修改`config/laravels.php`后，你`只能`调用`restart`来实现重启 |
+| info | 显示组件的版本信息 |
+| help | 显示帮助信息 |
 
 - `运行时`文件
 > `start`时会自动执行`artisan laravels config`并生成这些文件，建议将它们加到`.gitignore`中。
 
 | 文件 | 说明 |
 | --------- | --------- |
-| `storage/laravels.json` | LaravelS的`运行时`配置文件 |
-| `storage/laravels.pid` | Master进程的PID文件，`stop/restart/reload`命令需要它 |
-| `storage/laravels-timer-process.pid` | 定时器Timer进程的PID文件，`reload`命令需要它 |
-| `storage/laravels-custom-processes.pid` | 所有自定义进程的PID文件，`reload`命令需要它 |
+| storage/laravels.json | LaravelS的`运行时`配置文件 |
+| storage/laravels.pid | Master进程的PID文件，`stop/restart/reload`命令需要它 |
+| storage/laravels-timer-process.pid | 定时器Timer进程的PID文件，`reload`命令需要它 |
+| storage/laravels-custom-processes.pid | 所有自定义进程的PID文件，`reload`命令需要它 |
 
 ## 部署
 > 建议通过[Supervisord](http://supervisord.org/)监管主进程，前提是不能加`-d`选项并且设置`swoole.daemonize`为`false`。
