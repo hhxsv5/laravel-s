@@ -563,10 +563,10 @@ class TestTask extends Task
 // 实例化TestTask并通过deliver投递，此操作是异步的，投递后立即返回，由Task进程继续处理TestTask中的handle逻辑
 use Hhxsv5\LaravelS\Swoole\Task\Task;
 $task = new TestTask('task data');
-// $task->delay(3); // 延迟3秒投放任务
+// $task->delay(3); // 延迟3秒投递任务
 // $task->setTries(3); // 出现异常时，累计尝试3次
 $ret = Task::deliver($task);
-var_dump($ret);//判断是否投递成功
+var_dump($ret);// 判断是否投递成功
 ```
 
 ## 毫秒级定时任务

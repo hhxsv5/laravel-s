@@ -509,7 +509,7 @@ class TestListener1 extends Listener
 // Create instance of event and fire it, "fire" is asynchronous.
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 $event = new TestEvent('event data');
-// $event->delay(10); // Delay 10 seconds
+// $event->delay(10); // Delay 10 seconds to fire event
 // $event->setTries(3); // When an error occurs, try 3 times in total
 $success = Event::fire($event);
 var_dump($success);// Return true if sucess, otherwise false
