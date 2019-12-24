@@ -137,14 +137,14 @@ php artisan laravels publish
 | info | 显示组件的版本信息 |
 | help | 显示帮助信息 |
 
-- `运行时`文件：`start`时会自动执行`artisan laravels config`并生成这些文件，建议将它们加到`.gitignore`中。
+- `运行时`文件：`start`时会自动执行`artisan laravels config`并生成这些文件，开发者一般不需要关注，建议将它们加到`.gitignore`中。
 
 | 文件 | 说明 |
 | --------- | --------- |
 | storage/laravels.json | LaravelS的`运行时`配置文件 |
-| storage/laravels.pid | Master进程的PID文件，用于实现`stop/restart/reload`功能 |
-| storage/laravels-timer-process.pid | 定时器Timer进程的PID文件，用于实现`reload`功能 |
-| storage/laravels-custom-processes.pid | 所有自定义进程的PID文件，用于实现`reload`功能 |
+| storage/laravels.pid | Master进程的PID文件 |
+| storage/laravels-timer-process.pid | 定时器Timer进程的PID文件 |
+| storage/laravels-custom-processes.pid | 所有自定义进程的PID文件 |
 
 ## 部署
 > 建议通过[Supervisord](http://supervisord.org/)监管主进程，前提是不能加`-d`选项并且设置`swoole.daemonize`为`false`。

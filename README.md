@@ -133,14 +133,14 @@ php artisan laravels publish
 | help | Display help information |
 
 
-- `Runtime` files: `start` will automatically execute `artisan laravels config` and generate these files, it's recommended to add them to `.gitignore`.
+- `Runtime` files: `start` will automatically execute `artisan laravels config` and generate these files, developers generally don't need to pay attention to them, it's recommended to add them to `.gitignore`.
 
 | File | Description |
 | --------- | --------- |
 | storage/laravels.json | LaravelS's `runtime` configuration file |
-| storage/laravels.pid | PID file of Master process, to implement `stop/restart/reload` functions |
-| storage/laravels-timer-process.pid | PID file of the Timer process, to implement `reload` function |
-| storage/laravels-custom-processes.pid | PID file of all custom processes, to implement `reload` function |
+| storage/laravels.pid | PID file of Master process |
+| storage/laravels-timer-process.pid | PID file of the Timer process |
+| storage/laravels-custom-processes.pid | PID file of all custom processes |
 
 ## Deploy
 > It is recommended to supervise the main process through [Supervisord](http://supervisord.org/), the premise is without option `-d` and to set `swoole.daemonize` to `false`.
