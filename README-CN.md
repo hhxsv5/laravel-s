@@ -137,7 +137,7 @@ php artisan laravels publish
 | info | 显示组件的版本信息 |
 | help | 显示帮助信息 |
 
-- `运行时`文件：`start`时会自动执行`artisan laravels config`并生成这些文件，开发者一般不需要关注，建议将它们加到`.gitignore`中。
+- `运行时`文件：`start`时会自动执行`artisan laravels config`并生成这些文件，开发者一般不需要关注它们，建议将它们加到`.gitignore`中。
 
 | 文件 | 说明 |
 | --------- | --------- |
@@ -422,6 +422,23 @@ server {
     # 如果60秒内被代理的服务器没有响应数据给Nginx，那么Nginx会关闭当前连接
     proxy_read_timeout 60s;
     ```
+
+6.在控制器中推送数据
+
+```php
+namespace App\Http\Controllers;
+class TestController extends Controller
+{
+    public function push()
+    {
+        $fd = 1; // Find fd by userId from a map [userId=>fd].
+        /**@var \Swoole\WebSocket\Server $swoole */
+        $swoole = app('swoole');
+        $success = $swoole->push($fd, 'Push data to fd#1 in Controller');
+        var_dump($success);
+    }
+}
+```
 
 ## 监听事件
 

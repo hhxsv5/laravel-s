@@ -417,6 +417,23 @@ server {
     proxy_read_timeout 60s;
     ```
 
+6.Push data in controller
+
+```php
+namespace App\Http\Controllers;
+class TestController extends Controller
+{
+    public function push()
+    {
+        $fd = 1; // Find fd by userId from a map [userId=>fd].
+        /**@var \Swoole\WebSocket\Server $swoole */
+        $swoole = app('swoole');
+        $success = $swoole->push($fd, 'Push data to fd#1 in Controller');
+        var_dump($success);
+    }
+}
+```
+
 ## Listen events
 
 ### System events
