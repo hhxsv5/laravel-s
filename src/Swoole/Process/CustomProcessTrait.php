@@ -73,7 +73,7 @@ trait CustomProcessTrait
                         sleep(3);
                     }
                 };
-                $coroutineAvailable ? go($runProcess) : $runProcess();
+                $coroutineAvailable ? \Swoole\Coroutine::create($runProcess) : $runProcess();
             };
             $customProcess = new Process(
                 $processHandler,

@@ -43,7 +43,7 @@ trait TimerTrait
                             $job->run();
                         });
                     };
-                    class_exists('Swoole\Coroutine') ? go($runCallback) : $runCallback();
+                    class_exists('Swoole\Coroutine') ? \Swoole\Coroutine::create($runCallback) : $runCallback();
                 };
 
                 $timerId = Timer::tick($job->interval(), $runProcess);
