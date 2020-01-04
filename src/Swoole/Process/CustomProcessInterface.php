@@ -8,12 +8,6 @@ use Swoole\Process;
 interface CustomProcessInterface
 {
     /**
-     * The name of process
-     * @return string
-     */
-    public static function getName();
-
-    /**
      * The run callback of process
      * @param Server $swoole
      * @param Process $process

@@ -955,11 +955,6 @@ To make our main server support more protocols not just Http and WebSocket, we b
          */
         private static $quit = false;
 
-        public static function getName()
-        {
-            // The name of process
-            return 'test';
-        }
         public static function callback(Server $swoole, Process $process)
         {
             // The callback method cannot exit. Once exited, Manager process will automatically create the process 
@@ -993,11 +988,16 @@ To make our main server support more protocols not just Http and WebSocket, we b
     // Edit `config/laravels.php`
     // ...
     'processes' => [
-        [
+        'test' => [ // Key name is process name
             'class'    => \App\Processes\TestProcess::class,
             'redirect' => false, // Whether redirect stdin/stdout, true or false
-            'pipe'     => 0 // The type of pipeline, 0: no pipeline 1: SOCK_STREAM 2: SOCK_DGRAM
-            'enable'   => true // Whether to enable, default true
+            'pipe'     => 0,     // The type of pipeline, 0: no pipeline 1: SOCK_STREAM 2: SOCK_DGRAM
+            'enable'   => true,  // Whether to enable, default true
+            //'queue'    => [ // Enable message queue as inter-process communication, configure empty array means use default parameters
+            //    'msg_key'  => 0,    // The key of the message queue. Default: ftok(__FILE__, 1).
+            //    'mode'     => 2,    // Communication mode, default is 2, which means contention mode
+            //    'capacity' => 8192, // The length of a single message, is limited by the operating system kernel parameters. The default is 8192, and the maximum is 65536
+            //],
         ],
     ],
     ```

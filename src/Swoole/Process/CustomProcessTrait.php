@@ -2,69 +2,61 @@
 
 namespace Hhxsv5\LaravelS\Swoole\Process;
 
-use Hhxsv5\LaravelS\Illuminate\Laravel;
 use Swoole\Http\Server;
 use Swoole\Process;
 
 trait CustomProcessTrait
 {
+    private $customProcessPidFile = 'laravels-custom-processes.pid';
+
     public function addCustomProcesses(Server $swoole, $processPrefix, array $processes, array $laravelConfig)
     {
-        $pidfile = dirname($swoole->setting['pid_file']) . '/laravels-custom-processes.pid';
+        $pidfile = dirname($swoole->setting['pid_file']) . '/' . $this->customProcessPidFile;
         if (file_exists($pidfile)) {
             unlink($pidfile);
         }
 
         /**@var []CustomProcessInterface $processList */
         $processList = [];
-        foreach ($processes as $item) {
-            if (is_string($item)) {
-                // Backwards compatible
-                Laravel::autoload($laravelConfig['root_path']);
-                $process = $item;
-                $redirect = $process::isRedirectStdinStdout();
-                $pipe = $process::getPipeType();
-            } else {
-                if (empty($item['class'])) {
-                    throw new \InvalidArgumentException(sprintf(
-                            'process class name must be specified'
-                        )
-                    );
-                }
-                if (isset($item['enable']) && !$item['enable']) {
-                    continue;
-                }
-                $process = $item['class'];
-                $redirect = isset($item['redirect']) ? $item['redirect'] : false;
-                $pipe = isset($item['pipe']) ? $item['pipe'] : 0;
+        foreach ($processes as $name => $item) {
+            if (empty($item['class'])) {
+                throw new \InvalidArgumentException(sprintf(
+                        'process class name must be specified'
+                    )
+                );
             }
+            if (isset($item['enable']) && !$item['enable']) {
+                continue;
+            }
+            $processClass = $item['class'];
+            $redirect = isset($item['redirect']) ? $item['redirect'] : false;
+            $pipe = isset($item['pipe']) ? $item['pipe'] : 0;
 
-            $processHandler = function (Process $worker) use ($pidfile, $swoole, $processPrefix, $process, $laravelConfig) {
+            $callback = function (Process $worker) use ($pidfile, $swoole, $processPrefix, $processClass, $name, $laravelConfig) {
                 file_put_contents($pidfile, $worker->pid . "\n", FILE_APPEND | LOCK_EX);
                 $this->initLaravel($laravelConfig, $swoole);
-                if (!isset(class_implements($process)[CustomProcessInterface::class])) {
+                if (!isset(class_implements($processClass)[CustomProcessInterface::class])) {
                     throw new \InvalidArgumentException(
                         sprintf(
                             '%s must implement the interface %s',
-                            $process,
+                            $processClass,
                             CustomProcessInterface::class
                         )
                     );
                 }
-                /**@var CustomProcessInterface $process */
-                $name = $process::getName() ?: 'custom';
+                /**@var CustomProcessInterface $processClass */
                 $this->setProcessTitle(sprintf('%s laravels: %s process', $processPrefix, $name));
 
-                Process::signal(SIGUSR1, function ($signo) use ($name, $process, $worker, $pidfile, $swoole) {
+                Process::signal(SIGUSR1, function ($signo) use ($name, $processClass, $worker, $pidfile, $swoole) {
                     $this->info(sprintf('Reloading %s process[pid=%d].', $name, $worker->pid));
-                    $process::onReload($swoole, $worker);
+                    $processClass::onReload($swoole, $worker);
                 });
 
                 $coroutineAvailable = class_exists('Swoole\Coroutine');
                 $coroutineRuntimeAvailable = class_exists('Swoole\Runtime');
-                $runProcess = function () use ($name, $process, $swoole, $worker, $coroutineAvailable, $coroutineRuntimeAvailable) {
+                $runProcess = function () use ($name, $processClass, $swoole, $worker, $coroutineAvailable, $coroutineRuntimeAvailable) {
                     $coroutineRuntimeAvailable && \Swoole\Runtime::enableCoroutine();
-                    $this->callWithCatchException([$process, 'callback'], [$swoole, $worker]);
+                    $this->callWithCatchException([$processClass, 'callback'], [$swoole, $worker]);
                     // Avoid frequent process creation
                     if ($coroutineAvailable) {
                         \Swoole\Coroutine::sleep(3);
@@ -75,14 +67,19 @@ trait CustomProcessTrait
                 };
                 $coroutineAvailable ? \Swoole\Coroutine::create($runProcess) : $runProcess();
             };
-            $customProcess = new Process(
-                $processHandler,
-                $redirect,
-                $pipe
-            );
-            if ($swoole->addProcess($customProcess)) {
-                $processList[] = $customProcess;
+            $process = new Process($callback, $redirect, $pipe);
+            if (isset($item['queue'])) {
+                if (empty($item['queue'])) {
+                    $process->useQueue();
+                } else {
+                    $msgKey = isset($item['msg_key']) ? $item['msg_key'] : 0;
+                    $mode = isset($item['mode']) ? $item['mode'] : 2;
+                    $capacity = isset($item['capacity']) ? $item['capacity'] : -1;
+                    $process->useQueue($msgKey, $mode, $capacity);
+                }
             }
+            $swoole->addProcess($process);
+            $processList[$name] = $process;
         }
         return $processList;
     }

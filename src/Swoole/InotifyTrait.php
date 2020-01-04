@@ -11,21 +11,21 @@ trait InotifyTrait
     public function addInotifyProcess(Server $swoole, array $config, array $laravelConf)
     {
         if (empty($config['enable'])) {
-            return;
+            return false;
         }
 
         if (!extension_loaded('inotify')) {
             $this->warning('Require extension inotify');
-            return;
+            return false;
         }
 
         $fileTypes = isset($config['file_types']) ? (array)$config['file_types'] : [];
         if (empty($fileTypes)) {
             $this->warning('No file types to watch by inotify');
-            return;
+            return false;
         }
 
-        $autoReload = function () use ($config, $laravelConf) {
+        $callback = function () use ($config, $laravelConf) {
             $log = !empty($config['log']);
             $this->setProcessTitle(sprintf('%s laravels: inotify process', $config['process_prefix']));
             $inotify = new Inotify($config['watch_path'], IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVE,
@@ -68,9 +68,8 @@ trait InotifyTrait
             $inotify->start();
         };
 
-        $process = new Process($autoReload, false, false);
-        if ($swoole->addProcess($process)) {
-            return $process;
-        }
+        $process = new Process($callback, false, 0);
+        $swoole->addProcess($process);
+        return $process;
     }
 }
