@@ -1014,7 +1014,7 @@ class WebSocketService implements WebSocketHandlerInterface
     ],
     ```
 
-3. 注意：TestProcess::callback()方法不能退出，如果退出次数达到10次，Manager进程将会重新创建进程。
+3. 注意：callback()方法不能退出，如果退出，Manager进程将会重新创建进程。
 
 4. 示例：向自定义进程中写数据。
 

@@ -1002,7 +1002,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ],
     ```
 
-3. Note: The TestProcess::callback() method cannot quit. If the number of quit reaches 10, the Manager process will re-create the process.
+3. Note: The callback() cannot quit. If quit, the Manager process will re-create the process.
 
 4. Example: Write data to a custom process.
 
