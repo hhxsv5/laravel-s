@@ -1016,6 +1016,41 @@ class WebSocketService implements WebSocketHandlerInterface
 
 3. 注意：TestProcess::callback()方法不能退出，如果退出次数达到10次，Manager进程将会重新创建进程。
 
+4. 示例：向自定义进程中写数据。
+
+    ```php
+    // config/laravels.php
+    'processes' => [
+        'test' => [
+            'class'    => \App\Processes\TestProcess::class,
+            'redirect' => false,
+            'pipe'     => 1,
+        ],
+    ],
+    ```
+
+    ```php
+    // app/Processes/TestProcess.php
+    public static function callback(Server $swoole, Process $process)
+    {
+        while ($data = $process->read()) {
+            \Log::info('TestProcess: read data', [$data]);
+            $process->write('TestProcess: ' . $data);
+        }
+    }
+    ```
+
+    ```php
+    // app/Http/Controllers/TestController.php
+    public function testProcessWrite()
+    {
+        /**@var \Swoole\Process $process */
+        $process = app('swoole')->customProcesses['test'];
+        $process->write('TestController: write data' . time());
+        var_dump($pushProcess->read());
+    }
+    ```
+
 ## 其他特性
 
 ### 配置`Swoole`的事件回调函数

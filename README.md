@@ -1004,6 +1004,41 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 3. Note: The TestProcess::callback() method cannot quit. If the number of quit reaches 10, the Manager process will re-create the process.
 
+4. Example: Write data to a custom process.
+
+    ```php
+    // config/laravels.php
+    'processes' => [
+        'test' => [
+            'class'    => \App\Processes\TestProcess::class,
+            'redirect' => false,
+            'pipe'     => 1,
+        ],
+    ],
+    ```
+
+    ```php
+    // app/Processes/TestProcess.php
+    public static function callback(Server $swoole, Process $process)
+    {
+        while ($data = $process->read()) {
+            \Log::info('TestProcess: read data', [$data]);
+            $process->write('TestProcess: ' . $data);
+        }
+    }
+    ```
+
+    ```php
+    // app/Http/Controllers/TestController.php
+    public function testProcessWrite()
+    {
+        /**@var \Swoole\Process $process */
+        $process = app('swoole')->customProcesses['test'];
+        $process->write('TestController: write data' . time());
+        var_dump($pushProcess->read());
+    }
+    ```
+
 ## Other features
 
 ### Configuring the event callback function of `Swoole`
