@@ -94,7 +94,7 @@ Table of Contents
 
 1.通过[Composer](https://getcomposer.org/)安装([packagist](https://packagist.org/packages/hhxsv5/laravel-s))。有可能找不到`3.0`版本，解决方案移步[#81](https://github.com/hhxsv5/laravel-s/issues/81)。
 ```bash
-composer require "hhxsv5/laravel-s:~3.5.0" -vvv
+composer require "hhxsv5/laravel-s:~3.6.0" -vvv
 # 确保你的composer.lock文件是在版本控制中
 ```
 
