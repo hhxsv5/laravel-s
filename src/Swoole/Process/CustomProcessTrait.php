@@ -29,9 +29,6 @@ trait CustomProcessTrait
                 continue;
             }
             $processClass = $item['class'];
-            $redirect = isset($item['redirect']) ? $item['redirect'] : false;
-            $pipe = isset($item['pipe']) ? $item['pipe'] : 0;
-
             $callback = function (Process $worker) use ($pidfile, $swoole, $processPrefix, $processClass, $name, $laravelConfig) {
                 file_put_contents($pidfile, $worker->pid . "\n", FILE_APPEND | LOCK_EX);
                 $this->initLaravel($laravelConfig, $swoole);
@@ -67,6 +64,9 @@ trait CustomProcessTrait
                 };
                 $coroutineAvailable ? \Swoole\Coroutine::create($runProcess) : $runProcess();
             };
+
+            $redirect = isset($item['redirect']) ? $item['redirect'] : false;
+            $pipe = isset($item['pipe']) ? $item['pipe'] : 0;
             $process = new Process($callback, $redirect, $pipe);
             if (isset($item['queue'])) {
                 if (empty($item['queue'])) {
