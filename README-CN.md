@@ -661,7 +661,7 @@ class TestCronJob extends CronJob
 
     1.安装[inotify](http://pecl.php.net/package/inotify)扩展。
 
-    2.开启[配置项](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md)。
+    2.开启[配置项](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md#inotify_reloadenable)。
 
     3.注意：`inotify`只有在`Linux`内修改文件才能收到文件变更事件，建议使用最新版Docker，[Vagrant解决方案](https://github.com/mhallin/vagrant-notify-forwarder)。
 
@@ -1124,7 +1124,7 @@ class WorkerStartEvent implements WorkerStartInterface
         
         2. 用一个`中间件`来`重置`单例对象的状态。
 
-        3. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
+        3. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md#register_providers)。
 
     - LaravelS 已经内置了一些[清理器](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md#cleaners)。
 

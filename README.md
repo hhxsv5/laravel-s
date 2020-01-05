@@ -648,7 +648,7 @@ class TestCronJob extends CronJob
 
     1.Install [inotify](http://pecl.php.net/package/inotify) extension.
 
-    2.Turn on the switch in [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
+    2.Turn on the switch in [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#inotify_reloadenable).
 
     3.Notice: Modify the file only in `Linux` to receive the file change events. It's recommended to use the latest Docker. [Vagrant Solution](https://github.com/mhallin/vagrant-notify-forwarder).
 
@@ -1113,7 +1113,7 @@ class WorkerStartEvent implements WorkerStartInterface
 
         2. `Reset` status of singleton instances by `Middleware`.
 
-        1. Re-register `ServiceProvider`, add `XxxServiceProvider` into `register_providers` of file `laravels.php`. So that reinitialize singleton instances in every request [Refer](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
+        1. Re-register `ServiceProvider`, add `XxxServiceProvider` into `register_providers` of file `laravels.php`. So that reinitialize singleton instances in every request [Refer](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#register_providers).
     
     - LaravelS has built in some [cleaners](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#cleaners).
 
