@@ -66,6 +66,13 @@
     ],
     ```
 
+    ```php
+    // 如果你的项目中使用到了包"encore/laravel-admin"
+    'cleaners' => [
+        Hhxsv5\LaravelS\Illuminate\Cleaners\LaravelAdminCleaner::class,
+    ],
+    ```
+
 - `register_providers`：`array` `每次请求`需要重新注册的`Service Provider`列表，若存在`boot()`方法，会自动执行。一般用于清理`注册了单例的ServiceProvider`。
     ```php
     //...

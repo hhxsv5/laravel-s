@@ -7,6 +7,15 @@
     - The code that runs in various `command line` modes, such as the Artisan command line and the PHP script command line.
     - Run the code under `FPM`/`Apache PHP Module`.
 
+## Use package [encore/laravel-admin](https://github.com/z-song/laravel-admin)
+> Modify `config/laravels.php` and add` LaravelAdminCleaner` in `cleaners`.
+
+```php
+'cleaners' => [
+    Hhxsv5\LaravelS\Illuminate\Cleaners\LaravelAdminCleaner::class,
+],
+```
+
 ## Use package [jenssegers/agent](https://github.com/jenssegers/agent)
 > [Listen System Event](https://github.com/hhxsv5/laravel-s/blob/master/README.md#system-events)
 

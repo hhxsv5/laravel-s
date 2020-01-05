@@ -66,6 +66,13 @@
     ],
     ```
 
+    ```php
+    // If you use the package "encore/laravel-admin" in your project
+    'cleaners' => [
+        Hhxsv5\LaravelS\Illuminate\Cleaners\LaravelAdminCleaner::class,
+    ],
+    ```
+
 - `register_providers`: `array` The `Service Provider` list, will be re-registered `each request`, and run method `boot()` if it exists. Usually, be used to clear the `Service Provider` which registers `Singleton` instances.
     ```php
     //...
