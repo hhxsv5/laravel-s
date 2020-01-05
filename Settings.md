@@ -63,47 +63,47 @@
 ## cleaners
 > `array` The list of cleaners for `each request` is used to clean up some residual global variables, singleton objects, and static properties to avoid data pollution between requests, these classes must implement interface `Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface`. The order of cleanup is consistent with the order of the arrays. [Some cleaners](https://github.com/hhxsv5/laravel-s/blob/master/src/Illuminate/CleanerManager.php#L22) enabled by default.
 
-    ```php
-    // If you use the session/authentication/passport in your project
-    'cleaners' => [
-        Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
-        Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
-    ],
-    ```
+```php
+// If you use the session/authentication/passport in your project
+'cleaners' => [
+    Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
+    Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
+],
+```
 
-    ```php
-    // If you use the package "tymon/jwt-auth" in your project
-    'cleaners' => [
-        Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
-        Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
-        Hhxsv5\LaravelS\Illuminate\Cleaners\JWTCleaner::class,
-    ],
-    ```
+```php
+// If you use the package "tymon/jwt-auth" in your project
+'cleaners' => [
+    Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
+    Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
+    Hhxsv5\LaravelS\Illuminate\Cleaners\JWTCleaner::class,
+],
+```
 
-    ```php
-    // If you use the package "spatie/laravel-menu" in your project
-    'cleaners' => [
-        Hhxsv5\LaravelS\Illuminate\Cleaners\MenuCleaner::class,
-    ],
-    ```
+```php
+// If you use the package "spatie/laravel-menu" in your project
+'cleaners' => [
+    Hhxsv5\LaravelS\Illuminate\Cleaners\MenuCleaner::class,
+],
+```
 
-    ```php
-    // If you use the package "encore/laravel-admin" in your project
-    'cleaners' => [
-        Hhxsv5\LaravelS\Illuminate\Cleaners\LaravelAdminCleaner::class,
-    ],
-    ```
+```php
+// If you use the package "encore/laravel-admin" in your project
+'cleaners' => [
+    Hhxsv5\LaravelS\Illuminate\Cleaners\LaravelAdminCleaner::class,
+],
+```
 
 ## register_providers
 > `array` The `Service Provider` list, will be re-registered `each request`, and run method `boot()` if it exists. Usually, be used to clear the `Service Provider` which registers `Singleton` instances.
 
-    ```php
-    //...
-    'register_providers' => [
-        \Xxx\Yyy\XxxServiceProvider::class,
-    ],
-    //...
-    ```
+```php
+//...
+'register_providers' => [
+    \Xxx\Yyy\XxxServiceProvider::class,
+],
+//...
+```
 
 ## destroy_controllers
 > `array` Automatically destroy the controllers after each request to solve the problem of the singleton controllers, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md#singleton-controller).

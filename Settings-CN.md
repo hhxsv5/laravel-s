@@ -63,47 +63,47 @@
 ## cleaners
 > `array` `每次请求`的清理器列表，用于清理一些残留的全局变量、单例对象、静态属性，避免多次请求间数据污染。这些清理器类必须实现接口`Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface`。清理的顺序与数组的顺序保持一致。[这些清理器](https://github.com/hhxsv5/laravel-s/blob/master/src/Illuminate/CleanerManager.php#L22)默认已启用。
 
-    ```php
-    // 如果你的项目中使用到了Session、Authentication、Passport
-    'cleaners' => [
-        Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
-        Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
-    ],
-    ```
+```php
+// 如果你的项目中使用到了Session、Authentication、Passport
+'cleaners' => [
+    Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
+    Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
+],
+```
 
-    ```php
-    // 如果你的项目中使用到了包"tymon/jwt-auth"
-    'cleaners' => [
-        Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
-        Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
-        Hhxsv5\LaravelS\Illuminate\Cleaners\JWTCleaner::class,
-    ],
-    ```
+```php
+// 如果你的项目中使用到了包"tymon/jwt-auth"
+'cleaners' => [
+    Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
+    Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
+    Hhxsv5\LaravelS\Illuminate\Cleaners\JWTCleaner::class,
+],
+```
 
-    ```php
-    // 如果你的项目中使用到了包"spatie/laravel-menu"
-    'cleaners' => [
-        Hhxsv5\LaravelS\Illuminate\Cleaners\MenuCleaner::class,
-    ],
-    ```
+```php
+// 如果你的项目中使用到了包"spatie/laravel-menu"
+'cleaners' => [
+    Hhxsv5\LaravelS\Illuminate\Cleaners\MenuCleaner::class,
+],
+```
 
-    ```php
-    // 如果你的项目中使用到了包"encore/laravel-admin"
-    'cleaners' => [
-        Hhxsv5\LaravelS\Illuminate\Cleaners\LaravelAdminCleaner::class,
-    ],
-    ```
+```php
+// 如果你的项目中使用到了包"encore/laravel-admin"
+'cleaners' => [
+    Hhxsv5\LaravelS\Illuminate\Cleaners\LaravelAdminCleaner::class,
+],
+```
 
 ## register_providers
 > `array` `每次请求`需要重新注册的`Service Provider`列表，若存在`boot()`方法，会自动执行。一般用于清理`注册了单例的ServiceProvider`。
 
-    ```php
-    //...
-    'register_providers' => [
-        \Xxx\Yyy\XxxServiceProvider::class,
-    ],
-    //...
-    ```
+```php
+//...
+'register_providers' => [
+    \Xxx\Yyy\XxxServiceProvider::class,
+],
+//...
+```
 
 ## destroy_controllers
 > `array` 每次请求后自动销毁控制器，解决单例控制器的问题，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md#%E5%8D%95%E4%BE%8B%E6%8E%A7%E5%88%B6%E5%99%A8)。
