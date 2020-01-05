@@ -1115,7 +1115,7 @@ class WorkerStartEvent implements WorkerStartInterface
 
         1. Re-register `ServiceProvider`, add `XxxServiceProvider` into `register_providers` of file `laravels.php`. So that reinitialize singleton instances in every request [Refer](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
     
-    - LaravelS has built in some [Cleaners](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#cleaners).
+    - LaravelS has built in some [cleaners](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#cleaners).
 
 - [Known issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md): a package of known issues and solutions.
 
