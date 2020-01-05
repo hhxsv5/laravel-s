@@ -1126,7 +1126,7 @@ class WorkerStartEvent implements WorkerStartInterface
 
         3. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
 
-    - LaravelS 已经内置了一些[Cleaner](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
+    - LaravelS 已经内置了一些[Cleaner](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md#cleaners)。
 
 - [常见问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md)：一揽子的已知问题和解决方案。
 
