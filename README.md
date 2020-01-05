@@ -147,14 +147,15 @@ php artisan laravels publish
 
 ```
 [program:laravel-s-test]
-command=/user/local/bin/php /opt/www/laravel-s-test/bin/laravels start -i
+directory=/var/wwww/laravel-s-test
+command=/usr/local/bin/php bin/laravels start -i
 numprocs=1
 autostart=true
 autorestart=true
 startretries=3
 user=www-data
 redirect_stderr=true
-stdout_logfile=/opt/www/laravel-s-test/storage/logs/supervisord-stdout.log
+stdout_logfile=/var/log/supervisor/%(program_name)s.log
 ```
 
 ## Cooperate with Nginx (Recommended)
