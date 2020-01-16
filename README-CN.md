@@ -1226,7 +1226,14 @@ class WorkerStartEvent implements WorkerStartInterface
 
 ## 用户与案例
 
-- [KuCoin](https://www.kcs.top/ucenter/signup?rcode=vHR6yH)
+- `特别赞助商` [果酱社区](https://guojiang.club/?utm_source=laravels&utm_campaign=sponsor)：果酱社区是一个专业的会员制社区，这里提供高质量的技术资料，
+专注程序员成长，创业孵化，提供优秀且稳定的开源产品。
+    
+    <img src="https://user-images.githubusercontent.com/7278743/72538652-19bad000-38b9-11ea-844a-8f66a2c76185.jpeg" height="300px" alt="果酱社区">
+
+- [Pool-X](https://pool-x.io/?r=vHR6yH&c=pool-x)：可以交易锁定资产的新一代POS矿池。
+
+- [KuCoin](https://www.kcs.top/ucenter/signup?rcode=vHR6yH)：全球化第一的交易所。
 
 - [医联](https://www.medlinker.com/)：WEB站、M站、APP、小程序的账户体系服务。
     
@@ -1299,6 +1306,7 @@ class WorkerStartEvent implements WorkerStartInterface
 | 0o飞舞o0木木 *科 | 288 |
 | *勇 | 66.66 |
 | ibrandshjchen *浩 | 188 |
+| ibrandshjchen *浩 | 888 |
 
 ## License
 
