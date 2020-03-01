@@ -11,12 +11,10 @@ class CookieCleaner implements CleanerInterface
         if (!$app->offsetExists('cookie')) {
             return;
         }
-        /**@var \Illuminate\Cookie\CookieJar $appCookie */
-        $appCookie = $app->offsetGet('cookie');
-        /**@var \Symfony\Component\HttpFoundation\Cookie[] $cookies */
-        $cookies = $appCookie->getQueuedCookies();
-        foreach ($cookies as $name => $cookie) {
-            $appCookie->unqueue($name);
-        }
+        $cookie = $app->offsetGet('cookie');
+        $ref = new \ReflectionObject($cookie);
+        $queued = $ref->getProperty('queued');
+        $queued->setAccessible(true);
+        $queued->setValue($cookie, []);
     }
 }
