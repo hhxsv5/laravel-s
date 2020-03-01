@@ -88,7 +88,7 @@ Table of Contents
 | -------- | -------- |
 | [PHP](https://secure.php.net/manual/zh/install.php) | `>= 5.5.9` `推荐PHP7+` |
 | [Swoole](https://www.swoole.com/) | `>= 1.7.19` `从2.0.12开始不再支持PHP5` `推荐4.2.3+` |
-| [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1, < 6.0` `推荐5.6+` |
+| [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` `推荐5.6+` |
 
 ## 安装
 
