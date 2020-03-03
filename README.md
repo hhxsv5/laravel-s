@@ -208,6 +208,7 @@ server {
         proxy_set_header Server-Name $server_name;
         proxy_set_header Server-Addr $server_addr;
         proxy_set_header Server-Port $server_port;
+        # "swoole" is the upstream
         proxy_pass http://swoole;
     }
 }
