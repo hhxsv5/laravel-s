@@ -172,7 +172,7 @@ upstream swoole {
     # Connect IP:Port
     server 127.0.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
     # Connect UnixSocket Stream file, tips: put the socket file in the /dev/shm directory to get better performance
-    #server unix:/xxxpath/laravel-s-test/storage/laravels.sock weight=5 max_fails=3 fail_timeout=30s;
+    #server unix:/yourpath/laravel-s-test/storage/laravels.sock weight=5 max_fails=3 fail_timeout=30s;
     #server 192.168.1.1:5200 weight=3 max_fails=3 fail_timeout=30s;
     #server 192.168.1.2:5200 backup;
     keepalive 16;
@@ -181,8 +181,8 @@ server {
     listen 80;
     # Don't forget to bind the host
     server_name laravels.com;
-    root /xxxpath/laravel-s-test/public;
-    access_log /yyypath/log/nginx/$server_name.access.log  main;
+    root /yourpath/laravel-s-test/public;
+    access_log /yourpath/log/nginx/$server_name.access.log  main;
     autoindex off;
     index index.html index.htm;
     # Nginx handles the static resources(recommend enabling gzip), LaravelS handles the dynamic resource.
@@ -216,7 +216,15 @@ server {
 ## Cooperate with Apache
 
 ```apache
-LoadModule proxy_module /yyypath/modules/mod_deflate.so
+LoadModule proxy_module /yourpath/modules/mod_proxy.so
+LoadModule proxy_balancer_module /yourpath/modules/mod_proxy_balancer.so
+LoadModule lbmethod_byrequests_module /yourpath/modules/mod_lbmethod_byrequests.so
+LoadModule proxy_http_module /yourpath/modules/mod_proxy_http.so
+LoadModule slotmem_shm_module /yourpath/modules/mod_slotmem_shm.so
+LoadModule rewrite_module /yourpath/modules/mod_rewrite.so
+LoadModule remoteip_module /yourpath/modules/mod_remoteip.so
+LoadModule deflate_module /yourpath/modules/mod_deflate.so
+
 <IfModule deflate_module>
     SetOutputFilter DEFLATE
     DeflateCompressionLevel 2
@@ -228,19 +236,14 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
     ServerName www.laravels.com
     ServerAdmin hhxsv5@sina.com
 
-    DocumentRoot /xxxpath/laravel-s-test/public;
+    DocumentRoot /yourpath/laravel-s-test/public;
     DirectoryIndex index.html index.htm
     <Directory "/">
         AllowOverride None
         Require all granted
     </Directory>
 
-    LoadModule proxy_module /yyypath/modules/mod_proxy.so
-    LoadModule proxy_module /yyypath/modules/mod_proxy_balancer.so
-    LoadModule proxy_module /yyypath/modules/mod_lbmethod_byrequests.so
-    LoadModule proxy_module /yyypath/modules/mod_proxy_http.so
-    LoadModule proxy_module /yyypath/modules/mod_slotmem_shm.so
-    LoadModule proxy_module /yyypath/modules/mod_rewrite.so
+    RemoteIPHeader X-Forwarded-For
 
     ProxyRequests Off
     ProxyPreserveHost On
@@ -333,7 +336,7 @@ upstream swoole {
     # Connect IP:Port
     server 127.0.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
     # Connect UnixSocket Stream file, tips: put the socket file in the /dev/shm directory to get better performance
-    #server unix:/xxxpath/laravel-s-test/storage/laravels.sock weight=5 max_fails=3 fail_timeout=30s;
+    #server unix:/yourpath/laravel-s-test/storage/laravels.sock weight=5 max_fails=3 fail_timeout=30s;
     #server 192.168.1.1:5200 weight=3 max_fails=3 fail_timeout=30s;
     #server 192.168.1.2:5200 backup;
     keepalive 16;
@@ -342,8 +345,8 @@ server {
     listen 80;
     # Don't forget to bind the host
     server_name laravels.com;
-    root /xxxpath/laravel-s-test/public;
-    access_log /yyypath/log/nginx/$server_name.access.log  main;
+    root /yourpath/laravel-s-test/public;
+    access_log /yourpath/log/nginx/$server_name.access.log  main;
     autoindex off;
     index index.html index.htm;
     # Nginx handles the static resources(recommend enabling gzip), LaravelS handles the dynamic resource.

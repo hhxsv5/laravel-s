@@ -176,17 +176,17 @@ upstream swoole {
     # 通过 IP:Port 连接
     server 127.0.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
     # 通过 UnixSocket Stream 连接，小诀窍：将socket文件放在/dev/shm目录下，可获得更好的性能
-    #server unix:/xxxpath/laravel-s-test/storage/laravels.sock weight=5 max_fails=3 fail_timeout=30s;
+    #server unix:/yourpath/laravel-s-test/storage/laravels.sock weight=5 max_fails=3 fail_timeout=30s;
     #server 192.168.1.1:5200 weight=3 max_fails=3 fail_timeout=30s;
     #server 192.168.1.2:5200 backup;
     keepalive 16;
 }
 server {
     listen 80;
-    # 别忘了绑Host哟
+    # 别忘了绑Host
     server_name laravels.com;
-    root /xxxpath/laravel-s-test/public;
-    access_log /yyypath/log/nginx/$server_name.access.log  main;
+    root /yourpath/laravel-s-test/public;
+    access_log /yourpath/log/nginx/$server_name.access.log  main;
     autoindex off;
     index index.html index.htm;
     # Nginx处理静态资源(建议开启gzip)，LaravelS处理动态资源。
@@ -220,7 +220,15 @@ server {
 ## 与Apache配合使用
 
 ```apache
-LoadModule proxy_module /yyypath/modules/mod_deflate.so
+LoadModule proxy_module /yourpath/modules/mod_proxy.so
+LoadModule proxy_balancer_module /yourpath/modules/mod_proxy_balancer.so
+LoadModule lbmethod_byrequests_module /yourpath/modules/mod_lbmethod_byrequests.so
+LoadModule proxy_http_module /yourpath/modules/mod_proxy_http.so
+LoadModule slotmem_shm_module /yourpath/modules/mod_slotmem_shm.so
+LoadModule rewrite_module /yourpath/modules/mod_rewrite.so
+LoadModule remoteip_module /yourpath/modules/mod_remoteip.so
+LoadModule deflate_module /yourpath/modules/mod_deflate.so
+
 <IfModule deflate_module>
     SetOutputFilter DEFLATE
     DeflateCompressionLevel 2
@@ -228,23 +236,18 @@ LoadModule proxy_module /yyypath/modules/mod_deflate.so
 </IfModule>
 
 <VirtualHost *:80>
-    # 别忘了绑Host哟
+    # 别忘了绑Host
     ServerName www.laravels.com
     ServerAdmin hhxsv5@sina.com
 
-    DocumentRoot /xxxpath/laravel-s-test/public;
+    DocumentRoot /yourpath/laravel-s-test/public;
     DirectoryIndex index.html index.htm
     <Directory "/">
         AllowOverride None
         Require all granted
     </Directory>
 
-    LoadModule proxy_module /yyypath/modules/mod_proxy.so
-    LoadModule proxy_module /yyypath/modules/mod_proxy_balancer.so
-    LoadModule proxy_module /yyypath/modules/mod_lbmethod_byrequests.so.so
-    LoadModule proxy_module /yyypath/modules/mod_proxy_http.so.so
-    LoadModule proxy_module /yyypath/modules/mod_slotmem_shm.so
-    LoadModule proxy_module /yyypath/modules/mod_rewrite.so
+    RemoteIPHeader X-Forwarded-For
 
     ProxyRequests Off
     ProxyPreserveHost On
@@ -339,17 +342,17 @@ upstream swoole {
     # 通过 IP:Port 连接
     server 127.0.0.1:5200 weight=5 max_fails=3 fail_timeout=30s;
     # 通过 UnixSocket Stream 连接，小诀窍：将socket文件放在/dev/shm目录下，可获得更好的性能
-    #server unix:/xxxpath/laravel-s-test/storage/laravels.sock weight=5 max_fails=3 fail_timeout=30s;
+    #server unix:/yourpath/laravel-s-test/storage/laravels.sock weight=5 max_fails=3 fail_timeout=30s;
     #server 192.168.1.1:5200 weight=3 max_fails=3 fail_timeout=30s;
     #server 192.168.1.2:5200 backup;
     keepalive 16;
 }
 server {
     listen 80;
-    # 别忘了绑Host哟
+    # 别忘了绑Host
     server_name laravels.com;
-    root /xxxpath/laravel-s-test/public;
-    access_log /yyypath/log/nginx/$server_name.access.log  main;
+    root /yourpath/laravel-s-test/public;
+    access_log /yourpath/log/nginx/$server_name.access.log  main;
     autoindex off;
     index index.html index.htm;
     # Nginx处理静态资源(建议开启gzip)，LaravelS处理动态资源。
