@@ -1309,8 +1309,7 @@ class WorkerStartEvent implements WorkerStartInterface
 | *官龙 | 100 |
 | 0o飞舞o0木木 *科 | 288 |
 | *勇 | 66.66 |
-| ibrandshjchen *浩 | 188 |
-| ibrandshjchen *浩 | 888 |
+| 果酱社区 | 1076 |
 
 ## License
 
