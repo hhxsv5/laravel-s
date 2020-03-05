@@ -48,7 +48,7 @@ Table of Contents
 * [Important notices](#important-notices)
 * [Users and cases](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E7%94%A8%E6%88%B7%E4%B8%8E%E6%A1%88%E4%BE%8B)
 * [Alternatives](#alternatives)
-* [Support Us](#support-us)
+* [Sponsor](#sponsor)
 * [License](#license)
 
 ## Features
