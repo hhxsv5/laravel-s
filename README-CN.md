@@ -7,7 +7,7 @@
 |______\__,_|_|  \__,_| \_/ \___|_|_____/ 
                                            
 ```
-> 🚀`LaravelS`是一个胶水项目，用于快速集成`Swoole`到`Laravel`或`Lumen`，然后赋予它们更好的性能、更多可能性。
+> LaravelS：在Laravel或Lumen中使用Swoole的“胶水”，可快速提高其性能。 🚀
 
 *请`Watch`此仓库，以获得最新的更新。*
 
@@ -1269,10 +1269,10 @@ class WorkerStartEvent implements WorkerStartInterface
 
 - [swooletw/laravel-swoole](https://github.com/swooletw/laravel-swoole)
 
-## 打赏
+## 赞助
 > 您的支持是我们坚持的最大动力。
 
-<img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/master/reward.png" height="300px" alt="打赏">
+<img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/master/sponsor.png" height="300px" alt="赞助">
 
 ### 感谢
 

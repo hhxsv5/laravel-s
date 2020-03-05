@@ -6,8 +6,9 @@
     "issues": "https://github.com/hhxsv5/laravel-s/issues",
     "source": "https://github.com/hhxsv5/laravel-s"
   },
-  "description": "🚀LaravelS is like a glue that is used to quickly integrate Swoole into Laravel or Lumen, and then give them better performance and more possibilities.",
+  "description": "LaravelS: glue for using Swoole in Laravel or Lumen, quickly improves their performance. 🚀",
   "keywords": [
+    "laravels",
     "laravel-s",
     "swoole",
     "laravel",
@@ -40,8 +41,8 @@
     "swoole/ide-helper": "@dev"
   },
   "suggest": {
-    "ext-swoole": "Event-driven asynchronous & concurrent & coroutine networking engine with high performance for PHP, require >= 1.7.19.",
-    "ext-inotify": "Inotify, used to reload all worker processes when your code is modified."
+    "ext-swoole": "Coroutine based Async PHP programming framework, require >= 1.7.19.",
+    "ext-inotify": "Inotify, used to real-time reload."
   },
   "autoload": {
     "psr-4": {

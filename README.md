@@ -7,7 +7,7 @@
 |______\__,_|_|  \__,_| \_/ \___|_|_____/ 
                                            
 ```
-> 🚀`LaravelS` is like a glue that is used to quickly integrate `Swoole` into `Laravel` or `Lumen`, and then give them better performance and more possibilities.
+> LaravelS: glue for using Swoole in Laravel or Lumen, quickly improves their performance. 🚀
 
 *Please `Watch` this repository to get the latest updates.*
 
@@ -1222,14 +1222,13 @@ class WorkerStartEvent implements WorkerStartInterface
 
 - [swooletw/laravel-swoole](https://github.com/swooletw/laravel-swoole)
 
-## Support us
+## Sponsor
 
-| Currency | Address |
-| -------- | -------- |
-| BTC | 3KX6LTJcbgiKKaHGC7zySVdMmFXvjikQ3U |
-| ETH | 0xccab8324d33a978a7ac040049e09100029123d71 |
-| LTC | LPhrmK1ZvjnP3ckd9j6QQV7BvjzjrWyTes |
-| USDT | 18dhqenUw3ib3QUzUxXJ1WdCa4tZus4cv3 |
+- [PayPal](https://www.paypal.me/hhxsv5)
+
+- [BTC](https://www.blockchain.com/btc/address/33owCwMDZBikNe3SY1nnyJ64cEyP7i3mcU)
+
+- [Gitee](https://gitee.com/hhxsv5/laravel-s?donate=true)
 
 ## License
 
