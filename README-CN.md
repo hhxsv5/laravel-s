@@ -1205,10 +1205,9 @@ class WorkerStartEvent implements WorkerStartInterface
 
 - 你声明的全局、静态变量必须手动清理或重置。
 
-- 无限追加元素到静态或全局变量中，将导致内存爆满。
+- 无限追加元素到静态或全局变量中，将导致内存溢出。
 
     ```php
-    // 某类
     class Test
     {
         public static $array = [];
@@ -1218,7 +1217,7 @@ class WorkerStartEvent implements WorkerStartInterface
     // 某控制器
     public function test(Request $req)
     {
-        // 内存爆满
+        // 内存溢出
         Test::$array[] = $req->input('param1');
         Test::$string .= $req->input('param2');
     }

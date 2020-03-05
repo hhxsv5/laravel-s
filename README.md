@@ -1195,10 +1195,9 @@ class WorkerStartEvent implements WorkerStartInterface
 
 - `global`, `static` variables which you declared are need to destroy(reset) manually.
 
-- Infinitely appending element into `static`/`global` variable will lead to memory leak.
+- Infinitely appending element into `static`/`global` variable will lead to OOM(Out of Memory).
 
     ```php
-    // Some class
     class Test
     {
         public static $array = [];
@@ -1208,7 +1207,7 @@ class WorkerStartEvent implements WorkerStartInterface
     // Controller
     public function test(Request $req)
     {
-        // Memory leak
+        // Out of Memory
         Test::$array[] = $req->input('param1');
         Test::$string .= $req->input('param2');
     }
