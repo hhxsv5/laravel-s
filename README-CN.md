@@ -7,7 +7,7 @@
 |______\__,_|_|  \__,_| \_/ \___|_|_____/ 
                                            
 ```
-> LaravelS 是一个可以在 Laravel 或 Lumen 中使用 Swoole 的“胶水”，快速提高它们的性能。 🚀
+> 🚀 LaravelS 是一个可以在 Laravel 或 Lumen 中使用 Swoole 的“胶水”，快速提高它们的性能。
 
 *请`Watch`此仓库，以获得最新的更新。*
 
