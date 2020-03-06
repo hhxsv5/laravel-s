@@ -53,20 +53,15 @@ class Portal extends Command
             $action = $input->getArgument('action');
             switch ($action) {
                 case 'start':
-                    $this->start();
-                    break;
+                    return $this->start();
                 case 'stop':
-                    $this->stop();
-                    break;
+                    return $this->stop();
                 case 'restart':
-                    $this->restart();
-                    break;
+                    return $this->restart();
                 case 'reload':
-                    $this->reload();
-                    break;
+                    return $this->reload();
                 case 'info':
-                    $this->showInfo();
-                    break;
+                    return $this->showInfo();
                 default:
                     $help = <<<EOS
 
@@ -83,7 +78,7 @@ Options:
 EOS;
 
                     $this->info(sprintf($help, PHP_BINARY));
-                    break;
+                    return 0;
             }
         } catch (\Exception $e) {
             $error = sprintf(
@@ -97,6 +92,7 @@ EOS;
                 $e->getTraceAsString()
             );
             $this->error($error);
+            return 1;
         }
     }
 
@@ -115,7 +111,10 @@ EOS;
         foreach ($options as $key => $value) {
             $optionStr .= sprintf('--%s%s ', $key, is_bool($value) ? '' : ('=' . $value));
         }
-        $this->runArtisanCommand(trim('laravels config ' . $optionStr));
+        $statusCode = $this->runArtisanCommand(trim('laravels config ' . $optionStr));
+        if ($statusCode !== 0) {
+            return $statusCode;
+        }
 
         // Here we go...
         $config = $this->getConfig();
@@ -202,14 +201,14 @@ EOS;
         $pidFile = $config['server']['swoole']['pid_file'];
         if (!file_exists($pidFile)) {
             $this->error('It seems that Swoole is not running.');
-            return;
+            return 1;
         }
 
         // Reload worker processes
         $pid = file_get_contents($pidFile);
         if (!$pid || !self::kill($pid, 0)) {
             $this->error("Swoole [PID={$pid}] does not exist, or permission denied.");
-            return;
+            return 1;
         }
         if (self::kill($pid, SIGUSR1)) {
             $this->info("Swoole [PID={$pid}] is reloaded.");
@@ -242,7 +241,7 @@ EOS;
             $pid = file_get_contents($pidFile);
             if (!$pid || !self::kill($pid, 0)) {
                 $this->error("Timer process[PID={$pid}] does not exist, or permission denied.");
-                return;
+                return 1;
             }
 
             if (self::kill($pid, SIGUSR1)) {
@@ -251,26 +250,26 @@ EOS;
                 $this->error("Timer process[PID={$pid}] is reloaded failed.");
             }
         }
+        return 0;
     }
 
     public function showInfo()
     {
-        $this->runArtisanCommand('laravels info');
+        return $this->runArtisanCommand('laravels info');
     }
 
-    public function artisanCmd($subCmd)
+    public function makeArtisanCmd($subCmd)
     {
         $phpCmd = sprintf('%s -c "%s"', PHP_BINARY, php_ini_loaded_file());
         $env = $this->input->getOption('env');
         $envs = $env ? "APP_ENV={$env}" : '';
-        $artisanCmd = trim(sprintf('%s %s %s/artisan %s', $envs, $phpCmd, $this->basePath, $subCmd));
-        return $artisanCmd;
+        return trim(sprintf('%s %s %s/artisan %s', $envs, $phpCmd, $this->basePath, $subCmd));
     }
 
     public function runArtisanCommand($cmd)
     {
-        $cmd = $this->artisanCmd($cmd);
-        self::runCommand($cmd);
+        $cmd = $this->makeArtisanCmd($cmd);
+        return self::runCommand($cmd);
     }
 
     public function getConfig()
@@ -286,10 +285,12 @@ EOS;
             return false;
         }
         if ($input !== null) {
-            fwrite($fp, $input);
+            $bytes = fwrite($fp, $input);
+            if ($bytes === false) {
+                return 1;
+            }
         }
-        pclose($fp);
-        return true;
+        return pclose($fp);
     }
 
     public static function kill($pid, $sig)
