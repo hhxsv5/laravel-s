@@ -2,7 +2,7 @@
 <?php
 
 /**
- * 本autoloader只用来拉取laravelS
+ * This autoloader is only used to pull laravel-s.
  * Class Psr4Autoloader
  */
 class Psr4Autoloader
@@ -149,7 +149,11 @@ class Psr4Autoloader
 $basePath = realpath(__DIR__ . '/../');
 $loader = new Psr4Autoloader();
 $loader->register();
+
+// Register laravel-s
 $loader->addNamespace('Hhxsv5\LaravelS', $basePath . '/vendor/hhxsv5/laravel-s/src');
+
+// Register laravel-s dependencies
 $loader->addNamespace('Symfony\Component\Console', $basePath . '/vendor/symfony/console');
 $loader->addNamespace('Symfony\Contracts\Service', $basePath . '/vendor/symfony/service-contracts');
 $loader->addNamespace('Symfony\Contracts', $basePath . '/vendor/symfony/contracts');
