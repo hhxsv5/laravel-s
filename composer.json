@@ -6,7 +6,7 @@
     "issues": "https://github.com/hhxsv5/laravel-s/issues",
     "source": "https://github.com/hhxsv5/laravel-s"
   },
-  "description": "🚀 LaravelS is like glue for using Swoole in Laravel or Lumen, quickly improves their performance.",
+  "description": "🚀 LaravelS is an out-of-the-box adapter between Swoole and Laravel/Lumen.",
   "keywords": [
     "laravels",
     "laravel-s",

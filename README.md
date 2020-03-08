@@ -7,7 +7,7 @@
 |______\__,_|_|  \__,_| \_/ \___|_|_____/ 
                                            
 ```
-> 🚀 LaravelS is like glue for using Swoole in Laravel or Lumen, quickly improves their performance.
+> 🚀 LaravelS is `an out-of-the-box adapter` between Swoole and Laravel/Lumen.
 
 *Please `Watch` this repository to get the latest updates.*
 
