@@ -1,8 +1,6 @@
 language: php
 
 php:
-  - 5.5
-  - 5.6
   - 7.0
   - 7.1
   - 7.2
@@ -10,7 +8,7 @@ php:
   - 7.4
 
 before_script:
-  - pecl install swoole-1.9.23
+  - pecl install --onlyreqdeps --nobuild swoole-4.4.16 && cd "$(pecl config-get temp_dir)/swoole" && phpize && ./configure --enable-openssl && make && make install && cd -
   - composer install
 
 script: composer info
