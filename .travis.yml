@@ -10,4 +10,4 @@ before_script:
   - pecl install --onlyreqdeps --nobuild swoole-4.4.16 && cd "$(pecl config-get temp_dir)/swoole" && phpize && ./configure --enable-openssl && make && make install && cd -
   - composer install
 
-script: bin/laravels start -d
+script: composer info
