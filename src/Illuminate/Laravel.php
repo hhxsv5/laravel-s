@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class Laravel
 {
     /**@var Container */
-    protected $app;
+    protected $currentApp;
 
     /**@var Container */
     protected $snapshotApp;
@@ -53,19 +53,19 @@ class Laravel
 
     public function prepareLaravel()
     {
-        list($this->app, $this->kernel) = $this->createAppKernel();
+        list($this->currentApp, $this->kernel) = $this->createAppKernel();
 
-        $this->reflectionApp = new ReflectionApp($this->app);
+        $this->reflectionApp = new ReflectionApp($this->currentApp);
 
         $this->saveSnapshot();
 
         // Create cleaner manager
-        $this->cleanerManager = new CleanerManager($this->app, $this->conf);
+        $this->cleanerManager = new CleanerManager($this->currentApp, $this->snapshotApp, $this->conf);
     }
 
     protected function saveSnapshot()
     {
-        $this->snapshotApp = clone $this->app;
+        $this->snapshotApp = clone $this->currentApp;
 
         $instances = $this->reflectionApp->instances();
 
@@ -143,7 +143,7 @@ class Laravel
         ob_start();
 
         if ($this->isLumen()) {
-            $response = $this->app->dispatch($request);
+            $response = $this->currentApp->dispatch($request);
             if ($response instanceof SymfonyResponse) {
                 $content = $response->getContent();
             } else {
@@ -213,38 +213,38 @@ class Laravel
 
     public function clean()
     {
-        $this->cleanerManager->clean($this->snapshotApp);
+        $this->cleanerManager->clean();
         $this->cleanerManager->cleanControllers();
     }
 
     public function cleanProviders()
     {
-        $this->cleanerManager->cleanProviders($this->reflectionApp);
+        $this->cleanerManager->cleanProviders();
     }
 
     public function fireEvent($name, array $params = [])
     {
-        $params[] = $this->app;
-        return method_exists($this->app['events'], 'dispatch') ?
-            $this->app['events']->dispatch($name, $params) : $this->app['events']->fire($name, $params);
+        $params[] = $this->currentApp;
+        return method_exists($this->currentApp['events'], 'dispatch') ?
+            $this->currentApp['events']->dispatch($name, $params) : $this->currentApp['events']->fire($name, $params);
     }
 
     public function bindRequest(IlluminateRequest $request)
     {
-        $this->app->instance('request', $request);
+        $this->currentApp->instance('request', $request);
     }
 
     public function bindSwoole($swoole)
     {
-        $this->app->singleton('swoole', function () use ($swoole) {
+        $this->currentApp->singleton('swoole', function () use ($swoole) {
             return $swoole;
         });
     }
 
     public function saveSession()
     {
-        if ($this->app->offsetExists('session')) {
-            $this->app['session']->save();
+        if (isset($this->currentApp['session'])) {
+            $this->currentApp['session']->save();
         }
     }
 

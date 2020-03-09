@@ -2,14 +2,13 @@
 
 namespace Hhxsv5\LaravelS\Illuminate\Cleaners;
 
-use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
 
-class LaravelAdminCleaner implements CleanerInterface
+class LaravelAdminCleaner extends BaseCleaner
 {
-    public function clean(Container $app, Container $snapshot)
+    public function clean()
     {
-        $app->forgetInstance('Encore\Admin\Admin');
+        $this->currentApp->forgetInstance('Encore\Admin\Admin');
         Facade::clearResolvedInstance('Encore\Admin\Admin');
     }
 }

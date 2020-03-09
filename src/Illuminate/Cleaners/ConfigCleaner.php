@@ -2,12 +2,10 @@
 
 namespace Hhxsv5\LaravelS\Illuminate\Cleaners;
 
-use Illuminate\Container\Container;
-
-class ConfigCleaner implements CleanerInterface
+class ConfigCleaner extends BaseCleaner
 {
-    public function clean(Container $app, Container $snapshot)
+    public function clean()
     {
-        $app['config']->set($snapshot['config']->all());
+        $this->currentApp['config']->set($this->snapshotApp['config']->all());
     }
 }

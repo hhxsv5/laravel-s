@@ -1,21 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/7/17
- * Time: 9:22
- */
 
 namespace Hhxsv5\LaravelS\Illuminate\Cleaners;
 
-use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
 
-class MenuCleaner implements CleanerInterface
+class MenuCleaner extends BaseCleaner
 {
-    public function clean(Container $app, Container $snapshot)
+    public function clean()
     {
-        $app->forgetInstance('Lavary\Menu\Menu');
+        $this->currentApp->forgetInstance('Lavary\Menu\Menu');
         Facade::clearResolvedInstance('Lavary\Menu\Menu');
     }
 }

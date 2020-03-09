@@ -7,26 +7,37 @@ use Illuminate\Container\Container;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Facade;
 
-class SessionCleaner implements CleanerInterface
+class SessionCleaner extends BaseCleaner
 {
-    public function clean(Container $app, Container $snapshot)
+    private $drivers;
+
+    public function __construct(Container $currentApp, Container $snapshotApp)
     {
-        if (!$app->offsetExists('session')) {
+        parent::__construct($currentApp, $snapshotApp);
+
+        if (!isset($this->currentApp['session'])) {
+            return;
+        }
+        $ref = new \ReflectionObject($this->currentApp['session']);
+        $this->drivers = $ref->getProperty('drivers');
+        $this->drivers->setAccessible(true);
+
+    }
+
+    public function clean()
+    {
+        if (!$this->drivers) {
             return;
         }
 
-        $ref = new \ReflectionObject($app['session']);
-        $drivers = $ref->getProperty('drivers');
-        $drivers->setAccessible(true);
-        $drivers->setValue($app['session'], []);
-
-        $app->forgetInstance('session.store');
+        $this->drivers->setValue($this->currentApp['session'], []);
+        $this->currentApp->forgetInstance('session.store');
         Facade::clearResolvedInstance('session.store');
 
-        if ($app->offsetExists('redirect')) {
+        if (isset($this->currentApp['redirect'])) {
             /**@var Redirector $redirect */
-            $redirect = $app->offsetGet('redirect');
-            $redirect->setSession($app->make('session.store'));
+            $redirect = $this->currentApp['redirect'];
+            $redirect->setSession($this->currentApp->make('session.store'));
         }
     }
 }

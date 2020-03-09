@@ -2,10 +2,9 @@
 
 namespace Hhxsv5\LaravelS\Illuminate\Cleaners;
 
-use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
 
-class JWTCleaner implements CleanerInterface
+class JWTCleaner extends BaseCleaner
 {
     protected $instances = [
         'tymon.jwt',
@@ -15,10 +14,10 @@ class JWTCleaner implements CleanerInterface
         'tymon.jwt.manager',
     ];
 
-    public function clean(Container $app, Container $snapshot)
+    public function clean()
     {
         foreach ($this->instances as $instance) {
-            $app->forgetInstance($instance);
+            $this->currentApp->forgetInstance($instance);
             Facade::clearResolvedInstance($instance);
         }
     }

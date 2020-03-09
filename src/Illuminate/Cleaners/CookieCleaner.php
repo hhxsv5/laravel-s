@@ -4,17 +4,26 @@ namespace Hhxsv5\LaravelS\Illuminate\Cleaners;
 
 use Illuminate\Container\Container;
 
-class CookieCleaner implements CleanerInterface
+class CookieCleaner extends BaseCleaner
 {
-    public function clean(Container $app, Container $snapshot)
+    private $queued;
+
+    public function __construct(Container $currentApp, Container $snapshotApp)
     {
-        if (!$app->offsetExists('cookie')) {
+        parent::__construct($currentApp, $snapshotApp);
+        if (!isset($this->currentApp['cookie'])) {
             return;
         }
-        $cookie = $app->offsetGet('cookie');
-        $ref = new \ReflectionObject($cookie);
-        $queued = $ref->getProperty('queued');
-        $queued->setAccessible(true);
-        $queued->setValue($cookie, []);
+        $ref = new \ReflectionObject($this->currentApp['cookie']);
+        $this->queued = $ref->getProperty('queued');
+        $this->queued->setAccessible(true);
+    }
+
+    public function clean()
+    {
+        if (!$this->queued) {
+            return;
+        }
+        $this->queued->setValue($this->currentApp['cookie'], []);
     }
 }

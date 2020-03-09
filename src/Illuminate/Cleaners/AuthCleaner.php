@@ -6,23 +6,33 @@ namespace Hhxsv5\LaravelS\Illuminate\Cleaners;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
 
-class AuthCleaner implements CleanerInterface
+class AuthCleaner extends BaseCleaner
 {
-    public function clean(Container $app, Container $snapshot)
+    private $guards;
+
+    public function __construct(Container $currentApp, Container $snapshotApp)
     {
-        if (!$app->offsetExists('auth')) {
+        parent::__construct($currentApp, $snapshotApp);
+
+        if (!isset($this->currentApp['auth'])) {
             return;
         }
-        $ref = new \ReflectionObject($app['auth']);
+        $ref = new \ReflectionObject($this->currentApp['auth']);
         if ($ref->hasProperty('guards')) {
-            $guards = $ref->getProperty('guards');
+            $this->guards = $ref->getProperty('guards');
         } else {
-            $guards = $ref->getProperty('drivers');
+            $this->guards = $ref->getProperty('drivers');
         }
-        $guards->setAccessible(true);
-        $guards->setValue($app['auth'], []);
+        $this->guards->setAccessible(true);
+    }
 
-        $app->forgetInstance('auth.driver');
+    public function clean()
+    {
+        if (!$this->guards) {
+            return;
+        }
+        $this->guards->setValue($this->currentApp['auth'], []);
+        $this->currentApp->forgetInstance('auth.driver');
         Facade::clearResolvedInstance('auth.driver');
     }
 }

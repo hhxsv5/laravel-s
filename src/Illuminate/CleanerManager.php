@@ -2,9 +2,11 @@
 
 namespace Hhxsv5\LaravelS\Illuminate;
 
+use Hhxsv5\LaravelS\Illuminate\Cleaners\BaseCleaner;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\ConfigCleaner;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\CookieCleaner;
+use Hhxsv5\LaravelS\Illuminate\Cleaners\EventCleaner;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\RequestCleaner;
 use Illuminate\Container\Container;
 
@@ -13,13 +15,21 @@ class CleanerManager
     /**
      * @var Container
      */
-    protected $app;
+    protected $currentApp;
+    /**
+     * @var Container
+     */
+    protected $snapshotApp;
+
+    /**@var ReflectionApp */
+    protected $reflectionApp;
 
     /**
      * All cleaners
      * @var CleanerInterface[]
      */
     protected $cleaners = [
+        EventCleaner::class,
         ConfigCleaner::class,
         CookieCleaner::class,
         RequestCleaner::class,
@@ -45,12 +55,15 @@ class CleanerManager
     /**
      * CleanerManager constructor.
      *
-     * @param Container $app
+     * @param Container $currentApp
+     * @param Container $snapshotApp
      * @param array $config
      */
-    public function __construct(Container $app, array $config)
+    public function __construct(Container $currentApp, Container $snapshotApp, array $config)
     {
-        $this->app = $app;
+        $this->currentApp = $currentApp;
+        $this->snapshotApp = $snapshotApp;
+        $this->reflectionApp = new ReflectionApp($this->currentApp);
         $this->config = $config;
         $this->registerCleaners(isset($this->config['cleaners']) ? $this->config['cleaners'] : []);
         $this->registerCleanProviders(isset($config['register_providers']) ? $config['register_providers'] : []);
@@ -64,35 +77,33 @@ class CleanerManager
     protected function registerCleaners(array $cleaners)
     {
         $this->cleaners = array_unique(array_merge($cleaners, $this->cleaners));
-        foreach ($this->cleaners as $cleaner) {
-            $this->app->singleton($cleaner, function () use ($cleaner) {
-                if (!isset(class_implements($cleaner)[CleanerInterface::class])) {
+        foreach ($this->cleaners as $class) {
+            $this->currentApp->singleton($class, function () use ($class) {
+                $cleaner = new $class($this->currentApp, $this->snapshotApp);
+                if (!($cleaner instanceof BaseCleaner)) {
                     throw new \InvalidArgumentException(sprintf(
-                            '%s must implement the interface %s',
+                            '%s must extend the abstract class %s',
                             $cleaner,
-                            CleanerInterface::class
+                            BaseCleaner::class
                         )
                     );
                 }
-                return new $cleaner();
+                return $cleaner;
             });
         }
     }
 
     /**
      * Clean app after request finished.
-     *
-     * @param Container $snapshotApp
      */
-    public function clean($snapshotApp)
+    public function clean()
     {
-        foreach ($this->cleaners as $cleanerCls) {
-            /**@var CleanerInterface $cleaner */
-            $cleaner = $this->app->make($cleanerCls);
-            $cleaner->clean($this->app, $snapshotApp);
+        foreach ($this->cleaners as $class) {
+            /**@var BaseCleaner $cleaner */
+            $cleaner = $this->currentApp->make($class);
+            $cleaner->clean();
         }
     }
-
 
     /**
      * Register providers for cleaning.
@@ -106,29 +117,26 @@ class CleanerManager
 
     /**
      * Clean Providers.
-     *
-     * @param ReflectionApp $reflectionApp
-     * @throws \ReflectionException
      */
-    public function cleanProviders(ReflectionApp $reflectionApp)
+    public function cleanProviders()
     {
-        $loadedProviders = $reflectionApp->loadedProviders();
+        $loadedProviders = $this->reflectionApp->loadedProviders();
 
         foreach ($this->providers as $provider) {
             if (class_exists($provider, false)) {
                 if ($this->isLumen()) {
-                    unset($loadedProviders[get_class(new $provider($this->app))]);
+                    unset($loadedProviders[get_class(new $provider($this->currentApp))]);
                 }
 
-                switch ($reflectionApp->registerMethodParameterCount()) {
+                switch ($this->reflectionApp->registerMethodParameterCount()) {
                     case 1:
-                        $this->app->register($provider);
+                        $this->currentApp->register($provider);
                         break;
                     case 2:
-                        $this->app->register($provider, true);
+                        $this->currentApp->register($provider, true);
                         break;
                     case 3:
-                        $this->app->register($provider, [], true);
+                        $this->currentApp->register($provider, [], true);
                         break;
                     default:
                         throw new \RuntimeException('The number of parameters of the register method is unknown.');
@@ -137,7 +145,7 @@ class CleanerManager
         }
 
         if ($this->isLumen()) {
-            $reflectionApp->setLoadedProviders($loadedProviders);
+            $this->reflectionApp->setLoadedProviders($loadedProviders);
         }
     }
 
@@ -166,7 +174,7 @@ class CleanerManager
         }
 
         /**@var \Illuminate\Routing\Route $route */
-        $route = $this->app['router']->current();
+        $route = $this->currentApp['router']->current();
         if (!$route) {
             return;
         }
@@ -177,7 +185,7 @@ class CleanerManager
             }
         } else {
             $reflection = new \ReflectionClass(get_class($route));
-            if ($reflection->hasProperty('controller')) { // For Laravel 5.3
+            if ($reflection->hasProperty('controller')) { // Laravel 5.3
                 $controller = $reflection->getProperty('controller');
                 $controller->setAccessible(true);
                 if (empty($this->whiteListControllers) || (($instance = $controller->getValue($route)) && !isset($this->whiteListControllers[get_class($instance)]))) {
