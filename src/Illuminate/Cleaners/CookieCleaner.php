@@ -21,7 +21,7 @@ class CookieCleaner extends BaseCleaner
 
     public function clean()
     {
-        if (!$this->queued) {
+        if (!isset($this->currentApp['cookie'])) {
             return;
         }
         $this->queued->setValue($this->currentApp['cookie'], []);

@@ -26,7 +26,7 @@ class SessionCleaner extends BaseCleaner
 
     public function clean()
     {
-        if (!$this->drivers) {
+        if (!isset($this->currentApp['session'])) {
             return;
         }
 

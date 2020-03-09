@@ -28,7 +28,7 @@ class AuthCleaner extends BaseCleaner
 
     public function clean()
     {
-        if (!$this->guards) {
+        if (!isset($this->currentApp['auth'])) {
             return;
         }
         $this->guards->setValue($this->currentApp['auth'], []);
