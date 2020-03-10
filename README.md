@@ -38,7 +38,7 @@ Table of Contents
     * [Customized asynchronous events](#customized-asynchronous-events)
 * [Asynchronous task queue](#asynchronous-task-queue)
 * [Millisecond cron job](#millisecond-cron-job)
-* [Reload automatically when code is modified](#reload-automatically-when-code-is-modified)
+* [Automatically reload after modifying code](#automatically-reload-after-modifying-code)
 * [Get the instance of SwooleServer in your project](#get-the-instance-of-swooleserver-in-your-project)
 * [Use SwooleTable](#use-swooletable)
 * [Multi-port mixed protocol](#multi-port-mixed-protocol)
@@ -71,7 +71,7 @@ Table of Contents
 
 - Gracefully reload
 
-- [Reload automatically when code is modified](https://github.com/hhxsv5/laravel-s/blob/master/README.md#reload-automatically-when-code-is-modified)
+- [Automatically reload after modifying code](https://github.com/hhxsv5/laravel-s/blob/master/README.md#automatically-reload-after-modifying-code)
 
 - Support Laravel/Lumen both, good compatibility
 
@@ -647,7 +647,7 @@ class TestCronJob extends CronJob
 
 4.LaravelS `v3.4.0` starts to support the hot restart [Reload] `Timer` process. After LaravelS receives the `SIGUSR1` signal, it waits for `max_wait_time`(default 5) seconds to end the process, then the `Manager` process will pull up the `Timer` process again.
 
-## Reload automatically when code is modified
+## Automatically reload after modifying code
 
 - Via `inotify`, support Linux only.
 
