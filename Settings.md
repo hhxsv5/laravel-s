@@ -10,7 +10,7 @@
 > `int` Default `SWOOLE_SOCK_TCP`. Usually, you don’t need to care about it. Unless you want Nginx to proxy to the `UnixSocket Stream` file, you need to modify it to `SWOOLE_SOCK_UNIX_STREAM`, and `listen_ip` is the path of `UnixSocket Stream` file.
 
 ## enable_coroutine_runtime
-> `bool` Whether enable [runtime coroutine](https://wiki.swoole.com/wiki/page/965.html), require `Swoole>=4.1.0`, default `false`.
+> `bool` Whether enable [runtime coroutine](https://www.swoole.co.uk/docs/modules/swoole-coroutine-methods), require `Swoole>=4.1.0`, default `false`.
 
 ## server
 > `string` Set HTTP header `Server` when respond by LaravelS, default `LaravelS`.
@@ -109,4 +109,4 @@
 > `array` Automatically destroy the controllers after each request to solve the problem of the singleton controllers, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md#singleton-controller).
 
 ## swoole
-> `array` Swoole's `original` configuration items, refer [Swoole Configuration](https://www.swoole.co.uk/docs/modules/swoole-server/configuration).
+> `array` Swoole's `original` configuration items, refer [Swoole Server Configuration](https://www.swoole.co.uk/docs/modules/swoole-server/configuration).

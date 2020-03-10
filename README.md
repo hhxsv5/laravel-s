@@ -926,9 +926,9 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ]
     ```
 
-- [Coroutine Client](https://wiki.swoole.com/wiki/page/p-coroutine_mysql.html): require `Swoole>=2.0`.
+- [Coroutine Client](https://www.swoole.co.uk/docs/modules/swoole-coroutine-client): require `Swoole>=2.0`.
 
-- [Runtime Coroutine](https://wiki.swoole.com/wiki/page/965.html): require `Swoole>=4.1.0`, and enable it.
+- [Runtime Coroutine](https://www.swoole.co.uk/docs/modules/swoole-coroutine-methods): require `Swoole>=4.1.0`, and enable it.
 
     ```php
     // Edit `config/laravels.php`

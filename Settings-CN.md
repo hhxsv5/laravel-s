@@ -10,7 +10,7 @@
 > 默认`SWOOLE_SOCK_TCP`。通常情况下，无需关心这个配置。若需Nginx代理至`UnixSocket Stream`文件，则需修改为`SWOOLE_SOCK_UNIX_STREAM`，此时`listen_ip`则是`UnixSocket Stream`文件的路径。
 
 ## enable_coroutine_runtime
-> `bool` 是否启用[运行时协程](https://wiki.swoole.com/wiki/page/965.html)，需`Swoole>=4.1.0`，默认`false`。
+> `bool` 是否启用[运行时协程](https://wiki.swoole.com/#/runtime)，需`Swoole>=4.1.0`，默认`false`。
 
 ## server
 > `string` 当通过LaravelS响应数据时，设置HTTP头部`Server`的值，若为空则不设置，默认 `LaravelS`。
@@ -109,4 +109,4 @@
 > `array` 每次请求后自动销毁控制器，解决单例控制器的问题，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md#%E5%8D%95%E4%BE%8B%E6%8E%A7%E5%88%B6%E5%99%A8)。
 
 ## swoole
-> `array` Swoole的`原始`配置项，请参考[Swoole配置项](https://wiki.swoole.com/wiki/page/274.html)。
+> `array` Swoole的`原始`配置项，请参考[Swoole服务器配置项](https://wiki.swoole.com/#/server/setting)。

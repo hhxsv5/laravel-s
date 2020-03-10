@@ -283,7 +283,7 @@ use Swoole\Http\Request;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 /**
- * @see https://wiki.swoole.com/wiki/page/400.html
+ * @see https://wiki.swoole.com/#/start/start_ws_server
  */
 class WebSocketService implements WebSocketHandlerInterface
 {
@@ -322,7 +322,7 @@ class WebSocketService implements WebSocketHandlerInterface
 ],
 'swoole'         => [
     //...
-    // dispatch_mode只能设置为2、4、5，https://wiki.swoole.com/wiki/page/277.html
+    // dispatch_mode只能设置为2、4、5，https://wiki.swoole.com/#/server/setting?id=dispatch_mode
     'dispatch_mode' => 2,
     //...
 ],
@@ -472,7 +472,7 @@ class TestController extends Controller
     ```
 
 ### 自定义的异步事件
-> 此特性依赖`Swoole`的`AsyncTask`，必须先设置`config/laravels.php`的`swoole.task_worker_num`。异步事件的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
+> 此特性依赖`Swoole`的`AsyncTask`，必须先设置`config/laravels.php`的`swoole.task_worker_num`。异步事件的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/#/server/setting?id=task_worker_num)。
 
 1.创建事件类。
 
@@ -509,7 +509,7 @@ class TestListener1 extends Listener
         \Log::info(__CLASS__ . ':handle start', [$event->getData()]);
         sleep(2);// 模拟一些慢速的事件处理
         // 监听器中也可以投递Task，但不支持Task的finish()回调。
-        // 注意：config/laravels.php中修改配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/wiki/page/296.html
+        // 注意：config/laravels.php中修改配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/#/server/setting?id=task_ipc_mode
         $ret = Task::deliver(new TestTask('task data'));
         var_dump($ret);
         // throw new \Exception('an exception');// handle时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
@@ -546,7 +546,7 @@ var_dump($success);// 判断是否触发成功
 ```
 
 ## 异步的任务队列
-> 此特性依赖`Swoole`的`AsyncTask`，必须先设置`config/laravels.php`的`swoole.task_worker_num`。异步任务的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/wiki/page/276.html)。
+> 此特性依赖`Swoole`的`AsyncTask`，必须先设置`config/laravels.php`的`swoole.task_worker_num`。异步任务的处理能力受Task进程数影响，需合理设置[task_worker_num](https://wiki.swoole.com/#/server/setting?id=task_worker_num)。
 
 1.创建任务类。
 
@@ -590,7 +590,7 @@ var_dump($ret);// 判断是否投递成功
 ```
 
 ## 毫秒级定时任务
-> 基于[Swoole的毫秒定时器](https://wiki.swoole.com/wiki/page/244.html)，封装的定时任务，取代`Linux`的`Crontab`。
+> 基于[Swoole的毫秒定时器](https://wiki.swoole.com/#/timer)，封装的定时任务，取代`Linux`的`Crontab`。
 
 1.创建定时任务类。
 ```php
@@ -626,7 +626,7 @@ class TestCronJob extends CronJob
             \Log::info(__METHOD__, ['stop', $this->i, microtime(true)]);
             $this->stop(); // 终止此任务
             // CronJob中也可以投递Task，但不支持Task的finish()回调。
-            // 注意：修改config/laravels.php，配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/wiki/page/296.html
+            // 注意：修改config/laravels.php，配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/#/server/setting?id=task_ipc_mode
             $ret = Task::deliver(new TestTask('task data'));
             var_dump($ret);
         }
@@ -790,7 +790,7 @@ class WebSocketService implements WebSocketHandlerInterface
 
 ## 多端口混合协议
 
-> 更多的信息，请参考[Swoole增加监听的端口](https://wiki.swoole.com/wiki/page/16.html)与[多端口混合协议](https://wiki.swoole.com/wiki/page/525.html)
+> 更多的信息，请参考[Swoole增加监听的端口](https://wiki.swoole.com/#/server/methods?id=addlistener)与[多端口混合协议](https://wiki.swoole.com/#/server/port)
 
 为了使我们的主服务器能支持除`HTTP`和`WebSocket`外的更多协议，我们引入了`Swoole`的`多端口混合协议`特性，在LaravelS中称为`Socket`。现在，可以很方便地在`Laravel`上构建`TCP/UDP`应用。
 
@@ -842,8 +842,8 @@ class WebSocketService implements WebSocketHandlerInterface
         [
             'host'     => '127.0.0.1',
             'port'     => 5291,
-            'type'     => SWOOLE_SOCK_TCP,// 支持的嵌套字类型：https://wiki.swoole.com/wiki/page/16.html#entry_h2_0
-            'settings' => [// Swoole可用的配置项：https://wiki.swoole.com/wiki/page/526.html
+            'type'     => SWOOLE_SOCK_TCP,// 支持的嵌套字类型：https://wiki.swoole.com/#/consts?id=socket-%e7%b1%bb%e5%9e%8b
+            'settings' => [// Swoole可用的配置项：https://wiki.swoole.com/#/server/port?id=%e5%8f%af%e9%80%89%e5%8f%82%e6%95%b0
                 'open_eof_check' => true,
                 'package_eof'    => "\r\n",
             ],
@@ -854,7 +854,7 @@ class WebSocketService implements WebSocketHandlerInterface
 
     关于心跳配置，只能设置在`主服务器`上，不能配置在`套接字`上，但`套接字`会继承`主服务器`的心跳配置。
 
-    对于TCP协议，`dispatch_mode`选项设为`1/3`时，底层会屏蔽`onConnect`/`onClose`事件，原因是这两种模式下无法保证`onConnect`/`onClose`/`onReceive`的顺序。如果需要用到这两个事件，请将`dispatch_mode`改为`2/4/5`，[参考](https://wiki.swoole.com/wiki/page/277.html)。
+    对于TCP协议，`dispatch_mode`选项设为`1/3`时，底层会屏蔽`onConnect`/`onClose`事件，原因是这两种模式下无法保证`onConnect`/`onClose`/`onReceive`的顺序。如果需要用到这两个事件，请将`dispatch_mode`改为`2/4/5`，[参考](https://wiki.swoole.com/#/server/setting?id=dispatch_mode)。
 
     ```php
     'swoole' => [
@@ -922,7 +922,7 @@ class WebSocketService implements WebSocketHandlerInterface
 
 ## 协程
 
-> [Swoole原始文档](https://wiki.swoole.com/wiki/page/749.html)
+> [Swoole原始文档](https://wiki.swoole.com/#/start/coroutine)
 
 - 警告：协程下代码执行顺序是乱序的，请求级的数据应该以协程ID隔离，但Laravel/Lumen中存在很多单例、静态属性，不同请求间的数据会相互影响，这是`不安全`的。比如数据库连接就是单例，同一个数据库连接共享同一个PDO资源，这在同步阻塞模式下是没问题的，但在异步协程下是不行的，每次查询需要创建不同的连接，维护不同的IO状态，这就需要用到连接池。所以`不要`打开协程，仅`自定义进程`中可使用协程。
 
@@ -939,9 +939,9 @@ class WebSocketService implements WebSocketHandlerInterface
     ]
     ```
 
-- [协程客户端](https://wiki.swoole.com/wiki/page/p-coroutine_mysql.html)：需`Swoole>=2.0`。
+- [协程客户端](https://wiki.swoole.com/#/coroutine_client/init)：需`Swoole>=2.0`。
 
-- [运行时协程](https://wiki.swoole.com/wiki/page/965.html)：需`Swoole>=4.1.0`，同时启用下面的配置。
+- [运行时协程](https://wiki.swoole.com/#/runtime)：需`Swoole>=4.1.0`，同时启用下面的配置。
 
     ```php
     // 修改文件 `config/laravels.php`
@@ -953,7 +953,7 @@ class WebSocketService implements WebSocketHandlerInterface
 
 ## 自定义进程
 
-> 支持开发者创建一些特殊的工作进程，用于监控、上报或者其他特殊的任务，参考[addProcess](https://wiki.swoole.com/wiki/page/214.html)。
+> 支持开发者创建一些特殊的工作进程，用于监控、上报或者其他特殊的任务，参考[addProcess](https://wiki.swoole.com/#/server/methods?id=addprocess)。
 
 1. 创建Proccess类，实现CustomProcessInterface接口。
 
@@ -980,7 +980,7 @@ class WebSocketService implements WebSocketHandlerInterface
                 // sleep(1); // Swoole < 2.1
                 Coroutine::sleep(1); // Swoole>=2.1 已自动为callback()方法创建了协程并启用了协程Runtime。
                 // 自定义进程中也可以投递Task，但不支持Task的finish()回调。
-                // 注意：修改config/laravels.php，配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/wiki/page/296.html
+                // 注意：修改config/laravels.php，配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/#/server/setting?id=task_ipc_mode
                 $ret = Task::deliver(new TestTask('task data'));
                 var_dump($ret);
                 // 上层会捕获callback中抛出的异常，并记录到Swoole日志，然后此进程会退出，3秒后Manager进程会重新创建进程，所以需要开发者自行try/catch捕获异常，避免频繁创建进程。

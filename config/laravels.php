@@ -86,7 +86,7 @@ return [
 
         /**
          * More settings of Swoole
-         * @see https://wiki.swoole.com/wiki/page/274.html  Chinese
+         * @see https://wiki.swoole.com/#/server/setting  Chinese
          * @see https://www.swoole.co.uk/docs/modules/swoole-server/configuration  English
          */
     ],
