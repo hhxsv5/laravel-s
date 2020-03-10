@@ -57,8 +57,6 @@ Table of Contents
 
 - [Multi-port mixed protocol](https://github.com/hhxsv5/laravel-s/blob/master/README.md#multi-port-mixed-protocol)
 
-- [Coroutine](https://github.com/hhxsv5/laravel-s/blob/master/README.md#coroutine)
-
 - [Custom process](https://github.com/hhxsv5/laravel-s/blob/master/README.md#custom-process)
 
 - Memory resident

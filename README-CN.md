@@ -62,8 +62,6 @@ Table of Contents
 
 - [多端口混合协议](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%A4%9A%E7%AB%AF%E5%8F%A3%E6%B7%B7%E5%90%88%E5%8D%8F%E8%AE%AE)
 
-- [协程](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%8D%8F%E7%A8%8B)
-
 - [自定义进程](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%9B%E7%A8%8B)
 
 - 常驻内存
