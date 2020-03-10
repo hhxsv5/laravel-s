@@ -6,7 +6,6 @@ use Hhxsv5\LaravelS\Illuminate\Cleaners\BaseCleaner;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\ConfigCleaner;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\CookieCleaner;
-use Hhxsv5\LaravelS\Illuminate\Cleaners\EventCleaner;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\RequestCleaner;
 use Illuminate\Container\Container;
 
@@ -29,7 +28,6 @@ class CleanerManager
      * @var CleanerInterface[]
      */
     protected $cleaners = [
-        EventCleaner::class,
         ConfigCleaner::class,
         CookieCleaner::class,
         RequestCleaner::class,
