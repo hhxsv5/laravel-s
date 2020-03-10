@@ -61,7 +61,7 @@
 > `array` The defined of `swoole_table` list, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#use-swoole_table).
 
 ## cleaners
-> `array` The list of cleaners for `each request` is used to clean up some residual global variables, singleton objects, and static properties to avoid data pollution between requests, these classes must implement interface `Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface`. The order of cleanup is consistent with the order of the arrays. [Some cleaners](https://github.com/hhxsv5/laravel-s/blob/master/src/Illuminate/CleanerManager.php#L22) enabled by default.
+> `array` The list of cleaners for `each request` is used to clean up some residual global variables, singleton objects, and static properties to avoid data pollution between requests, these classes must implement interface `Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface`. The order of cleanup is consistent with the order of the arrays. [Some cleaners](https://github.com/hhxsv5/laravel-s/blob/master/src/Illuminate/CleanerManager.php#L31) enabled by default.
 
 ```php
 // If you use the session/authentication/passport in your project

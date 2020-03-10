@@ -61,7 +61,7 @@
 > `array` 定义的`swoole_table`列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E4%BD%BF%E7%94%A8swoole_table)。
 
 ## cleaners
-> `array` `每次请求`的清理器列表，用于清理一些残留的全局变量、单例对象、静态属性，避免多次请求间数据污染。这些清理器类必须实现接口`Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface`。清理的顺序与数组的顺序保持一致。[这些清理器](https://github.com/hhxsv5/laravel-s/blob/master/src/Illuminate/CleanerManager.php#L22)默认已启用。
+> `array` `每次请求`的清理器列表，用于清理一些残留的全局变量、单例对象、静态属性，避免多次请求间数据污染。这些清理器类必须实现接口`Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface`。清理的顺序与数组的顺序保持一致。[这些清理器](https://github.com/hhxsv5/laravel-s/blob/master/src/Illuminate/CleanerManager.php#L31)默认已启用。
 
 ```php
 // 如果你的项目中使用到了Session、Authentication、Passport
