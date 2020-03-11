@@ -36,11 +36,11 @@ class StaticResponse extends Response
 
         // Support deleteFileAfterSend: https://github.com/symfony/http-foundation/blob/5.0/BinaryFileResponse.php#L305
         $reflection = new \ReflectionObject($this->laravelResponse);
-        try {
+        if ($reflection->hasProperty('deleteFileAfterSend')) {
             $deleteFileAfterSend = $reflection->getProperty('deleteFileAfterSend');
             $deleteFileAfterSend->setAccessible(true);
             $deleteFile = $deleteFileAfterSend->getValue($this->laravelResponse);
-        } catch (\Exception $e) {
+        } else {
             $deleteFile = false;
         }
 
