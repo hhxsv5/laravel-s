@@ -11,11 +11,13 @@ class LaravelAdminCleaner extends BaseCleaner
         \Encore\Admin\Admin::$script = [];
         \Encore\Admin\Admin::$deferredScript = [];
         \Encore\Admin\Admin::$headerJs = [];
+        \Encore\Admin\Admin::$style = [];
+        \Encore\Admin\Admin::$css = [];
+        \Encore\Admin\Admin::$html = [];
         \Encore\Admin\Admin::$manifestData = [];
         \Encore\Admin\Admin::$extensions = [];
         \Encore\Admin\Admin::$js=[];
         \Encore\Admin\Admin::$headerJs=[];
-        \Encore\Admin\Admin::$manifestData=[];
         $this->currentApp->forgetInstance('Encore\Admin\Admin');
         Facade::clearResolvedInstance('Encore\Admin\Admin');
     }
