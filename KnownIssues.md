@@ -5,7 +5,7 @@
 - Delivering a task, triggering an asynchronous event will call `app('swoole')` and get the `Swoole\http\server` instance from the `Laravel container`. This instance is injected into the container only when `LaravelS` is started.
 - So, once you leave the `LaravelS`, due to the cross-process, you will be `unable` to successfully call `app('swoole')`:
     - The code that runs in various `command line` modes, such as the Artisan command line and the PHP script command line.
-    - Run the code under `FPM`/`Apache PHP Module`.
+    - Run the code under `FPM`/`Apache PHP Module`, view SAPI `Log::info('PHP SAPI', [php_sapi_name()]);`.
 
 ## Use package [encore/laravel-admin](https://github.com/z-song/laravel-admin)
 > Modify `config/laravels.php` and add` LaravelAdminCleaner` in `cleaners`.

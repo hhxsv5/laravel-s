@@ -4,8 +4,8 @@
 - 在`LaravelS`中，`Swoole`是以`cli`模式启动的`Http Server`，替代了`FPM`。
 - 投递任务、触发异步事件都会调用`app('swoole')`，从`Laravel容器`中获取`Swoole\http\server`实例。只有在`LaravelS`启动时，才会注入这个实例到容器中。
 - 所以，一旦脱离`LaravelS`，由于跨进程，以下情况，你将`无法`成功调用`app('swoole')`：
-    - 以各种`命令行`方式运行的代码，例如Artisan命令行、PHP脚本命令行。
-    - 运行在`FPM`/`Apache PHP Module`下的代码。
+    - 以各种`命令行`方式运行的代码，例如Artisan命令行、PHP脚本命令行；
+    - 运行在`FPM`/`Apache PHP Module`下的代码，查看SAPI `Log::info('PHP SAPI', [php_sapi_name()]);`。
 
 ## 使用包 [encore/laravel-admin](https://github.com/z-song/laravel-admin)
 > 修改`config/laravels.php`，在`cleaners`中增加`LaravelAdminCleaner`。
