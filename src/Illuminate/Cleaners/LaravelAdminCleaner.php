@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Facade;
 class LaravelAdminCleaner extends BaseCleaner
 {
     const   ADMIN_CLASS = 'Encore\Admin\Admin';
-    private   $reflection;
+
+    private $reflection;
+
     protected $properties = [
         'deferredScript' => [],
         'script'         => [],
@@ -19,7 +21,6 @@ class LaravelAdminCleaner extends BaseCleaner
         'headerJs'       => [],
         'manifestData'   => [],
         'extensions'     => [],
-        'menu'           => [],
         'minifyIgnores'  => [],
     ];
 
