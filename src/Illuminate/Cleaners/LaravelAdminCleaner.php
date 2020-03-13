@@ -2,23 +2,41 @@
 
 namespace Hhxsv5\LaravelS\Illuminate\Cleaners;
 
+use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
 
 class LaravelAdminCleaner extends BaseCleaner
 {
+    const   ADMIN_CLASS = 'Encore\Admin\Admin';
+    private   $reflection;
+    protected $properties = [
+        'deferredScript' => [],
+        'script'         => [],
+        'style'          => [],
+        'css'            => [],
+        'js'             => [],
+        'html'           => [],
+        'headerJs'       => [],
+        'manifestData'   => [],
+        'extensions'     => [],
+        'menu'           => [],
+        'minifyIgnores'  => [],
+    ];
+
+    public function __construct(Container $currentApp, Container $snapshotApp)
+    {
+        parent::__construct($currentApp, $snapshotApp);
+        $this->reflection = new \ReflectionClass(self::ADMIN_CLASS);
+    }
+
     public function clean()
     {
-        \Encore\Admin\Admin::$script = [];
-        \Encore\Admin\Admin::$deferredScript = [];
-        \Encore\Admin\Admin::$headerJs = [];
-        \Encore\Admin\Admin::$style = [];
-        \Encore\Admin\Admin::$css = [];
-        \Encore\Admin\Admin::$html = [];
-        \Encore\Admin\Admin::$manifestData = [];
-        \Encore\Admin\Admin::$extensions = [];
-        \Encore\Admin\Admin::$js=[];
-        \Encore\Admin\Admin::$headerJs=[];
-        $this->currentApp->forgetInstance('Encore\Admin\Admin');
-        Facade::clearResolvedInstance('Encore\Admin\Admin');
+        foreach ($this->properties as $name => $value) {
+            if (property_exists(self::ADMIN_CLASS, $name)) {
+                $this->reflection->setStaticPropertyValue($name, $value);
+            }
+        }
+        $this->currentApp->forgetInstance(self::ADMIN_CLASS);
+        Facade::clearResolvedInstance(self::ADMIN_CLASS);
     }
 }
