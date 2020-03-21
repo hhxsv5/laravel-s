@@ -22,6 +22,7 @@ class LaravelSServiceProvider extends ServiceProvider
         $this->commands([
             LaravelSCommand::class,
             ListPropertiesCommand::class,
+            LaravelSStatusCommand::class,
         ]);
     }
 }

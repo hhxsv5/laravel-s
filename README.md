@@ -75,6 +75,8 @@ Table of Contents
 
 - Simple & Out of the box
 
+- Get worker current status
+
 ## Requirements
 
 | Dependency | Requirement |
@@ -1041,6 +1043,92 @@ To make our main server support more protocols not just Http and WebSocket, we b
         var_dump($pushProcess->read());
     }
     ```
+
+## Get worker current status
+
+> Relied on ext-sockets. Find out which request is blocking in worker quickly.
+
+1. Check if `ext-sockets` is enabled.
+
+```
+php -m | grep sockets
+```
+
+2. Add config to `.env`
+
+```
+LARAVELS_ENABLE_STATUS_MONITOR=true
+```
+
+3. Add config to `laravels.php`
+
+```
+'enable_laravels_status_monitor' => env('LARAVELS_ENABLE_STATUS_MONITOR', true),
+```
+
+4. Add custom process to `laravels.php`
+
+```
+'status_monitor' => [
+    'class'    => \Hhxsv5\LaravelS\Illuminate\LaravelSMonitorProcess::class,
+    'redirect' => false,
+    'pipe'     => 1,
+    'enable'   => env('LARAVELS_ENABLE_STATUS_MONITOR', true) && extension_loaded('sockets'),
+],
+```
+
+5. Add swoole table definition to `laravels.php`
+
+```
+'status' => [
+    'size' => 30,
+    'column' => [
+        ['name' => 'value', 'type' => \Swoole\Table::TYPE_STRING, 'size' => 256],
+    ]
+],
+```
+
+6. Restart laravels
+
+7. Get the worker status
+
+```
+cat storage/swoole-status.sock
+```
+
+or
+
+````
+php artisan laravels:status
+````
+
+output:
+
+```
+{
+    "start_time": 1584767471,
+    "connection_num": 2,
+    "accept_count": 2,
+    "close_count": 0,
+    "worker_num": 8,
+    "idle_worker_num": 6,
+    "tasking_num": 0,
+    "request_count": 0,
+    "worker_request_count": 0,
+    "worker_dispatch_count": 0,
+    "coroutine_num": 1,
+    "start_times": {
+        "worker_0": "",
+        "worker_1": "",
+        "worker_2": "",
+        "worker_3": "GET /b 6.39s (Time elapsed) (started_at: 2020-03-21 05:11:14)",
+        "worker_4": "GET /a 25.5s (Time elapsed) (started_at: 2020-03-21 05:11:17)",
+        "worker_5": "",
+        "worker_6": "",
+        "worker_7": ""
+    }
+}
+```
 
 ## Other features
 

@@ -138,8 +138,37 @@ class Laravel
         return $this->rawGlobals;
     }
 
+    /**
+     * Record current request info, including start_time、request_url
+     */
+    private function recordWorkerStatus()
+    {
+        app('swoole')->statusTable->set(
+            'worker:' . app('swoole')->worker_id,
+            [
+                'value' => json_encode([
+                    'start_time' => ceil(microtime(true) * 1000),
+                    'worker_id' => app('swoole')->worker_id,
+                    'worker_pid' => app('swoole')->worker_pid,
+                    'request_url' => app('request')->getPathInfo(),
+                    'method' => app('request')->getMethod(),
+                ])
+            ]
+        );
+    }
+
+    /**
+     * Clear worker status from swoole table
+     */
+    private function clearWorkerStatus()
+    {
+        app('swoole')->statusTable->del('worker:' . app('swoole')->worker_id);
+    }
+
     public function handleDynamic(IlluminateRequest $request)
     {
+        $this->recordWorkerStatus();
+
         ob_start();
 
         if ($this->isLumen()) {
@@ -163,6 +192,8 @@ class Laravel
         }
 
         ob_end_clean();
+
+        $this->clearWorkerStatus();
 
         return $response;
     }

@@ -11,6 +11,7 @@ return [
     'server'                   => env('LARAVELS_SERVER', 'LaravelS'),
     'handle_static'            => env('LARAVELS_HANDLE_STATIC', false),
     'laravel_base_path'        => env('LARAVEL_BASE_PATH', base_path()),
+    'enable_laravels_status_monitor' => env('LARAVELS_ENABLE_STATUS_MONITOR', true),
     'inotify_reload'           => [
         'enable'        => env('LARAVELS_INOTIFY_RELOAD', false),
         'watch_path'    => base_path(),
@@ -31,6 +32,13 @@ return [
         //    'pipe'     => 0 // The type of pipeline, 0: no pipeline 1: SOCK_STREAM 2: SOCK_DGRAM
         //    'enable'   => true // Whether to enable, default true
         //],
+        // Process to get current worker status
+        'status_monitor' => [
+            'class'    => \Hhxsv5\LaravelS\Illuminate\LaravelSMonitorProcess::class,
+            'redirect' => false,
+            'pipe'     => 1,
+            'enable'   => env('LARAVELS_ENABLE_STATUS_MONITOR', true) && extension_loaded('sockets'),
+        ],
     ],
     'timer'                    => [
         'enable'        => env('LARAVELS_TIMER', false),
@@ -44,7 +52,15 @@ return [
         'max_wait_time' => 5,
     ],
     'events'                   => [],
-    'swoole_tables'            => [],
+    'swoole_tables'            => [
+        // Recording current worker handle status
+        'status' => [
+            'size' => 30,
+            'column' => [
+                ['name' => 'value', 'type' => \Swoole\Table::TYPE_STRING, 'size' => 256],
+            ]
+        ],
+    ],
     'register_providers'       => [],
     'cleaners'                 => [
         // See LaravelS's built-in cleaners: https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#cleaners

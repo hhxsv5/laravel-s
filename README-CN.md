@@ -1053,6 +1053,92 @@ class WebSocketService implements WebSocketHandlerInterface
         var_dump($pushProcess->read());
     }
     ```
+   
+## 获取 Worker 当前状态
+
+> 依赖于 ext-sockets。用以快速定位 worker 正在被什么请求阻塞了。
+
+1. 检查 `ext-sockets` 是否启用
+
+```
+php -m | grep sockets
+```
+
+2. 添加配置到 `.env`
+
+```
+LARAVELS_ENABLE_STATUS_MONITOR=true
+```
+
+3. 添加配置到 `laravels.php`
+
+```
+'enable_laravels_status_monitor' => env('LARAVELS_ENABLE_STATUS_MONITOR', true),
+```
+
+4. 添加自定义进程配置到 `laravels.php`
+
+```
+'status_monitor' => [
+    'class'    => \Hhxsv5\LaravelS\Illuminate\LaravelSMonitorProcess::class,
+    'redirect' => false,
+    'pipe'     => 1,
+    'enable'   => env('LARAVELS_ENABLE_STATUS_MONITOR', true) && extension_loaded('sockets'),
+],
+```
+
+5. 添加 swoole table 定义到 `laravels.php`
+
+```
+'status' => [
+    'size' => 30,
+    'column' => [
+        ['name' => 'value', 'type' => \Swoole\Table::TYPE_STRING, 'size' => 256],
+    ]
+],
+```
+
+6. 重启 laravels
+
+7. 获取 worker 当前状态
+
+```
+cat storage/swoole-status.sock
+```
+
+或者
+
+````
+php artisan laravels:status
+````
+
+输出:
+
+```
+{
+    "start_time": 1584767471,
+    "connection_num": 2,
+    "accept_count": 2,
+    "close_count": 0,
+    "worker_num": 8,
+    "idle_worker_num": 6,
+    "tasking_num": 0,
+    "request_count": 0,
+    "worker_request_count": 0,
+    "worker_dispatch_count": 0,
+    "coroutine_num": 1,
+    "start_times": {
+        "worker_0": "",
+        "worker_1": "",
+        "worker_2": "",
+        "worker_3": "GET /b 6.39s (Time elapsed) (started_at: 2020-03-21 05:11:14)",
+        "worker_4": "GET /a 25.5s (Time elapsed) (started_at: 2020-03-21 05:11:17)",
+        "worker_5": "",
+        "worker_6": "",
+        "worker_7": ""
+    }
+}
+```
 
 ## 其他特性
 
