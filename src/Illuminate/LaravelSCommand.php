@@ -153,6 +153,10 @@ EOS;
         ];
         $sockets = isset($config['server']['sockets']) ? $config['server']['sockets'] : [];
         foreach ($sockets as $key => $socket) {
+            if (isset($socket['enable']) && !$socket['enable']) {
+                continue;
+            }
+
             $name = 'Port#' . $key . ' ';
             $name .= isset($socketTypeNames[$socket['type']]) ? $socketTypeNames[$socket['type']] : 'Unknown socket';
             $tableRows [] = [
