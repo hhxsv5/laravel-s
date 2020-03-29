@@ -846,6 +846,7 @@ class WebSocketService implements WebSocketHandlerInterface
                 'package_eof'    => "\r\n",
             ],
             'handler'  => \App\Sockets\TestTcpSocket::class,
+            'enable'   => true, // 是否启用，默认为true
         ],
     ],
     ```
