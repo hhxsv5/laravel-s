@@ -834,6 +834,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
                 'package_eof'    => "\r\n",
             ],
             'handler'  => \App\Sockets\TestTcpSocket::class,
+            'enable'   => true, // whether to enable, default true
         ],
     ],
     ```

@@ -125,6 +125,10 @@ class Server
     protected function bindAttachedSockets()
     {
         foreach ($this->attachedSockets as $socket) {
+            if (isset($socket['enable']) && !$socket['enable']) {
+                continue;
+            }
+
             $port = $this->swoole->addListener($socket['host'], $socket['port'], $socket['type']);
             if (!($port instanceof Port)) {
                 $errno = method_exists($this->swoole, 'getLastError') ? $this->swoole->getLastError() : 'unknown';
