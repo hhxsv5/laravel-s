@@ -495,6 +495,11 @@ use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 class TestListener1 extends Listener
 {
+    /**
+     * @var TestEvent
+     */
+    protected $event;
+    
     public function handle()
     {
         \Log::info(__CLASS__ . ':handle start', [$this->event->getData()]);
