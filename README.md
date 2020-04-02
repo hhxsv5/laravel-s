@@ -471,6 +471,11 @@ class TestController extends Controller
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 class TestEvent extends Event
 {
+    protected $listeners = [
+        // Listener list
+        TestListener1::class,
+        // TestListener2::class,
+    ];
     private $data;
     public function __construct($data)
     {
@@ -479,13 +484,6 @@ class TestEvent extends Event
     public function getData()
     {
         return $this->data;
-    }
-    public function getListeners()
-    {
-        return [
-            TestListener1::class,
-            // TestListener2::class,
-        ];
     }
 }
 ```

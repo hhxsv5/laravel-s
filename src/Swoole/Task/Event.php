@@ -12,7 +12,16 @@ abstract class Event extends BaseTask
      * The listeners for this event.
      * @return array
      */
-    abstract public function getListeners();
+    protected $listeners = [];
+
+    /**
+     * Get the listener list for this event.
+     * @return array
+     */
+    public function getListeners()
+    {
+        return $this->listeners;
+    }
 
     /**
      * Trigger an event
