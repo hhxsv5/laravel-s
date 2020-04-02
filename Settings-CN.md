@@ -54,9 +54,6 @@
 ## timer
 > `array` 配置毫秒定时器，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E6%AF%AB%E7%A7%92%E7%BA%A7%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1)。
 
-## events
-> `array` 自定义的异步事件和监听的绑定列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E5%BC%82%E6%AD%A5%E4%BA%8B%E4%BB%B6)。
-
 ## swoole_tables
 > `array` 定义的`swoole_table`列表，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E4%BD%BF%E7%94%A8swoole_table)。
 

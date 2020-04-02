@@ -300,20 +300,15 @@ class Server
 
     protected function handleEvent(Event $event)
     {
-        $eventClass = get_class($event);
-        if (!isset($this->conf['events'][$eventClass])) {
-            return false;
-        }
-
-        $listenerClasses = (array)$this->conf['events'][$eventClass];
+        $listenerClasses = $event->getListeners();
         foreach ($listenerClasses as $listenerClass) {
             /**@var Listener $listener */
-            $listener = new $listenerClass();
+            $listener = new $listenerClass($event);
             if (!($listener instanceof Listener)) {
                 throw new \InvalidArgumentException(sprintf('%s must extend the abstract class %s', $listenerClass, Listener::class));
             }
-            $this->callWithCatchException(function () use ($listener, $event) {
-                $listener->handle($event);
+            $this->callWithCatchException(function () use ($listener) {
+                $listener->handle();
             }, [], $event->getTries());
         }
         return true;

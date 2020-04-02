@@ -43,7 +43,6 @@ return [
         ],
         'max_wait_time' => 5,
     ],
-    'events'                   => [],
     'swoole_tables'            => [],
     'register_providers'       => [],
     'cleaners'                 => [

@@ -487,6 +487,13 @@ class TestEvent extends Event
     {
         return $this->data;
     }
+    public function getListeners()
+    {
+        return [
+            TestListener1::class,
+            // TestListener2::class,
+        ];
+    }
 }
 ```
 
@@ -498,13 +505,9 @@ use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 class TestListener1 extends Listener
 {
-    // 声明没有参数的构造函数
-    public function __construct()
+    public function handle()
     {
-    }
-    public function handle(Event $event)
-    {
-        \Log::info(__CLASS__ . ':handle start', [$event->getData()]);
+        \Log::info(__CLASS__ . ':handle start', [$this->event->getData()]);
         sleep(2);// 模拟一些慢速的事件处理
         // 监听器中也可以投递Task，但不支持Task的finish()回调。
         // 注意：config/laravels.php中修改配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/#/server/setting?id=task_ipc_mode
@@ -515,23 +518,7 @@ class TestListener1 extends Listener
 }
 ```
 
-3.绑定事件与监听器。
-
-```php
-// 在"config/laravels.php"中绑定事件与监听器，一个事件可以有多个监听器，多个监听器按顺序执行
-[
-    // ...
-    'events' => [
-        \App\Tasks\TestEvent::class => [
-            \App\Tasks\TestListener1::class,
-            //\App\Tasks\TestListener2::class,
-        ],
-    ],
-    // ...
-];
-```
-
-4.触发事件。
+3.触发事件。
 
 ```php
 // 实例化TestEvent并通过fire触发，此操作是异步的，触发后立即返回，由Task进程继续处理监听器中的handle逻辑

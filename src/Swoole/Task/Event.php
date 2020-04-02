@@ -9,6 +9,12 @@ abstract class Event extends BaseTask
     use SerializesModels;
 
     /**
+     * The listeners for this event.
+     * @return array
+     */
+    abstract public function getListeners();
+
+    /**
      * Trigger an event
      * @param Event $event
      * @return bool

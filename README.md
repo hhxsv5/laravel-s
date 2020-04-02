@@ -480,6 +480,13 @@ class TestEvent extends Event
     {
         return $this->data;
     }
+    public function getListeners()
+    {
+        return [
+            TestListener1::class,
+            // TestListener2::class,
+        ];
+    }
 }
 ```
 
@@ -490,13 +497,9 @@ use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 class TestListener1 extends Listener
 {
-    // Declare constructor without parameters
-    public function __construct()
+    public function handle()
     {
-    }
-    public function handle(Event $event)
-    {
-        \Log::info(__CLASS__ . ':handle start', [$event->getData()]);
+        \Log::info(__CLASS__ . ':handle start', [$this->event->getData()]);
         sleep(2);// Simulate the slow codes
         // Deliver task in CronJob, but NOT support callback finish() of task.
         // Note: Modify task_ipc_mode to 1 or 2 in config/laravels.php, see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
@@ -507,22 +510,7 @@ class TestListener1 extends Listener
 }
 ```
 
-3.Bind event & listeners.
-```php
-// Bind event & listeners in file "config/laravels.php", one event => many listeners
-[
-    // ...
-    'events' => [
-        \App\Tasks\TestEvent::class => [
-            \App\Tasks\TestListener1::class,
-            //\App\Tasks\TestListener2::class,
-        ],
-    ],
-    // ...
-];
-```
-
-4.Fire event.
+3.Fire event.
 ```php
 // Create instance of event and fire it, "fire" is asynchronous.
 use Hhxsv5\LaravelS\Swoole\Task\Event;
