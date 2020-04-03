@@ -648,6 +648,17 @@ class TestCronJob extends CronJob
 
 4.LaravelS `v3.4.0`开始支持热重启[Reload]`定时器`进程，LaravelS 在收到`SIGUSR1`信号后会等待`max_wait_time`(默认5)秒再结束进程，然后`Manager`进程会重新拉起`定时器`进程。
 
+5.如果你仅需要用到`分钟级`的定时任务，建议启用`Hhxsv5\LaravelS\Illuminate\LaravelScheduleJob`来替代Linux Crontab，这样就可以沿用[Laravel任务调度](https://learnku.com/docs/laravel/7.x/scheduling/7492)的编码习惯，配置`Kernel`即可。
+
+```php
+// app/Console/Kernel.php
+protected function schedule(Schedule $schedule)
+{
+    // runInBackground()方法会新启子进程执行任务，这是异步的，不会影响其他任务的执行时机
+    $schedule->command(TestCommand::class)->runInBackground()->everyMinute();
+}
+```
+
 ## 修改代码后自动Reload
 
 - 基于`inotify`，仅支持Linux。

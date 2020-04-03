@@ -636,6 +636,17 @@ class TestCronJob extends CronJob
 
 4.LaravelS `v3.4.0` starts to support the hot restart [Reload] `Timer` process. After LaravelS receives the `SIGUSR1` signal, it waits for `max_wait_time`(default 5) seconds to end the process, then the `Manager` process will pull up the `Timer` process again.
 
+5.If you only need to use `minute-level` scheduled tasks, it is recommended to enable `Hhxsv5\LaravelS\Illuminate\LaravelScheduleJob` instead of Linux Crontab, so that you can follow the coding habits of [Laravel task scheduling](https://laravel.com/docs/7.x/scheduling) and configure `Kernel`.
+
+```php
+// app/Console/Kernel.php
+protected function schedule(Schedule $schedule)
+{
+    // runInBackground() will start a new child process to execute the task. This is asynchronous and will not affect the execution timing of other tasks.
+    $schedule->command(TestCommand::class)->runInBackground()->everyMinute();
+}
+```
+
 ## Automatically reload after modifying code
 
 - Via `inotify`, support Linux only.
