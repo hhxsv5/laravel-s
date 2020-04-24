@@ -827,7 +827,21 @@ class WebSocketService implements WebSocketHandlerInterface
     ```php
     public function onReceive(Server $server, $fd, $reactorId, $data)
     {
-        $port = $this->swoolePort; //获得`Swoole\Server\Port`对象
+        $port = $this->swoolePort; // 获得`Swoole\Server\Port`对象
+    }
+    ```
+
+    ```php
+    namespace App\Http\Controllers;
+    class TestController extends Controller
+    {
+        public function test()
+        {
+            /**@var \Swoole\Http\Server $swoole */
+            $swoole = app('swoole');
+            // $swoole->ports：遍历所有Port对象，https://wiki.swoole.com/#/server/properties?id=ports
+            $port = $swoole->ports[0]; // 获得`Swoole\Server\Port`对象
+        }
     }
     ```
 

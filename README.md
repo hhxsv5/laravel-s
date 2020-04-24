@@ -816,7 +816,21 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ```php
     public function onReceive(Server $server, $fd, $reactorId, $data)
     {
-        $port = $this->swoolePort; //There you go
+        $port = $this->swoolePort; // Get the `Swoole\Server\Port` object
+    }
+    ```
+
+    ```php
+    namespace App\Http\Controllers;
+    class TestController extends Controller
+    {
+        public function test()
+        {
+            /**@var \Swoole\Http\Server $swoole */
+            $swoole = app('swoole');
+            // $swoole->ports: Traverse all Port objects, https://www.swoole.co.uk/docs/modules/swoole-server/multiple-ports
+            $port = $swoole->ports[0]; // Get the `Swoole\Server\Port` object
+        }
     }
     ```
 
