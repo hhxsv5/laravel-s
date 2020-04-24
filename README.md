@@ -830,6 +830,9 @@ To make our main server support more protocols not just Http and WebSocket, we b
             $swoole = app('swoole');
             // $swoole->ports: Traverse all Port objects, https://www.swoole.co.uk/docs/modules/swoole-server/multiple-ports
             $port = $swoole->ports[0]; // Get the `Swoole\Server\Port` object
+            // $fd = 1; // The FD of onReceive/onMessage in Port
+            // $swoole->send($fd, 'Send tcp message from controller to port client');
+            // $swoole->push($fd, 'Send websocket message from controller to port client');
         }
     }
     ```
