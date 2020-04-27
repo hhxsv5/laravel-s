@@ -43,7 +43,7 @@ Add environment variable `APP_RUNNING_IN_CONSOLE=false` to `.env`.
 ```
 
 ## Use package [overtrue/wechat](https://github.com/overtrue/wechat)
-> The asynchronous notification callback will be failing, because `$app['request']` is empty, give it a value.
+> The asynchronous notification callback will be failing, because `$app['request']->getContent()` is empty, give it a value.
 
 ```php
 public function notify(Request $request)
