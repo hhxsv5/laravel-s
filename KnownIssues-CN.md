@@ -43,7 +43,7 @@
 ```
 
 ## 使用包 [overtrue/wechat](https://github.com/overtrue/wechat)
-> easywechat包会出现异步通知回调失败的问题，原因是`$app['request']`是空的，给其赋值即可。
+> easywechat包会出现异步通知回调失败的问题，原因是`$app['request']->getContent()`是空的，给其赋值即可。
 
 ```php
 //回调通知
