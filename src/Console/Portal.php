@@ -236,7 +236,7 @@ EOS;
         }
 
         // Reload timer process
-        if (!empty($config['server']['timer']['enable'])) {
+        if (!empty($config['server']['timer']['enable']) && !empty($config['server']['timer']['jobs'])) {
             $pidFile = dirname($pidFile) . '/laravels-timer-process.pid';
             $pid = file_get_contents($pidFile);
             if (!$pid || !self::kill($pid, 0)) {
