@@ -2,6 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Console;
 
+use Hhxsv5\LaravelS\Components\Apollo\Apollo;
 use Hhxsv5\LaravelS\Illuminate\LogTrait;
 use Hhxsv5\LaravelS\LaravelS;
 use Swoole\Process;
@@ -41,6 +42,7 @@ class Portal extends Command
         $this->addOption('env', 'e', InputOption::VALUE_OPTIONAL, 'The environment the command should run under, this feature requires Laravel 5.2+');
         $this->addOption('daemonize', 'd', InputOption::VALUE_NONE, 'Whether run as a daemon for "start & restart"');
         $this->addOption('ignore', 'i', InputOption::VALUE_NONE, 'Whether ignore checking process pid for "start & restart"');
+        $this->addOption('apollo', 'a', InputOption::VALUE_NONE, 'Whether to import Apollo configurations to .env for "start & restart"');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -75,6 +77,7 @@ Options:
   -e, --env             The environment the command should run under, this feature requires Laravel 5.2+
   -d, --daemonize       Whether run as a daemon for "start & restart"
   -i, --ignore          Whether ignore checking process pid for "start & restart"
+  -a, --apollo          Whether to import Apollo configurations to .env for "start & restart"
 EOS;
 
                     $this->info(sprintf($help, PHP_BINARY));
@@ -103,10 +106,17 @@ EOS;
             return 1;
         }
 
-        // Initialize configuration config/laravels.json
+        // Generate configuration storage/laravels.json
         $options = $this->input->getOptions();
-        unset($options['env']);
+        unset($options['env']); // Pass env parameter in makeArtisanCmd()
         $options = array_filter($options);
+
+        if (!empty($options['apollo'])) {
+            // Load Apollo configurations to .env file
+            $this->loadApollo();
+            unset($options['apollo']);
+        }
+
         $optionStr = '';
         foreach ($options as $key => $value) {
             $optionStr .= sprintf('--%s%s ', $key, is_bool($value) ? '' : ('=' . $value));
@@ -256,6 +266,14 @@ EOS;
     public function showInfo()
     {
         return $this->runArtisanCommand('laravels info');
+    }
+
+    public function loadApollo()
+    {
+        $apollo = Apollo::createFromEnv();
+        $envFile = $this->basePath . '/.env';
+        $keepOld = isset($envs['APOLLO_KEEP_OLD']) ? $envs['APOLLO_KEEP_OLD'] : false;
+        $apollo->pullAllAndSave($envFile, $keepOld);
     }
 
     public function makeArtisanCmd($subCmd)

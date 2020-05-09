@@ -157,6 +157,9 @@ $loader->addNamespace('Hhxsv5\LaravelS', $basePath . '/vendor/hhxsv5/laravel-s/s
 $loader->addNamespace('Symfony\Component\Console', $basePath . '/vendor/symfony/console');
 $loader->addNamespace('Symfony\Contracts\Service', $basePath . '/vendor/symfony/service-contracts');
 $loader->addNamespace('Symfony\Contracts', $basePath . '/vendor/symfony/contracts');
+$loader->addNamespace('Symfony\Component\HttpClient', $basePath . '/vendor/symfony/http-client');
+$loader->addNamespace('Symfony\Contracts\HttpClient', $basePath . '/vendor/symfony/http-client-contracts');
+$loader->addNamespace('Psr\Log', $basePath . '/vendor/psr/log/Psr/Log');
 
 $command = new Hhxsv5\LaravelS\Console\Portal($basePath);
 $input = new Symfony\Component\Console\Input\ArgvInput();

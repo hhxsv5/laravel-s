@@ -38,7 +38,8 @@
     "symfony/console": ">=2.7.0",
     "ext-json": "*",
     "ext-pcntl": "*",
-    "swoole/ide-helper": "@dev"
+    "swoole/ide-helper": "@dev",
+    "symfony/http-client": ">=4.3.0"
   },
   "suggest": {
     "ext-swoole": "Coroutine based Async PHP programming framework, require >= 1.7.19.",
