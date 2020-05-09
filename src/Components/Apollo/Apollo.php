@@ -35,8 +35,8 @@ class Apollo
         }
 
         $this->client = new CurlHttpClient([
-            'base_uri' => $this->server,
-            'timeout'  => isset($settings['pull_timeout']) ? $settings['pull_timeout'] : 5,
+            'base_uri'     => $this->server,
+            'max_duration' => isset($settings['pull_timeout']) ? $settings['pull_timeout'] : 5,
         ]);
     }
 
@@ -46,7 +46,7 @@ class Apollo
         if (!isset($envs['APOLLO_SERVER'], $envs['APOLLO_APP_ID'])) {
             throw new \InvalidArgumentException('Missing environment variable APOLLO_SERVER & APOLLO_APP_ID');
         }
-        $apolloSettings = [
+        $options = [
             'server'       => $envs['APOLLO_SERVER'],
             'app_id'       => $envs['APOLLO_APP_ID'],
             'cluster'      => isset($envs['APOLLO_CLUSTER']) ? $envs['APOLLO_CLUSTER'] : null,
@@ -54,18 +54,18 @@ class Apollo
             'client_ip'    => isset($envs['APOLLO_CLIENT_IP']) ? $envs['APOLLO_CLIENT_IP'] : null,
             'pull_timeout' => isset($envs['APOLLO_PULL_TIMEOUT']) ? $envs['APOLLO_PULL_TIMEOUT'] : null,
         ];
-        return new static($apolloSettings);
+        return new static($options);
     }
 
 
-    public function pullBatch(array $namespaces, array $options = [])
+    public function pullBatch(array $namespaces, $withReleaseKey = false, array $options = [])
     {
         $uri = sprintf('%s/configs/%s/%s/', $this->server, $this->appId, $this->cluster);
         $responses = [];
         foreach ($namespaces as $namespace) {
             $responses[$namespace] = $this->client->request('GET', $uri . $namespace, [
                     'query' => [
-                        'releaseKey' => isset($this->releaseKeys[$namespace]) ? $this->releaseKeys[$namespace] : null,
+                        'releaseKey' => $withReleaseKey && isset($this->releaseKeys[$namespace]) ? $this->releaseKeys[$namespace] : null,
                         'ip'         => $this->clientIp,
                     ],
                 ] + $options);
@@ -84,14 +84,14 @@ class Apollo
         return $configs;
     }
 
-    public function pullAll(array $options = [])
+    public function pullAll($withReleaseKey = false, array $options = [])
     {
-        return $this->pullBatch($this->namespaces, $options);
+        return $this->pullBatch($this->namespaces, $withReleaseKey, $options);
     }
 
     public function pullAllAndSave($filepath, $keepOld = false, array $options = [])
     {
-        $all = $this->pullAll($options);
+        $all = $this->pullAll(false, $options);
         if (count($all) !== count($this->namespaces)) {
             throw new \RuntimeException('Incomplete Apollo configuration list');
         }
@@ -115,6 +115,9 @@ class Apollo
 
     public function startWatchNotification(callable $callback, array $options = [])
     {
+        if (!isset($options['max_duration']) || $options['max_duration'] < 60) {
+            $options['max_duration'] = 70;
+        }
         if (!isset($options['timeout']) || $options['timeout'] < 60) {
             $options['timeout'] = 70;
         }
@@ -137,8 +140,10 @@ class Apollo
                 if (empty($notifications)) {
                     continue;
                 }
-                $notifications = array_column($notifications, null, 'namespaceName');
-                $this->notifications = array_merge($this->notifications, $notifications);
+                array_walk($notifications, function (&$notification) {
+                    unset($notification['messages']);
+                });
+                $this->notifications = array_merge($this->notifications, array_column($notifications, null, 'namespaceName'));
                 $callback($notifications);
             } elseif ($statusCode === 304) {
                 // ignore 304
