@@ -34,6 +34,8 @@ class Apollo
         }
         if (isset($settings['client_ip'])) {
             $this->clientIp = $settings['client_ip'];
+        } else {
+            $this->clientIp = current(swoole_get_local_ip()) ?: null;
         }
         if (isset($settings['pull_timeout'])) {
             $this->pullTimeout = $settings['pull_timeout'];
