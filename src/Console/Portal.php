@@ -277,8 +277,7 @@ EOS;
         if ($env) {
             $envFile .= '.' . $env;
         }
-        $keepOld = isset($envs['APOLLO_KEEP_OLD']) ? $envs['APOLLO_KEEP_OLD'] : false;
-        Apollo::createFromEnv()->pullAllAndSave($envFile, $keepOld);
+        Apollo::createFromEnv()->pullAllAndSave($envFile);
     }
 
     public function makeArtisanCmd($subCmd)

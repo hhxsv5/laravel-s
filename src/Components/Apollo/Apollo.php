@@ -16,6 +16,7 @@ class Apollo
     protected $namespaces  = ['application'];
     protected $clientIp;
     protected $pullTimeout = 5;
+    protected $keepOldEnv  = false;
 
     protected $releaseKeys   = [];
     protected $notifications = [];
@@ -40,6 +41,9 @@ class Apollo
         if (isset($settings['pull_timeout'])) {
             $this->pullTimeout = $settings['pull_timeout'];
         }
+        if (isset($settings['keep_old_env'])) {
+            $this->keepOldEnv = $settings['keep_old_env'];
+        }
     }
 
     public static function createFromEnv()
@@ -55,6 +59,7 @@ class Apollo
             'namespaces'   => isset($envs['APOLLO_NAMESPACES']) ? explode(',', $envs['APOLLO_NAMESPACES']) : null,
             'client_ip'    => isset($envs['APOLLO_CLIENT_IP']) ? $envs['APOLLO_CLIENT_IP'] : null,
             'pull_timeout' => isset($envs['APOLLO_PULL_TIMEOUT']) ? $envs['APOLLO_PULL_TIMEOUT'] : null,
+            'keep_old_env' => isset($envs['APOLLO_KEEP_OLD_ENV']) ? $envs['APOLLO_KEEP_OLD_ENV'] : false,
         ];
         return new static($options);
     }
@@ -87,7 +92,7 @@ class Apollo
         return $this->pullBatch($this->namespaces, $withReleaseKey, $options);
     }
 
-    public function pullAllAndSave($filepath, $keepOld = false, array $options = [])
+    public function pullAllAndSave($filepath, array $options = [])
     {
         $all = $this->pullAll(false, $options);
         if (count($all) !== count($this->namespaces)) {
@@ -104,7 +109,7 @@ class Apollo
         if (empty($configs)) {
             throw new \RuntimeException('Empty Apollo configuration list');
         }
-        if ($keepOld && file_exists($filepath)) {
+        if ($this->keepOldEnv && file_exists($filepath)) {
             rename($filepath, $filepath . '.' . date('YmdHis'));
         }
         $fileContent = implode(PHP_EOL, $configs);
