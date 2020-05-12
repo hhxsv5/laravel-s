@@ -34,7 +34,7 @@ class ApolloServiceProcess implements CustomProcessInterface
         self::$apollo = Apollo::createFromEnv();
         self::$apollo->startWatchNotification(function (array $notifications) use ($filename, $swoole) {
             $configs = self::$apollo->pullAllAndSave($filename);
-            app('log')->info('[Apollo] Pull all configurations', $configs);
+            app('log')->info('[ApolloServiceProcess] Pull all configurations', $configs);
             $swoole->reload();
             Coroutine::sleep(5);
         });
