@@ -1031,6 +1031,7 @@ class WebSocketService implements WebSocketHandlerInterface
             //    'mode'     => 2,    // 通信模式，默认为2，表示争抢模式
             //    'capacity' => 8192, // 单个消息长度，长度受限于操作系统内核参数的限制，默认为8192，最大不超过65536
             //],
+            //'restart_interval' => 5, // 进程异常退出后需等待多少秒再重启，默认5秒
         ],
     ],
     ```

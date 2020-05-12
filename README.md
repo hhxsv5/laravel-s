@@ -1020,6 +1020,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
             //    'mode'     => 2,    // Communication mode, default is 2, which means contention mode
             //    'capacity' => 8192, // The length of a single message, is limited by the operating system kernel parameters. The default is 8192, and the maximum is 65536
             //],
+            //'restart_interval' => 5, // After the process exits abnormally, how many seconds to wait before restarting the process, default 5 seconds
         ],
     ],
     ```
