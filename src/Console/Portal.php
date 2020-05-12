@@ -107,15 +107,17 @@ EOS;
         }
 
         // Generate configuration storage/laravels.json
-        $options = $this->input->getOptions();
-        unset($options['env']); // Pass env parameter in makeArtisanCmd()
-        $options = array_filter($options);
+        $options = array_filter($this->input->getOptions());
+        if (isset($options['env'])) {
+            putenv('LARAVELS_ENV=' . $options['env']);
+        }
 
         if (!empty($options['apollo'])) {
             // Load Apollo configurations to .env file
             $this->loadApollo();
             unset($options['apollo']);
         }
+        unset($options['env']); // Pass env parameter in makeArtisanCmd()
 
         $optionStr = '';
         foreach ($options as $key => $value) {
@@ -270,10 +272,13 @@ EOS;
 
     public function loadApollo()
     {
-        $apollo = Apollo::createFromEnv();
         $envFile = $this->basePath . '/.env';
+        $env = getenv('LARAVELS_ENV');
+        if ($env) {
+            $envFile .= '.' . $env;
+        }
         $keepOld = isset($envs['APOLLO_KEEP_OLD']) ? $envs['APOLLO_KEEP_OLD'] : false;
-        $apollo->pullAllAndSave($envFile, $keepOld);
+        Apollo::createFromEnv()->pullAllAndSave($envFile, $keepOld);
     }
 
     public function makeArtisanCmd($subCmd)
