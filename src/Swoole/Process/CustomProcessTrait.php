@@ -29,7 +29,8 @@ trait CustomProcessTrait
                 continue;
             }
             $processClass = $item['class'];
-            $callback = function (Process $worker) use ($pidfile, $swoole, $processPrefix, $processClass, $name, $laravelConfig) {
+            $restartInterval = isset($item['restart_interval']) ? (int)$item['restart_interval'] : 5;
+            $callback = function (Process $worker) use ($pidfile, $swoole, $processPrefix, $processClass, $restartInterval, $name, $laravelConfig) {
                 file_put_contents($pidfile, $worker->pid . "\n", FILE_APPEND | LOCK_EX);
                 $this->initLaravel($laravelConfig, $swoole);
                 if (!isset(class_implements($processClass)[CustomProcessInterface::class])) {
@@ -51,15 +52,15 @@ trait CustomProcessTrait
 
                 $coroutineAvailable = class_exists('Swoole\Coroutine');
                 $coroutineRuntimeAvailable = class_exists('Swoole\Runtime');
-                $runProcess = function () use ($name, $processClass, $swoole, $worker, $coroutineAvailable, $coroutineRuntimeAvailable) {
+                $runProcess = function () use ($name, $processClass, $restartInterval, $swoole, $worker, $coroutineAvailable, $coroutineRuntimeAvailable) {
                     $coroutineRuntimeAvailable && \Swoole\Runtime::enableCoroutine();
                     $this->callWithCatchException([$processClass, 'callback'], [$swoole, $worker]);
                     // Avoid frequent process creation
                     if ($coroutineAvailable) {
-                        \Swoole\Coroutine::sleep(3);
+                        \Swoole\Coroutine::sleep($restartInterval);
                         swoole_event_exit();
                     } else {
-                        sleep(3);
+                        sleep($restartInterval);
                     }
                 };
                 $coroutineAvailable ? \Swoole\Coroutine::create($runProcess) : $runProcess();
