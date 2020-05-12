@@ -35,7 +35,7 @@ class ApolloServiceProcess implements CustomProcessInterface
         self::$apollo->startWatchNotification(function (array $notifications) use ($filename, $swoole) {
             self::$apollo->pullAllAndSave($filename);
             $swoole->reload();
-            Coroutine::sleep(3);
+            Coroutine::sleep(5);
         });
     }
 
