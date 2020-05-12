@@ -3,6 +3,7 @@
 namespace Hhxsv5\LaravelS\Swoole\Process;
 
 use Hhxsv5\LaravelS\Components\Apollo\Apollo;
+use Swoole\Coroutine;
 use Swoole\Http\Server;
 use Swoole\Process;
 
@@ -17,7 +18,7 @@ class ApolloServiceProcess implements CustomProcessInterface
             'apollo-service' => [
                 'class'    => self::class,
                 'redirect' => false,
-                'pipe'     => 2, // SOCK_DGRAM
+                'pipe'     => 0,
             ],
         ];
     }
@@ -26,12 +27,9 @@ class ApolloServiceProcess implements CustomProcessInterface
     {
         self::$apollo = Apollo::createFromEnv();
         self::$apollo->startWatchNotification(function (array $notifications) use ($swoole) {
-            try {
-                self::$apollo->pullAllAndSave(base_path('.env'), false);
-                $swoole->reload();
-            } catch (\Exception $e) {
-                sleep(3);
-            }
+            self::$apollo->pullAllAndSave(base_path('.env'), false);
+            $swoole->reload();
+            Coroutine::sleep(3);
         });
     }
 

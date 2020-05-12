@@ -2,18 +2,20 @@
 
 namespace Hhxsv5\LaravelS\Components\Apollo;
 
-use Symfony\Component\HttpClient\CurlHttpClient;
+use Hhxsv5\LaravelS\Components\HttpClient\SimpleHttpTrait;
+use Hhxsv5\LaravelS\Swoole\Coroutine\Context;
+use Swoole\Coroutine;
 
 class Apollo
 {
+    use SimpleHttpTrait;
+
     protected $server;
     protected $appId;
-    protected $cluster    = 'default';
-    protected $namespaces = ['application'];
+    protected $cluster     = 'default';
+    protected $namespaces  = ['application'];
     protected $clientIp;
-
-    /**@var Apollo $client */
-    protected $client;
+    protected $pullTimeout = 5;
 
     protected $releaseKeys   = [];
     protected $notifications = [];
@@ -33,11 +35,9 @@ class Apollo
         if (isset($settings['client_ip'])) {
             $this->clientIp = $settings['client_ip'];
         }
-
-        $this->client = new CurlHttpClient([
-            'base_uri'     => $this->server,
-            'max_duration' => isset($settings['pull_timeout']) ? $settings['pull_timeout'] : 5,
-        ]);
+        if (isset($settings['pull_timeout'])) {
+            $this->pullTimeout = $settings['pull_timeout'];
+        }
     }
 
     public static function createFromEnv()
@@ -60,26 +60,22 @@ class Apollo
 
     public function pullBatch(array $namespaces, $withReleaseKey = false, array $options = [])
     {
-        $uri = sprintf('%s/configs/%s/%s/', $this->server, $this->appId, $this->cluster);
-        $responses = [];
-        foreach ($namespaces as $namespace) {
-            $responses[$namespace] = $this->client->request('GET', $uri . $namespace, [
-                    'query' => [
-                        'releaseKey' => $withReleaseKey && isset($this->releaseKeys[$namespace]) ? $this->releaseKeys[$namespace] : null,
-                        'ip'         => $this->clientIp,
-                    ],
-                ] + $options);
-        }
-
         $configs = [];
-        foreach ($responses as $namespace => $response) {
-            $statusCode = $response->getStatusCode();
-            if ($statusCode === 200) {
-                $configs[$namespace] = json_decode((string)$response->getContent(false), true);
+        $uri = sprintf('%s/configs/%s/%s/', $this->server, $this->appId, $this->cluster);
+        foreach ($namespaces as $namespace) {
+            $url = $uri . $namespace . '?' . http_build_query([
+                    'releaseKey' => $withReleaseKey && isset($this->releaseKeys[$namespace]) ? $this->releaseKeys[$namespace] : null,
+                    'ip'         => $this->clientIp,
+                ]);
+            $timeout = isset($options['timeout']) ? $options['timeout'] : $this->pullTimeout;
+            $response = $this->httpGet($url, compact('timeout'));
+            if ($response['statusCode'] === 200) {
+                $configs[$namespace] = json_decode($response['body'], true);
                 $this->releaseKeys[$namespace] = $configs[$namespace]['releaseKey'];
-            } elseif ($statusCode === 304) {
+            } elseif ($response['statusCode'] === 304) {
                 // ignore 304
             }
+
         }
         return $configs;
     }
@@ -109,15 +105,17 @@ class Apollo
         if ($keepOld && file_exists($filepath)) {
             rename($filepath, $filepath . '.' . date('YmdHis'));
         }
-        file_put_contents($filepath, implode(PHP_EOL, $configs));
+        $fileContent = implode(PHP_EOL, $configs);
+        if (Context::inCoroutine()) {
+            Coroutine::writeFile($filepath, $fileContent);
+        } else {
+            file_put_contents($filepath, $fileContent);
+        }
         return $configs;
     }
 
     public function startWatchNotification(callable $callback, array $options = [])
     {
-        if (!isset($options['max_duration']) || $options['max_duration'] < 60) {
-            $options['max_duration'] = 70;
-        }
         if (!isset($options['timeout']) || $options['timeout'] < 60) {
             $options['timeout'] = 70;
         }
@@ -127,25 +125,27 @@ class Apollo
             $this->notifications[$namespace] = ['namespaceName' => $namespace, 'notificationId' => -1];
         }
         while ($this->watching) {
-            $response = $this->client->request('GET', '/notifications/v2', [
-                    'query' => [
-                        'appId'         => $this->appId,
-                        'cluster'       => $this->cluster,
-                        'notifications' => json_encode(array_values($this->notifications)),
-                    ],
-                ] + $options);
-            $statusCode = $response->getStatusCode();
-            if ($statusCode === 200) {
-                $notifications = json_decode((string)$response->getContent(false), true);
+            $url = sprintf('%s/notifications/v2?%s',
+                $this->server,
+                http_build_query([
+                    'appId'         => $this->appId,
+                    'cluster'       => $this->cluster,
+                    'notifications' => json_encode(array_values($this->notifications)),
+                ])
+            );
+            $response = $this->httpGet($url, $options);
+
+            if ($response['statusCode'] === 200) {
+                $notifications = json_decode($response['body'], true);
                 if (empty($notifications)) {
                     continue;
                 }
+                $callback($notifications);
                 array_walk($notifications, function (&$notification) {
                     unset($notification['messages']);
                 });
                 $this->notifications = array_merge($this->notifications, array_column($notifications, null, 'namespaceName'));
-                $callback($notifications);
-            } elseif ($statusCode === 304) {
+            } elseif ($response['statusCode'] === 304) {
                 // ignore 304
             }
         }

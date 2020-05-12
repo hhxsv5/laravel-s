@@ -10,33 +10,38 @@ class Context
 
     public static function get($key)
     {
-        $uid = Coroutine::getuid();
-        if ($uid < 0) {
+        $cid = Coroutine::getCid();
+        if ($cid < 0) {
             return null;
         }
-        if (isset(self::$box[$uid][$key])) {
-            return self::$box[$uid][$key];
+        if (isset(self::$box[$cid][$key])) {
+            return self::$box[$cid][$key];
         }
         return null;
     }
 
     public static function put($key, $item)
     {
-        $uid = Coroutine::getuid();
-        if ($uid > 0) {
-            self::$box[$uid][$key] = $item;
+        $cid = Coroutine::getCid();
+        if ($cid > 0) {
+            self::$box[$cid][$key] = $item;
         }
     }
 
     public static function delete($key = null)
     {
-        $uid = Coroutine::getuid();
-        if ($uid > 0) {
+        $cid = Coroutine::getCid();
+        if ($cid > 0) {
             if ($key) {
-                unset(self::$box[$uid][$key]);
+                unset(self::$box[$cid][$key]);
             } else {
-                unset(self::$box[$uid]);
+                unset(self::$box[$cid]);
             }
         }
+    }
+
+    public static function inCoroutine()
+    {
+        return class_exists('Swoole\Coroutine', false) && Coroutine::getCid() > 0;
     }
 }
