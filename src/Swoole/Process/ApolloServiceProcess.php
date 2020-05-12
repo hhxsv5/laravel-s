@@ -25,13 +25,14 @@ class ApolloServiceProcess implements CustomProcessInterface
 
     public static function callback(Server $swoole, Process $process)
     {
+        $filename = base_path('.env');
+        $env = getenv('LARAVELS_ENV');
+        if ($env) {
+            $filename .= '.' . $env;
+        }
+
         self::$apollo = Apollo::createFromEnv();
-        self::$apollo->startWatchNotification(function (array $notifications) use ($swoole) {
-            $filename = base_path('.env');
-            $env = getenv('LARAVELS_ENV');
-            if ($env) {
-                $filename .= '.' . $env;
-            }
+        self::$apollo->startWatchNotification(function (array $notifications) use ($filename, $swoole) {
             self::$apollo->pullAllAndSave($filename, false);
             $swoole->reload();
             Coroutine::sleep(3);
