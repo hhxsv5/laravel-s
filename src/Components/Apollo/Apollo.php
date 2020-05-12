@@ -39,10 +39,10 @@ class Apollo
             $this->clientIp = current(swoole_get_local_ip()) ?: null;
         }
         if (isset($settings['pull_timeout'])) {
-            $this->pullTimeout = $settings['pull_timeout'];
+            $this->pullTimeout = (int)$settings['pull_timeout'];
         }
         if (isset($settings['keep_old_env'])) {
-            $this->keepOldEnv = $settings['keep_old_env'];
+            $this->keepOldEnv = (bool)$settings['keep_old_env'];
         }
     }
 
