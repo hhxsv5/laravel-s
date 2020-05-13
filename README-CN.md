@@ -1082,7 +1082,20 @@ class WebSocketService implements WebSocketHandlerInterface
 ### Apollo
 > 启动`LaravelS`时会获取`Apollo`配置并写入到`.env`文件，同时会启动自定义进程`ApolloProcess`用于监听配置，当配置发生变化时自动`reload`。
 
-1. Apollo 配置热更新。
+1. 启用Apollo：加上`--apollo`或`-a`参数，并设置Apollo的环境变量。
+    
+    ```bash
+    # 单行命令
+    APOLLO_SERVER=http://127.0.0.1:8080 APOLLO_APP_ID=LARAVEL-S-TEST APOLLO_NAMESPACES=application,env php bin/laravels start --apollo
+
+    # 拆分多行
+    APOLLO_SERVER=http://127.0.0.1:8080 \
+    APOLLO_APP_ID=LARAVEL-S-TEST \
+    APOLLO_NAMESPACES=application,env \
+    php bin/laravels start --apollo
+    ```
+
+2. 配置热更新（可选的）。
 
     ```php
     // 修改文件 config/laravels.php
@@ -1101,18 +1114,6 @@ class WebSocketService implements WebSocketHandlerInterface
     ] + Hhxsv5\LaravelS\Components\Apollo\Process::getDefinition(),
     ```
 
-2. 启用Apollo：加上`--apollo`或`-a`参数，并设置Apollo的环境变量。
-    
-    ```bash
-    # 单行命令
-    APOLLO_SERVER=http://127.0.0.1:8080 APOLLO_APP_ID=LARAVEL-S-TEST APOLLO_NAMESPACES=application,env php bin/laravels start --apollo
-
-    # 拆分多行
-    APOLLO_SERVER=http://127.0.0.1:8080 \
-    APOLLO_APP_ID=LARAVEL-S-TEST \
-    APOLLO_NAMESPACES=application,env \
-    php bin/laravels start --apollo
-    ```
 3. 可用的环境变量。
 
 | 变量名 | 描述 | 默认值 | 示例 |

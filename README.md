@@ -1071,7 +1071,20 @@ To make our main server support more protocols not just Http and WebSocket, we b
 ### Apollo
 > `LaravelS` will pull the `Apollo` configuration and write it to the `.env` file when starting. At the same time, `LaravelS` will start the custom process `apollo` to monitor the configuration and automatically `reload` when the configuration changes.
 
-1. Support hot updates.
+1. Enable Apollo: Add `--apollo` or` -a` parameters and set Apollo environment variables.
+    
+    ```bash
+    # Single line command
+    APOLLO_SERVER=http://127.0.0.1:8080 APOLLO_APP_ID=LARAVEL-S-TEST APOLLO_NAMESPACES=application,env php bin/laravels start --apollo
+
+    # Multi-line commands
+    APOLLO_SERVER=http://127.0.0.1:8080 \
+    APOLLO_APP_ID=LARAVEL-S-TEST \
+    APOLLO_NAMESPACES=application,env \
+    php bin/laravels start --apollo
+    ```
+
+2. Support hot updates(optional).
 
     ```php
     // Edit `config/laravels.php`
@@ -1088,19 +1101,6 @@ To make our main server support more protocols not just Http and WebSocket, we b
         ],
         // ...
     ] + Hhxsv5\LaravelS\Components\Apollo\Process::getDefinition(),
-    ```
-
-2. Enable Apollo: Add `--apollo` or` -a` parameters and set Apollo environment variables.
-    
-    ```bash
-    # Single line command
-    APOLLO_SERVER=http://127.0.0.1:8080 APOLLO_APP_ID=LARAVEL-S-TEST APOLLO_NAMESPACES=application,env php bin/laravels start --apollo
-
-    # Multi-line commands
-    APOLLO_SERVER=http://127.0.0.1:8080 \
-    APOLLO_APP_ID=LARAVEL-S-TEST \
-    APOLLO_NAMESPACES=application,env \
-    php bin/laravels start --apollo
     ```
 
 3. Available environment variables.
