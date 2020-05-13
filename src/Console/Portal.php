@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Console;
 
-use Hhxsv5\LaravelS\Components\Apollo\Apollo;
+use Hhxsv5\LaravelS\Components\Apollo\Client;
 use Hhxsv5\LaravelS\Illuminate\LogTrait;
 use Hhxsv5\LaravelS\LaravelS;
 use Swoole\Process;
@@ -277,7 +277,7 @@ EOS;
         if ($env) {
             $envFile .= '.' . $env;
         }
-        Apollo::createFromEnv()->pullAllAndSave($envFile);
+        Client::createFromEnv()->pullAllAndSave($envFile);
     }
 
     public function makeArtisanCmd($subCmd)

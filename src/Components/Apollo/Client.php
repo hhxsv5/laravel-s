@@ -6,17 +6,17 @@ use Hhxsv5\LaravelS\Components\HttpClient\SimpleHttpTrait;
 use Hhxsv5\LaravelS\Swoole\Coroutine\Context;
 use Swoole\Coroutine;
 
-class Apollo
+class Client
 {
     use SimpleHttpTrait;
 
     protected $server;
     protected $appId;
-    protected $cluster     = 'default';
-    protected $namespaces  = ['application'];
+    protected $cluster      = 'default';
+    protected $namespaces   = ['application'];
     protected $clientIp;
-    protected $pullTimeout = 5;
-    protected $keepOldEnv  = false;
+    protected $pullTimeout  = 5;
+    protected $backupOldEnv = false;
 
     protected $releaseKeys   = [];
     protected $notifications = [];
@@ -41,8 +41,8 @@ class Apollo
         if (isset($settings['pull_timeout'])) {
             $this->pullTimeout = (int)$settings['pull_timeout'];
         }
-        if (isset($settings['keep_old_env'])) {
-            $this->keepOldEnv = (bool)$settings['keep_old_env'];
+        if (isset($settings['backup_old_env'])) {
+            $this->backupOldEnv = (bool)$settings['backup_old_env'];
         }
     }
 
@@ -52,13 +52,13 @@ class Apollo
             throw new \InvalidArgumentException('Missing environment variable APOLLO_SERVER & APOLLO_APP_ID');
         }
         $options = [
-            'server'       => getenv('APOLLO_SERVER'),
-            'app_id'       => getenv('APOLLO_APP_ID'),
-            'cluster'      => getenv('APOLLO_CLUSTER') ?: null,
-            'namespaces'   => explode(',', getenv('APOLLO_NAMESPACES')) ?: null,
-            'client_ip'    => getenv('APOLLO_CLIENT_IP') ?: null,
-            'pull_timeout' => getenv('APOLLO_PULL_TIMEOUT') ?: null,
-            'keep_old_env' => getenv('APOLLO_KEEP_OLD_ENV') ?: false,
+            'server'         => getenv('APOLLO_SERVER'),
+            'app_id'         => getenv('APOLLO_APP_ID'),
+            'cluster'        => getenv('APOLLO_CLUSTER') ?: null,
+            'namespaces'     => explode(',', getenv('APOLLO_NAMESPACES')) ?: null,
+            'client_ip'      => getenv('APOLLO_CLIENT_IP') ?: null,
+            'pull_timeout'   => getenv('APOLLO_PULL_TIMEOUT') ?: null,
+            'backup_old_env' => getenv('APOLLO_BACKUP_OLD_ENV') ?: false,
         ];
         return new static($options);
     }
@@ -108,7 +108,7 @@ class Apollo
         if (empty($configs)) {
             throw new \RuntimeException('Empty Apollo configuration list');
         }
-        if ($this->keepOldEnv && file_exists($filepath)) {
+        if ($this->backupOldEnv && file_exists($filepath)) {
             rename($filepath, $filepath . '.' . date('YmdHis'));
         }
         $fileContent = implode(PHP_EOL, $configs);
@@ -146,7 +146,9 @@ class Apollo
                 if (empty($notifications)) {
                     continue;
                 }
-                $callback($notifications);
+                if (current($this->notifications)['notificationId'] !== -1) { // Ignore the first pull
+                    $callback($notifications);
+                }
                 array_walk($notifications, function (&$notification) {
                     unset($notification['messages']);
                 });

@@ -48,6 +48,8 @@ Table of Contents
 * [多端口混合协议](#多端口混合协议)
 * [协程](#协程)
 * [自定义进程](#自定义进程)
+* [常用组件](#常用组件)
+    * [Apollo](#Apollo)
 * [其他特性](#其他特性)
 * [注意事项](#注意事项)
 * [用户与案例](#用户与案例)
@@ -71,6 +73,8 @@ Table of Contents
 - [异步的任务队列](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%BC%82%E6%AD%A5%E7%9A%84%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97)
 
 - [毫秒级定时任务](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E6%AF%AB%E7%A7%92%E7%BA%A7%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1)
+
+- [常用组件](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6)
 
 - 平滑Reload
 
@@ -1072,6 +1076,55 @@ class WebSocketService implements WebSocketHandlerInterface
         var_dump($pushProcess->read());
     }
     ```
+
+## 常用组件
+> 一些常用的基础组件。
+
+### Apollo
+> 启动`LaravelS`时会获取`Apollo`配置并写入到`.env`文件，同时会启动自定义进程`ApolloProcess`用于监听配置，当配置发生变化时自动`reload`。
+
+1. Apollo 配置热更新。
+
+    ```php
+    // 修改文件 config/laravels.php
+    'processes' => Hhxsv5\LaravelS\Components\Apollo\Process::getDefinition(),
+    ```
+
+    ```php
+    // 当存在其他自定义进程配置时
+    'processes' => [
+        'test' => [
+            'class'    => \App\Processes\TestProcess::class,
+            'redirect' => false,
+            'pipe'     => 1,
+        ],
+        // ...
+    ] + Hhxsv5\LaravelS\Components\Apollo\Process::getDefinition(),
+    ```
+
+2. 启用Apollo：加上`--apollo`或`-a`参数，并设置Apollo的环境变量。
+    
+    ```bash
+    # 单行命令
+    APOLLO_SERVER=http://127.0.0.1:8080 APOLLO_APP_ID=LARAVEL-S-TEST APOLLO_NAMESPACES=application,env php bin/laravels start --apollo
+
+    # 拆分多行
+    APOLLO_SERVER=http://127.0.0.1:8080 \
+    APOLLO_APP_ID=LARAVEL-S-TEST \
+    APOLLO_NAMESPACES=application,env \
+    php bin/laravels start --apollo
+    ```
+3. 可用的环境变量。
+
+| 变量名 | 描述 | 默认值 | 示例 |
+| -------- | -------- | -------- |
+| APOLLO_SERVER | Apollo服务器URL | - | http://127.0.0.1:8080 |
+| APOLLO_APP_ID | Apollo应用ID | - | LARAVEL-S-TEST |
+| APOLLO_NAMESPACES | APP所属的命名空间，多个时以英文逗号分隔 | application | application |
+| APOLLO_CLUSTER | APP所属的集群 | default | default |
+| APOLLO_CLIENT_IP | 当前实例的IP | 本机内网IP | 10.2.1.83 |
+| APOLLO_PULL_TIMEOUT | 拉取配置时的超时时间（秒） | 5 | 5 |
+| APOLLO_BACKUP_OLD_ENV | 更新配置文件`.env`时是否备份老的配置文件（1是/0否） | 0 | 0 |
 
 ## 其他特性
 

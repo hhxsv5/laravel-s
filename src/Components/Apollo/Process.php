@@ -1,22 +1,22 @@
 <?php
 
-namespace Hhxsv5\LaravelS\Swoole\Process;
+namespace Hhxsv5\LaravelS\Components\Apollo;
 
-use Hhxsv5\LaravelS\Components\Apollo\Apollo;
 use Hhxsv5\LaravelS\Swoole\Coroutine\Context;
+use Hhxsv5\LaravelS\Swoole\Process\CustomProcessInterface;
 use Swoole\Coroutine;
 use Swoole\Http\Server;
-use Swoole\Process;
+use Swoole\Process as SwooleProcess;
 
-class ApolloServiceProcess implements CustomProcessInterface
+class Process implements CustomProcessInterface
 {
-    /**@var Apollo $apollo */
+    /**@var Client $apollo */
     protected static $apollo;
 
     public static function getDefinition()
     {
         return [
-            'apollo-service' => [
+            'apollo' => [
                 'class'    => self::class,
                 'redirect' => false,
                 'pipe'     => 0,
@@ -24,7 +24,7 @@ class ApolloServiceProcess implements CustomProcessInterface
         ];
     }
 
-    public static function callback(Server $swoole, Process $process)
+    public static function callback(Server $swoole, SwooleProcess $process)
     {
         $filename = base_path('.env');
         $env = getenv('LARAVELS_ENV');
@@ -32,11 +32,11 @@ class ApolloServiceProcess implements CustomProcessInterface
             $filename .= '.' . $env;
         }
 
-        self::$apollo = Apollo::createFromEnv();
-        self::$apollo->startWatchNotification(function (array $notifications) use ($filename, $swoole) {
+        self::$apollo = Client::createFromEnv();
+        self::$apollo->startWatchNotification(function (array $notifications) use ($process, $filename) {
             $configs = self::$apollo->pullAllAndSave($filename);
-            app('log')->info('[ApolloServiceProcess] Pull all configurations', $configs);
-            $swoole->reload();
+            app('log')->info('[ApolloProcess] Pull all configurations', $configs);
+            $process->exec(PHP_BINARY, [base_path('bin/laravels'), 'reload']);
             if (Context::inCoroutine()) {
                 Coroutine::sleep(5);
             } else {
@@ -45,7 +45,7 @@ class ApolloServiceProcess implements CustomProcessInterface
         });
     }
 
-    public static function onReload(Server $swoole, Process $process)
+    public static function onReload(Server $swoole, SwooleProcess $process)
     {
         // Stop the process...
         self::$apollo->stopWatchNotification();

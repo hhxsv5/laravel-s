@@ -44,6 +44,8 @@ Table of Contents
 * [Multi-port mixed protocol](#multi-port-mixed-protocol)
 * [Coroutine](#coroutine)
 * [Custom process](#custom-process)
+* [Components](#common-components)
+    * [Apollo](#apollo)
 * [Other features](#other-features)
 * [Important notices](#important-notices)
 * [Users and cases](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E7%94%A8%E6%88%B7%E4%B8%8E%E6%A1%88%E4%BE%8B)
@@ -66,6 +68,8 @@ Table of Contents
 - [Asynchronous task queue](https://github.com/hhxsv5/laravel-s/blob/master/README.md#asynchronous-task-queue)
 
 - [Millisecond cron job](https://github.com/hhxsv5/laravel-s/blob/master/README.md#millisecond-cron-job)
+
+- [Common Components](https://github.com/hhxsv5/laravel-s/blob/master/README.md#common-components)
 
 - Gracefully reload
 
@@ -1061,6 +1065,56 @@ To make our main server support more protocols not just Http and WebSocket, we b
         var_dump($pushProcess->read());
     }
     ```
+
+## Common components
+> Some common basic components.
+
+### Apollo
+> `LaravelS` will get the `Apollo` configuration and write it to the `.env` file when starting. At the same time, `LaravelS` will start the custom process `apollo` to monitor the configuration and automatically `reload` when the configuration changes.
+
+1. Support hot updates.
+
+    ```php
+    // Edit `config/laravels.php`
+    'processes' => Hhxsv5\LaravelS\Components\Apollo\Process::getDefinition(),
+    ```
+
+    ```php
+    // When there are other custom process configurations
+    'processes' => [
+        'test' => [
+            'class'    => \App\Processes\TestProcess::class,
+            'redirect' => false,
+            'pipe'     => 1,
+        ],
+        // ...
+    ] + Hhxsv5\LaravelS\Components\Apollo\Process::getDefinition(),
+    ```
+
+2. Enable Apollo: Add `--apollo` or` -a` parameters and set Apollo environment variables.
+    
+    ```bash
+    # Single line command
+    APOLLO_SERVER=http://127.0.0.1:8080 APOLLO_APP_ID=LARAVEL-S-TEST APOLLO_NAMESPACES=application,env php bin/laravels start --apollo
+
+    # Multi-line commands
+    APOLLO_SERVER=http://127.0.0.1:8080 \
+    APOLLO_APP_ID=LARAVEL-S-TEST \
+    APOLLO_NAMESPACES=application,env \
+    php bin/laravels start --apollo
+    ```
+
+3. Available environment variables.
+
+| Name | Description | Default | Demo |
+| -------- | -------- | -------- |
+| APOLLO_SERVER | Apollo server URL | - | http://127.0.0.1:8080 |
+| APOLLO_APP_ID | Apollo APP ID | - | LARAVEL-S-TEST |
+| APOLLO_NAMESPACES | The namespace to which the APP belongs, separated by commas when multiple | application | application |
+| APOLLO_CLUSTER | The cluster to which the APP belongs | default | default |
+| APOLLO_CLIENT_IP | IP of current instance | Local intranet IP | 10.2.1.83 |
+| APOLLO_PULL_TIMEOUT | Timeout time(seconds) when pulling configuration | 5 | 5 |
+| APOLLO_BACKUP_OLD_ENV | Whether to backup the old configuration file when updating the configuration file `.env` (1 yes / 0 no) | 0 | 0 |
 
 ## Other features
 
