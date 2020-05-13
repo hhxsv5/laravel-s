@@ -1078,7 +1078,6 @@ class WebSocketService implements WebSocketHandlerInterface
     ```
 
 ## 常用组件
-> 一些常用的基础组件。
 
 ### Apollo
 > 启动`LaravelS`时会获取`Apollo`配置并写入到`.env`文件，同时会启动自定义进程`ApolloProcess`用于监听配置，当配置发生变化时自动`reload`。

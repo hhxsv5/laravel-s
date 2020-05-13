@@ -1067,7 +1067,6 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ```
 
 ## Common components
-> Some common basic components.
 
 ### Apollo
 > `LaravelS` will get the `Apollo` configuration and write it to the `.env` file when starting. At the same time, `LaravelS` will start the custom process `apollo` to monitor the configuration and automatically `reload` when the configuration changes.
