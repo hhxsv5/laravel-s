@@ -1116,7 +1116,7 @@ class WebSocketService implements WebSocketHandlerInterface
 3. 可用的环境变量。
 
 | 变量名 | 描述 | 默认值 | 示例 |
-| -------- | -------- | -------- |
+| -------- | -------- | -------- | -------- |
 | APOLLO_SERVER | Apollo服务器URL | - | http://127.0.0.1:8080 |
 | APOLLO_APP_ID | Apollo应用ID | - | LARAVEL-S-TEST |
 | APOLLO_NAMESPACES | APP所属的命名空间，多个时以英文逗号分隔 | application | application |

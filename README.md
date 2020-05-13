@@ -1069,7 +1069,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 ## Common components
 
 ### Apollo
-> `LaravelS` will get the `Apollo` configuration and write it to the `.env` file when starting. At the same time, `LaravelS` will start the custom process `apollo` to monitor the configuration and automatically `reload` when the configuration changes.
+> `LaravelS` will pull the `Apollo` configuration and write it to the `.env` file when starting. At the same time, `LaravelS` will start the custom process `apollo` to monitor the configuration and automatically `reload` when the configuration changes.
 
 1. Support hot updates.
 
@@ -1106,7 +1106,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 3. Available environment variables.
 
 | Name | Description | Default | Demo |
-| -------- | -------- | -------- |
+| -------- | -------- | -------- | -------- |
 | APOLLO_SERVER | Apollo server URL | - | http://127.0.0.1:8080 |
 | APOLLO_APP_ID | Apollo APP ID | - | LARAVEL-S-TEST |
 | APOLLO_NAMESPACES | The namespace to which the APP belongs, separated by commas when multiple | application | application |
