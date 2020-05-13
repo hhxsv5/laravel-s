@@ -44,7 +44,7 @@ Table of Contents
 * [Multi-port mixed protocol](#multi-port-mixed-protocol)
 * [Coroutine](#coroutine)
 * [Custom process](#custom-process)
-* [Components](#common-components)
+* [Common components](#common-components)
     * [Apollo](#apollo)
 * [Other features](#other-features)
 * [Important notices](#important-notices)
