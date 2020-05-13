@@ -31,9 +31,6 @@ class Client
             $this->cluster = $settings['cluster'];
         }
         if (isset($settings['namespaces'])) {
-            if (empty($settings['namespaces'])) {
-                throw new \InvalidArgumentException('Empty Apollo namespace');
-            }
             $this->namespaces = $settings['namespaces'];
         }
         if (isset($settings['client_ip'])) {
