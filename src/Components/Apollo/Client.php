@@ -51,7 +51,7 @@ class Client
         if (!getenv('APOLLO_SERVER') || !getenv('APOLLO_APP_ID')) {
             throw new \InvalidArgumentException('Missing environment variable APOLLO_SERVER & APOLLO_APP_ID');
         }
-        $options = [
+        $settings = [
             'server'         => getenv('APOLLO_SERVER'),
             'app_id'         => getenv('APOLLO_APP_ID'),
             'cluster'        => getenv('APOLLO_CLUSTER') ?: null,
@@ -60,7 +60,7 @@ class Client
             'pull_timeout'   => getenv('APOLLO_PULL_TIMEOUT') ?: null,
             'backup_old_env' => getenv('APOLLO_BACKUP_OLD_ENV') ?: false,
         ];
-        return new static($options);
+        return new static($settings);
     }
 
 
@@ -95,7 +95,8 @@ class Client
     {
         $all = $this->pullAll(false, $options);
         if (count($all) !== count($this->namespaces)) {
-            throw new \RuntimeException('Incomplete Apollo configuration list');
+            $lackNamespaces = array_diff($this->namespaces, array_keys($all));
+            throw new \RuntimeException('Missing Apollo configurations for namespaces ' . implode(',', $lackNamespaces));
         }
         $configs = [];
         foreach ($all as $namespace => $config) {
