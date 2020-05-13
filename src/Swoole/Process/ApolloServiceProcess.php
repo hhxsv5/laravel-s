@@ -3,6 +3,7 @@
 namespace Hhxsv5\LaravelS\Swoole\Process;
 
 use Hhxsv5\LaravelS\Components\Apollo\Apollo;
+use Hhxsv5\LaravelS\Swoole\Coroutine\Context;
 use Swoole\Coroutine;
 use Swoole\Http\Server;
 use Swoole\Process;
@@ -36,7 +37,11 @@ class ApolloServiceProcess implements CustomProcessInterface
             $configs = self::$apollo->pullAllAndSave($filename);
             app('log')->info('[ApolloServiceProcess] Pull all configurations', $configs);
             $swoole->reload();
-            Coroutine::sleep(5);
+            if (Context::inCoroutine()) {
+                Coroutine::sleep(5);
+            } else {
+                sleep(5);
+            }
         });
     }
 

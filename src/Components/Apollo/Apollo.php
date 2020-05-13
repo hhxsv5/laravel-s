@@ -48,18 +48,17 @@ class Apollo
 
     public static function createFromEnv()
     {
-        $envs = getenv();
-        if (!isset($envs['APOLLO_SERVER'], $envs['APOLLO_APP_ID'])) {
+        if (!getenv('APOLLO_SERVER') || !getenv('APOLLO_APP_ID')) {
             throw new \InvalidArgumentException('Missing environment variable APOLLO_SERVER & APOLLO_APP_ID');
         }
         $options = [
-            'server'       => $envs['APOLLO_SERVER'],
-            'app_id'       => $envs['APOLLO_APP_ID'],
-            'cluster'      => isset($envs['APOLLO_CLUSTER']) ? $envs['APOLLO_CLUSTER'] : null,
-            'namespaces'   => isset($envs['APOLLO_NAMESPACES']) ? explode(',', $envs['APOLLO_NAMESPACES']) : null,
-            'client_ip'    => isset($envs['APOLLO_CLIENT_IP']) ? $envs['APOLLO_CLIENT_IP'] : null,
-            'pull_timeout' => isset($envs['APOLLO_PULL_TIMEOUT']) ? $envs['APOLLO_PULL_TIMEOUT'] : null,
-            'keep_old_env' => isset($envs['APOLLO_KEEP_OLD_ENV']) ? $envs['APOLLO_KEEP_OLD_ENV'] : false,
+            'server'       => getenv('APOLLO_SERVER'),
+            'app_id'       => getenv('APOLLO_APP_ID'),
+            'cluster'      => getenv('APOLLO_CLUSTER') ?: null,
+            'namespaces'   => explode(',', getenv('APOLLO_NAMESPACES')) ?: null,
+            'client_ip'    => getenv('APOLLO_CLIENT_IP') ?: null,
+            'pull_timeout' => getenv('APOLLO_PULL_TIMEOUT') ?: null,
+            'keep_old_env' => getenv('APOLLO_KEEP_OLD_ENV') ?: false,
         ];
         return new static($options);
     }
