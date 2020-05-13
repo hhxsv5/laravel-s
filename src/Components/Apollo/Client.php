@@ -31,6 +31,9 @@ class Client
             $this->cluster = $settings['cluster'];
         }
         if (isset($settings['namespaces'])) {
+            if (empty($settings['namespaces'])) {
+                throw new \InvalidArgumentException('Empty Apollo namespace');
+            }
             $this->namespaces = $settings['namespaces'];
         }
         if (isset($settings['client_ip'])) {
@@ -146,7 +149,7 @@ class Client
                 if (empty($notifications)) {
                     continue;
                 }
-                if (current($this->notifications)['notificationId'] !== -1) { // Ignore the first pull
+                if (!empty($this->notifications) && current($this->notifications)['notificationId'] !== -1) { // Ignore the first pull
                     $callback($notifications);
                 }
                 array_walk($notifications, function (&$notification) {
