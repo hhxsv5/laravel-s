@@ -42,7 +42,7 @@ class Portal extends Command
         $this->addOption('env', 'e', InputOption::VALUE_OPTIONAL, 'The environment the command should run under, this feature requires Laravel 5.2+');
         $this->addOption('daemonize', 'd', InputOption::VALUE_NONE, 'Whether run as a daemon for "start & restart"');
         $this->addOption('ignore', 'i', InputOption::VALUE_NONE, 'Whether ignore checking process pid for "start & restart"');
-        $this->addOption('apollo', 'a', InputOption::VALUE_NONE, 'Whether to import Apollo configurations to .env for "start & restart"');
+        Client::attachCommandOptions($this);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -77,7 +77,6 @@ Options:
   -e, --env             The environment the command should run under, this feature requires Laravel 5.2+
   -d, --daemonize       Whether run as a daemon for "start & restart"
   -i, --ignore          Whether ignore checking process pid for "start & restart"
-  -a, --apollo          Whether to import Apollo configurations to .env for "start & restart"
 EOS;
 
                     $this->info(sprintf($help, PHP_BINARY));
@@ -107,23 +106,29 @@ EOS;
         }
 
         // Generate configuration storage/laravels.json
-        $options = array_filter($this->input->getOptions());
+        $options = $this->input->getOptions();
         if (isset($options['env'])) {
             putenv('LARAVELS_ENV=' . $options['env']);
         }
 
-        if (!empty($options['apollo'])) {
-            // Load Apollo configurations to .env file
-            $this->loadApollo();
-            unset($options['apollo']);
+        // Load Apollo configurations to .env file
+        if (!empty($options['enable-apollo'])) {
+            $this->loadApollo($options);
         }
-        unset($options['env']); // Pass env parameter in makeArtisanCmd()
 
-        $optionStr = '';
-        foreach ($options as $key => $value) {
-            $optionStr .= sprintf('--%s%s ', $key, is_bool($value) ? '' : ('=' . $value));
+        $passOptionStr = '';
+        $passOptions = ['daemonize', 'ignore'];
+        foreach ($passOptions as $key) {
+            if (!isset($options[$key])) {
+                continue;
+            }
+            $value = $options[$key];
+            if ($value === false) {
+                continue;
+            }
+            $passOptionStr .= sprintf('--%s%s ', $key, is_bool($value) ? '' : ('=' . $value));
         }
-        $statusCode = $this->runArtisanCommand(trim('laravels config ' . $optionStr));
+        $statusCode = $this->runArtisanCommand(trim('laravels config ' . $passOptionStr));
         if ($statusCode !== 0) {
             return $statusCode;
         }
@@ -270,14 +275,14 @@ EOS;
         return $this->runArtisanCommand('laravels info');
     }
 
-    public function loadApollo()
+    public function loadApollo(array $options)
     {
+        Client::putCommandOptionsToEnv($options);
         $envFile = $this->basePath . '/.env';
-        $env = getenv('LARAVELS_ENV');
-        if ($env) {
-            $envFile .= '.' . $env;
+        if (isset($options['env'])) {
+            $envFile .= '.' . $options['env'];
         }
-        Client::createFromEnv()->pullAllAndSave($envFile);
+        Client::createFromCommandOptions($options)->pullAllAndSave($envFile);
     }
 
     public function makeArtisanCmd($subCmd)

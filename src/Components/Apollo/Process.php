@@ -20,7 +20,7 @@ class Process implements CustomProcessInterface
                 'class'    => self::class,
                 'redirect' => false,
                 'pipe'     => 0,
-                'enable'   => getenv('APOLLO_SERVER') && getenv('APOLLO_APP_ID'),
+                'enable'   => (bool)getenv('ENABLE_APOLLO'),
             ],
         ];
     }
@@ -29,7 +29,7 @@ class Process implements CustomProcessInterface
     {
         $filename = base_path('.env');
         $env = getenv('LARAVELS_ENV');
-        if ($env) {
+        if ($env !== false) {
             $filename .= '.' . $env;
         }
 

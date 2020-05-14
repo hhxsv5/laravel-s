@@ -1080,19 +1080,12 @@ class WebSocketService implements WebSocketHandlerInterface
 ## 常用组件
 
 ### Apollo
-> 启动`LaravelS`时会获取`Apollo`配置并写入到`.env`文件，同时会启动自定义进程`Apollo`用于监听配置变更，当配置发生变更时自动`reload`。
+> 启动`LaravelS`时会获取`Apollo`配置并写入到`.env`文件，同时会启动自定义进程`apollo`用于监听配置变更，当配置发生变更时自动`reload`。
 
-1. 启用Apollo：加上`--apollo`或`-a`参数，并设置Apollo的环境变量。
+1. 启用Apollo组件：启动参数加上`--enable-apollo`以及Apollo的配置参数。
     
     ```bash
-    # 单行命令
-    APOLLO_SERVER=http://127.0.0.1:8080 APOLLO_APP_ID=LARAVEL-S-TEST APOLLO_NAMESPACES=application,env php bin/laravels start --apollo
-
-    # 拆分多行
-    APOLLO_SERVER=http://127.0.0.1:8080 \
-    APOLLO_APP_ID=LARAVEL-S-TEST \
-    APOLLO_NAMESPACES=application,env \
-    php bin/laravels start --apollo
+    php bin/laravels start --enable-apollo --apollo-server=http://127.0.0.1:8080 --apollo-app-id=LARAVEL-S-TEST
     ```
 
 2. 配置热更新（可选的）。
@@ -1114,17 +1107,17 @@ class WebSocketService implements WebSocketHandlerInterface
     ] + Hhxsv5\LaravelS\Components\Apollo\Process::getDefinition(),
     ```
 
-3. 可用的环境变量。
+3. 可用的参数列表。
 
-| 变量名 | 描述 | 默认值 | 示例 |
+| 参数名 | 描述 | 默认值 | 示例 |
 | -------- | -------- | -------- | -------- |
-| APOLLO_SERVER | Apollo服务器URL | - | http://127.0.0.1:8080 |
-| APOLLO_APP_ID | Apollo应用ID | - | LARAVEL-S-TEST |
-| APOLLO_NAMESPACES | APP所属的命名空间，多个时以英文逗号分隔 | application | application |
-| APOLLO_CLUSTER | APP所属的集群 | default | default |
-| APOLLO_CLIENT_IP | 当前实例的IP | 本机内网IP | 10.2.1.83 |
-| APOLLO_PULL_TIMEOUT | 拉取配置时的超时时间（秒） | 5 | 5 |
-| APOLLO_BACKUP_OLD_ENV | 更新配置文件`.env`时是否备份老的配置文件（1是/0否） | 0 | 0 |
+| apollo-server | Apollo服务器URL | - | --apollo-server=http://127.0.0.1:8080 |
+| apollo-app-id | Apollo应用ID | - | --apollo-app-id=LARAVEL-S-TEST |
+| apollo-namespaces | APP所属的命名空间，可指定多个 | application | --apollo-namespaces=application --apollo-namespaces=env |
+| apollo-cluster | APP所属的集群 | default | --apollo-cluster=default |
+| apollo-client-ip | 当前实例的IP | 本机内网IP | --apollo-client-ip=10.2.1.83 |
+| apollo-pull-timeout | 拉取配置时的超时时间（秒） | 5 | --apollo-pull-timeout=5 |
+| apollo-backup-old-env | 更新配置文件`.env`时是否备份老的配置文件 | false | --apollo-backup-old-env |
 
 ## 其他特性
 

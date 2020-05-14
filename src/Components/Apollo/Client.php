@@ -5,6 +5,8 @@ namespace Hhxsv5\LaravelS\Components\Apollo;
 use Hhxsv5\LaravelS\Components\HttpClient\SimpleHttpTrait;
 use Hhxsv5\LaravelS\Swoole\Coroutine\Context;
 use Swoole\Coroutine;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputOption;
 
 class Client
 {
@@ -46,23 +48,68 @@ class Client
         }
     }
 
+    public static function putCommandOptionsToEnv(array $options)
+    {
+        $envs = [
+            'ENABLE_APOLLO'         => !empty($options['enable-apollo']),
+            'APOLLO_SERVER'         => $options['apollo-server'],
+            'APOLLO_APP_ID'         => $options['apollo-app-id'],
+            'APOLLO_CLUSTER'        => $options['apollo-cluster'],
+            'APOLLO_NAMESPACES'     => implode(',', $options['apollo-namespaces']),
+            'APOLLO_CLIENT_IP'      => $options['apollo-client-ip'],
+            'APOLLO_PULL_TIMEOUT'   => $options['apollo-pull-timeout'],
+            'APOLLO_BACKUP_OLD_ENV' => $options['apollo-backup-old-env'],
+        ];
+        foreach ($envs as $key => $value) {
+            putenv("{$key}={$value}");
+        }
+    }
+
     public static function createFromEnv()
     {
         if (!getenv('APOLLO_SERVER') || !getenv('APOLLO_APP_ID')) {
-            throw new \InvalidArgumentException('Missing environment variable APOLLO_SERVER & APOLLO_APP_ID');
+            throw new \InvalidArgumentException('Missing environment variable APOLLO_SERVER or APOLLO_APP_ID');
         }
         $settings = [
             'server'         => getenv('APOLLO_SERVER'),
             'app_id'         => getenv('APOLLO_APP_ID'),
-            'cluster'        => getenv('APOLLO_CLUSTER') ?: null,
-            'namespaces'     => explode(',', getenv('APOLLO_NAMESPACES')) ?: null,
+            'cluster'        => ($cluster = (string)getenv('APOLLO_CLUSTER')) !== '' ? $cluster : null,
+            'namespaces'     => ($namespaces = (string)getenv('APOLLO_NAMESPACES')) !== '' ? explode(',', $namespaces) : null,
             'client_ip'      => getenv('APOLLO_CLIENT_IP') ?: null,
-            'pull_timeout'   => getenv('APOLLO_PULL_TIMEOUT') ?: null,
-            'backup_old_env' => getenv('APOLLO_BACKUP_OLD_ENV') ?: false,
+            'pull_timeout'   => ($pullTimeout = getenv('APOLLO_PULL_TIMEOUT')) !== false ? $pullTimeout : null,
+            'backup_old_env' => ($backupOldEnv = getenv('APOLLO_BACKUP_OLD_ENV')) !== false ? $backupOldEnv : null,
         ];
         return new static($settings);
     }
 
+    public static function createFromCommandOptions(array $options)
+    {
+        if (!isset($options['apollo-server'], $options['apollo-app-id'])) {
+            throw new \InvalidArgumentException('Missing command option apollo-server or apollo-app-id');
+        }
+        $settings = [
+            'server'         => $options['apollo-server'],
+            'app_id'         => $options['apollo-app-id'],
+            'cluster'        => isset($options['apollo-cluster']) ? $options['apollo-cluster'] : null,
+            'namespaces'     => !empty($options['apollo-namespaces']) ? $options['apollo-namespaces'] : null,
+            'client_ip'      => isset($options['apollo-client-ip']) ? $options['apollo-client-ip'] : null,
+            'pull_timeout'   => isset($options['apollo-pull-timeout']) ? $options['apollo-pull-timeout'] : null,
+            'backup_old_env' => isset($options['apollo-backup-old-env']) ? $options['apollo-backup-old-env'] : null,
+        ];
+        return new static($settings);
+    }
+
+    public static function attachCommandOptions(Command $command)
+    {
+        $command->addOption('enable-apollo', null, InputOption::VALUE_NONE, 'Whether to enable Apollo component');
+        $command->addOption('apollo-server', null, InputOption::VALUE_OPTIONAL, 'Apollo server URL');
+        $command->addOption('apollo-app-id', null, InputOption::VALUE_OPTIONAL, 'Apollo APP ID');
+        $command->addOption('apollo-namespaces', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The namespace to which the APP belongs');
+        $command->addOption('apollo-cluster', null, InputOption::VALUE_OPTIONAL, 'The cluster to which the APP belongs');
+        $command->addOption('apollo-client-ip', null, InputOption::VALUE_OPTIONAL, 'IP of current instance');
+        $command->addOption('apollo-pull-timeout', null, InputOption::VALUE_OPTIONAL, 'Timeout time(seconds) when pulling configuration');
+        $command->addOption('apollo-backup-old-env', null, InputOption::VALUE_NONE, 'Whether to backup the old configuration file when updating the configuration .env file');
+    }
 
     public function pullBatch(array $namespaces, $withReleaseKey = false, array $options = [])
     {

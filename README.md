@@ -1071,17 +1071,10 @@ To make our main server support more protocols not just Http and WebSocket, we b
 ### Apollo
 > `LaravelS` will pull the `Apollo` configuration and write it to the `.env` file when starting. At the same time, `LaravelS` will start the custom process `apollo` to monitor the configuration and automatically `reload` when the configuration changes.
 
-1. Enable Apollo: Add `--apollo` or` -a` parameters and set Apollo environment variables.
+1. Enable Apollo: add `--enable-apollo` and Apollo parameters to the startup parameters.
     
     ```bash
-    # Single line command
-    APOLLO_SERVER=http://127.0.0.1:8080 APOLLO_APP_ID=LARAVEL-S-TEST APOLLO_NAMESPACES=application,env php bin/laravels start --apollo
-
-    # Multi-line commands
-    APOLLO_SERVER=http://127.0.0.1:8080 \
-    APOLLO_APP_ID=LARAVEL-S-TEST \
-    APOLLO_NAMESPACES=application,env \
-    php bin/laravels start --apollo
+    php bin/laravels start --enable-apollo --apollo-server=http://127.0.0.1:8080 --apollo-app-id=LARAVEL-S-TEST
     ```
 
 2. Support hot updates(optional).
@@ -1103,17 +1096,17 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ] + Hhxsv5\LaravelS\Components\Apollo\Process::getDefinition(),
     ```
 
-3. Available environment variables.
+3. List of available parameters.
 
-| Name | Description | Default | Demo |
+| Parameter | Description | Default | Demo |
 | -------- | -------- | -------- | -------- |
-| APOLLO_SERVER | Apollo server URL | - | http://127.0.0.1:8080 |
-| APOLLO_APP_ID | Apollo APP ID | - | LARAVEL-S-TEST |
-| APOLLO_NAMESPACES | The namespace to which the APP belongs, separated by commas when multiple | application | application |
-| APOLLO_CLUSTER | The cluster to which the APP belongs | default | default |
-| APOLLO_CLIENT_IP | IP of current instance | Local intranet IP | 10.2.1.83 |
-| APOLLO_PULL_TIMEOUT | Timeout time(seconds) when pulling configuration | 5 | 5 |
-| APOLLO_BACKUP_OLD_ENV | Whether to backup the old configuration file when updating the configuration file `.env` (1 yes / 0 no) | 0 | 0 |
+| apollo-server | Apollo server URL | - | --apollo-server=http://127.0.0.1:8080 |
+| apollo-app-id | Apollo APP ID | - | --apollo-app-id=LARAVEL-S-TEST |
+| apollo-namespaces | The namespace to which the APP belongs, support specify the multiple | application | --apollo-namespaces=application --apollo-namespaces=env |
+| apollo-cluster | The cluster to which the APP belongs | default | --apollo-cluster=default |
+| apollo-client-ip | IP of current instance | Local intranet IP | --apollo-client-ip=10.2.1.83 |
+| apollo-pull-timeout | Timeout time(seconds) when pulling configuration | 5 | --apollo-pull-timeout=5 |
+| apollo-backup-old-env | Whether to backup the old configuration file when updating the configuration file `.env` | false | --apollo-backup-old-env |
 
 ## Other features
 
