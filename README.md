@@ -1062,7 +1062,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
         /**@var \Swoole\Process $process */
         $process = app('swoole')->customProcesses['test'];
         $process->write('TestController: write data' . time());
-        var_dump($pushProcess->read());
+        var_dump($process->read());
     }
     ```
 

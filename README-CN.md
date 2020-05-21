@@ -1073,7 +1073,7 @@ class WebSocketService implements WebSocketHandlerInterface
         /**@var \Swoole\Process $process */
         $process = app('swoole')->customProcesses['test'];
         $process->write('TestController: write data' . time());
-        var_dump($pushProcess->read());
+        var_dump($process->read());
     }
     ```
 
