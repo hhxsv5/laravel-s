@@ -748,10 +748,19 @@ class WebSocketService implements WebSocketHandlerInterface
          * E.g:
          * Browser side: var ws = new WebSocket("ws://127.0.0.1:5200/ws");
          * Then the /ws route in Laravel needs to add the middleware like Authenticate.
+         * Route::get('/ws', function () {
+         *     // Respond any content with status code 200
+         *     return 'websocket';
+         * })->middleware(['auth']);
          */
         // $user = Auth::user();
         // $userId = $user ? $user->id : 0; // 0 means a guest user who is not logged in
         $userId = mt_rand(1000, 10000);
+        // if (!$userId) {
+        //     // Disconnect the connections of unlogged users
+        //     $server->disconnect($request->fd);
+        //     return;
+        // }
         $this->wsTable->set('uid:' . $userId, ['value' => $request->fd]);// Bind map uid to fd
         $this->wsTable->set('fd:' . $request->fd, ['value' => $userId]);// Bind map fd to uid
         $server->push($request->fd, "Welcome to LaravelS #{$request->fd}");

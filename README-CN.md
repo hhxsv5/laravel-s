@@ -760,10 +760,19 @@ class WebSocketService implements WebSocketHandlerInterface
          * 例如：
          * 浏览器端：var ws = new WebSocket("ws://127.0.0.1:5200/ws");
          * 那么Laravel中/ws路由就需要加上类似Authenticate的中间件。
+         * Route::get('/ws', function () {
+         *     // 响应状态码200的任意内容
+         *     return 'websocket';
+         * })->middleware(['auth']);
          */
         // $user = Auth::user();
         // $userId = $user ? $user->id : 0; // 0 表示未登录的访客用户
         $userId = mt_rand(1000, 10000);
+        // if (!$userId) {
+        //     // 未登录用户直接断开连接
+        //     $server->disconnect($request->fd);
+        //     return;
+        // }
         $this->wsTable->set('uid:' . $userId, ['value' => $request->fd]);// 绑定uid到fd的映射
         $this->wsTable->set('fd:' . $request->fd, ['value' => $userId]);// 绑定fd到uid的映射
         $server->push($request->fd, "Welcome to LaravelS #{$request->fd}");
