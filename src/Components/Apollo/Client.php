@@ -123,8 +123,11 @@ class Client
             $timeout = isset($options['timeout']) ? $options['timeout'] : $this->pullTimeout;
             $response = $this->httpGet($url, compact('timeout'));
             if ($response['statusCode'] === 200) {
-                $configs[$namespace] = (array)json_decode($response['body'], true);
-                $this->releaseKeys[$namespace] = $configs[$namespace]['releaseKey'];
+                $json = json_decode($response['body'], true);
+                if (is_array($json)) {
+                    $configs[$namespace] = $json;
+                    $this->releaseKeys[$namespace] = $configs[$namespace]['releaseKey'];
+                }
             } elseif ($response['statusCode'] === 304) {
                 // ignore 304
             }
