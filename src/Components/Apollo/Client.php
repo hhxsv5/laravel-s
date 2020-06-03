@@ -75,9 +75,9 @@ class Client
             'app_id'         => getenv('APOLLO_APP_ID'),
             'cluster'        => ($cluster = (string)getenv('APOLLO_CLUSTER')) !== '' ? $cluster : null,
             'namespaces'     => ($namespaces = (string)getenv('APOLLO_NAMESPACES')) !== '' ? explode(',', $namespaces) : null,
-            'client_ip'      => getenv('APOLLO_CLIENT_IP') ?: null,
-            'pull_timeout'   => ($pullTimeout = getenv('APOLLO_PULL_TIMEOUT')) !== false ? $pullTimeout : null,
-            'backup_old_env' => ($backupOldEnv = getenv('APOLLO_BACKUP_OLD_ENV')) !== false ? $backupOldEnv : null,
+            'client_ip'      => ($clientIp = (string)getenv('APOLLO_CLIENT_IP')) !== '' ? $clientIp : null,
+            'pull_timeout'   => ($pullTimeout = (int)getenv('APOLLO_PULL_TIMEOUT')) > 0 ? $pullTimeout : null,
+            'backup_old_env' => ($backupOldEnv = (bool)getenv('APOLLO_BACKUP_OLD_ENV')) ? $backupOldEnv : null,
         ];
         return new static($settings);
     }
@@ -90,11 +90,11 @@ class Client
         $settings = [
             'server'         => $options['apollo-server'],
             'app_id'         => $options['apollo-app-id'],
-            'cluster'        => isset($options['apollo-cluster']) ? $options['apollo-cluster'] : null,
-            'namespaces'     => !empty($options['apollo-namespaces']) ? $options['apollo-namespaces'] : null,
-            'client_ip'      => isset($options['apollo-client-ip']) ? $options['apollo-client-ip'] : null,
-            'pull_timeout'   => isset($options['apollo-pull-timeout']) ? $options['apollo-pull-timeout'] : null,
-            'backup_old_env' => isset($options['apollo-backup-old-env']) ? $options['apollo-backup-old-env'] : null,
+            'cluster'        => isset($options['apollo-cluster']) && $options['apollo-cluster'] !== '' ? $options['apollo-cluster'] : null,
+            'namespaces'     => isset($options['apollo-namespaces']) && $options['apollo-namespaces'] !== '' ? $options['apollo-namespaces'] : null,
+            'client_ip'      => isset($options['apollo-client-ip']) && $options['apollo-client-ip'] !== '' ? $options['apollo-client-ip'] : null,
+            'pull_timeout'   => isset($options['apollo-pull-timeout']) ? (int)$options['apollo-pull-timeout'] : null,
+            'backup_old_env' => isset($options['apollo-backup-old-env']) ? (bool)$options['apollo-backup-old-env'] : null,
         ];
         return new static($settings);
     }
