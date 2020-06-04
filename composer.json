@@ -64,5 +64,13 @@
   "minimum-stability": "dev",
   "require-dev": {
     "phpunit/phpunit": ">=4.8.36"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Hhxsv5\\LaravelS\\Tests\\": "tests"
+    }
+  },
+  "scripts": {
+    "test": "./vendor/bin/phpunit -c phpunit.xml --coverage-text --verbose"
   }
 }
