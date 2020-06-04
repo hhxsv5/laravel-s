@@ -6,6 +6,8 @@ filter:
 build:
   environment:
     php: 7.1.0
+    pecl_extensions:
+      - swoole
   nodes:
     analysis:
       tests:
@@ -13,11 +15,6 @@ build:
           - php-scrutinizer-run
           - phpcs-run src/*
     my-tests:
-      environment:
-        php:
-          version: 7.1.0
-          pecl_extensions:
-            - swoole
       dependencies:
         before:
           - composer install
