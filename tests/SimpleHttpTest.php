@@ -11,10 +11,10 @@ class SimpleHttpTest extends TestCase
     public function testHttpGet()
     {
         $response = $this->httpGet('http://httpbin.org/get', ['timeout' => 3]);
-        $this->assertIsArray($response);
+        $this->assertInternalType('array', $response);
         $this->assertArrayHasKey('body', $response);
         $body = $response['body'];
         $json = json_decode($body, true);
-        $this->assertIsArray($json);
+        $this->assertInternalType('array', $json);
     }
 }
