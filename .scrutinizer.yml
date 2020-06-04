@@ -24,3 +24,10 @@ build:
       tests:
         override:
           - composer test
+    coverage:
+      tests:
+        override:
+          - command: composer test
+            coverage:
+              file: coverage/coverage.xml
+              format: clover
