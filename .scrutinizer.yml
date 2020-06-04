@@ -1,23 +1,24 @@
 checks:
-    php: true
+  php: true
 filter:
-    excluded_paths:
-      - 'tests/*'
+  excluded_paths:
+    - tests/*
 build:
-    environment:
+  nodes:
+    analysis:
+      tests:
+        override:
+          - php-scrutinizer-run
+          - phpcs-run
+    my-tests:
+      environment:
         php:
-            version: 5.6
-            ini:
-                'date.timezone': 'Asia/Shanghai'
-    dependencies:
-            before:
-                - pecl install swoole-1.7.19
-                - composer require laravel/framework:~5.1.0
-                - composer require eaglewu/swoole-ide-helper
-    nodes:
-            analysis:
-                project_setup:
-                    override: true
-                tests:
-                    override:
-                        - php-scrutinizer-run --enable-security-analysis
+          version: 7.1.0
+          pecl_extensions:
+            - swoole
+      dependencies:
+        before:
+          - composer install
+      tests:
+        override:
+          - composer test
