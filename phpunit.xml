@@ -22,6 +22,11 @@
             <exclude>tests/TestCase.php</exclude>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">tests</directory>
+        </whitelist>
+    </filter>
     <php>
         <const name="PHPUNIT" value="true"/>
     </php>
