@@ -1124,7 +1124,7 @@ class WebSocketService implements WebSocketHandlerInterface
 | apollo-app-id | Apollo应用ID | - | --apollo-app-id=LARAVEL-S-TEST |
 | apollo-namespaces | APP所属的命名空间，可指定多个 | application | --apollo-namespaces=application --apollo-namespaces=env |
 | apollo-cluster | APP所属的集群 | default | --apollo-cluster=default |
-| apollo-client-ip | 当前实例的IP | 本机内网IP | --apollo-client-ip=10.2.1.83 |
+| apollo-client-ip | 当前实例的IP，还可用于灰度发布 | 本机内网IP | --apollo-client-ip=10.2.1.83 |
 | apollo-pull-timeout | 拉取配置时的超时时间（秒） | 5 | --apollo-pull-timeout=5 |
 | apollo-backup-old-env | 更新配置文件`.env`时是否备份老的配置文件 | false | --apollo-backup-old-env |
 

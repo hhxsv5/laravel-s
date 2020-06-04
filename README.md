@@ -1113,7 +1113,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 | apollo-app-id | Apollo APP ID | - | --apollo-app-id=LARAVEL-S-TEST |
 | apollo-namespaces | The namespace to which the APP belongs, support specify the multiple | application | --apollo-namespaces=application --apollo-namespaces=env |
 | apollo-cluster | The cluster to which the APP belongs | default | --apollo-cluster=default |
-| apollo-client-ip | IP of current instance | Local intranet IP | --apollo-client-ip=10.2.1.83 |
+| apollo-client-ip | IP of current instance, can also be used for grayscale publishing | Local intranet IP | --apollo-client-ip=10.2.1.83 |
 | apollo-pull-timeout | Timeout time(seconds) when pulling configuration | 5 | --apollo-pull-timeout=5 |
 | apollo-backup-old-env | Whether to backup the old configuration file when updating the configuration file `.env` | false | --apollo-backup-old-env |
 
