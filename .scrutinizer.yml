@@ -4,6 +4,8 @@ filter:
   excluded_paths:
     - tests/*
 build:
+  environment:
+    php: 7.1.0
   nodes:
     analysis:
       tests:
