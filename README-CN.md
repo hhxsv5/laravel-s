@@ -1308,7 +1308,7 @@ class WorkerStartEvent implements WorkerStartInterface
 
 - [Pool-X](https://pool-x.io/?r=vHR6yH&c=pool-x)：可以交易锁定资产的新一代POS矿池。
 
-- [KuCoin](https://www.kcs.top/ucenter/signup?rcode=vHR6yH)：全球化第一的交易所。
+- [KuCoin](https://www.kucoin.io/ucenter/signup?rcode=vHR6yH)：全球化第一的交易所。
 
 - [医联](https://www.medlinker.com/)：WEB站、M站、APP、小程序的账户体系服务。
     
