@@ -161,7 +161,9 @@ class TestController extends Controller
 
 - `Swoole`限制了`GET`请求头的最大尺寸为`8KB`，建议`Cookie`的不要太大，不然Cookie可能解析失败。
 
-- `POST`数据或文件上传的最大尺寸受`Swoole`配置[`package_max_length`](https://wiki.swoole.com/wiki/page/301.html)影响，默认上限`2M`。
+- `POST`数据或文件上传的大小受`Swoole`配置[`package_max_length`](https://wiki.swoole.com/wiki/page/301.html)限制，默认上限`2M`。
+
+- 文件上传的大小受到了[memory_limit](https://www.php.net/manual/zh/ini.core.php#ini.memory-limit)的限制，默认`128M`。
 
 ## Inotify监听文件数达到上限
 > `Warning: inotify_add_watch(): The user limit on the total number of inotify watches was reached`
