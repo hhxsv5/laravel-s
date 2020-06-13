@@ -128,7 +128,7 @@ php artisan laravels publish
 | Command | Description |
 | --------- | --------- |
 | start | Start LaravelS, list the processes by "*ps -ef&#124;grep laravels*". Support "*-d&#124;--daemonize*" to run as a daemon; Support "*-e&#124;--env*" to specify the environment to run, such as `--env=testing` will use the configuration file `.env.testing` firstly, this feature requires `Laravel 5.2+`; Support "*-i&#124;--ignore*" to ignore checking `storage/laravels.pid` |
-| stop | Stop LaravelS |
+| stop | Stop LaravelS, and trigger the method `onStop` of Custom process |
 | restart | Restart LaravelS, support all options of the `start` command |
 | reload | Reload all Task/Worker/Timer processes which contain your business codes, and trigger the method `onReload` of Custom process, CANNOT reload Master/Manger processes. After modifying `config/laravels.php`, you `only` have to call `restart` to restart |
 | info | Display component version information |
@@ -1011,6 +1011,15 @@ To make our main server support more protocols not just Http and WebSocket, we b
             // Stop the process...
             // Then end process
             \Log::info('Test process: reloading');
+            self::$quit = true;
+            // $process->exit(0); // Force exit process
+        }
+        // Requirements: LaravelS >= v3.7.4 & callback() must be async non-blocking program.
+        public static function onStop(Server $swoole, Process $process)
+        {
+            // Stop the process...
+            // Then end process
+            \Log::info('Test process: stopping');
             self::$quit = true;
             // $process->exit(0); // Force exit process
         }

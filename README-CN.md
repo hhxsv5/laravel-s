@@ -133,7 +133,7 @@ php artisan laravels publish
 | 命令 | 说明 |
 | --------- | --------- |
 | start | 启动LaravelS，展示已启动的进程列表 "*ps -ef&#124;grep laravels*"。支持选项 "*-d&#124;--daemonize*" 以守护进程的方式运行，此选项将覆盖`laravels.php`中`swoole.daemonize`设置；支持选项 "*-e&#124;--env*" 用来指定运行的环境，如`--env=testing`将会优先使用配置文件`.env.testing`，这个特性要求`Laravel 5.2+`；支持选项 "*-i&#124;--ignore*" 忽略检查`storage/laravels.pid` |
-| stop | 停止LaravelS |
+| stop | 停止LaravelS，并触发自定义进程的`onStop`方法 |
 | restart | 重启LaravelS，支持`start`命令的所有选项 |
 | reload | 平滑重启所有Task/Worker/Timer进程(这些进程内包含了你的业务代码)，并触发自定义进程的`onReload`方法，不会重启Master/Manger进程；修改`config/laravels.php`后，你`只有`调用`restart`来完成重启 |
 | info | 显示组件的版本信息 |
@@ -1022,6 +1022,15 @@ class WebSocketService implements WebSocketHandlerInterface
             // Stop the process...
             // Then end process
             \Log::info('Test process: reloading');
+            self::$quit = true;
+            // $process->exit(0); // 强制退出进程
+        }
+        // 要求：LaravelS >= v3.7.4 并且 callback() 必须是异步非阻塞程序。
+        public static function onStop(Server $swoole, Process $process)
+        {
+            // Stop the process...
+            // Then end process
+            \Log::info('Test process: stopping');
             self::$quit = true;
             // $process->exit(0); // 强制退出进程
         }
