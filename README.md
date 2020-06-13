@@ -604,7 +604,7 @@ class TestCronJob extends CronJob
 
         if ($this->i >= 10) { // Run 10 times only
             \Log::info(__METHOD__, ['stop', $this->i, microtime(true)]);
-            $this->stop(); // Stop this cron job
+            $this->stop(); // Stop this cron job, but it will run again after restart/reload.
             // Deliver task in CronJob, but NOT support callback finish() of task.
             // Note: Modify task_ipc_mode to 1 or 2 in config/laravels.php, see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
             $ret = Task::deliver(new TestTask('task data'));
