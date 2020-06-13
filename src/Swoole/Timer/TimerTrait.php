@@ -39,7 +39,7 @@ trait TimerTrait
                 if (empty($job->interval())) {
                     throw new \InvalidArgumentException(sprintf('The interval of %s cannot be empty', get_class($job)));
                 }
-                $runProcess = function () use ($job) {
+                $runJob = function () use ($job) {
                     $runCallback = function () use ($job) {
                         $this->callWithCatchException(function () use ($job) {
                             $job->run();
@@ -48,17 +48,19 @@ trait TimerTrait
                     class_exists('Swoole\Coroutine') ? \Swoole\Coroutine::create($runCallback) : $runCallback();
                 };
 
-                $timerId = Timer::tick($job->interval(), $runProcess);
+                $timerId = Timer::tick($job->interval(), $runJob);
                 $timerIds[] = $timerId;
                 $job->setTimerId($timerId);
                 if ($job->isImmediate()) {
-                    Timer::after(1, $runProcess);
+                    Timer::after(1, $runJob);
                 }
             }
 
             Process::signal(SIGUSR1, function ($signo) use ($config, $timerIds, $process) {
                 foreach ($timerIds as $timerId) {
-                    Timer::clear($timerId);
+                    if (Timer::exists($timerId)) {
+                        Timer::clear($timerId);
+                    }
                 }
                 Timer::after($config['max_wait_time'] * 1000, function () use ($process) {
                     $process->exit(0);
