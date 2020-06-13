@@ -57,7 +57,7 @@ trait TimerTrait
             }
 
             // This timer is used to ensure that timer process does not exit when all timers are cleared.
-            $timerIds[] = Timer::tick(3600000, function () {
+            $timerIds[] = Timer::tick(3600 * 12 * 1000, function () {
                 // Do nothing.
             });
 
