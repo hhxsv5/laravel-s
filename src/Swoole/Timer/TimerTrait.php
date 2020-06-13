@@ -15,6 +15,9 @@ trait TimerTrait
         if (empty($config['enable']) || empty($config['jobs'])) {
             return false;
         }
+        
+        // Add backup cron job.
+        $config['jobs'][] = BackupCronJob::class;
 
         $callback = function (Process $process) use ($swoole, $config, $laravelConfig) {
             $pidfile = dirname($swoole->setting['pid_file']) . '/' . $this->timerPidFile;
@@ -55,11 +58,6 @@ trait TimerTrait
                     Timer::after(1, $runJob);
                 }
             }
-
-            // This timer is used to ensure that timer process does not exit when all timers are cleared.
-            $timerIds[] = Timer::tick(3600 * 12 * 1000, function () {
-                // Do nothing.
-            });
 
             Process::signal(SIGUSR1, function ($signo) use ($config, $timerIds, $process) {
                 foreach ($timerIds as $timerId) {
