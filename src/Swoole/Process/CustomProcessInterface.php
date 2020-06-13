@@ -28,4 +28,12 @@ interface CustomProcessInterface
      * @return mixed
      */
     public static function onReload(Server $swoole, Process $process);
+
+    /**
+     * Trigger this method on receiving the signal SIGTERM
+     * @param Server $swoole
+     * @param Process $process
+     * @return mixed
+     */
+    public static function onStop(Server $swoole, Process $process);
 }
