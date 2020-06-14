@@ -50,10 +50,12 @@ trait CustomProcessTrait
                     $processClass::onReload($swoole, $worker);
                 });
 
-                Process::signal(SIGTERM, function ($signo) use ($name, $processClass, $worker, $pidfile, $swoole) {
-                    $this->info(sprintf('Stopping %s process[PID=%d].', $name, $worker->pid));
-                    $processClass::onStop($swoole, $worker);
-                });
+                if (method_exists($processClass, 'onStop')) {
+                    Process::signal(SIGTERM, function ($signo) use ($name, $processClass, $worker, $pidfile, $swoole) {
+                        $this->info(sprintf('Stopping %s process[PID=%d].', $name, $worker->pid));
+                        $processClass::onStop($swoole, $worker);
+                    });
+                }
 
                 $coroutineAvailable = class_exists('Swoole\Coroutine');
                 $coroutineRuntimeAvailable = class_exists('Swoole\Runtime');
