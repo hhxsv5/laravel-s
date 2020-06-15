@@ -1192,8 +1192,8 @@ class WorkerStartEvent implements WorkerStartInterface
 ```php
 // 修改文件 config/laravels.php
 'event_handlers' => [
-    'ServerStart' => \App\Events\ServerStartEvent::class,
-    'WorkerStart' => \App\Events\WorkerStartEvent::class,
+    'ServerStart' => [\App\Events\ServerStartEvent::class], // 按数组顺序触发事件
+    'WorkerStart' => [\App\Events\WorkerStartEvent::class],
 ],
 ```
 

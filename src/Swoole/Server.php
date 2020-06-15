@@ -325,18 +325,20 @@ class Server
     protected function fireEvent($event, $interface, array $arguments)
     {
         if (isset($this->conf['event_handlers'][$event])) {
-            $eventHandler = $this->conf['event_handlers'][$event];
-            if (!isset(class_implements($eventHandler)[$interface])) {
-                throw new \InvalidArgumentException(sprintf(
-                        '%s must implement the interface %s',
-                        $eventHandler,
-                        $interface
-                    )
-                );
+            $eventHandlers = (array)$this->conf['event_handlers'][$event];
+            foreach ($eventHandlers as $eventHandler) {
+                if (!isset(class_implements($eventHandler)[$interface])) {
+                    throw new \InvalidArgumentException(sprintf(
+                            '%s must implement the interface %s',
+                            $eventHandler,
+                            $interface
+                        )
+                    );
+                }
+                $this->callWithCatchException(function () use ($eventHandler, $arguments) {
+                    call_user_func_array([(new $eventHandler), 'handle'], $arguments);
+                });
             }
-            $this->callWithCatchException(function () use ($eventHandler, $arguments) {
-                call_user_func_array([(new $eventHandler), 'handle'], $arguments);
-            });
         }
     }
 
