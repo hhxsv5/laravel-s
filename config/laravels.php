@@ -77,7 +77,7 @@ return [
         'enable_reuse_port'  => true,
         'enable_coroutine'   => false,
         'http_compression'   => false,
-
+        'server_timeout'	 => -1,
         // Slow log
         // 'request_slowlog_timeout' => 2,
         // 'request_slowlog_file'    => storage_path(sprintf('logs/slow-%s.log', date('Y-m'))),

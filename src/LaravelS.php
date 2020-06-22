@@ -37,7 +37,7 @@ class LaravelS extends Server
     /**
      * Fix conflicts of traits
      */
-    use InotifyTrait, LaravelTrait, LogTrait, ProcessTitleTrait, TimerTrait, CustomProcessTrait;
+    use InotifyTrait, LaravelTrait, LogTrait, ProcessTitleTrait, TimerTrait, CustomProcessTrait, ServerTimeoutTrait;
 
     /**@var array */
     protected $laravelConf;
@@ -117,6 +117,8 @@ class LaravelS extends Server
 
         // Fire WorkerStart event
         $this->fireEvent('WorkerStart', WorkerStartInterface::class, func_get_args());
+
+        $this->registerSignal();
     }
 
     public function onWorkerStop(HttpServer $server, $workerId)
@@ -149,6 +151,7 @@ class LaravelS extends Server
     {
         try {
             parent::onRequest($swooleRequest, $swooleResponse);
+            $this->handleServerTimeout();
             $laravelRequest = $this->convertRequest($this->laravel, $swooleRequest);
             $this->laravel->bindRequest($laravelRequest);
             $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
@@ -218,6 +221,7 @@ class LaravelS extends Server
         }
         $response->setChunkLimit($this->conf['swoole']['buffer_output_size']);
         $response->send($this->conf['enable_gzip']);
+        $this->resetAlarm();
         $laravel->clean();
         return true;
     }
