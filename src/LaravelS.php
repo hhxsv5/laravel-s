@@ -14,6 +14,7 @@ use Hhxsv5\LaravelS\Swoole\Events\WorkerStopInterface;
 use Hhxsv5\LaravelS\Swoole\InotifyTrait;
 use Hhxsv5\LaravelS\Swoole\Process\CustomProcessTrait;
 use Hhxsv5\LaravelS\Swoole\Process\ProcessTitleTrait;
+use Hhxsv5\LaravelS\Swoole\Process\ServerTimeoutTrait;
 use Hhxsv5\LaravelS\Swoole\Request;
 use Hhxsv5\LaravelS\Swoole\Server;
 use Hhxsv5\LaravelS\Swoole\StaticResponse;

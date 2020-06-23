@@ -29,4 +29,9 @@ trait ServerTimeoutTrait
             });
         }
     }
+
+    public function getServerTimeout()
+    {
+        return $this->conf['swoole']['server_timeout'];
+    }
 }
