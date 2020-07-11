@@ -738,7 +738,7 @@ var_dump($swoole->stats());// 单例
 
 ```php
 namespace App\Services;
-use Hhxsv5\LaravelS\Swoole\WebsocketHandlerInterface;
+use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
 use Swoole\Http\Request;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
