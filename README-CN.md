@@ -139,14 +139,14 @@ php artisan laravels publish
 | info | 显示组件的版本信息 |
 | help | 显示帮助信息 |
 
-- 启动选项，针对`start`和`restart`两个命令。
+- 启动选项，针对`start`和`restart`命令。
 
 | 选项 | 说明 |
 | --------- | --------- |
 | -d&#124;--daemonize | 以守护进程的方式运行，此选项将覆盖`laravels.php`中`swoole.daemonize`设置 |
 | -e&#124;--env | 指定运行的环境，如`--env=testing`将会优先使用配置文件`.env.testing`，这个特性要求`Laravel 5.2+` |
 | -i&#124;--ignore | 忽略检查Master进程的PID文件 |
-| -x&#124;--x-version | 记录当前工程的版本号(分支)，保存在`$_ENV`/`$_SERVER`中，访问方式：`$_ENV['X_VERSION']`，`$_SERVER['X_VERSION']`，`$request->server->get('X_VERSION')` |
+| -x&#124;--x-version | 记录当前工程的版本号(分支)，保存在`$_ENV`/`$_SERVER`中，访问方式：`$_ENV['X_VERSION']` `$_SERVER['X_VERSION']` `$request->server->get('X_VERSION')` |
 
 - `运行时`文件：`start`时会自动执行`php artisan laravels config`并生成这些文件，开发者一般不需要关注它们，建议将它们加到`.gitignore`中。
 
