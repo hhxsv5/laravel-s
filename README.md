@@ -127,15 +127,23 @@ php artisan laravels publish
 
 | Command | Description |
 | --------- | --------- |
-| start | Start LaravelS, list the processes by "*ps -ef&#124;grep laravels*". Support "*-d&#124;--daemonize*" to run as a daemon; Support "*-e&#124;--env*" to specify the environment to run, such as `--env=testing` will use the configuration file `.env.testing` firstly, this feature requires `Laravel 5.2+`; Support "*-i&#124;--ignore*" to ignore checking `storage/laravels.pid` |
+| start | Start LaravelS, list the processes by "*ps -ef&#124;grep laravels*" |
 | stop | Stop LaravelS, and trigger the method `onStop` of Custom process |
-| restart | Restart LaravelS, support all options of the `start` command |
+| restart | Restart LaravelS: Stop gracefully before starting; The service is `unavailable` until startup is complete |
 | reload | Reload all Task/Worker/Timer processes which contain your business codes, and trigger the method `onReload` of Custom process, CANNOT reload Master/Manger processes. After modifying `config/laravels.php`, you `only` have to call `restart` to restart |
 | info | Display component version information |
 | help | Display help information |
 
+- Boot options for the commands `start` and `restart`.
 
-- `Runtime` files: `start` will automatically execute `artisan laravels config` and generate these files, developers generally don't need to pay attention to them, it's recommended to add them to `.gitignore`.
+| Option | Description |
+| --------- | --------- |
+| -d&#124;--daemonize | Run as a daemon, this option will override the `swoole.daemonize` setting in `laravels.php` |
+| -e&#124;--env | The environment the command should run under, such as `--env=testing` will use the configuration file `.env.testing` firstly, this feature requires Laravel 5.2+ |
+| -i&#124;--ignore | Ignore checking PID file of Master process |
+| -x&#124;--x-version | The version(branch) of the current project, stored in $_ENV/$_SERVER, access via `$_ENV['X_VERSION']` `$_SERVER['X_VERSION']` `$request->server->get('X_VERSION')` |
+
+- `Runtime` files: `start` will automatically execute `php artisan laravels config` and generate these files, developers generally don't need to pay attention to them, it's recommended to add them to `.gitignore`.
 
 | File | Description |
 | --------- | --------- |

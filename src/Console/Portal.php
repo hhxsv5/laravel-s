@@ -40,8 +40,9 @@ class Portal extends Command
 
         $this->addArgument('action', InputArgument::OPTIONAL, 'start|stop|restart|reload|info|help', 'help');
         $this->addOption('env', 'e', InputOption::VALUE_OPTIONAL, 'The environment the command should run under, this feature requires Laravel 5.2+');
-        $this->addOption('daemonize', 'd', InputOption::VALUE_NONE, 'Whether run as a daemon for "start & restart"');
-        $this->addOption('ignore', 'i', InputOption::VALUE_NONE, 'Whether ignore checking process pid for "start & restart"');
+        $this->addOption('daemonize', 'd', InputOption::VALUE_NONE, 'Run as a daemon');
+        $this->addOption('ignore', 'i', InputOption::VALUE_NONE, 'Ignore checking PID file of Master process');
+        $this->addOption('x-version', 'x', InputOption::VALUE_OPTIONAL, 'The version(branch) of the current project, stored in $_ENV/$_SERVER');
         Client::attachCommandOptions($this);
     }
 
@@ -75,8 +76,9 @@ Arguments:
 
 Options:
   -e, --env             The environment the command should run under, this feature requires Laravel 5.2+
-  -d, --daemonize       Whether run as a daemon for "start & restart"
-  -i, --ignore          Whether ignore checking process pid for "start & restart"
+  -d, --daemonize       Run as a daemon
+  -i, --ignore          Ignore checking PID file of Master process
+  -x, --x-version       The version(branch) of the current project, stored in \$_ENV/\$_SERVER
 EOS;
 
                     $this->info(sprintf($help, PHP_BINARY));
@@ -117,7 +119,7 @@ EOS;
         }
 
         $passOptionStr = '';
-        $passOptions = ['daemonize', 'ignore'];
+        $passOptions = ['daemonize', 'ignore', 'x-version'];
         foreach ($passOptions as $key) {
             if (!isset($options[$key])) {
                 continue;

@@ -8,8 +8,9 @@ use Illuminate\Support\Arr;
 class LaravelSCommand extends Command
 {
     protected $signature = 'laravels {action? : publish|config|info}
-    {--d|daemonize : Whether run as a daemon for "start & restart"}
-    {--i|ignore : Whether ignore checking process pid for "start & restart"}';
+    {--d|daemonize : Run as a daemon}
+    {--i|ignore : Ignore checking PID file of Master process}
+    {--x=|x-version= : The version(branch) of the current project, stored in $_ENV/$_SERVER}';
 
     protected $description = 'LaravelS console tool';
 
@@ -227,6 +228,12 @@ EOS;
         }
         if (empty($svrConf['timer']['max_wait_time'])) {
             $svrConf['timer']['max_wait_time'] = 5;
+        }
+
+        // Set X-Version
+        $xVersion = (string)$this->option('x-version');
+        if ($xVersion !== '') {
+            $_SERVER['X_VERSION'] = $_ENV['X_VERSION'] = $xVersion;
         }
         return 0;
     }
