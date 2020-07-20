@@ -140,9 +140,7 @@ class LaravelS extends Server
     protected function convertRequest(Laravel $laravel, SwooleRequest $request)
     {
         $rawGlobals = $laravel->getRawGlobals();
-        $server = isset($rawGlobals['_SERVER']) ? $rawGlobals['_SERVER'] : [];
-        $env = isset($rawGlobals['_ENV']) ? $rawGlobals['_ENV'] : [];
-        return (new Request($request))->toIlluminateRequest($server, $env);
+        return (new Request($request))->toIlluminateRequest($rawGlobals['_SERVER'], $rawGlobals['_ENV']);
     }
 
     public function onRequest(SwooleRequest $swooleRequest, SwooleResponse $swooleResponse)

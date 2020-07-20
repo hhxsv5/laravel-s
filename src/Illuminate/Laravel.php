@@ -45,10 +45,8 @@ class Laravel
         $this->conf = $conf;
 
         // Merge $_ENV $_SERVER
-        $server = isset($this->conf['_SERVER']) ? $this->conf['_SERVER'] : [];
-        $env = isset($this->conf['_ENV']) ? $this->conf['_ENV'] : [];
-        $this->rawGlobals['_SERVER'] = $_SERVER + $server;
-        $this->rawGlobals['_ENV'] = $_ENV + $env;
+        $this->rawGlobals['_SERVER'] = $_SERVER + $this->conf['_SERVER'];
+        $this->rawGlobals['_ENV'] = $_ENV + $this->conf['_ENV'];
     }
 
     public function prepareLaravel()

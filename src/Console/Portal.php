@@ -109,8 +109,11 @@ EOS;
 
         // Generate configuration storage/laravels.json
         $options = $this->input->getOptions();
-        if (isset($options['env'])) {
-            putenv('LARAVELS_ENV=' . $options['env']);
+        if (isset($options['env']) && $options['env'] !== '') {
+            $_SERVER['LARAVEL_ENV'] = $_ENV['LARAVEL_ENV'] = $options['env'];
+        }
+        if (isset($options['x-version']) && $options['x-version'] !== '') {
+            $_SERVER['X_VERSION'] = $_ENV['X_VERSION'] = $options['x-version'];
         }
 
         // Load Apollo configurations to .env file
