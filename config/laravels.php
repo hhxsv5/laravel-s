@@ -41,6 +41,8 @@ return [
             // [\App\Jobs\XxxCronJob::class, [1000, true]], // Pass in parameters when registering
             // \App\Jobs\XxxCronJob::class, // Override the corresponding method to return the configuration
         ],
+        'global'        => false,
+        'lock_key'      => config('app.name', 'Laravel'),
         'max_wait_time' => 5,
     ],
     'swoole_tables'            => [],

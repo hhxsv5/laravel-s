@@ -7,6 +7,12 @@ use Swoole\Timer;
 abstract class CronJob implements CronJobInterface
 {
     /**
+     * The seconds of global timer locking
+     * @var int
+     */
+    const GLOBAL_TIMER_LOCK_SECONDS = 60;
+
+    /**
      * Swoole timer id
      * @var int
      */
@@ -25,20 +31,32 @@ abstract class CronJob implements CronJobInterface
     protected $isImmediate;
 
     /**
+     * The lock key of global timer
+     * @var string
+     */
+    protected static $globalTimerLockKey;
+
+    /**
+     * Whether enable CronJob
+     * @var bool
+     */
+    protected static $enable = true;
+
+    /**
      * CronJob constructor.
      * Optional:
-     *     argument 1 is interval, int ms, default null, overridden by method interval()
-     *     argument 2 is isImmediate, bool, default false, overridden by method isImmediate()
+     *     argument 0 is interval, int ms, default null, overridden by method interval()
+     *     argument 1 is isImmediate, bool, default false, overridden by method isImmediate()
      */
     public function __construct()
     {
         $args = func_get_args();
         $config = isset($args[0]) ? $args[0] : [];
         if (is_array($config)) {
-            if (array_key_exists(0, $config)) {
+            if (isset($config[0])) {
                 $this->interval = $config[0];
             }
-            if (array_key_exists(1, $config)) {
+            if (isset($config[1])) {
                 $this->isImmediate = $config[1];
             }
         }
@@ -53,7 +71,7 @@ abstract class CronJob implements CronJobInterface
     }
 
     /**
-     * @return bool $isImmediate
+     * @return bool
      */
     public function isImmediate()
     {
@@ -70,5 +88,52 @@ abstract class CronJob implements CronJobInterface
         if ($this->timerId && Timer::exists($this->timerId)) {
             Timer::clear($this->timerId);
         }
+    }
+
+    public static function getGlobalTimerCacheKey()
+    {
+        return 'laravels:timer:' . strtolower(self::$globalTimerLockKey);
+    }
+
+    public static function getGlobalTimerLock()
+    {
+        /**@var \Illuminate\Redis\Connections\PhpRedisConnection $redis */
+        $redis = app('redis');
+
+        $key = self::getGlobalTimerCacheKey();
+        $value = sprintf('%s:%d', current(swoole_get_local_ip()) ?: config('listen_ip'), config('listen_port'));
+        $expire = self::GLOBAL_TIMER_LOCK_SECONDS;
+        $result = $redis->set($key, $value, 'ex', $expire, 'nx');
+        // Compatible with Predis and PhpRedis
+        return $result === true || ((string)$result === 'OK');
+    }
+
+    public static function isGlobalTimerAlive()
+    {
+        /**@var \Illuminate\Redis\Connections\PhpRedisConnection $redis */
+        $redis = app('redis');
+        return (bool)$redis->exists(self::getGlobalTimerCacheKey());
+    }
+
+    public static function renewGlobalTimerLock($expire)
+    {
+        /**@var \Illuminate\Redis\Connections\PhpRedisConnection $redis */
+        $redis = app('redis');
+        return (bool)$redis->expire(self::getGlobalTimerCacheKey(), $expire);
+    }
+
+    public static function setGlobalTimerLockKey($lockKey)
+    {
+        self::$globalTimerLockKey = $lockKey;
+    }
+
+    public static function setEnable($enable)
+    {
+        self::$enable = (bool)$enable;
+    }
+
+    public static function isEnable()
+    {
+        return self::$enable;
     }
 }

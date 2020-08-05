@@ -15,49 +15,29 @@ trait TimerTrait
         if (empty($config['enable']) || empty($config['jobs'])) {
             return false;
         }
-        
+
         // Add backup cron job.
         $config['jobs'][] = BackupCronJob::class;
+        if (!empty($config['global'])) {
+            // Add auxiliary jobs for global timer.
+            $config['jobs'][] = RenewGlobalTimerLockCronJob::class;
+            $config['jobs'][] = CheckGlobalTimerAliveCronJob::class;
+        }
 
         $callback = function (Process $process) use ($swoole, $config, $laravelConfig) {
             $pidfile = dirname($swoole->setting['pid_file']) . '/' . $this->timerPidFile;
             file_put_contents($pidfile, $process->pid);
             $this->setProcessTitle(sprintf('%s laravels: timer process', $config['process_prefix']));
             $this->initLaravel($laravelConfig, $swoole);
-            $timerIds = [];
-            foreach ($config['jobs'] as $jobClass) {
-                if (is_array($jobClass) && isset($jobClass[0])) {
-                    $job = new $jobClass[0](isset($jobClass[1]) ? $jobClass[1] : []);
-                } else {
-                    $job = new $jobClass();
-                }
-                if (!($job instanceof CronJob)) {
-                    throw new \InvalidArgumentException(sprintf(
-                            '%s must extend the abstract class %s',
-                            get_class($job),
-                            CronJob::class
-                        )
-                    );
-                }
-                if (empty($job->interval())) {
-                    throw new \InvalidArgumentException(sprintf('The interval of %s cannot be empty', get_class($job)));
-                }
-                $runJob = function () use ($job) {
-                    $runCallback = function () use ($job) {
-                        $this->callWithCatchException(function () use ($job) {
-                            $job->run();
-                        });
-                    };
-                    class_exists('Swoole\Coroutine') ? \Swoole\Coroutine::create($runCallback) : $runCallback();
-                };
 
-                $timerId = Timer::tick($job->interval(), $runJob);
-                $timerIds[] = $timerId;
-                $job->setTimerId($timerId);
-                if ($job->isImmediate()) {
-                    Timer::after(1, $runJob);
-                }
+            // Implement global timer by Cache lock.
+            if (!empty($config['global'])) {
+                CronJob::setGlobalTimerLockKey($config['lock_key']);
+                // Close all cron job if not get the lock
+                CronJob::setEnable(CronJob::getGlobalTimerLock());
             }
+
+            $timerIds = $this->registerTimers($config['jobs']);
 
             Process::signal(SIGUSR1, function ($signo) use ($config, $timerIds, $process) {
                 foreach ($timerIds as $timerId) {
@@ -74,5 +54,46 @@ trait TimerTrait
         $process = new Process($callback, false, 0);
         $swoole->addProcess($process);
         return $process;
+    }
+
+    public function registerTimers(array $jobs)
+    {
+        $timerIds = [];
+        foreach ($jobs as $jobClass) {
+            if (is_array($jobClass) && isset($jobClass[0])) {
+                $job = new $jobClass[0](isset($jobClass[1]) ? $jobClass[1] : []);
+            } else {
+                $job = new $jobClass();
+            }
+            if (!($job instanceof CronJob)) {
+                throw new \InvalidArgumentException(sprintf(
+                        '%s must extend the abstract class %s',
+                        get_class($job),
+                        CronJob::class
+                    )
+                );
+            }
+            if (empty($job->interval())) {
+                throw new \InvalidArgumentException(sprintf('The interval of %s cannot be empty', get_class($job)));
+            }
+            $runJob = function () use ($job) {
+                $runCallback = function () use ($job) {
+                    $this->callWithCatchException(function () use ($job) {
+                        if (($job instanceof CheckGlobalTimerAliveCronJob) || $job::isEnable()) {
+                            $job->run();
+                        }
+                    });
+                };
+                class_exists('Swoole\Coroutine') ? \Swoole\Coroutine::create($runCallback) : $runCallback();
+            };
+
+            $timerId = Timer::tick($job->interval(), $runJob);
+            $timerIds[] = $timerId;
+            $job->setTimerId($timerId);
+            if ($job->isImmediate()) {
+                Timer::after(1, $runJob);
+            }
+        }
+        return $timerIds;
     }
 }
