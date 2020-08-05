@@ -101,7 +101,7 @@ abstract class CronJob implements CronJobInterface
         $redis = app('redis');
 
         $key = self::getGlobalTimerCacheKey();
-        $value = sprintf('%s:%d', current(swoole_get_local_ip()) ?: config('listen_ip'), config('listen_port'));
+        $value = sprintf('%s:%d', current(swoole_get_local_ip()) ?: config('laravels.listen_ip'), config('laravels.listen_port'));
         $expire = self::GLOBAL_TIMER_LOCK_SECONDS;
         $result = $redis->set($key, $value, 'ex', $expire, 'nx');
         // Compatible with Predis and PhpRedis
