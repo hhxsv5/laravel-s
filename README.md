@@ -638,7 +638,7 @@ class TestCronJob extends CronJob
             \App\Jobs\Timer\TestCronJob::class, // Override the corresponding method to return the configuration
         ],
         'max_wait_time' => 5, // Max waiting time of reloading
-        // Enable the global lock to ensure that only one instance starts the timer when deploying multiple instances.
+        // Enable the global lock to ensure that only one instance starts the timer when deploying multiple instances. This feature depends on Redis, please see https://laravel.com/docs/7.x/redis
         'global_lock'     => false,
         'global_lock_key' => config('app.name', 'Laravel'),
     ],
