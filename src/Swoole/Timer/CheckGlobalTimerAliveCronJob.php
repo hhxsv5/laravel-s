@@ -11,7 +11,7 @@ class CheckGlobalTimerAliveCronJob extends CronJob
 {
     public function interval()
     {
-        return intval(self::GLOBAL_TIMER_LOCK_SECONDS * 0.9) * 1000;
+        return intval(self::GLOBAL_TIMER_LOCK_SECONDS * 0.5) * 1000;
     }
 
     public function isImmediate()
