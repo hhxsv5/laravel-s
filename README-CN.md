@@ -651,6 +651,9 @@ class TestCronJob extends CronJob
             \App\Jobs\Timer\TestCronJob::class, // 重载对应的方法来返回参数
         ],
         'max_wait_time' => 5, // Reload时最大等待时间
+        // 打开全局定时器开关：当多实例部署时，确保只有一个实例运行定时任务
+        'global_lock'     => false,
+        'global_lock_key' => config('app.name', 'Laravel'),
     ],
     // ...
 ];

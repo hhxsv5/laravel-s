@@ -18,7 +18,7 @@ trait TimerTrait
 
         // Add backup cron job.
         $config['jobs'][] = BackupCronJob::class;
-        if (!empty($config['global'])) {
+        if (!empty($config['global_lock'])) {
             // Add auxiliary jobs for global timer.
             $config['jobs'][] = RenewGlobalTimerLockCronJob::class;
             $config['jobs'][] = CheckGlobalTimerAliveCronJob::class;
@@ -31,8 +31,8 @@ trait TimerTrait
             $this->initLaravel($laravelConfig, $swoole);
 
             // Implement global timer by Cache lock.
-            if (!empty($config['global'])) {
-                CronJob::setGlobalTimerLockKey($config['lock_key']);
+            if (!empty($config['global_lock'])) {
+                CronJob::setGlobalTimerLockKey($config['global_lock_key']);
                 // Close all cron job if not get the lock
                 CronJob::setEnable(CronJob::getGlobalTimerLock());
             }
