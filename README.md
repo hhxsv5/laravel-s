@@ -112,6 +112,7 @@ composer require "hhxsv5/laravel-s:~3.7.0" -vvv
 
 3.Publish configuration and binaries.
 > *After upgrading LaravelS, you need to republish; click [here](https://github.com/hhxsv5/laravel-s/releases) to see the change notes of each version.*
+
 ```bash
 php artisan laravels publish
 # Configuration: config/laravels.php
