@@ -119,7 +119,7 @@ EOS;
     {
         $this->comment('>>> Protocols');
 
-        $config = (array)json_decode(file_get_contents(base_path('storage/laravels.json')), true);
+        $config = unserialize(file_get_contents($this->getConfPath()));
         $socketType = isset($config['server']['socket_type']) ? $config['server']['socket_type'] : SWOOLE_SOCK_TCP;
         if (in_array($socketType, [SWOOLE_SOCK_UNIX_DGRAM, SWOOLE_SOCK_UNIX_STREAM])) {
             $listenAt = $config['server']['listen_ip'];
@@ -195,8 +195,12 @@ EOS;
         ];
 
         $config = ['server' => $svrConf, 'laravel' => $laravelConf];
-        $jsonConfig = json_encode($config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        return file_put_contents(base_path('storage/laravels.json'), $jsonConfig) > 0 ? 0 : 1;
+        return file_put_contents($this->getConfPath(), serialize($config)) > 0 ? 0 : 1;
+    }
+
+    protected function getConfPath()
+    {
+        return base_path('storage/laravels.conf');
     }
 
     protected function preSet(array &$svrConf)

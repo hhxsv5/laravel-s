@@ -107,7 +107,7 @@ EOS;
             return 1;
         }
 
-        // Generate configuration storage/laravels.json
+        // Generate conf file storage/laravels.conf
         $options = $this->input->getOptions();
         if (isset($options['env']) && $options['env'] !== '') {
             $_SERVER['LARAVEL_ENV'] = $_ENV['LARAVEL_ENV'] = $options['env'];
@@ -306,8 +306,12 @@ EOS;
 
     public function getConfig()
     {
-        $json = file_get_contents($this->basePath . '/storage/laravels.json');
-        return (array)json_decode($json, true);
+        return unserialize(file_get_contents($this->getConfPath()));
+    }
+
+    protected function getConfPath()
+    {
+        return $this->basePath . '/storage/laravels.conf';
     }
 
     public static function runCommand($cmd, $input = null)

@@ -147,7 +147,7 @@ php artisan laravels publish
 
 | File | Description |
 | --------- | --------- |
-| storage/laravels.json | LaravelS's `runtime` configuration file |
+| storage/laravels.conf | LaravelS's `runtime` configuration file |
 | storage/laravels.pid | PID file of Master process |
 | storage/laravels-timer-process.pid | PID file of the Timer process |
 | storage/laravels-custom-processes.pid | PID file of all custom processes |

@@ -152,7 +152,7 @@ php artisan laravels publish
 
 | 文件 | 说明 |
 | --------- | --------- |
-| storage/laravels.json | LaravelS的`运行时`配置文件 |
+| storage/laravels.conf | LaravelS的`运行时`配置文件 |
 | storage/laravels.pid | Master进程的PID文件 |
 | storage/laravels-timer-process.pid | 定时器Timer进程的PID文件 |
 | storage/laravels-custom-processes.pid | 所有自定义进程的PID文件 |
