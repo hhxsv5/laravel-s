@@ -48,7 +48,10 @@
   "autoload": {
     "psr-4": {
       "Hhxsv5\\LaravelS\\": "src"
-    }
+    },
+    "files": [
+      "src/helpers.php"
+    ]
   },
   "extra": {
     "laravel": {
