@@ -123,6 +123,7 @@ class Laravel
 
     public static function autoload($rootPath)
     {
+        require_once $rootPath . '/vendor/hhxsv5/laravel-s/src/helpers.php';
         $autoload = $rootPath . '/bootstrap/autoload.php';
         if (file_exists($autoload)) {
             require_once $autoload;

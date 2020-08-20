@@ -151,7 +151,6 @@ $loader = new Psr4Autoloader();
 $loader->register();
 
 // Register laravel-s
-require $basePath . '/vendor/hhxsv5/laravel-s/src/helpers.php';
 $loader->addNamespace('Hhxsv5\LaravelS', $basePath . '/vendor/hhxsv5/laravel-s/src');
 
 // Register laravel-s dependencies
