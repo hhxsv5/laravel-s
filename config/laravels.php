@@ -57,7 +57,7 @@ return [
     |
     */
 
-    'enable_coroutine_runtime' => true,
+    'enable_coroutine_runtime' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -109,7 +109,7 @@ return [
     'inotify_reload' => [
         // Whether enable the Inotify Reload to reload all worker processes when your code is modified,
         // depend on inotify
-        'enable' => env('LARAVELS_INOTIFY_RELOAD', true),
+        'enable' => env('LARAVELS_INOTIFY_RELOAD', false),
 
         // The file path that Inotify watches
         'watch_path' => base_path(),
@@ -255,12 +255,7 @@ return [
     |
     */
 
-    'cleaners' => [
-        Hhxsv5\LaravelS\Illuminate\Cleaners\RequestCleaner::class,
-        Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
-        Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
-        App\Cleaners\SanctumCleaner::class,
-    ],
+    'cleaners' => [],
 
     /*
     |--------------------------------------------------------------------------
@@ -276,7 +271,7 @@ return [
     */
 
     'destroy_controllers' => [
-        'enable' => true,
+        'enable' => false,
         'excluded_list' => [],
     ],
 
@@ -450,7 +445,7 @@ return [
         | Enable coroutine support in task worker.
         |
         */
-        'enable_coroutine' => true,
+        'enable_coroutine' => false,
 
         /* 
         |
@@ -459,7 +454,7 @@ return [
         | and used based on the Accept-Encoding HTTP header from HTTP request.
         |
         */
-        'http_compression' => true,
-        'http_compression_level' => 1 
+        'http_compression' => false,
+        // 'http_compression_level' => 1 
     ]
 ];
