@@ -109,19 +109,19 @@ return [
     'inotify_reload' => [
         // Whether enable the Inotify Reload to reload all worker processes when your code is modified,
         // depend on inotify
-        'enable' => env('LARAVELS_INOTIFY_RELOAD', false),
+        'enable'        => env('LARAVELS_INOTIFY_RELOAD', false),
 
         // The file path that Inotify watches
-        'watch_path' => base_path(),
+        'watch_path'    => base_path(),
 
         // The file types that Inotify watches
-        'file_types' => ['.php'],
+        'file_types'    => ['.php'],
 
         // The excluded/ignored directories that Inotify watches
         'excluded_dirs' => [],
 
         // Whether output the reload log
-        'log' => true,
+        'log'           => true,
     ],
 
     /*
@@ -196,18 +196,18 @@ return [
     */
 
     'timer' => [
-        'enable' => env('LARAVELS_TIMER', false),
+        'enable'          => env('LARAVELS_TIMER', false),
 
         // The list of cron job
-        'jobs' => [],
+        'jobs'            => [],
 
         // Max waiting time of reloading
-        'max_wait_time' => 5,
+        'max_wait_time'   => 5,
 
         // Enable the global lock to ensure that only one instance starts the timer 
         // when deploying multiple instances. 
         // This feature depends on Redis https://laravel.com/docs/8.x/redis
-        'global_lock' => false,
+        'global_lock'     => false,
         'global_lock_key' => config('app.name', 'Laravel'),
     ],
 
@@ -271,7 +271,7 @@ return [
     */
 
     'destroy_controllers' => [
-        'enable' => false,
+        'enable'        => false,
         'excluded_list' => [],
     ],
 
@@ -294,7 +294,7 @@ return [
         | The program which wants to run a long time must enable this configuration.
         |
         */
-        'daemonize' => env('LARAVELS_DAEMONIZE', false),
+        'daemonize'          => env('LARAVELS_DAEMONIZE', false),
 
         /* 
         |
@@ -302,7 +302,7 @@ return [
         | This parameter only works for the SWOOLE_PROCESS mode swoole_server.
         |
         */
-        'dispatch_mode' => 2,
+        'dispatch_mode'      => 2,
 
         /* 
         |
@@ -311,7 +311,7 @@ return [
         | **reactor_num has to be smaller than the worker_num.**
         |
         */
-        'reactor_num' => env('LARAVELS_REACTOR_NUM', function_exists('swoole_cpu_num') ? swoole_cpu_num() * 2 : 4),
+        'reactor_num'        => env('LARAVELS_REACTOR_NUM', function_exists('swoole_cpu_num') ? swoole_cpu_num() * 2 : 4),
 
         /* 
         |
@@ -320,7 +320,7 @@ return [
         | set the worker_num to the value from one time to four times of CPU cores.
         |
         */
-        'worker_num' => env('LARAVELS_WORKER_NUM', function_exists('swoole_cpu_num') ? swoole_cpu_num() * 2 : 8),
+        'worker_num'         => env('LARAVELS_WORKER_NUM', function_exists('swoole_cpu_num') ? swoole_cpu_num() * 2 : 8),
 
         /* 
         |
@@ -328,7 +328,7 @@ return [
         | The message queue uses the memory queue provided by os to store the data.
         |
         */
-        'task_ipc_mode' => 1,
+        'task_ipc_mode'      => 1,
 
         /* 
         |
@@ -337,7 +337,7 @@ return [
         | And then, the manager will respawn a new task worker process.
         |
         */
-        'task_max_request' => env('LARAVELS_TASK_MAX_REQUEST', 8000),
+        'task_max_request'   => env('LARAVELS_TASK_MAX_REQUEST', 8000),
 
         /* 
         |
@@ -345,7 +345,7 @@ return [
         | If size of task message exceeds 8192 bytes, swoole uses the temporary file to store the data.
         |
         */
-        'task_tmpdir' => @is_writable('/dev/shm/') ? '/dev/shm' : '/tmp',
+        'task_tmpdir'        => @is_writable('/dev/shm/') ? '/dev/shm' : '/tmp',
 
         /* 
         |
@@ -353,28 +353,28 @@ return [
         | max_request + rand(0, max_request_grace) requests.
         |
         */
-        'max_request' => env('LARAVELS_MAX_REQUEST', 8000),
+        'max_request'        => env('LARAVELS_MAX_REQUEST', 8000),
 
         /* 
         |
         | Open this configuration to close the Nagle algorithm.
         |
         */
-        'open_tcp_nodelay' => true,
+        'open_tcp_nodelay'   => true,
 
         /* 
         |
         | The file path which the master process id saves in.
         |
         */
-        'pid_file' => storage_path('laravels.pid'),
+        'pid_file'           => storage_path('laravels.pid'),
 
         /* 
         |
         | Set the log path of Swoole.
         |
         */
-        'log_file' => storage_path(sprintf('logs/swoole-%s.log', date('Y-m'))),
+        'log_file'           => storage_path(sprintf('logs/swoole-%s.log', date('Y-m'))),
 
         /* 
         |
@@ -382,14 +382,14 @@ return [
         | The log that is inferior to the log_level set will not be recorded to log file.
         |
         */
-        'log_level' => 4,
+        'log_level'          => 4,
 
         /* 
         |
         | The basic path of Laravel, default base_path(), be used for symbolic link.
         |
         */
-        'document_root' => base_path('public'),
+        'document_root'      => base_path('public'),
 
         /* 
         |
@@ -424,28 +424,28 @@ return [
         | By enabling reload_async, the worker processes shutdown after processing all the pending events.
         |
         */
-        'reload_async' => true,
+        'reload_async'       => true,
 
         /* 
         |
         | The max waiting time to restart a worker process.
         |
         */
-        'max_wait_time' => 60,
+        'max_wait_time'      => 60,
 
         /* 
         |
         | Enable the reuse of port.
         |
         */
-        'enable_reuse_port' => true,
+        'enable_reuse_port'  => true,
 
         /* 
         |
         | Enable coroutine support in task worker.
         |
         */
-        'enable_coroutine' => false,
+        'enable_coroutine'   => false,
 
         /* 
         |
@@ -454,7 +454,23 @@ return [
         | and used based on the Accept-Encoding HTTP header from HTTP request.
         |
         */
-        'http_compression' => false,
-        // 'http_compression_level' => 1 
-    ]
+        'http_compression'   => false,
+        // 'http_compression_level' => 1
+
+
+        /*
+        |
+        | Request slow log
+        |
+        */
+        // 'request_slowlog_timeout' => 2,
+        // 'request_slowlog_file'    => storage_path(sprintf('logs/slow-%s.log', date('Y-m'))),
+        // 'trace_event_worker'      => true,
+
+        /**
+         * More settings of Swoole
+         * @see https://wiki.swoole.com/#/server/setting  Chinese
+         * @see https://www.swoole.co.uk/docs/modules/swoole-server/configuration  English
+         */
+    ],
 ];
