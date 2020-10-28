@@ -30,13 +30,43 @@ abstract class Response implements ResponseInterface
         $this->swooleResponse->status($this->laravelResponse->getStatusCode());
     }
 
+    private function getHeaders()
+    {
+        if (method_exists($this->laravelResponse->headers, 'allPreserveCaseWithoutCookies')) {
+            return $this->laravelResponse->headers->allPreserveCaseWithoutCookies();
+        }
+
+        return $this->laravelResponse->headers->allPreserveCase();
+    }
+
     public function sendHeaders()
     {
-        $headers = method_exists($this->laravelResponse->headers, 'allPreserveCaseWithoutCookies') ?
-            $this->laravelResponse->headers->allPreserveCaseWithoutCookies() : $this->laravelResponse->headers->allPreserveCase();
+        $headers = $this->getHeaders();
+        $trailers = isset($headers["trailer"]) ? $headers["trailer"] : [];
+
         foreach ($headers as $name => $values) {
+            if (in_array($name, $trailers)) {
+                continue;
+            }
+
             foreach ($values as $value) {
                 $this->swooleResponse->header($name, $value);
+            }
+        }
+    }
+
+    public function sendTrailers()
+    {
+        $headers = $this->getHeaders();
+        $trailers = isset($headers["trailer"]) ? $headers["trailer"] : [];
+
+        foreach ($headers as $name => $values) {
+            if (!in_array($name, $trailers)) {
+                continue;
+            }
+
+            foreach ($values as $value) {
+                $this->swooleResponse->trailer($name, $value);
             }
         }
     }
@@ -68,6 +98,7 @@ abstract class Response implements ResponseInterface
         $this->sendStatusCode();
         $this->sendHeaders();
         $this->sendCookies();
+        $this->sendTrailers();
         if ($gzip) {
             $this->gzip();
         }
