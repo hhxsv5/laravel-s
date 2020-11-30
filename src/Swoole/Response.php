@@ -42,10 +42,10 @@ abstract class Response implements ResponseInterface
     public function sendHeaders()
     {
         $headers = $this->getHeaders();
-        $trailers = isset($headers["trailer"]) ? $headers["trailer"] : [];
+        $trailers = isset($headers['trailer']) ? $headers['trailer'] : [];
 
         foreach ($headers as $name => $values) {
-            if (in_array($name, $trailers)) {
+            if (in_array($name, $trailers, true)) {
                 continue;
             }
 
@@ -58,10 +58,10 @@ abstract class Response implements ResponseInterface
     public function sendTrailers()
     {
         $headers = $this->getHeaders();
-        $trailers = isset($headers["trailer"]) ? $headers["trailer"] : [];
+        $trailers = isset($headers['trailer']) ? $headers['trailer'] : [];
 
         foreach ($headers as $name => $values) {
-            if (!in_array($name, $trailers)) {
+            if (!in_array($name, $trailers, true)) {
                 continue;
             }
 
