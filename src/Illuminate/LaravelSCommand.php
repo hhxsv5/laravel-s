@@ -85,7 +85,7 @@ EOS;
     {
         $this->comment('>>> Components');
         $laravelSVersion = '-';
-        $cfg = (array)json_decode(file_get_contents(base_path('composer.lock')), true);
+        $cfg = file_exists(base_path('composer.lock')) ? json_decode(file_get_contents(base_path('composer.lock')), true) : [];
         if (isset($cfg['packages'])) {
             $packages = array_merge($cfg['packages'], Arr::get($cfg, 'packages-dev', []));
             foreach ($packages as $package) {
@@ -300,8 +300,8 @@ EOS;
 
         foreach ($todoList as $todo) {
             $toDir = dirname($todo['to']);
-            if (!is_dir($toDir)) {
-                mkdir($toDir, 0755, true);
+            if (!is_dir($toDir) && !mkdir($toDir, 0755, true) && !is_dir($toDir)) {
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $toDir));
             }
             if (file_exists($todo['to'])) {
                 unlink($todo['to']);
