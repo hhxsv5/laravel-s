@@ -34,7 +34,7 @@ trait TimerTrait
             if (!empty($config['global_lock'])) {
                 CronJob::setGlobalTimerLockKey($config['global_lock_key']);
                 // Close all cron job if not get the lock
-                CronJob::setEnable(CronJob::getGlobalTimerLock());
+                CronJob::setEnable(CronJob::isCurrentTimerAlive() || CronJob::getGlobalTimerLock());
             }
 
             $timerIds = $this->registerTimers($config['jobs']);
