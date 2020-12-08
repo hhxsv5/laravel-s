@@ -119,7 +119,7 @@ EOS;
     {
         $this->comment('>>> Protocols');
 
-        $config = unserialize(file_get_contents($this->getConfPath()));
+        $config = unserialize((string)file_get_contents($this->getConfPath()));
         $socketType = isset($config['server']['socket_type']) ? $config['server']['socket_type'] : SWOOLE_SOCK_TCP;
         if (in_array($socketType, [SWOOLE_SOCK_UNIX_DGRAM, SWOOLE_SOCK_UNIX_STREAM])) {
             $listenAt = $config['server']['listen_ip'];

@@ -45,8 +45,8 @@ class Server
 
         if ($socketType === SWOOLE_SOCK_UNIX_STREAM) {
             $socketDir = dirname($ip);
-            if (!file_exists($socketDir)) {
-                mkdir($socketDir);
+            if (!file_exists($socketDir) && !mkdir($socketDir) && !is_dir($socketDir)) {
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $socketDir));
             }
         }
 

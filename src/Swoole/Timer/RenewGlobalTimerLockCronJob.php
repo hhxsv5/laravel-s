@@ -11,7 +11,7 @@ class RenewGlobalTimerLockCronJob extends CronJob
 {
     public function interval()
     {
-        return intval(self::GLOBAL_TIMER_LOCK_SECONDS * 0.9) * 1000;
+        return (int)(static::GLOBAL_TIMER_LOCK_SECONDS * 0.9) * 1000;
     }
 
     public function isImmediate()
@@ -21,6 +21,6 @@ class RenewGlobalTimerLockCronJob extends CronJob
 
     public function run()
     {
-        $this->renewGlobalTimerLock(self::GLOBAL_TIMER_LOCK_SECONDS);
+        static::renewGlobalTimerLock(static::GLOBAL_TIMER_LOCK_SECONDS);
     }
 }

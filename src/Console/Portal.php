@@ -306,7 +306,7 @@ EOS;
 
     public function getConfig()
     {
-        return unserialize(file_get_contents($this->getConfPath()));
+        return unserialize((string)file_get_contents($this->getConfPath()));
     }
 
     protected function getConfPath()

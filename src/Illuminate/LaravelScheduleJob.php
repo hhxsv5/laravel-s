@@ -3,15 +3,11 @@
 namespace Hhxsv5\LaravelS\Illuminate;
 
 use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
+use Illuminate\Contracts\Console\Kernel;
 
 class LaravelScheduleJob extends CronJob
 {
     protected $artisan;
-
-    public function __construct()
-    {
-        $this->artisan = app('Illuminate\Contracts\Console\Kernel');
-    }
 
     public function interval()
     {
@@ -25,6 +21,6 @@ class LaravelScheduleJob extends CronJob
 
     public function run()
     {
-        $this->artisan->call('schedule:run');
+        app(Kernel::class)->call('schedule:run');
     }
 }

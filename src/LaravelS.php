@@ -156,8 +156,6 @@ class LaravelS extends Server
             }
         } catch (\Exception $e) {
             $this->handleException($e, $swooleResponse);
-        } catch (\Throwable $e) {
-            $this->handleException($e, $swooleResponse);
         }
     }
 
