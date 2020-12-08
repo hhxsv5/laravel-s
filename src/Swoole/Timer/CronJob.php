@@ -101,11 +101,16 @@ abstract class CronJob implements CronJobInterface
         $redis = app('redis');
 
         $key = self::getGlobalTimerCacheKey();
-        $value = sprintf('%s:%d', current(swoole_get_local_ip()) ?: config('laravels.listen_ip'), config('laravels.listen_port'));
+        $value = self::getCurrentInstanceId();
         $expire = self::GLOBAL_TIMER_LOCK_SECONDS;
         $result = $redis->set($key, $value, 'ex', $expire, 'nx');
         // Compatible with Predis and PhpRedis
         return $result === true || ((string)$result === 'OK');
+    }
+
+    protected static function getCurrentInstanceId()
+    {
+        return sprintf('%s:%d', current(swoole_get_local_ip()) ?: config('laravels.listen_ip'), config('laravels.listen_port'));
     }
 
     public static function isGlobalTimerAlive()
@@ -113,6 +118,15 @@ abstract class CronJob implements CronJobInterface
         /**@var \Illuminate\Redis\Connections\PhpRedisConnection $redis */
         $redis = app('redis');
         return (bool)$redis->exists(self::getGlobalTimerCacheKey());
+    }
+
+    public static function isCurrentTimerAlive()
+    {
+        /**@var \Illuminate\Redis\Connections\PhpRedisConnection $redis */
+        $redis = app('redis');
+        $key = self::getGlobalTimerCacheKey();
+        $instanceId = $redis->get($key);
+        return $instanceId === self::getCurrentInstanceId();
     }
 
     public static function renewGlobalTimerLock($expire)
