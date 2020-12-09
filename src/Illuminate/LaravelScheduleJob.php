@@ -16,7 +16,7 @@ class LaravelScheduleJob extends CronJob
 
     public function isImmediate()
     {
-        return true;
+        return false;
     }
 
     public function run()
