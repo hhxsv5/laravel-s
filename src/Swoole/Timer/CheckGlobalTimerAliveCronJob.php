@@ -21,12 +21,6 @@ class CheckGlobalTimerAliveCronJob extends CronJob
 
     public function run()
     {
-        if (static::isGlobalTimerAlive()) {
-            // Reset current timer to avoid repeated execution
-            static::setEnable(static::isCurrentTimerAlive());
-        } else {
-            // Compete for timer lock
-            static::setEnable(static::getGlobalTimerLock());
-        }
+        static::checkSetEnable();
     }
 }

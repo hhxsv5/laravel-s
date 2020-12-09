@@ -21,6 +21,6 @@ class RenewGlobalTimerLockCronJob extends CronJob
 
     public function run()
     {
-        self::isCurrentTimerAlive() && static::renewGlobalTimerLock(static::GLOBAL_TIMER_LOCK_SECONDS);
+        static::isCurrentTimerAlive() && static::renewGlobalTimerLock(static::GLOBAL_TIMER_LOCK_SECONDS);
     }
 }

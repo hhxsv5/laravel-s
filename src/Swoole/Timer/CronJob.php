@@ -141,6 +141,17 @@ abstract class CronJob implements CronJobInterface
         self::$globalTimerLockKey = $lockKey;
     }
 
+    public static function checkSetEnable()
+    {
+        if (self::isGlobalTimerAlive()) {
+            // Reset current timer to avoid repeated execution
+            self::setEnable(self::isCurrentTimerAlive());
+        } else {
+            // Compete for timer lock
+            self::setEnable(self::getGlobalTimerLock());
+        }
+    }
+
     public static function setEnable($enable)
     {
         self::$enable = (bool)$enable;
