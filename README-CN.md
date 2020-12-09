@@ -290,14 +290,14 @@ LoadModule deflate_module /yourpath/modules/mod_deflate.so
 
 ```php
 namespace App\Services;
-use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
+use Hhxsv5\LaravelS\Swoole\AbstractWebSocketHandler;
 use Swoole\Http\Request;
-use Swoole\WebSocket\Frame;
+use Swoole\Http\Response;use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 /**
  * @see https://wiki.swoole.com/#/start/start_ws_server
  */
-class WebSocketService implements WebSocketHandlerInterface
+class WebSocketService extends AbstractWebSocketHandler
 {
     // 声明没有参数的构造函数
     public function __construct()
@@ -320,6 +320,10 @@ class WebSocketService implements WebSocketHandlerInterface
     public function onClose(Server $server, $fd, $reactorId)
     {
         // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
+    }
+    public function onHandShake(Request $request,Response $response)
+    {
+        // 此方法选择性实现
     }
 }
 ```
