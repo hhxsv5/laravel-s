@@ -105,8 +105,8 @@ class Server
             };
 
             $handler = $this->getWebSocketHandler();
-            if (method_exists($handler, 'onHandShake')){
-                $this->swoole->on('handshake', function () use ($eventHandler){
+            if (method_exists($handler, 'onHandShake')) {
+                $this->swoole->on('HandShake', function () use ($eventHandler) {
                     $eventHandler('onHandShake', func_get_args());
                 });
             }
@@ -157,6 +157,7 @@ class Server
             };
             static $events = [
                 'Open',
+                'HandShake',
                 'Request',
                 'Message',
                 'Connect',
