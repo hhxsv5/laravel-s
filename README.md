@@ -287,6 +287,7 @@ LoadModule deflate_module /yourpath/modules/mod_deflate.so
 namespace App\Services;
 use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
 use Swoole\Http\Request;
+use Swoole\Http\Response;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 /**
@@ -316,6 +317,10 @@ class WebSocketService implements WebSocketHandlerInterface
     {
         // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
     }
+    //public function onHandShake(Request $request,Response $response)
+    //{
+        // optional implementation
+    //}
 }
 ```
 
