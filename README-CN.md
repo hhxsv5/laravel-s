@@ -322,10 +322,10 @@ class WebSocketService implements WebSocketHandlerInterface
     {
         // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
-    public function onHandShake(Request $request,Response $response)
-    {
-       // 此方法选择性实现
-    }
+    //public function onHandShake(Request $request,Response $response)
+    //{
+        // 此方法选择性实现
+    //}
 }
 ```
 

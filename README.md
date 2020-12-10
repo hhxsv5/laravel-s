@@ -317,10 +317,10 @@ class WebSocketService implements WebSocketHandlerInterface
     {
         // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
     }
-    public function onHandShake(Request $request,Response $response)
-    {
+    //public function onHandShake(Request $request,Response $response)
+    //{
         // optional implementation
-    }
+    //}
 }
 ```
 
