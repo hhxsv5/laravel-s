@@ -292,7 +292,8 @@ LoadModule deflate_module /yourpath/modules/mod_deflate.so
 namespace App\Services;
 use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
 use Swoole\Http\Request;
-use Swoole\Http\Response;use Swoole\WebSocket\Frame;
+use Swoole\Http\Response;
+use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 /**
  * @see https://wiki.swoole.com/#/start/start_ws_server
