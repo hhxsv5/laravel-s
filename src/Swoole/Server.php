@@ -104,9 +104,12 @@ class Server
                 });
             };
 
-            $this->swoole->on('Handshake', function () use ($eventHandler){
-                $eventHandler('onHandshake', func_get_args());
-            });
+            $handler = $this->getWebSocketHandler();
+            if (method_exists($handler, 'onHandShake')){
+                $this->swoole->on('handshake', function () use ($eventHandler){
+                    $eventHandler('onHandShake', func_get_args());
+                });
+            }
 
             $this->swoole->on('Open', function () use ($eventHandler) {
                 $eventHandler('onOpen', func_get_args());

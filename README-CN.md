@@ -290,14 +290,14 @@ LoadModule deflate_module /yourpath/modules/mod_deflate.so
 
 ```php
 namespace App\Services;
-use Hhxsv5\LaravelS\Swoole\AbstractWebSocketHandler;
+use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
 use Swoole\Http\Request;
 use Swoole\Http\Response;use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 /**
  * @see https://wiki.swoole.com/#/start/start_ws_server
  */
-class WebSocketService extends AbstractWebSocketHandler
+class WebSocketService implements WebSocketHandlerInterface
 {
     // 声明没有参数的构造函数
     public function __construct()
@@ -323,7 +323,7 @@ class WebSocketService extends AbstractWebSocketHandler
     }
     public function onHandShake(Request $request,Response $response)
     {
-        // 此方法选择性实现
+       // 此方法选择性实现
     }
 }
 ```

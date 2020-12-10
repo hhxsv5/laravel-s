@@ -285,14 +285,14 @@ LoadModule deflate_module /yourpath/modules/mod_deflate.so
 1.Create WebSocket Handler class, and implement interface `WebSocketHandlerInterface`.The instant is automatically instantiated when start, you do not need to manually create it.
 ```php
 namespace App\Services;
-use Hhxsv5\LaravelS\Swoole\AbstractWebSocketHandler;
+use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
 use Swoole\Http\Request;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 /**
  * @see https://www.swoole.co.uk/docs/modules/swoole-websocket-server
  */
-class WebSocketService extends AbstractWebSocketHandler
+class WebSocketService implements WebSocketHandlerInterface
 {
     // Declare constructor without parameters
     public function __construct()
