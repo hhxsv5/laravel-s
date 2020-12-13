@@ -334,7 +334,7 @@ class WebSocketService implements WebSocketHandlerInterface
 ```php
 // ...
 'websocket'      => [
-    'enable'  => true, // 看清楚，这里是true
+    'enable'  => true, // 注意：设置enable为true
     'handler' => \App\Services\WebSocketService::class,
 ],
 'swoole'         => [
