@@ -301,7 +301,7 @@ class Server
             return;
         }
         $key = $request->header['sec-websocket-key'];
-        if (0 === preg_match('#^[+/0-9A-Za-z]{21}[AQgw]==$#', $key) || 16 !== strlen(base64_decode($key))) {
+        if (!preg_match('#^[+/0-9A-Za-z]{21}[AQgw]==$#', $key) || 16 !== strlen(base64_decode($key))) {
             // Header Sec-WebSocket-Key is illegal;
             $response->end();
             return;
