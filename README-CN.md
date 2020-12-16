@@ -304,28 +304,28 @@ class WebSocketService implements WebSocketHandlerInterface
     public function __construct()
     {
     }
+    // public function onHandShake(Request $request, Response $response)
+    // {
+           // 自定义握手：https://wiki.swoole.com/#/websocket_server?id=onhandshake
+    // }
     public function onOpen(Server $server, Request $request)
     {
         // 在触发onOpen事件之前，建立WebSocket的HTTP请求已经经过了Laravel的路由，
         // 所以Laravel的Request、Auth等信息是可读的，Session是可读写的，但仅限在onOpen事件中。
         // \Log::info('New WebSocket connection', [$request->fd, request()->all(), session()->getId(), session('xxx'), session(['yyy' => time()])]);
+        // 此处抛出的异常会被上层捕获并记录到Swoole日志，开发者需要手动try/catch
         $server->push($request->fd, 'Welcome to LaravelS');
-        // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
     public function onMessage(Server $server, Frame $frame)
     {
         // \Log::info('Received message', [$frame->fd, $frame->data, $frame->opcode, $frame->finish]);
+        // 此处抛出的异常会被上层捕获并记录到Swoole日志，开发者需要手动try/catch
         $server->push($frame->fd, date('Y-m-d H:i:s'));
-        // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
     }
     public function onClose(Server $server, $fd, $reactorId)
     {
-        // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
+        // 此处抛出的异常会被上层捕获并记录到Swoole日志，开发者需要手动try/catch
     }
-    // public function onHandShake(Request $request, Response $response)
-    // {
-           // 自定义握手：https://wiki.swoole.com/#/websocket_server?id=onhandshake
-    // }
 }
 ```
 
@@ -534,7 +534,7 @@ class TestListener1 extends Listener
         // 注意：config/laravels.php中修改配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/#/server/setting?id=task_ipc_mode
         $ret = Task::deliver(new TestTask('task data'));
         var_dump($ret);
-        // throw new \Exception('an exception');// handle时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
+        // 此处抛出的异常会被上层捕获并记录到Swoole日志，开发者需要手动try/catch
     }
 }
 ```
@@ -571,7 +571,7 @@ class TestTask extends Task
     {
         \Log::info(__CLASS__ . ':handle start', [$this->data]);
         sleep(2);// 模拟一些慢速的事件处理
-        // throw new \Exception('an exception');// handle时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
+        // 此处抛出的异常会被上层捕获并记录到Swoole日志，开发者需要手动try/catch
         $this->result = 'the result of ' . $this->data;
     }
     // 可选的，完成事件，任务处理完后的逻辑，运行在Worker进程中，可以投递任务
@@ -636,7 +636,7 @@ class TestCronJob extends CronJob
             $ret = Task::deliver(new TestTask('task data'));
             var_dump($ret);
         }
-        // throw new \Exception('an exception');// 此时抛出的异常上层会忽略，并记录到Swoole日志，需要开发者try/catch捕获处理
+        // 此处抛出的异常会被上层捕获并记录到Swoole日志，开发者需要手动try/catch
     }
 }
 ```

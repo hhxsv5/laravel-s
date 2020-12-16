@@ -299,28 +299,28 @@ class WebSocketService implements WebSocketHandlerInterface
     public function __construct()
     {
     }
-    public function onOpen(Server $server, Request $request)
-    {
-        // Before the onOpen event is triggered, the HTTP request to establish the WebSocket has passed the Laravel route, 
-        // so Laravel's Request, Auth information is readable, and Session is readable and writable, but only in the onOpen event.
-        // \Log::info('New WebSocket connection', [$request->fd, request()->all(), session()->getId(), session('xxx'), session(['yyy' => time()])]);
-        $server->push($request->fd, 'Welcome to LaravelS');
-        // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
-    }
-    public function onMessage(Server $server, Frame $frame)
-    {
-        // \Log::info('Received message', [$frame->fd, $frame->data, $frame->opcode, $frame->finish]);
-        $server->push($frame->fd, date('Y-m-d H:i:s'));
-        // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
-    }
-    public function onClose(Server $server, $fd, $reactorId)
-    {
-        // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
-    }
     // public function onHandShake(Request $request, Response $response)
     // {
            // Custom handshake: https://www.swoole.co.uk/docs/modules/swoole-websocket-server-on-handshake
     // }
+    public function onOpen(Server $server, Request $request)
+    {
+        // Before the onOpen event is triggered, the HTTP request to establish the WebSocket has passed the Laravel route,
+        // so Laravel's Request, Auth information are readable, Session is readable and writable, but only in the onOpen event.
+        // \Log::info('New WebSocket connection', [$request->fd, request()->all(), session()->getId(), session('xxx'), session(['yyy' => time()])]);
+        // The exceptions thrown here will be caught by the upper layer and recorded in the Swoole log. Developers need to try/catch manually.
+        $server->push($request->fd, 'Welcome to LaravelS');
+    }
+    public function onMessage(Server $server, Frame $frame)
+    {
+        // \Log::info('Received message', [$frame->fd, $frame->data, $frame->opcode, $frame->finish]);
+        // The exceptions thrown here will be caught by the upper layer and recorded in the Swoole log. Developers need to try/catch manually.
+        $server->push($frame->fd, date('Y-m-d H:i:s'));
+    }
+    public function onClose(Server $server, $fd, $reactorId)
+    {
+        // The exceptions thrown here will be caught by the upper layer and recorded in the Swoole log. Developers need to try/catch manually.
+    }
 }
 ```
 
@@ -525,7 +525,7 @@ class TestListener1 extends Listener
         // Note: Modify task_ipc_mode to 1 or 2 in config/laravels.php, see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
         $ret = Task::deliver(new TestTask('task data'));
         var_dump($ret);
-        // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
+        // The exceptions thrown here will be caught by the upper layer and recorded in the Swoole log. Developers need to try/catch manually.
     }
 }
 ```
@@ -560,7 +560,7 @@ class TestTask extends Task
     {
         \Log::info(__CLASS__ . ':handle start', [$this->data]);
         sleep(2);// Simulate the slow codes
-        // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
+        // The exceptions thrown here will be caught by the upper layer and recorded in the Swoole log. Developers need to try/catch manually.
         $this->result = 'the result of ' . $this->data;
     }
     // Optional, finish event, the logic of after task handling, run in worker process, CAN deliver task 
@@ -624,7 +624,7 @@ class TestCronJob extends CronJob
             $ret = Task::deliver(new TestTask('task data'));
             var_dump($ret);
         }
-        // throw new \Exception('an exception');// all exceptions will be ignored, then record them into Swoole log, you need to try/catch them
+        // The exceptions thrown here will be caught by the upper layer and recorded in the Swoole log. Developers need to try/catch manually.
     }
 }
 ```
@@ -1018,7 +1018,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
                 // Note: Modify task_ipc_mode to 1 or 2 in config/laravels.php, see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
                 $ret = Task::deliver(new TestTask('task data'));
                 var_dump($ret);
-                // The upper layer will catch the exception thrown in the callback and record it in the Swoole log, and then this process will exit. The Manager process will re-create the process after 3 seconds, so developers need to try / catch to catch the exception by themselves to avoid frequent process creation.
+                // The upper layer will catch the exception thrown in the callback and record it in the Swoole log, and then this process will exit. The Manager process will re-create the process after 3 seconds, so developers need to try/catch to catch the exception by themselves to avoid frequent process creation.
                 // throw new \Exception('an exception');
             }
         }
