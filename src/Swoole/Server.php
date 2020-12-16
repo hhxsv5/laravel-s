@@ -62,15 +62,15 @@ class Server
 
         $this->swoole->set($settings);
 
-        $this->bindBaseEvent();
-        $this->bindHttpEvent();
-        $this->bindTaskEvent();
-        $this->bindWebSocketEvent();
+        $this->bindBaseEvents();
+        $this->bindHttpEvents();
+        $this->bindTaskEvents();
+        $this->bindWebSocketEvents();
         $this->bindAttachedSockets();
         $this->bindSwooleTables();
     }
 
-    protected function bindBaseEvent()
+    protected function bindBaseEvents()
     {
         $this->swoole->on('Start', [$this, 'onStart']);
         $this->swoole->on('Shutdown', [$this, 'onShutdown']);
@@ -82,12 +82,12 @@ class Server
         $this->swoole->on('PipeMessage', [$this, 'onPipeMessage']);
     }
 
-    protected function bindHttpEvent()
+    protected function bindHttpEvents()
     {
         $this->swoole->on('Request', [$this, 'onRequest']);
     }
 
-    protected function bindTaskEvent()
+    protected function bindTaskEvents()
     {
         if (!empty($this->conf['swoole']['task_worker_num'])) {
             $this->swoole->on('Task', [$this, 'onTask']);
@@ -95,34 +95,39 @@ class Server
         }
     }
 
-    protected function bindWebSocketEvent()
+    protected function triggerWebSocketEvent($method, array $params)
+    {
+        $this->callWithCatchException(function () use ($method, $params) {
+            $handler = $this->getWebSocketHandler();
+
+            if (method_exists($handler, $method)) {
+                call_user_func_array([$handler, $method], $params);
+            } elseif ($method === 'onHandShake') {
+                // Set default HandShake
+                call_user_func_array([$this, 'onHandShake'], $params);
+            }
+        });
+    }
+
+    protected function bindWebSocketEvents()
     {
         if ($this->enableWebSocket) {
-            $eventHandler = function ($method, array $params) {
-                $this->callWithCatchException(function () use ($method, $params) {
-                    $handler = $this->getWebSocketHandler();
-                    call_user_func_array([$handler, $method], $params);
-                });
-            };
-
-            if (method_exists($this->getWebSocketHandler(true), 'onHandShake')) {
-                $this->swoole->on('HandShake', function () use ($eventHandler) {
-                    $eventHandler('onHandShake', func_get_args());
-                });
-            }
-
-            $this->swoole->on('Open', function () use ($eventHandler) {
-                $eventHandler('onOpen', func_get_args());
+            $this->swoole->on('HandShake', function () {
+                $this->triggerWebSocketEvent('onHandShake', func_get_args());
             });
 
-            $this->swoole->on('Message', function () use ($eventHandler) {
-                $eventHandler('onMessage', func_get_args());
+            $this->swoole->on('Open', function () {
+                $this->triggerWebSocketEvent('onOpen', func_get_args());
             });
 
-            $this->swoole->on('Close', function (WebSocketServer $server, $fd, $reactorId) use ($eventHandler) {
+            $this->swoole->on('Message', function () {
+                $this->triggerWebSocketEvent('onMessage', func_get_args());
+            });
+
+            $this->swoole->on('Close', function (WebSocketServer $server, $fd, $reactorId) {
                 $clientInfo = $server->getClientInfo($fd);
                 if (isset($clientInfo['websocket_status']) && $clientInfo['websocket_status'] === \WEBSOCKET_STATUS_FRAME) {
-                    $eventHandler('onClose', func_get_args());
+                    $this->triggerWebSocketEvent('onClose', func_get_args());
                 }
                 // else ignore the close event for http server
             });
@@ -175,18 +180,14 @@ class Server
         }
     }
 
-    protected function getWebSocketHandler($returnClass = false)
+    protected function getWebSocketHandler()
     {
-        $handlerClass = $this->conf['websocket']['handler'];
-        if ($returnClass) {
-            return $handlerClass;
-        }
-        
         static $handler = null;
         if ($handler !== null) {
             return $handler;
         }
 
+        $handlerClass = $this->conf['websocket']['handler'];
         $t = new $handlerClass();
         if (!($t instanceof WebSocketHandlerInterface)) {
             throw new \InvalidArgumentException(sprintf('%s must implement the interface %s', get_class($t), WebSocketHandlerInterface::class));
@@ -290,6 +291,50 @@ class Server
 
     public function onRequest(SwooleRequest $swooleRequest, SwooleResponse $swooleResponse)
     {
+    }
+
+    public function onHandShake(SwooleRequest $request, SwooleResponse $response)
+    {
+        if (!isset($request->header['sec-websocket-key'])) {
+            // Bad protocol implementation: it is not RFC6455.
+            $response->end();
+            return;
+        }
+        $key = $request->header['sec-websocket-key'];
+        if (0 === preg_match('#^[+/0-9A-Za-z]{21}[AQgw]==$#', $key) || 16 !== strlen(base64_decode($key))) {
+            // Header Sec-WebSocket-Key is illegal;
+            $response->end();
+            return;
+        }
+
+        $headers = [
+            'Upgrade'               => 'websocket',
+            'Connection'            => 'Upgrade',
+            'Sec-WebSocket-Accept'  => base64_encode(sha1($key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true)),
+            'Sec-WebSocket-Version' => '13',
+        ];
+
+        // WebSocket connection to 'ws://127.0.0.1:5200/'
+        // failed: Error during WebSocket handshake:
+        // Response must not include 'Sec-WebSocket-Protocol' header if not present in request: websocket
+        if (isset($request->header['sec-websocket-protocol'])) {
+            $headers['Sec-WebSocket-Protocol'] = $request->header['sec-websocket-protocol'];
+        }
+
+        foreach ($headers as $key => $val) {
+            $response->header($key, $val);
+        }
+
+        $response->status(101);
+        $response->end();
+
+        if (method_exists($this->swoole, 'defer')) {
+            $this->swoole->defer(function () use ($request) {
+                $this->triggerWebSocketEvent('onOpen', [$this->swoole, $request]);
+            });
+        } else {
+            $this->triggerWebSocketEvent('onOpen', [$this->swoole, $request]);
+        }
     }
 
     public function onTask(HttpServer $server, $taskId, $srcWorkerId, $data)
