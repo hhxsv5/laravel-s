@@ -101,15 +101,15 @@ class Server
             $eventHandler = function ($method, array $params) {
                 $this->callWithCatchException(function () use ($method, $params) {
                     $handler = $this->getWebSocketHandler();
-                    if (method_exists($handler, $method)) {
-                        call_user_func_array([$handler, $method], $params);
-                    }
+                    call_user_func_array([$handler, $method], $params);
                 });
             };
 
-            $this->swoole->on('HandShake', function () use ($eventHandler) {
-                $eventHandler('onHandShake', func_get_args());
-            });
+            if (method_exists($this->getWebSocketHandler(true), 'onHandShake')) {
+                $this->swoole->on('HandShake', function () use ($eventHandler) {
+                    $eventHandler('onHandShake', func_get_args());
+                });
+            }
 
             $this->swoole->on('Open', function () use ($eventHandler) {
                 $eventHandler('onOpen', func_get_args());
@@ -175,14 +175,18 @@ class Server
         }
     }
 
-    protected function getWebSocketHandler()
+    protected function getWebSocketHandler($returnClass = false)
     {
+        $handlerClass = $this->conf['websocket']['handler'];
+        if ($returnClass) {
+            return $handlerClass;
+        }
+        
         static $handler = null;
         if ($handler !== null) {
             return $handler;
         }
 
-        $handlerClass = $this->conf['websocket']['handler'];
         $t = new $handlerClass();
         if (!($t instanceof WebSocketHandlerInterface)) {
             throw new \InvalidArgumentException(sprintf('%s must implement the interface %s', get_class($t), WebSocketHandlerInterface::class));

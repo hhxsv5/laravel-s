@@ -78,7 +78,8 @@ class LaravelS extends Server
         if ($this->enableWebSocket) {
             $eventHandler = function ($method, array $params) {
                 $this->callWithCatchException(function () use ($method, $params) {
-                    call_user_func_array([$this->getWebSocketHandler(), $method], $params);
+                    $handler = $this->getWebSocketHandler();
+                    call_user_func_array([$handler, $method], $params);
                 });
             };
 
