@@ -35,14 +35,14 @@
   ],
   "require": {
     "php": ">=5.5.9",
-    "symfony/console": ">=2.7.0",
+    "ext-curl": "*",
     "ext-json": "*",
     "ext-pcntl": "*",
     "swoole/ide-helper": "@dev",
-    "ext-curl": "*"
+    "symfony/console": ">=2.7.0"
   },
   "suggest": {
-    "ext-swoole": "Coroutine based Async PHP programming framework, require >= 1.7.19.",
+    "ext-swoole": "Coroutine-based concurrency library for PHP, require >= 1.7.19.",
     "ext-inotify": "Inotify, used to real-time reload."
   },
   "autoload": {
