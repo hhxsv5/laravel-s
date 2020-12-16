@@ -100,16 +100,16 @@ class Server
         if ($this->enableWebSocket) {
             $eventHandler = function ($method, array $params) {
                 $this->callWithCatchException(function () use ($method, $params) {
-                    call_user_func_array([$this->getWebSocketHandler(), $method], $params);
+                    $handler = $this->getWebSocketHandler();
+                    if (method_exists($handler, $method)) {
+                        call_user_func_array([$handler, $method], $params);
+                    }
                 });
             };
 
-            $handler = $this->getWebSocketHandler();
-            if (method_exists($handler, 'onHandShake')) {
-                $this->swoole->on('HandShake', function () use ($eventHandler) {
-                    $eventHandler('onHandShake', func_get_args());
-                });
-            }
+            $this->swoole->on('HandShake', function () use ($eventHandler) {
+                $eventHandler('onHandShake', func_get_args());
+            });
 
             $this->swoole->on('Open', function () use ($eventHandler) {
                 $eventHandler('onOpen', func_get_args());
