@@ -110,7 +110,7 @@ EOS;
         // Generate conf file storage/laravels.conf
         $options = $this->input->getOptions();
         if (isset($options['env']) && $options['env'] !== '') {
-            $_SERVER['LARAVEL_ENV'] = $_ENV['LARAVEL_ENV'] = $options['env'];
+            $_SERVER['APP_ENV'] = $_ENV['APP_ENV'] = $options['env'];
         }
         if (isset($options['x-version']) && $options['x-version'] !== '') {
             $_SERVER['X_VERSION'] = $_ENV['X_VERSION'] = $options['x-version'];
@@ -293,9 +293,9 @@ EOS;
     public function makeArtisanCmd($subCmd)
     {
         $phpCmd = sprintf('%s -c "%s"', PHP_BINARY, php_ini_loaded_file());
-        $env = $this->input->getOption('env');
-        $envs = $env ? "APP_ENV={$env}" : '';
-        return trim(sprintf('%s %s %s/artisan %s', $envs, $phpCmd, $this->basePath, $subCmd));
+        $env = isset($_ENV['APP_ENV']) ? trim($_ENV['APP_ENV']) : '';
+        $appEnv = $env === '' ? '' : "APP_ENV={$env}";
+        return trim(sprintf('%s %s %s/artisan %s', $appEnv, $phpCmd, $this->basePath, $subCmd));
     }
 
     public function runArtisanCommand($cmd)

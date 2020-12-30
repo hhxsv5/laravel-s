@@ -28,8 +28,8 @@ class Process implements CustomProcessInterface
     public static function callback(Server $swoole, SwooleProcess $process)
     {
         $filename = base_path('.env');
-        if (isset($_ENV['LARAVEL_ENV'])) {
-            $filename .= '.' . $_ENV['LARAVEL_ENV'];
+        if (isset($_ENV['APP_ENV'])) {
+            $filename .= '.' . $_ENV['APP_ENV'];
         }
 
         self::$apollo = Client::createFromEnv();

@@ -85,7 +85,8 @@ EOS;
     {
         $this->comment('>>> Components');
         $laravelSVersion = '-';
-        $cfg = file_exists(base_path('composer.lock')) ? json_decode(file_get_contents(base_path('composer.lock')), true) : [];
+        $lockFile = base_path('composer.lock');
+        $cfg = file_exists($lockFile) ? json_decode(file_get_contents($lockFile), true) : [];
         if (isset($cfg['packages'])) {
             $packages = array_merge($cfg['packages'], Arr::get($cfg, 'packages-dev', []));
             foreach ($packages as $package) {
@@ -98,7 +99,7 @@ EOS;
         $this->table(['Component', 'Version'], [
             [
                 'PHP',
-                phpversion(),
+                PHP_VERSION,
             ],
             [
                 'Swoole',
@@ -120,6 +121,7 @@ EOS;
         $this->comment('>>> Protocols');
 
         $config = unserialize((string)file_get_contents($this->getConfPath()));
+        $ssl = isset($config['server']['swoole']['ssl_key_file'], $config['server']['swoole']['ssl_cert_file']);
         $socketType = isset($config['server']['socket_type']) ? $config['server']['socket_type'] : SWOOLE_SOCK_TCP;
         if (in_array($socketType, [SWOOLE_SOCK_UNIX_DGRAM, SWOOLE_SOCK_UNIX_STREAM])) {
             $listenAt = $config['server']['listen_ip'];
@@ -132,7 +134,7 @@ EOS;
                 'Main HTTP',
                 '<info>On</info>',
                 $this->getApplication()->getName(),
-                $listenAt,
+                sprintf('%s://%s', $ssl ? 'https' : 'http', $listenAt),
             ],
         ];
         if (!empty($config['server']['websocket']['enable'])) {
@@ -140,7 +142,7 @@ EOS;
                 'Main WebSocket',
                 '<info>On</info>',
                 $config['server']['websocket']['handler'],
-                $listenAt,
+                sprintf('%s://%s', $ssl ? 'wss' : 'ws', $listenAt),
             ];
         }
 
