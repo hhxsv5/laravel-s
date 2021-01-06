@@ -117,7 +117,7 @@ class Server
     {
         if ($this->enableWebSocket) {
             $this->swoole->on('HandShake', function () {
-                $this->triggerWebSocketEvent('onHandShake', func_get_args());
+                return $this->triggerWebSocketEvent('onHandShake', func_get_args());
             });
 
             $this->swoole->on('Open', function () {
@@ -178,7 +178,7 @@ class Server
             ];
             foreach ($events as $event) {
                 $port->on($event, function () use ($event, $eventHandler) {
-                    $eventHandler('on' . $event, func_get_args());
+                    return $eventHandler('on' . $event, func_get_args());
                 });
             }
         }
