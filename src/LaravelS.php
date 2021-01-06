@@ -70,38 +70,44 @@ class LaravelS extends Server
         }
     }
 
+    protected function startHandleHttp(SwooleRequest $request)
+    {
+        // Start Laravel's lifetime, then support session ...middleware.
+        $laravelRequest = $this->convertRequest($this->laravel, $request);
+        $this->laravel->bindRequest($laravelRequest);
+        $this->laravel->cleanProviders();
+        $this->laravel->handleDynamic($laravelRequest);
+    }
+
+    protected function endHandleHttp(SwooleRequest $request)
+    {
+        $this->laravel->saveSession();
+        $this->laravel->clean();
+    }
+
     protected function triggerWebSocketEvent($event, array $params)
     {
         if ($event === 'onHandShake') {
-            // Start Laravel's lifetime, then support session ...middleware.
-            $laravelRequest = $this->convertRequest($this->laravel, $params[0]);
-            $this->laravel->bindRequest($laravelRequest);
-            $this->laravel->cleanProviders();
-            $this->laravel->handleDynamic($laravelRequest);
+            $this->startHandleHttp($params[0]);
         }
 
         $result = parent::triggerWebSocketEvent($event, $params);
 
         if ($event === 'onHandShake') {
-            if ($result !== true) {
+            if ($result === true) {
+                $this->triggerWebSocketEvent('onOpen', [$this->swoole, $params[0]]);
+            } else {
                 // Handshake failed.
                 goto EndLaravel;
-            }
-            if (method_exists($this->swoole, 'defer')) {
-                $this->swoole->defer(function () use ($params) {
-                    $this->triggerWebSocketEvent('onOpen', [$this->swoole, $params[0]]);
-                });
-            } else {
-                $this->triggerWebSocketEvent('onOpen', [$this->swoole, $params[0]]);
             }
         }
 
         if ($event === 'onOpen') {
             // End Laravel's lifetime.
             EndLaravel:
-            $this->laravel->saveSession();
-            $this->laravel->clean();
+            $this->endHandleHttp($params[1]);
         }
+        return $result;
     }
 
     public function onShutdown(HttpServer $server)

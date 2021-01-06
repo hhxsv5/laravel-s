@@ -156,18 +156,38 @@ class Server
             $port->set(empty($socket['settings']) ? [] : $socket['settings']);
 
             $handlerClass = $socket['handler'];
-            $eventHandler = function ($method, array $params) use ($port, $handlerClass) {
+            $eventHandler = function ($event, array $params) use ($port, $handlerClass) {
                 $handler = $this->getSocketHandler($port, $handlerClass);
-                return $this->callWithCatchException(function () use ($handler, $method, $params) {
-                    if (method_exists($handler, $method)) {
-                        return call_user_func_array([$handler, $method], $params);
+                return $this->callWithCatchException(function () use ($handler, $event, $params) {
+                    if (method_exists($handler, $event)) {
+                        if ($event === 'onHandShake' || $event === 'onRequest') {
+                            $this->startHandleHttp($params[0]);
+                        }
+                        if ($event === 'onOpen' && !method_exists($handler, 'onHandShake')) {
+                            $this->startHandleHttp($params[1]);
+                        }
+
+                        $result = call_user_func_array([$handler, $event], $params);
+
+                        if ($event === 'onHandShake') {
+                            if ($result === true) {
+                                $result = $handler->onOpen($this->swoole, $params[0]);
+                            }
+                            $this->endHandleHttp($params[0]);
+                        }
+                        if ($event === 'onOpen') {
+                            $this->endHandleHttp($params[1]);
+                        }
+                        return $result;
                     }
 
                     // Set default HandShake
-                    if ($method === 'onHandShake') {
-                        if (method_exists($handler, 'onOpen')) {
-                            $params[] = [$handler, 'onOpen'];
-                        }
+                    if ($event === 'onHandShake' && method_exists($handler, 'onOpen')) {
+                        $this->startHandleHttp($params[0]);
+                        $params[] = function () use ($handler, $params) {
+                            call_user_func_array([$handler, 'onOpen'], func_get_args());
+                            $this->endHandleHttp($params[0]);
+                        };
                         return call_user_func_array([$this, 'onHandShake'], $params);
                     }
 
@@ -193,6 +213,16 @@ class Server
                 });
             }
         }
+    }
+
+    protected function startHandleHttp(SwooleRequest $request)
+    {
+        // Implement in subclass
+    }
+
+    protected function endHandleHttp(SwooleRequest $request)
+    {
+        // Implement in subclass
     }
 
     protected function getWebSocketHandler()
