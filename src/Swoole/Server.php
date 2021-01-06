@@ -104,8 +104,8 @@ class Server
                 return call_user_func_array([$handler, $event], $params);
             }
 
+            // Set default HandShake
             if ($event === 'onHandShake') {
-                // Set default HandShake
                 return call_user_func_array([$this, 'onHandShake'], $params);
             }
 
@@ -158,13 +158,24 @@ class Server
             $handlerClass = $socket['handler'];
             $eventHandler = function ($method, array $params) use ($port, $handlerClass) {
                 $handler = $this->getSocketHandler($port, $handlerClass);
-                if (method_exists($handler, $method)) {
-                    $this->callWithCatchException(function () use ($handler, $method, $params) {
-                        call_user_func_array([$handler, $method], $params);
-                    });
-                }
+                return $this->callWithCatchException(function () use ($handler, $method, $params) {
+                    if (method_exists($handler, $method)) {
+                        return call_user_func_array([$handler, $method], $params);
+                    }
+
+                    // Set default HandShake
+                    if ($method === 'onHandShake') {
+                        if (method_exists($handler, 'onOpen')) {
+                            $params[] = [$handler, 'onOpen'];
+                        }
+                        return call_user_func_array([$this, 'onHandShake'], $params);
+                    }
+
+                    return null;
+                });
             };
-            static $events = [
+
+            $events = [
                 'Open',
                 'HandShake',
                 'Request',
@@ -297,7 +308,7 @@ class Server
     {
     }
 
-    public function onHandShake(SwooleRequest $request, SwooleResponse $response)
+    public function onHandShake(SwooleRequest $request, SwooleResponse $response, callable $onOpen = null)
     {
         if (!isset($request->header['sec-websocket-key'])) {
             // Bad protocol implementation: it is not RFC6455.
@@ -331,6 +342,16 @@ class Server
 
         $response->status(101);
         $response->end();
+
+        if (is_callable($onOpen)) {
+            if (method_exists($this->swoole, 'defer')) {
+                $this->swoole->defer(function () use ($onOpen, $request) {
+                    call_user_func($onOpen, $this->swoole, $request);
+                });
+            } else {
+                call_user_func($onOpen, $this->swoole, $request);
+            }
+        }
         return true;
     }
 
