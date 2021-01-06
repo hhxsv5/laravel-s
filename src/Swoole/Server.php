@@ -95,17 +95,21 @@ class Server
         }
     }
 
-    protected function triggerWebSocketEvent($method, array $params)
+    protected function triggerWebSocketEvent($event, array $params)
     {
-        $this->callWithCatchException(function () use ($method, $params) {
+        return $this->callWithCatchException(function () use ($event, $params) {
             $handler = $this->getWebSocketHandler();
 
-            if (method_exists($handler, $method)) {
-                call_user_func_array([$handler, $method], $params);
-            } elseif ($method === 'onHandShake') {
-                // Set default HandShake
-                call_user_func_array([$this, 'onHandShake'], $params);
+            if (method_exists($handler, $event)) {
+                return call_user_func_array([$handler, $event], $params);
             }
+
+            if ($event === 'onHandShake') {
+                // Set default HandShake
+                return call_user_func_array([$this, 'onHandShake'], $params);
+            }
+
+            return null;
         });
     }
 
@@ -298,19 +302,19 @@ class Server
         if (!isset($request->header['sec-websocket-key'])) {
             // Bad protocol implementation: it is not RFC6455.
             $response->end();
-            return;
+            return false;
         }
-        $key = $request->header['sec-websocket-key'];
-        if (!preg_match('#^[+/0-9A-Za-z]{21}[AQgw]==$#', $key) || 16 !== strlen(base64_decode($key))) {
+        $secKey = $request->header['sec-websocket-key'];
+        if (!preg_match('#^[+/0-9A-Za-z]{21}[AQgw]==$#', $secKey) || 16 !== strlen(base64_decode($secKey))) {
             // Header Sec-WebSocket-Key is illegal;
             $response->end();
-            return;
+            return false;
         }
 
         $headers = [
             'Upgrade'               => 'websocket',
             'Connection'            => 'Upgrade',
-            'Sec-WebSocket-Accept'  => base64_encode(sha1($key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true)),
+            'Sec-WebSocket-Accept'  => base64_encode(sha1($secKey . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true)),
             'Sec-WebSocket-Version' => '13',
         ];
 
@@ -321,20 +325,13 @@ class Server
             $headers['Sec-WebSocket-Protocol'] = $request->header['sec-websocket-protocol'];
         }
 
-        foreach ($headers as $key => $val) {
-            $response->header($key, $val);
+        foreach ($headers as $key => $value) {
+            $response->header($key, $value);
         }
 
         $response->status(101);
         $response->end();
-
-        if (method_exists($this->swoole, 'defer')) {
-            $this->swoole->defer(function () use ($request) {
-                $this->triggerWebSocketEvent('onOpen', [$this->swoole, $request]);
-            });
-        } else {
-            $this->triggerWebSocketEvent('onOpen', [$this->swoole, $request]);
-        }
+        return true;
     }
 
     public function onTask(HttpServer $server, $taskId, $srcWorkerId, $data)

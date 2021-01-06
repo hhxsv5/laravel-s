@@ -302,6 +302,7 @@ class WebSocketService implements WebSocketHandlerInterface
     // public function onHandShake(Request $request, Response $response)
     // {
            // Custom handshake: https://www.swoole.co.uk/docs/modules/swoole-websocket-server-on-handshake
+           // Return true to indicate a successful handshake, return other values as failure, and the onOpen event will be triggered automatically after a successful handshake
     // }
     public function onOpen(Server $server, Request $request)
     {

@@ -22,7 +22,6 @@ use Illuminate\Http\Request as IlluminateRequest;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
 use Swoole\Http\Server as HttpServer;
-use Swoole\WebSocket\Server as WebSocketServer;
 use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -71,21 +70,37 @@ class LaravelS extends Server
         }
     }
 
-    protected function bindWebSocketEvents()
+    protected function triggerWebSocketEvent($event, array $params)
     {
-        parent::bindWebSocketEvents();
+        if ($event === 'onHandShake') {
+            // Start Laravel's lifetime, then support session ...middleware.
+            $laravelRequest = $this->convertRequest($this->laravel, $params[0]);
+            $this->laravel->bindRequest($laravelRequest);
+            $this->laravel->cleanProviders();
+            $this->laravel->handleDynamic($laravelRequest);
+        }
 
-        if ($this->enableWebSocket) {
-            $this->swoole->on('Open', function (WebSocketServer $server, SwooleRequest $request) {
-                // Start Laravel's lifetime, then support session ...middleware.
-                $laravelRequest = $this->convertRequest($this->laravel, $request);
-                $this->laravel->bindRequest($laravelRequest);
-                $this->laravel->cleanProviders();
-                $this->laravel->handleDynamic($laravelRequest);
-                $this->triggerWebSocketEvent('onOpen', func_get_args());
-                $this->laravel->saveSession();
-                $this->laravel->clean();
-            });
+        $result = parent::triggerWebSocketEvent($event, $params);
+
+        if ($event === 'onHandShake') {
+            if ($result !== true) {
+                // Handshake failed.
+                goto EndLaravel;
+            }
+            if (method_exists($this->swoole, 'defer')) {
+                $this->swoole->defer(function () use ($params) {
+                    $this->triggerWebSocketEvent('onOpen', [$this->swoole, $params[0]]);
+                });
+            } else {
+                $this->triggerWebSocketEvent('onOpen', [$this->swoole, $params[0]]);
+            }
+        }
+
+        if ($event === 'onOpen') {
+            // End Laravel's lifetime.
+            EndLaravel:
+            $this->laravel->saveSession();
+            $this->laravel->clean();
         }
     }
 
