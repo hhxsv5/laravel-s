@@ -822,9 +822,9 @@ class WebSocketService implements WebSocketHandlerInterface
 
 > 更多的信息，请参考[Swoole增加监听的端口](https://wiki.swoole.com/#/server/methods?id=addlistener)与[多端口混合协议](https://wiki.swoole.com/#/server/port)
 
-为了使我们的主服务器能支持除`HTTP`和`WebSocket`外的更多协议，我们引入了`Swoole`的`多端口混合协议`特性，在LaravelS中称为`Socket`。现在，可以很方便地在`Laravel`上构建`TCP/UDP`应用。
+为了使我们的主服务器能支持除`HTTP`和`WebSocket`外的更多协议，我们引入了`Swoole`的`多端口混合协议`特性，在LaravelS中称为`Socket`。现在，可以很方便地在Laravel上构建`TCP/UDP`应用。
 
-1. 创建Socket处理类，继承`Hhxsv5\LaravelS\Swoole\Socket\{TcpSocket|UdpSocket|Http|WebSocket}`
+1. 创建`Socket`处理类，继承`Hhxsv5\LaravelS\Swoole\Socket\{TcpSocket|UdpSocket|Http|WebSocket}`
 
     ```php
     namespace App\Sockets;
@@ -854,7 +854,7 @@ class WebSocketService implements WebSocketHandlerInterface
     }
     ```
 
-    这些连接和主服务器上的HTTP/WebSocket连接共享Worker进程，因此可以在这些事件操作中使用LaravelS提供的`异步任务投递`、`SwooleTable`、Laravel提供的组件如`DB`、`Eloquent`等。同时，如果需要使用该协议端口的`Swoole\Server\Port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
+    这些连接和主服务器上的HTTP/WebSocket连接共享`Worker`进程，因此可以在这些事件回调中使用LaravelS提供的`异步任务投递`、`SwooleTable`、Laravel提供的组件如`DB`、`Eloquent`等。同时，如果需要使用该协议端口的`Swoole\Server\Port`对象，只需要像如下代码一样访问`Socket`类的成员`swoolePort`即可。
 
     ```php
     public function onReceive(Server $server, $fd, $reactorId, $data)
@@ -869,13 +869,16 @@ class WebSocketService implements WebSocketHandlerInterface
     {
         public function test()
         {
-            /**@var \Swoole\Http\Server $swoole */
+            /**@var \Swoole\Http\Server|\Swoole\WebSocket\Server $swoole */
             $swoole = app('swoole');
             // $swoole->ports：遍历所有Port对象，https://wiki.swoole.com/#/server/properties?id=ports
-            $port = $swoole->ports[0]; // 获得`Swoole\Server\Port`对象
-            // $fd = 1; // Port中onReceive/onMessage回调的FD
-            // $swoole->send($fd, 'Send tcp message from controller to port client');
-            // $swoole->push($fd, 'Send websocket message from controller to port client');
+            $port = $swoole->ports[1]; // 获得`Swoole\Server\Port`对象，$port[0]是主服务器的端口
+            foreach ($port->connections as $fd) { // 遍历所有连接
+                // $swoole->send($fd, 'Send tcp message');
+                // if($swoole->isEstablished($fd)) {
+                //     $swoole->push($fd, 'Send websocket message');
+                // }
+            }
         }
     }
     ```

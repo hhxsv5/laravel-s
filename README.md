@@ -811,7 +811,7 @@ class WebSocketService implements WebSocketHandlerInterface
 
 To make our main server support more protocols not just Http and WebSocket, we bring the feature `multi-port mixed protocol` of Swoole in LaravelS and name it `Socket`. Now, you can build `TCP/UDP` applications easily on top of Laravel.
 
-1. Create socket handler class, and extend `Hhxsv5\LaravelS\Swoole\Socket\{TcpSocket|UdpSocket|Http|WebSocket}`.
+1. Create `Socket` handler class, and extend `Hhxsv5\LaravelS\Swoole\Socket\{TcpSocket|UdpSocket|Http|WebSocket}`.
 
     ```php
     namespace App\Sockets;
@@ -857,13 +857,16 @@ To make our main server support more protocols not just Http and WebSocket, we b
     {
         public function test()
         {
-            /**@var \Swoole\Http\Server $swoole */
+            /**@var \Swoole\Http\Server|\Swoole\WebSocket\Server $swoole */
             $swoole = app('swoole');
             // $swoole->ports: Traverse all Port objects, https://www.swoole.co.uk/docs/modules/swoole-server/multiple-ports
-            $port = $swoole->ports[0]; // Get the `Swoole\Server\Port` object
-            // $fd = 1; // The FD of onReceive/onMessage in Port
-            // $swoole->send($fd, 'Send tcp message from controller to port client');
-            // $swoole->push($fd, 'Send websocket message from controller to port client');
+            $port = $swoole->ports[0]; // Get the `Swoole\Server\Port` object, $port[0] is the port of the main server
+            foreach ($port->connections as $fd) { // Traverse all connections
+                // $swoole->send($fd, 'Send tcp message');
+                // if($swoole->isEstablished($fd)) {
+                //     $swoole->push($fd, 'Send websocket message');
+                // }
+            }
         }
     }
     ```
