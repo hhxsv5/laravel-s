@@ -307,7 +307,7 @@ class WebSocketService implements WebSocketHandlerInterface
     // public function onHandShake(Request $request, Response $response)
     // {
            // 自定义握手：https://wiki.swoole.com/#/websocket_server?id=onhandshake
-           // 返回true表示成功握手，返回其他值则视为失败，成功握手之后会自动触发onOpen事件
+           // 成功握手之后会自动触发onOpen事件
     // }
     public function onOpen(Server $server, Request $request)
     {

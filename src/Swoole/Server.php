@@ -343,13 +343,13 @@ class Server
         if (!isset($request->header['sec-websocket-key'])) {
             // Bad protocol implementation: it is not RFC6455.
             $response->end();
-            return false;
+            return;
         }
         $secKey = $request->header['sec-websocket-key'];
         if (!preg_match('#^[+/0-9A-Za-z]{21}[AQgw]==$#', $secKey) || 16 !== strlen(base64_decode($secKey))) {
             // Header Sec-WebSocket-Key is illegal;
             $response->end();
-            return false;
+            return;
         }
 
         $headers = [
@@ -382,7 +382,6 @@ class Server
                 call_user_func($onOpen, $this->swoole, $request);
             }
         }
-        return true;
     }
 
     public function onTask(HttpServer $server, $taskId, $srcWorkerId, $data)

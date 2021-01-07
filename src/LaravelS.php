@@ -81,6 +81,7 @@ class LaravelS extends Server
 
     protected function endHandleHttp(SwooleRequest $request)
     {
+        // End Laravel's lifetime.
         $this->laravel->saveSession();
         $this->laravel->clean();
     }
@@ -91,23 +92,21 @@ class LaravelS extends Server
             $this->startHandleHttp($params[0]);
         }
 
-        $result = parent::triggerWebSocketEvent($event, $params);
+        parent::triggerWebSocketEvent($event, $params);
 
         if ($event === 'onHandShake') {
-            if ($result === true) {
+            if (isset($params[1]->header['Sec-Websocket-Accept'])) {
+                // Successful handshake
                 $this->triggerWebSocketEvent('onOpen', [$this->swoole, $params[0]]);
-            } else {
-                // Handshake failed.
-                goto EndLaravel;
             }
+
+            // Failed handshake
+            $this->endHandleHttp($params[0]);
         }
 
         if ($event === 'onOpen') {
-            // End Laravel's lifetime.
-            EndLaravel:
             $this->endHandleHttp($params[1]);
         }
-        return $result;
     }
 
     public function onShutdown(HttpServer $server)
