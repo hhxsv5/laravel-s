@@ -30,14 +30,10 @@ class Server
     /**@var bool */
     protected $enableWebSocket = false;
 
-    /**@var array */
-    protected $attachedSockets = [];
-
     protected function __construct(array $conf)
     {
         $this->conf = $conf;
         $this->enableWebSocket = !empty($this->conf['websocket']['enable']);
-        $this->attachedSockets = empty($this->conf['sockets']) ? [] : $this->conf['sockets'];
 
         $ip = isset($conf['listen_ip']) ? $conf['listen_ip'] : '127.0.0.1';
         $port = isset($conf['listen_port']) ? $conf['listen_port'] : 5200;
@@ -66,7 +62,7 @@ class Server
         $this->bindHttpEvents();
         $this->bindTaskEvents();
         $this->bindWebSocketEvents();
-        $this->bindAttachedSockets();
+        $this->bindPortEvents();
         $this->bindSwooleTables();
     }
 
@@ -101,15 +97,11 @@ class Server
             $handler = $this->getWebSocketHandler();
 
             if (method_exists($handler, $event)) {
-                return call_user_func_array([$handler, $event], $params);
+                call_user_func_array([$handler, $event], $params);
+            } elseif ($event === 'onHandShake') {
+                // Set default HandShake
+                call_user_func_array([$this, 'onHandShake'], $params);
             }
-
-            // Set default HandShake
-            if ($event === 'onHandShake') {
-                return call_user_func_array([$this, 'onHandShake'], $params);
-            }
-
-            return null;
         });
     }
 
@@ -138,9 +130,24 @@ class Server
         }
     }
 
-    protected function bindAttachedSockets()
+    protected function triggerPortEvent(Port $port, $handlerClass, $event, array $params)
     {
-        foreach ($this->attachedSockets as $socket) {
+        return $this->callWithCatchException(function () use ($port, $handlerClass, $event, $params) {
+            $handler = $this->getSocketHandler($port, $handlerClass);
+
+            if (method_exists($handler, $event)) {
+                call_user_func_array([$handler, $event], $params);
+            } elseif ($event === 'onHandShake') {
+                // Set default HandShake
+                call_user_func_array([$this, 'onHandShake'], $params);
+            }
+        });
+    }
+
+    protected function bindPortEvents()
+    {
+        $sockets = empty($this->conf['sockets']) ? [] : $this->conf['sockets'];
+        foreach ($sockets as $socket) {
             if (isset($socket['enable']) && !$socket['enable']) {
                 continue;
             }
@@ -156,44 +163,6 @@ class Server
             $port->set(empty($socket['settings']) ? [] : $socket['settings']);
 
             $handlerClass = $socket['handler'];
-            $eventHandler = function ($event, array $params) use ($port, $handlerClass) {
-                $handler = $this->getSocketHandler($port, $handlerClass);
-                return $this->callWithCatchException(function () use ($handler, $event, $params) {
-                    if (method_exists($handler, $event)) {
-                        if ($event === 'onHandShake' || $event === 'onRequest') {
-                            $this->startHandleHttp($params[0]);
-                        }
-                        if ($event === 'onOpen' && !method_exists($handler, 'onHandShake')) {
-                            $this->startHandleHttp($params[1]);
-                        }
-
-                        $result = call_user_func_array([$handler, $event], $params);
-
-                        if ($event === 'onHandShake') {
-                            if ($result === true) {
-                                $result = $handler->onOpen($this->swoole, $params[0]);
-                            }
-                            $this->endHandleHttp($params[0]);
-                        }
-                        if ($event === 'onOpen') {
-                            $this->endHandleHttp($params[1]);
-                        }
-                        return $result;
-                    }
-
-                    // Set default HandShake
-                    if ($event === 'onHandShake' && method_exists($handler, 'onOpen')) {
-                        $this->startHandleHttp($params[0]);
-                        $params[] = function () use ($handler, $params) {
-                            call_user_func_array([$handler, 'onOpen'], func_get_args());
-                            $this->endHandleHttp($params[0]);
-                        };
-                        return call_user_func_array([$this, 'onHandShake'], $params);
-                    }
-
-                    return null;
-                });
-            };
 
             $events = [
                 'Open',
@@ -208,8 +177,8 @@ class Server
                 'BufferEmpty',
             ];
             foreach ($events as $event) {
-                $port->on($event, function () use ($event, $eventHandler) {
-                    return $eventHandler('on' . $event, func_get_args());
+                $port->on($event, function () use ($port, $handlerClass, $event) {
+                    $this->triggerPortEvent($port, $handlerClass, 'on' . $event, func_get_args());
                 });
             }
         }
@@ -338,7 +307,7 @@ class Server
     {
     }
 
-    public function onHandShake(SwooleRequest $request, SwooleResponse $response, callable $onOpen = null)
+    public function onHandShake(SwooleRequest $request, SwooleResponse $response)
     {
         if (!isset($request->header['sec-websocket-key'])) {
             // Bad protocol implementation: it is not RFC6455.
@@ -372,16 +341,6 @@ class Server
 
         $response->status(101);
         $response->end();
-
-        if (is_callable($onOpen)) {
-            if (method_exists($this->swoole, 'defer')) {
-                $this->swoole->defer(function () use ($onOpen, $request) {
-                    call_user_func($onOpen, $this->swoole, $request);
-                });
-            } else {
-                call_user_func($onOpen, $this->swoole, $request);
-            }
-        }
     }
 
     public function onTask(HttpServer $server, $taskId, $srcWorkerId, $data)

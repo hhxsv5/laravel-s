@@ -22,6 +22,7 @@ use Illuminate\Http\Request as IlluminateRequest;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
 use Swoole\Http\Server as HttpServer;
+use Swoole\Server\Port;
 use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -94,18 +95,39 @@ class LaravelS extends Server
 
         parent::triggerWebSocketEvent($event, $params);
 
-        if ($event === 'onHandShake') {
-            if (isset($params[1]->header['Sec-Websocket-Accept'])) {
-                // Successful handshake
-                $this->triggerWebSocketEvent('onOpen', [$this->swoole, $params[0]]);
-            }
+        switch ($event) {
+            case 'onHandShake':
+                if (isset($params[1]->header['Sec-Websocket-Accept'])) {
+                    // Successful handshake
+                    parent::triggerWebSocketEvent('onOpen', [$this->swoole, $params[0]]);
+                }
+                $this->endHandleHttp($params[0]);
+                break;
+            case 'onOpen':
+                $this->endHandleHttp($params[1]);
+                break;
+        }
+    }
 
-            // Failed handshake
-            $this->endHandleHttp($params[0]);
+    protected function triggerPortEvent(Port $port, $handlerClass, $event, array $params)
+    {
+        if ($event === 'onHandShake' || $event === 'onRequest') {
+            $this->startHandleHttp($params[0]);
         }
 
-        if ($event === 'onOpen') {
-            $this->endHandleHttp($params[1]);
+        parent::triggerPortEvent($port, $handlerClass, $event, $params);
+
+        switch ($event) {
+            case 'onHandShake':
+                if (isset($params[1]->header['Sec-Websocket-Accept'])) {
+                    // Successful handshake
+                    parent::triggerPortEvent($port, $handlerClass, 'onOpen', [$this->swoole, $params[0]]);
+                }
+                $this->endHandleHttp($params[0]);
+                break;
+            case 'onOpen':
+                $this->endHandleHttp($params[1]);
+                break;
         }
     }
 
