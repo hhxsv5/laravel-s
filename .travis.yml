@@ -5,6 +5,7 @@ php:
   - 7.2
   - 7.3
   - 7.4
+  - 8.0
 
 before_script:
   - sw_ver=$(php -r 'echo version_compare(PHP_VERSION, "7.2.0", "<") ? "-4.5.10": "";') && pecl install --onlyreqdeps --nobuild swoole${sw_ver} && cd "$(pecl config-get temp_dir)/swoole" && phpize && ./configure --enable-openssl && make -j$(nproc) && make -j$(nproc) install && cd -
