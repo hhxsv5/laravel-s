@@ -8,7 +8,7 @@ php:
   - 8.0
 
 before_script:
-  - sw_ver=$(php -r "echo PHP_VERSION_ID < 70200 ? '-4.5.10': '';") && pecl install --onlyreqdeps --nobuild swoole${sw_ver} && cd "$(pecl config-get temp_dir)/swoole" && phpize && ./configure --enable-openssl && make -j$(nproc) && make -j$(nproc) install && cd -
+  - pecl install --onlyreqdeps --nobuild swoole$(php -r "echo PHP_VERSION_ID < 70200 ? '-4.5.10': '';") && cd "$(pecl config-get temp_dir)/swoole" && phpize && ./configure --enable-openssl && make -j$(nproc) && make -j$(nproc) install && cd -
   - composer install
 
 script: composer test
