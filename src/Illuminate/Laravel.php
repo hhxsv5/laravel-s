@@ -145,7 +145,7 @@ class Laravel
             if ($response instanceof SymfonyResponse) {
                 $content = $response->getContent();
             } else {
-                $content = (string)$response;
+                $content = $response;
             }
 
             $this->reflectionApp->callTerminableMiddleware($response);
@@ -156,7 +156,7 @@ class Laravel
         }
 
         // prefer content in response, secondly ob
-        if (!($response instanceof StreamedResponse) && strlen($content) === 0 && ob_get_length() > 0) {
+        if (!($response instanceof StreamedResponse) && (string)$content === '' && ob_get_length() > 0) {
             $response->setContent(ob_get_contents());
         }
 
@@ -177,16 +177,15 @@ class Laravel
         $requestFile = $publicPath . $uri;
         if (is_file($requestFile)) {
             return $this->createStaticResponse($requestFile, $request);
-        } elseif (is_dir($requestFile)) {
+        }
+        if (is_dir($requestFile)) {
             $indexFile = $this->lookupIndex($requestFile);
             if ($indexFile === false) {
                 return false;
-            } else {
-                return $this->createStaticResponse($indexFile, $request);
             }
-        } else {
-            return false;
+            return $this->createStaticResponse($indexFile, $request);
         }
+        return false;
     }
 
     protected function lookupIndex($folder)

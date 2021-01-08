@@ -170,42 +170,40 @@ EOS;
         }
 
         $pid = file_get_contents($pidFile);
-        if (self::kill($pid, 0)) {
-            if (self::kill($pid, SIGTERM)) {
-                // Make sure that master process quit
-                $time = 1;
-                $waitTime = isset($config['server']['swoole']['max_wait_time']) ? $config['server']['swoole']['max_wait_time'] : 60;
-                $this->info("The max time of waiting to forcibly stop is {$waitTime}s.");
-                while (self::kill($pid, 0)) {
-                    if ($time > $waitTime) {
-                        $this->warning("Swoole [PID={$pid}] cannot be stopped gracefully in {$waitTime}s, will be stopped forced right now.");
-                        return 1;
-                    }
-                    $this->info("Waiting Swoole[PID={$pid}] to stop. [{$time}]");
-                    sleep(1);
-                    $time++;
-                }
-                $basePath = dirname($pidFile);
-                $deleteFiles = [
-                    $pidFile,
-                    $basePath . '/laravels-custom-processes.pid',
-                    $basePath . '/laravels-timer-process.pid',
-                ];
-                foreach ($deleteFiles as $deleteFile) {
-                    if (file_exists($deleteFile)) {
-                        unlink($deleteFile);
-                    }
-                }
-                $this->info("Swoole [PID={$pid}] is stopped.");
-                return 0;
-            } else {
-                $this->error("Swoole [PID={$pid}] is stopped failed.");
-                return 1;
-            }
-        } else {
+        if (!self::kill($pid, 0)) {
             $this->warning("Swoole [PID={$pid}] does not exist, or permission denied.");
             return 0;
         }
+        if (!self::kill($pid, SIGTERM)) {
+            $this->error("Swoole [PID={$pid}] is stopped failed.");
+            return 1;
+        }
+        // Make sure that master process quit
+        $time = 1;
+        $waitTime = isset($config['server']['swoole']['max_wait_time']) ? $config['server']['swoole']['max_wait_time'] : 60;
+        $this->info("The max time of waiting to forcibly stop is {$waitTime}s.");
+        while (self::kill($pid, 0)) {
+            if ($time > $waitTime) {
+                $this->warning("Swoole [PID={$pid}] cannot be stopped gracefully in {$waitTime}s, will be stopped forced right now.");
+                return 1;
+            }
+            $this->info("Waiting Swoole[PID={$pid}] to stop. [{$time}]");
+            sleep(1);
+            $time++;
+        }
+        $basePath = dirname($pidFile);
+        $deleteFiles = [
+            $pidFile,
+            $basePath . '/laravels-custom-processes.pid',
+            $basePath . '/laravels-timer-process.pid',
+        ];
+        foreach ($deleteFiles as $deleteFile) {
+            if (file_exists($deleteFile)) {
+                unlink($deleteFile);
+            }
+        }
+        $this->info("Swoole [PID={$pid}] is stopped.");
+        return 0;
     }
 
     public function restart()

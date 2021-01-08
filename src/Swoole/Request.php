@@ -63,7 +63,7 @@ class Request
         // Fix REQUEST_URI with QUERY_STRING
         if (strpos($_SERVER['REQUEST_URI'], '?') === false
             && isset($_SERVER['QUERY_STRING'])
-            && strlen($_SERVER['QUERY_STRING']) > 0
+            && $_SERVER['QUERY_STRING'] !== ''
         ) {
             $_SERVER['REQUEST_URI'] .= '?' . $_SERVER['QUERY_STRING'];
         }

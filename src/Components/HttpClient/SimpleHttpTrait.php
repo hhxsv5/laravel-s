@@ -52,50 +52,50 @@ trait SimpleHttpTrait
                 throw new \RuntimeException($msg, $client->errCode);
             }
             return ['statusCode' => $client->statusCode, 'headers' => $client->headers, 'body' => $client->body];
-        } else {
-            $handle = curl_init();
-            $finalOptions = [
-                    CURLOPT_URL     => $url,
-                    CURLOPT_HTTPGET => true,
-                ] + $this->curlOptions;
-            if (isset($options['timeout'])) {
-                $finalOptions[CURLOPT_TIMEOUT] = $options['timeout'];
-            }
-            curl_setopt_array($handle, $finalOptions);
-            $responseStr = curl_exec($handle);
-            $errno = curl_errno($handle);
-            $errmsg = curl_error($handle);
-            // Fix: curl_errno() always return 0 when fail
-            if ($errno !== 0 || $errmsg !== '') {
-                curl_close($handle);
-                $msg = sprintf('Failed to send Http request(%s), errcode=%d, errmsg=%s', $url, $errno, $errmsg);
-                throw new \RuntimeException($msg, $errno);
-            }
-
-            $headerSize = curl_getinfo($handle, CURLINFO_HEADER_SIZE);
-            $statusCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-            curl_close($handle);
-
-            $header = substr($responseStr, 0, $headerSize);
-            $body = substr($responseStr, $headerSize);
-            $lines = explode("\n", $header);
-            array_shift($lines); // Remove status
-
-            $headers = [];
-            foreach ($lines as $part) {
-                $middle = explode(':', $part);
-                $key = trim($middle[0]);
-                if ($key === '') {
-                    continue;
-                }
-                if (isset($headers[$key])) {
-                    $headers[$key] = (array)$headers[$key];
-                    $headers[$key][] = isset($middle[1]) ? trim($middle[1]) : '';
-                } else {
-                    $headers[$key] = isset($middle[1]) ? trim($middle[1]) : '';
-                }
-            }
-            return ['statusCode' => $statusCode, 'headers' => $headers, 'body' => $body];
         }
+
+        $handle = curl_init();
+        $finalOptions = [
+                CURLOPT_URL     => $url,
+                CURLOPT_HTTPGET => true,
+            ] + $this->curlOptions;
+        if (isset($options['timeout'])) {
+            $finalOptions[CURLOPT_TIMEOUT] = $options['timeout'];
+        }
+        curl_setopt_array($handle, $finalOptions);
+        $responseStr = curl_exec($handle);
+        $errno = curl_errno($handle);
+        $errmsg = curl_error($handle);
+        // Fix: curl_errno() always return 0 when fail
+        if ($errno !== 0 || $errmsg !== '') {
+            curl_close($handle);
+            $msg = sprintf('Failed to send Http request(%s), errcode=%d, errmsg=%s', $url, $errno, $errmsg);
+            throw new \RuntimeException($msg, $errno);
+        }
+
+        $headerSize = curl_getinfo($handle, CURLINFO_HEADER_SIZE);
+        $statusCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+        curl_close($handle);
+
+        $header = substr($responseStr, 0, $headerSize);
+        $body = substr($responseStr, $headerSize);
+        $lines = explode("\n", $header);
+        array_shift($lines); // Remove status
+
+        $headers = [];
+        foreach ($lines as $part) {
+            $middle = explode(':', $part);
+            $key = trim($middle[0]);
+            if ($key === '') {
+                continue;
+            }
+            if (isset($headers[$key])) {
+                $headers[$key] = (array)$headers[$key];
+                $headers[$key][] = isset($middle[1]) ? trim($middle[1]) : '';
+            } else {
+                $headers[$key] = isset($middle[1]) ? trim($middle[1]) : '';
+            }
+        }
+        return ['statusCode' => $statusCode, 'headers' => $headers, 'body' => $body];
     }
 }

@@ -196,7 +196,7 @@ class LaravelS extends Server
     }
 
     /**
-     * @param \Exception|\Throwable $e
+     * @param \Exception $e
      * @param SwooleResponse $response
      */
     protected function handleException($e, SwooleResponse $response)
