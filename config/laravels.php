@@ -19,7 +19,7 @@ return [
     | The port of the server
     |--------------------------------------------------------------------------
     |
-    | root privilege required if port is less than 1024.
+    | Require root privilege if port is less than 1024.
     |
     */
 
@@ -75,7 +75,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Handle Static
+    | Handle Static Resource
     |--------------------------------------------------------------------------
     |
     | Whether handle the static resource by LaravelS.
@@ -89,7 +89,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Base Path
+    | Laravel Base Path
     |--------------------------------------------------------------------------
     |
     | The basic path of Laravel, default base_path(), be used for symbolic link.
@@ -109,8 +109,7 @@ return [
     */
 
     'inotify_reload' => [
-        // Whether enable the Inotify Reload to reload all worker processes when your code is modified,
-        // require inotify extension.
+        // Whether enable the Inotify Reload to reload all worker processes when your code is modified.
         'enable'        => env('LARAVELS_INOTIFY_RELOAD', false),
 
         // The file path that Inotify watches
@@ -128,7 +127,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Event Handlers
+    | Swoole Event Handlers
     |--------------------------------------------------------------------------
     |
     | Configure the event callback function of Swoole, key-value format, 
