@@ -3,6 +3,15 @@
 return [
 
     /*
+     |--------------------------------------------------------------------------
+     | LaravelS Settings
+     |--------------------------------------------------------------------------
+     |
+     | https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#laravels-settings
+     |
+     */
+
+    /*
     |--------------------------------------------------------------------------
     | The IP address of the server
     |--------------------------------------------------------------------------
@@ -78,10 +87,9 @@ return [
     | Handle Static Resource
     |--------------------------------------------------------------------------
     |
-    | Whether handle the static resource by LaravelS.
-    | Suggest that Nginx handles the statics and LaravelS handles the dynamics. 
-    | The default path of static resource is base_path('public'), 
-    | you can modify swoole.document_root to change it.
+    | Whether handle the static resource by LaravelS(Require Swoole >= 1.7.21, Handle by Swoole if Swoole >= 1.9.17).
+    | Suggest that Nginx handles the statics and LaravelS handles the dynamics.
+    | The default path of static resource is base_path('public'), you can modify swoole.document_root to change it.
     |
     */
 
