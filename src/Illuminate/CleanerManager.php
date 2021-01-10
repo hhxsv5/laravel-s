@@ -122,7 +122,7 @@ class CleanerManager
 
         foreach ($this->providers as $provider) {
             if (class_exists($provider, false)) {
-                if ($this->isLumen()) {
+                if ($this->config['is_lumen']) {
                     unset($loadedProviders[get_class(new $provider($this->currentApp))]);
                 }
 
@@ -142,7 +142,7 @@ class CleanerManager
             }
         }
 
-        if ($this->isLumen()) {
+        if ($this->config['is_lumen']) {
             $this->reflectionApp->setLoadedProviders($loadedProviders);
         }
     }
@@ -163,7 +163,7 @@ class CleanerManager
      */
     public function cleanControllers()
     {
-        if ($this->isLumen()) {
+        if ($this->config['is_lumen']) {
             return;
         }
 
@@ -191,15 +191,5 @@ class CleanerManager
                 }
             }
         }
-    }
-
-    /**
-     * Determine if is lumen.
-     *
-     * @return bool
-     */
-    protected function isLumen()
-    {
-        return $this->config['is_lumen'];
     }
 }

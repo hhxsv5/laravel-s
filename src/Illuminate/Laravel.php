@@ -79,15 +79,11 @@ class Laravel
 
         // Make kernel for Laravel
         $app = require $this->conf['root_path'] . '/bootstrap/app.php';
-        $kernel = $this->isLumen() ? null : $app->make(HttpKernel::class);
-
-        // Load all Configurations for Lumen
-        if ($this->isLumen()) {
-            $this->configureLumen($app);
-        }
+        $kernel = $this->conf['is_lumen'] ? null : $app->make(HttpKernel::class);
 
         // Boot
-        if ($this->isLumen()) {
+        if ($this->conf['is_lumen']) {
+            $this->configureLumen($app);
             if (method_exists($app, 'boot')) {
                 $app->boot();
             }
@@ -140,7 +136,7 @@ class Laravel
     {
         ob_start();
 
-        if ($this->isLumen()) {
+        if ($this->conf['is_lumen']) {
             $response = $this->currentApp->dispatch($request);
             if ($response instanceof SymfonyResponse) {
                 $content = $response->getContent();
@@ -243,10 +239,5 @@ class Laravel
         if (isset($this->currentApp['session'])) {
             $this->currentApp['session']->save();
         }
-    }
-
-    protected function isLumen()
-    {
-        return $this->conf['is_lumen'];
     }
 }
