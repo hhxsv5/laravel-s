@@ -184,16 +184,6 @@ class Server
         }
     }
 
-    protected function startHandleHttp(SwooleRequest $request)
-    {
-        // Implement in subclass
-    }
-
-    protected function endHandleHttp(SwooleRequest $request)
-    {
-        // Implement in subclass
-    }
-
     protected function getWebSocketHandler()
     {
         static $handler = null;

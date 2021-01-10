@@ -3,7 +3,6 @@
 namespace Hhxsv5\LaravelS\Swoole;
 
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\File\File;
 
 class StaticResponse extends Response
 {
@@ -19,7 +18,6 @@ class StaticResponse extends Response
      */
     public function sendContent()
     {
-        /**@var File $file */
         $file = $this->laravelResponse->getFile();
         $this->swooleResponse->header('Content-Type', $file->getMimeType());
         if ($this->laravelResponse->getStatusCode() == BinaryFileResponse::HTTP_NOT_MODIFIED) {

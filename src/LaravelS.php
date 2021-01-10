@@ -50,16 +50,16 @@ class LaravelS extends Server
         parent::__construct($svrConf);
         $this->laravelConf = $laravelConf;
 
-        $timerCfg = isset($this->conf['timer']) ? $this->conf['timer'] : [];
-        $timerCfg['process_prefix'] = $svrConf['process_prefix'];
-        $this->swoole->timerProcess = $this->addTimerProcess($this->swoole, $timerCfg, $this->laravelConf);
+        $timerConf = isset($this->conf['timer']) ? $this->conf['timer'] : [];
+        $timerConf['process_prefix'] = $svrConf['process_prefix'];
+        $this->swoole->timerProcess = $this->addTimerProcess($this->swoole, $timerConf, $this->laravelConf);
 
-        $inotifyCfg = isset($this->conf['inotify_reload']) ? $this->conf['inotify_reload'] : [];
-        if (!isset($inotifyCfg['watch_path'])) {
-            $inotifyCfg['watch_path'] = $this->laravelConf['root_path'];
+        $inotifyConf = isset($this->conf['inotify_reload']) ? $this->conf['inotify_reload'] : [];
+        if (!isset($inotifyConf['watch_path'])) {
+            $inotifyConf['watch_path'] = $this->laravelConf['root_path'];
         }
-        $inotifyCfg['process_prefix'] = $svrConf['process_prefix'];
-        $this->swoole->inotifyProcess = $this->addInotifyProcess($this->swoole, $inotifyCfg, $this->laravelConf);
+        $inotifyConf['process_prefix'] = $svrConf['process_prefix'];
+        $this->swoole->inotifyProcess = $this->addInotifyProcess($this->swoole, $inotifyConf, $this->laravelConf);
 
         $processes = isset($this->conf['processes']) ? $this->conf['processes'] : [];
         $this->swoole->customProcesses = $this->addCustomProcesses($this->swoole, $svrConf['process_prefix'], $processes, $this->laravelConf);
@@ -71,16 +71,18 @@ class LaravelS extends Server
         }
     }
 
-    protected function startHandleHttp(SwooleRequest $request)
+    protected function startWebSocket(SwooleRequest $request)
     {
         // Start Laravel's lifetime, then support session ...middleware.
         $laravelRequest = $this->convertRequest($this->laravel, $request);
         $this->laravel->bindRequest($laravelRequest);
+        $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
         $this->laravel->cleanProviders();
-        $this->laravel->handleDynamic($laravelRequest);
+        $laravelResponse = $this->laravel->handleDynamic($laravelRequest);
+        $this->laravel->fireEvent('laravels.generated_response', [$laravelRequest, $laravelResponse]);
     }
 
-    protected function endHandleHttp(SwooleRequest $request)
+    protected function endWebSocket(SwooleRequest $request)
     {
         // End Laravel's lifetime.
         $this->laravel->saveSession();
@@ -90,7 +92,8 @@ class LaravelS extends Server
     protected function triggerWebSocketEvent($event, array $params)
     {
         if ($event === 'onHandShake') {
-            $this->startHandleHttp($params[0]);
+            $this->startWebSocket($params[0]);
+            $params[1]->header('Server', $this->conf['server']);
         }
 
         parent::triggerWebSocketEvent($event, $params);
@@ -101,10 +104,10 @@ class LaravelS extends Server
                     // Successful handshake
                     parent::triggerWebSocketEvent('onOpen', [$this->swoole, $params[0]]);
                 }
-                $this->endHandleHttp($params[0]);
+                $this->endWebSocket($params[0]);
                 break;
             case 'onOpen':
-                $this->endHandleHttp($params[1]);
+                $this->endWebSocket($params[1]);
                 break;
         }
     }
@@ -112,7 +115,8 @@ class LaravelS extends Server
     protected function triggerPortEvent(Port $port, $handlerClass, $event, array $params)
     {
         if ($event === 'onHandShake' || $event === 'onRequest') {
-            $this->startHandleHttp($params[0]);
+            $this->startWebSocket($params[0]);
+            $params[1]->header('Server', $this->conf['server']);
         }
 
         parent::triggerPortEvent($port, $handlerClass, $event, $params);
@@ -123,10 +127,10 @@ class LaravelS extends Server
                     // Successful handshake
                     parent::triggerPortEvent($port, $handlerClass, 'onOpen', [$this->swoole, $params[0]]);
                 }
-                $this->endHandleHttp($params[0]);
+                $this->endWebSocket($params[0]);
                 break;
             case 'onOpen':
-                $this->endHandleHttp($params[1]);
+                $this->endWebSocket($params[1]);
                 break;
         }
     }
