@@ -114,9 +114,12 @@ class LaravelS extends Server
 
     protected function triggerPortEvent(Port $port, $handlerClass, $event, array $params)
     {
-        if ($event === 'onHandShake' || $event === 'onRequest') {
-            $this->startWebSocket($params[0]);
-            $params[1]->header('Server', $this->conf['server']);
+        switch ($event) {
+            case 'onHandShake':
+                $this->startWebSocket($params[0]);
+            case 'onRequest':
+                $params[1]->header('Server', $this->conf['server']);
+                break;
         }
 
         parent::triggerPortEvent($port, $handlerClass, $event, $params);
