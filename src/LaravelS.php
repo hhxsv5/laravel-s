@@ -186,8 +186,12 @@ class LaravelS extends Server
             $laravelRequest = $this->convertRequest($this->laravel, $swooleRequest);
             $this->laravel->bindRequest($laravelRequest);
             $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
-            $success = $this->handleStaticResource($this->laravel, $laravelRequest, $swooleResponse);
-            if ($success === false) {
+            $handleStaticSuccess = false;
+            if ($this->conf['handle_static']) {
+                // For Swoole < 1.9.17
+                $handleStaticSuccess = $this->handleStaticResource($this->laravel, $laravelRequest, $swooleResponse);
+            }
+            if (!$handleStaticSuccess) {
                 $this->handleDynamicResource($this->laravel, $laravelRequest, $swooleResponse);
             }
         } catch (\Exception $e) {
@@ -222,19 +226,16 @@ class LaravelS extends Server
 
     protected function handleStaticResource(Laravel $laravel, IlluminateRequest $laravelRequest, SwooleResponse $swooleResponse)
     {
-        // For Swoole < 1.9.17
-        if (!empty($this->conf['handle_static'])) {
-            $laravelResponse = $laravel->handleStatic($laravelRequest);
-            if ($laravelResponse !== false) {
-                $laravelResponse->headers->set('Server', $this->conf['server'], true);
-                $laravel->fireEvent('laravels.generated_response', [$laravelRequest, $laravelResponse]);
-                $response = new StaticResponse($swooleResponse, $laravelResponse);
-                $response->setChunkLimit($this->conf['swoole']['buffer_output_size']);
-                $response->send($this->conf['enable_gzip']);
-                return true;
-            }
+        $laravelResponse = $laravel->handleStatic($laravelRequest);
+        if ($laravelResponse === false) {
+            return false;
         }
-        return false;
+        $laravelResponse->headers->set('Server', $this->conf['server'], true);
+        $laravel->fireEvent('laravels.generated_response', [$laravelRequest, $laravelResponse]);
+        $response = new StaticResponse($swooleResponse, $laravelResponse);
+        $response->setChunkLimit($this->conf['swoole']['buffer_output_size']);
+        $response->send($this->conf['enable_gzip']);
+        return true;
     }
 
     protected function handleDynamicResource(Laravel $laravel, IlluminateRequest $laravelRequest, SwooleResponse $swooleResponse)

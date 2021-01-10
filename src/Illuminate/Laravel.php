@@ -29,9 +29,13 @@ class Laravel
 
     /**@var array */
     protected static $staticBlackList = [
-        '/index.php'  => 1,
-        '/.htaccess'  => 1,
-        '/web.config' => 1,
+        '/index.php'  => true,
+        '/.htaccess'  => true,
+        '/web.config' => true,
+    ];
+    /**@var array */
+    protected static $staticIndexList = [
+        'index.html',
     ];
 
     /**@var array */
@@ -169,8 +173,7 @@ class Laravel
         }
         $uri = urldecode($uri);
 
-        $publicPath = $this->conf['static_path'];
-        $requestFile = $publicPath . $uri;
+        $requestFile = $this->conf['static_path'] . $uri;
         if (is_file($requestFile)) {
             return $this->createStaticResponse($requestFile, $request);
         }
@@ -187,7 +190,7 @@ class Laravel
     protected function lookupIndex($folder)
     {
         $folder = rtrim($folder, '/') . '/';
-        foreach (['index.html', 'index.htm'] as $index) {
+        foreach (self::$staticIndexList as $index) {
             $tmpFile = $folder . $index;
             if (is_file($tmpFile)) {
                 return $tmpFile;
