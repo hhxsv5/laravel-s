@@ -71,7 +71,7 @@ class LaravelS extends Server
         }
     }
 
-    protected function startWebSocket(SwooleRequest $request)
+    protected function beforeWebSocketHandShake(SwooleRequest $request)
     {
         // Start Laravel's lifetime, then support session ...middleware.
         $laravelRequest = $this->convertRequest($this->laravel, $request);
@@ -82,7 +82,7 @@ class LaravelS extends Server
         $this->laravel->fireEvent('laravels.generated_response', [$laravelRequest, $laravelResponse]);
     }
 
-    protected function endWebSocket(SwooleRequest $request)
+    protected function afterWebSocketOpen(SwooleRequest $request)
     {
         // End Laravel's lifetime.
         $this->laravel->saveSession();
@@ -92,7 +92,7 @@ class LaravelS extends Server
     protected function triggerWebSocketEvent($event, array $params)
     {
         if ($event === 'onHandShake') {
-            $this->startWebSocket($params[0]);
+            $this->beforeWebSocketHandShake($params[0]);
             $params[1]->header('Server', $this->conf['server']);
         }
 
@@ -104,10 +104,10 @@ class LaravelS extends Server
                     // Successful handshake
                     parent::triggerWebSocketEvent('onOpen', [$this->swoole, $params[0]]);
                 }
-                $this->endWebSocket($params[0]);
+                $this->afterWebSocketOpen($params[0]);
                 break;
             case 'onOpen':
-                $this->endWebSocket($params[1]);
+                $this->afterWebSocketOpen($params[1]);
                 break;
         }
     }
@@ -116,7 +116,7 @@ class LaravelS extends Server
     {
         switch ($event) {
             case 'onHandShake':
-                $this->startWebSocket($params[0]);
+                $this->beforeWebSocketHandShake($params[0]);
             case 'onRequest':
                 $params[1]->header('Server', $this->conf['server']);
                 break;
@@ -130,10 +130,10 @@ class LaravelS extends Server
                     // Successful handshake
                     parent::triggerPortEvent($port, $handlerClass, 'onOpen', [$this->swoole, $params[0]]);
                 }
-                $this->endWebSocket($params[0]);
+                $this->afterWebSocketOpen($params[0]);
                 break;
             case 'onOpen':
-                $this->endWebSocket($params[1]);
+                $this->afterWebSocketOpen($params[1]);
                 break;
         }
     }
