@@ -7,7 +7,8 @@ return [
      | LaravelS Settings
      |--------------------------------------------------------------------------
      |
-     | https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#laravels-settings
+     | English https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#laravels-settings
+     | Chinese https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md#laravels-%E9%85%8D%E7%BD%AE%E9%A1%B9
      |
      */
 
