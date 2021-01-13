@@ -288,9 +288,36 @@ EOS;
         Client::createFromCommandOptions($options)->pullAllAndSave($envFile);
     }
 
+    protected function isLoadSwooleByIni()
+    {
+        $iniFiles = explode(',', (string)php_ini_scanned_files());
+        $iniFile = php_ini_loaded_file();
+        if ($iniFile !== false) {
+            $iniFiles[] = $iniFile;
+        }
+
+        foreach ($iniFiles as $file) {
+            $content = str_replace(' ', '', file_get_contents(trim($file)));
+            if (stripos($content, 'extension=swoole') === 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function makeArtisanCmd($subCmd)
     {
-        $phpCmd = sprintf('%s -c "%s"', PHP_BINARY, php_ini_loaded_file());
+        $iniFile = php_ini_loaded_file();
+        if ($iniFile === false) {
+            $phpCmd = PHP_BINARY;
+        } else {
+            $phpCmd = sprintf('%s -c "%s"', PHP_BINARY, $iniFile);
+        }
+
+        if (!$this->isLoadSwooleByIni()) {
+            $phpCmd .= ' -d "extension=swoole"';
+        }
+
         $env = isset($_ENV['APP_ENV']) ? trim($_ENV['APP_ENV']) : '';
         $appEnv = $env === '' ? '' : "APP_ENV={$env}";
         return trim(sprintf('%s %s %s/artisan %s', $appEnv, $phpCmd, $this->basePath, $subCmd));
