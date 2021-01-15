@@ -12,16 +12,21 @@ class LaravelAdminCleaner extends BaseCleaner
     private $reflection;
 
     protected $properties = [
-        'deferredScript' => [],
-        'script'         => [],
-        'style'          => [],
-        'css'            => [],
-        'js'             => [],
-        'html'           => [],
-        'headerJs'       => [],
-        'manifestData'   => [],
-        'extensions'     => [],
-        'minifyIgnores'  => [],
+        'deferredScript'   => [],
+        'script'           => [],
+        'style'            => [],
+        'css'              => [],
+        'js'               => [],
+        'html'             => [],
+        'headerJs'         => [],
+        'manifest'         => 'vendor/laravel-admin/minify-manifest.json',
+        'manifestData'     => [],
+        'extensions'       => [],
+        'minifyIgnores'    => [],
+        'metaTitle'        => null,
+        'favicon'          => null,
+        'bootingCallbacks' => [],
+        'bootedCallbacks'  => [],
     ];
 
     public function __construct(Container $currentApp, Container $snapshotApp)
@@ -33,8 +38,14 @@ class LaravelAdminCleaner extends BaseCleaner
     public function clean()
     {
         foreach ($this->properties as $name => $value) {
-            if (property_exists(self::ADMIN_CLASS, $name)) {
-                $this->reflection->setStaticPropertyValue($name, $value);
+            if ($this->reflection->hasProperty($name)) {
+                $property = $this->reflection->getProperty($name);
+                if (!$property->isPublic()) {
+                    $property->setAccessible(true);
+                }
+                if ($property->isStatic()) {
+                    $property->setValue($value);
+                }
             }
         }
         $this->currentApp->forgetInstance(self::ADMIN_CLASS);
