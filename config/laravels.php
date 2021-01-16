@@ -39,8 +39,8 @@ return [
     | The socket type of the server
     |--------------------------------------------------------------------------
     |
-    | Usually, you don’t need to care about it. 
-    | Unless you want Nginx to proxy to the UnixSocket Stream file, you need 
+    | Usually, you don’t need to care about it.
+    | Unless you want Nginx to proxy to the UnixSocket Stream file, you need
     | to modify it to SWOOLE_SOCK_UNIX_STREAM, and listen_ip is the path of UnixSocket Stream file.
     | List of socket types:
     | SWOOLE_SOCK_TCP: TCP
@@ -63,7 +63,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | This value represents whether the coroutine runtime is activated or not.
-    | 
+    |
     | https://www.swoole.co.uk/docs/modules/swoole-runtime-flags
     |
     */
@@ -75,7 +75,7 @@ return [
     | Server Name
     |--------------------------------------------------------------------------
     |
-    | This value represents the name of the server that will be 
+    | This value represents the name of the server that will be
     | displayed in the header of each request.
     |
     */
@@ -138,8 +138,8 @@ return [
     | Swoole Event Handlers
     |--------------------------------------------------------------------------
     |
-    | Configure the event callback function of Swoole, key-value format, 
-    | key is the event name, and value is the class that implements the event 
+    | Configure the event callback function of Swoole, key-value format,
+    | key is the event name, and value is the class that implements the event
     | processing interface.
     |
     | https://github.com/hhxsv5/laravel-s#configuring-the-event-callback-function-of-swoole
@@ -214,8 +214,8 @@ return [
         // Max waiting time of reloading
         'max_wait_time'   => 5,
 
-        // Enable the global lock to ensure that only one instance starts the timer 
-        // when deploying multiple instances. 
+        // Enable the global lock to ensure that only one instance starts the timer
+        // when deploying multiple instances.
         // This feature depends on Redis https://laravel.com/docs/8.x/redis
         'global_lock'     => false,
         'global_lock_key' => config('app.name', 'Laravel'),
@@ -239,8 +239,8 @@ return [
     | Re-register Providers
     |--------------------------------------------------------------------------
     |
-    | The Service Provider list, will be re-registered each request, and run method boot() 
-    | if it exists. Usually, be used to clear the Service Provider 
+    | The Service Provider list, will be re-registered each request, and run method boot()
+    | if it exists. Usually, be used to clear the Service Provider
     | which registers Singleton instances.
     |
     | https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#register_providers
@@ -254,8 +254,8 @@ return [
     | Cleaners
     |--------------------------------------------------------------------------
     |
-    | The list of cleaners for each request is used to clean up some residual 
-    | global variables, singleton objects, and static properties to avoid 
+    | The list of cleaners for each request is used to clean up some residual
+    | global variables, singleton objects, and static properties to avoid
     | data pollution between requests.
     |
     | https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#cleaners
@@ -269,7 +269,7 @@ return [
     | Destroy Controllers
     |--------------------------------------------------------------------------
     |
-    | Automatically destroy the controllers after each request to solve 
+    | Automatically destroy the controllers after each request to solve
     | the problem of the singleton controllers.
     |
     | https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md#singleton-controller
