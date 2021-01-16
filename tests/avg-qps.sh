@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
 
-n=2000
-c=500
+n=10000
+c=1000
 target="http://127.0.0.1:5200/"
 
 rc=5
 total=0
-for ((i=1; i<=${rc}; ++i))
-do
-    ab=$(ab -k -n ${n} -c ${c} "$target" 2>&1|grep 'Requests per second'|awk '{print $4}')
-    echo ${i}"-QPS: "${ab}
-    total=$(echo "${total}+${ab}"|bc)
-    #echo ${i}"-Total QPS:" ${total}
+echo "QPS testing in progress"
+for ((i = 1; i <= ${rc}; ++i)); do
+  qps=$(ab -k -n ${n} -c ${c} "$target" 2>&1 | grep 'Requests per second' | awk '{print $4}')
+  echo "TEST#${i}: ${qps}"
+  total=$(awk "BEGIN{print ${total}+${qps}}")
 done
-echo "AVG QPS:" $(echo "scale=2;${total}/${rc}"|bc)
+echo "AVG QPS:" $(awk "BEGIN{printf \"%.3f\", ${total}/${rc}}")
