@@ -288,23 +288,6 @@ EOS;
         Client::createFromCommandOptions($options)->pullAllAndSave($envFile);
     }
 
-    protected static function isLoadSwooleByIni()
-    {
-        $iniFiles = explode(',', (string)php_ini_scanned_files());
-        $iniFile = php_ini_loaded_file();
-        if ($iniFile !== false) {
-            $iniFiles[] = $iniFile;
-        }
-
-        foreach ($iniFiles as $file) {
-            $content = str_replace(' ', '', file_get_contents(trim($file)));
-            if (stripos($content, 'extension=swoole') === 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     protected static function makeArtisanCmd($basePath, $subCmd)
     {
         $phpCmd = self::makePhpCmd();
@@ -328,7 +311,9 @@ EOS;
             $phpCmd = sprintf('%s -c "%s"', PHP_BINARY, $iniFile);
         }
 
-        if (!self::isLoadSwooleByIni()) {
+        $checkSwooleCmd = $phpCmd . ' --ri swoole';
+        $checkOutput = (string)shell_exec($checkSwooleCmd);
+        if (stripos($checkOutput, 'enabled') === false) {
             $phpCmd .= ' -d "extension=swoole"';
         }
         return trim($phpCmd . ' ' . $subCmd);

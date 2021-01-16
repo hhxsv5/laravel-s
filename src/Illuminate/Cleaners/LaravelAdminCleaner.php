@@ -40,10 +40,10 @@ class LaravelAdminCleaner extends BaseCleaner
         foreach ($this->properties as $name => $value) {
             if ($this->reflection->hasProperty($name)) {
                 $property = $this->reflection->getProperty($name);
-                if (!$property->isPublic()) {
-                    $property->setAccessible(true);
-                }
                 if ($property->isStatic()) {
+                    if (!$property->isPublic()) {
+                        $property->setAccessible(true);
+                    }
                     $property->setValue($value);
                 }
             }
