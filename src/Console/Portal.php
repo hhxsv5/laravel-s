@@ -133,7 +133,7 @@ EOS;
             }
             $passOptionStr .= sprintf('--%s%s ', $key, is_bool($value) ? '' : ('=' . $value));
         }
-        $statusCode = $this->runArtisanCommand(trim('laravels config ' . $passOptionStr));
+        $statusCode = self::runArtisanCommand($this->basePath, trim('laravels config ' . $passOptionStr));
         if ($statusCode !== 0) {
             return $statusCode;
         }
@@ -275,7 +275,7 @@ EOS;
 
     public function showInfo()
     {
-        return $this->runArtisanCommand('laravels info');
+        return self::runArtisanCommand($this->basePath, 'laravels info');
     }
 
     public function loadApollo(array $options)
@@ -288,7 +288,7 @@ EOS;
         Client::createFromCommandOptions($options)->pullAllAndSave($envFile);
     }
 
-    protected function isLoadSwooleByIni()
+    protected static function isLoadSwooleByIni()
     {
         $iniFiles = explode(',', (string)php_ini_scanned_files());
         $iniFile = php_ini_loaded_file();
@@ -305,7 +305,21 @@ EOS;
         return false;
     }
 
-    public function makeArtisanCmd($subCmd)
+    protected static function makeArtisanCmd($basePath, $subCmd)
+    {
+        $phpCmd = self::makePhpCmd();
+        $env = isset($_ENV['APP_ENV']) ? trim($_ENV['APP_ENV']) : '';
+        $appEnv = $env === '' ? '' : "APP_ENV={$env}";
+        return trim(sprintf('%s %s %s/artisan %s', $appEnv, $phpCmd, $basePath, $subCmd));
+    }
+
+    protected static function makeLaravelSCmd($basePath, $subCmd)
+    {
+        $phpCmd = self::makePhpCmd();
+        return trim(sprintf('%s %s/bin/laravels %s', $phpCmd, $basePath, $subCmd));
+    }
+
+    protected static function makePhpCmd($subCmd = '')
     {
         $iniFile = php_ini_loaded_file();
         if ($iniFile === false) {
@@ -314,18 +328,21 @@ EOS;
             $phpCmd = sprintf('%s -c "%s"', PHP_BINARY, $iniFile);
         }
 
-        if (!$this->isLoadSwooleByIni()) {
+        if (!self::isLoadSwooleByIni()) {
             $phpCmd .= ' -d "extension=swoole"';
         }
-
-        $env = isset($_ENV['APP_ENV']) ? trim($_ENV['APP_ENV']) : '';
-        $appEnv = $env === '' ? '' : "APP_ENV={$env}";
-        return trim(sprintf('%s %s %s/artisan %s', $appEnv, $phpCmd, $this->basePath, $subCmd));
+        return trim($phpCmd . ' ' . $subCmd);
     }
 
-    public function runArtisanCommand($cmd)
+    public static function runArtisanCommand($basePath, $cmd)
     {
-        $cmd = $this->makeArtisanCmd($cmd);
+        $cmd = self::makeArtisanCmd($basePath, $cmd);
+        return self::runCommand($cmd);
+    }
+
+    public static function runLaravelSCommand($basePath, $cmd)
+    {
+        $cmd = self::makeLaravelSCmd($basePath, $cmd);
         return self::runCommand($cmd);
     }
 

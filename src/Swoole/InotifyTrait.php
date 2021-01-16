@@ -30,8 +30,7 @@ trait InotifyTrait
             $this->setProcessTitle(sprintf('%s laravels: inotify process', $config['process_prefix']));
             $inotify = new Inotify($config['watch_path'], IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVE,
                 function ($event) use ($log, $laravelConf) {
-                    $reloadCmd = trim(sprintf('%s -c "%s" %s/bin/laravels reload', PHP_BINARY, php_ini_loaded_file(), $laravelConf['root_path']));
-                    Portal::runCommand($reloadCmd);
+                    Portal::runLaravelSCommand($laravelConf['root_path'], 'reload');
                     if ($log) {
                         $action = 'file:';
                         switch ($event['mask']) {
