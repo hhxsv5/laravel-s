@@ -206,7 +206,10 @@ return [
         'enable'          => env('LARAVELS_TIMER', false),
 
         // The list of cron job
-        'jobs'            => [],
+        'jobs'            => [
+            // Enable LaravelScheduleJob to run `php artisan schedule:run` every 1 minute, replace Linux Crontab
+            // Hhxsv5\LaravelS\Illuminate\LaravelScheduleJob::class,
+        ],
 
         // Max waiting time of reloading
         'max_wait_time'   => 5,
