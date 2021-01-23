@@ -27,8 +27,8 @@ class LaravelSCommand extends Command
                 $this->publish();
                 break;
             case 'config':
-                $this->prepareConfig();
             case 'info':
+                $this->prepareConfig();
                 $this->showInfo();
                 break;
             default:
