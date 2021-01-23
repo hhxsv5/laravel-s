@@ -120,7 +120,7 @@ EOS;
     {
         $this->comment('>>> Protocols');
 
-        $config = unserialize((string)file_get_contents($this->getConfPath()));
+        $config = unserialize((string)file_get_contents($this->getConfigPath()));
         $ssl = isset($config['server']['swoole']['ssl_key_file'], $config['server']['swoole']['ssl_cert_file']);
         $socketType = isset($config['server']['socket_type']) ? $config['server']['socket_type'] : SWOOLE_SOCK_TCP;
         if (in_array($socketType, [SWOOLE_SOCK_UNIX_DGRAM, SWOOLE_SOCK_UNIX_STREAM])) {
@@ -197,12 +197,12 @@ EOS;
         ];
 
         $config = ['server' => $svrConf, 'laravel' => $laravelConf];
-        return file_put_contents($this->getConfPath(), serialize($config)) > 0 ? 0 : 1;
+        return file_put_contents($this->getConfigPath(), serialize($config)) > 0 ? 0 : 1;
     }
 
-    protected function getConfPath()
+    protected function getConfigPath()
     {
-        return base_path('storage/laravels.conf');
+        return storage_path('laravels.conf');
     }
 
     protected function preSet(array &$svrConf)
