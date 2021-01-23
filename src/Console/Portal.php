@@ -333,12 +333,16 @@ EOS;
 
     public function getConfig()
     {
-        return unserialize((string)file_get_contents($this->getConfPath()));
+        return unserialize((string)file_get_contents($this->getConfigPath()));
     }
 
-    protected function getConfPath()
+    protected function getConfigPath()
     {
-        return $this->basePath . '/storage/laravels.conf';
+        $storagePath = getenv('APP_STORAGE_PATH');
+        if ($storagePath === false) {
+            $storagePath = $this->basePath . '/storage';
+        }
+        return $storagePath . '/laravels.conf';
     }
 
     public static function runCommand($cmd, $input = null)

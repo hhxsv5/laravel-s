@@ -311,12 +311,10 @@ EOS;
             $operation = 'Copied';
             if (empty($todo['link'])) {
                 copy($todo['from'], $todo['to']);
+            } elseif (@link($todo['from'], $todo['to'])) {
+                $operation = 'Linked';
             } else {
-                if (@link($todo['from'], $todo['to'])) {
-                    $operation = 'Linked';
-                } else {
-                    copy($todo['from'], $todo['to']);
-                }
+                copy($todo['from'], $todo['to']);
             }
             chmod($todo['to'], $todo['mode']);
             $this->line("<info>{$operation} file</info> <comment>[{$todo['from']}]</comment> <info>To</info> <comment>[{$todo['to']}]</comment>");
