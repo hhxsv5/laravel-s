@@ -52,6 +52,8 @@ Table of Contents
     * [Apollo](#Apollo)
 * [其他特性](#其他特性)
 * [注意事项](#注意事项)
+    * [配置Swoole事件](#配置Swoole事件)
+    * [Serverless](#Serverless)
 * [用户与案例](#用户与案例)
 * [其他选择](#其他选择)
 * [赞助](#赞助)
@@ -1161,7 +1163,7 @@ class WebSocketService implements WebSocketHandlerInterface
 
 ## 其他特性
 
-### 配置`Swoole`的事件回调函数
+### 配置Swoole事件
 
 支持的事件列表：
 
@@ -1210,6 +1212,7 @@ class WorkerStartEvent implements WorkerStartInterface
     }
 }
 ```
+
 2.配置。
 ```php
 // 修改文件 config/laravels.php
@@ -1217,6 +1220,62 @@ class WorkerStartEvent implements WorkerStartInterface
     'ServerStart' => [\App\Events\ServerStartEvent::class], // 按数组顺序触发事件
     'WorkerStart' => [\App\Events\WorkerStartEvent::class],
 ],
+```
+
+### Serverless
+
+#### 阿里云函数计算
+> [函数计算官方文档](https://help.aliyun.com/product/50980.html)。
+
+1.修改`bootstrap/app.php`，设置storage目录。因为项目目录只读，`/tmp`目录才可读写。
+
+```php
+$app->useStoragePath(env('APP_STORAGE_PATH', '/tmp/storage'));
+```
+
+2.创建Shell脚本`laravels_bootstrap`，并赋予`可执行权限`。
+
+```bash
+#!/usr/bin/env bash
+set +e
+
+# 创建storage相关目录
+mkdir -p /tmp/storage/app/public
+mkdir -p /tmp/storage/framework/cache
+mkdir -p /tmp/storage/framework/sessions
+mkdir -p /tmp/storage/framework/testing
+mkdir -p /tmp/storage/framework/views
+mkdir -p /tmp/storage/logs
+
+# 设置环境变量APP_STORAGE_PATH，请确保与.env的APP_STORAGE_PATH一样
+export APP_STORAGE_PATH=/tmp/storage
+
+# Start LaravelS
+php bin/laravels start
+```
+
+3.配置`template.xml`。
+
+```xml
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Resources:
+  laravel-s-demo:
+    Type: 'Aliyun::Serverless::Service'
+    Properties:
+      Description: 'LaravelS Demo for Serverless'
+    fc-laravel-s:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: laravels.handler
+        Runtime: custom
+        MemorySize: 512
+        Timeout: 30
+        CodeUri: ./
+        InstanceConcurrency: 10
+        EnvironmentVariables:
+          BOOTSTRAP_FILE: laravels_bootstrap
+
 ```
 
 ## 注意事项

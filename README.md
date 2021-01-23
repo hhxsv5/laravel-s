@@ -47,6 +47,8 @@ Table of Contents
 * [Common components](#common-components)
     * [Apollo](#apollo)
 * [Other features](#other-features)
+    * [Configure Swoole events](#configure-swoole-events)
+    * [Serverless](#serverless)
 * [Important notices](#important-notices)
 * [Users and cases](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E7%94%A8%E6%88%B7%E4%B8%8E%E6%A1%88%E4%BE%8B)
 * [Alternatives](#alternatives)
@@ -1149,7 +1151,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 ## Other features
 
-### Configuring the event callback function of `Swoole`
+### Configure Swoole events
 
 Supported events:
 
@@ -1205,6 +1207,62 @@ class WorkerStartEvent implements WorkerStartInterface
     'ServerStart' => [\App\Events\ServerStartEvent::class], // Trigger events in array order
     'WorkerStart' => [\App\Events\WorkerStartEvent::class],
 ],
+```
+
+### Serverless
+
+#### Alibaba Cloud Function Compute
+> [Function Compute](https://www.alibabacloud.com/help/product/50980.htm).
+
+1.Modify `bootstrap/app.php` and set the storage directory. Because the project directory is read-only, the `/tmp` directory can only be read and written.
+
+```php
+$app->useStoragePath(env('APP_STORAGE_PATH', '/tmp/storage'));
+```
+
+2.Create a shell script `laravels_bootstrap` and grant `executable permission`.
+
+```bash
+#!/usr/bin/env bash
+set +e
+
+# Create storage-related directories
+mkdir -p /tmp/storage/app/public
+mkdir -p /tmp/storage/framework/cache
+mkdir -p /tmp/storage/framework/sessions
+mkdir -p /tmp/storage/framework/testing
+mkdir -p /tmp/storage/framework/views
+mkdir -p /tmp/storage/logs
+
+# Set the environment variable APP_STORAGE_PATH, please make sure it's the same as APP_STORAGE_PATH in .env
+export APP_STORAGE_PATH=/tmp/storage
+
+# Start LaravelS
+php bin/laravels start
+```
+
+3.Configure `template.xml`.
+
+```xml
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Resources:
+  laravel-s-demo:
+    Type: 'Aliyun::Serverless::Service'
+    Properties:
+      Description: 'LaravelS Demo for Serverless'
+    fc-laravel-s:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: laravels.handler
+        Runtime: custom
+        MemorySize: 512
+        Timeout: 30
+        CodeUri: ./
+        InstanceConcurrency: 10
+        EnvironmentVariables:
+          BOOTSTRAP_FILE: laravels_bootstrap
+
 ```
 
 ## Important notices
