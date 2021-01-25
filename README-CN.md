@@ -729,7 +729,8 @@ protected function schedule(Schedule $schedule)
  * @var \Swoole\WebSocket\Server|\Swoole\Http\Server $swoole
  */
 $swoole = app('swoole');
-var_dump($swoole->stats());// 单例
+var_dump($swoole->stats());
+$swoole->push($fd, 'Push WebSocket message');
 ```
 
 ## 使用`SwooleTable`

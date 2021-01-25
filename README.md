@@ -716,7 +716,8 @@ protected function schedule(Schedule $schedule)
  * @var \Swoole\WebSocket\Server|\Swoole\Http\Server $swoole
  */
 $swoole = app('swoole');
-var_dump($swoole->stats());// Singleton
+var_dump($swoole->stats());
+$swoole->push($fd, 'Push WebSocket message');
 ```
 
 ## Use `SwooleTable`
