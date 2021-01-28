@@ -26,6 +26,7 @@ Table of Contents
 =================
 
 * [Features](#features)
+* [Benchmark](#benchmark)
 * [Requirements](#requirements)
 * [Install](#install)
 * [Run](#run)
@@ -80,6 +81,10 @@ Table of Contents
 - Support Laravel/Lumen both, good compatibility
 
 - Simple & Out of the box
+
+## Benchmark
+
+- [Which is the fastest web framework?](https://github.com/the-benchmarker/web-frameworks)
 
 ## Requirements
 

@@ -30,6 +30,7 @@ Table of Contents
 =================
 
 * [特性](#特性)
+* [基准点](#基准点)
 * [要求](#要求)
 * [安装](#安装)
 * [运行](#运行)
@@ -85,6 +86,10 @@ Table of Contents
 - 同时支持Laravel与Lumen，兼容主流版本
 
 - 简单，开箱即用
+
+## 基准点
+
+- [谁是最快的Web框架？](https://github.com/the-benchmarker/web-frameworks)
 
 ## 要求
 
