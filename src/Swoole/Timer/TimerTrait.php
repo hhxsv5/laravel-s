@@ -2,6 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Swoole\Timer;
 
+use Swoole\Event;
 use Swoole\Http\Server;
 use Swoole\Process;
 use Swoole\Timer;
@@ -48,6 +49,9 @@ trait TimerTrait
                     $process->exit(0);
                 });
             });
+            // For Swoole 4.6.x
+            // Deprecated: Swoole\Event::rshutdown(): Event::wait() in shutdown function is deprecated in Unknown on line 0
+            Event::wait();
         };
 
         $process = new Process($callback, false, 0);

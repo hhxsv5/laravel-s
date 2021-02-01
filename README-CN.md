@@ -983,32 +983,9 @@ class WebSocketService implements WebSocketHandlerInterface
 
 > [Swoole原始文档](https://wiki.swoole.com/#/start/coroutine)
 
-- 警告：协程下代码执行顺序是乱序的，请求级的数据应该以协程ID隔离，但Laravel/Lumen中存在很多单例、静态属性，不同请求间的数据会相互影响，这是`不安全`的。比如数据库连接就是单例，同一个数据库连接共享同一个PDO资源，这在同步阻塞模式下是没问题的，但在异步协程下是不行的，每次查询需要创建不同的连接，维护不同的IO状态，这就需要用到连接池。所以`不要`打开协程，仅`自定义进程`中可使用协程。
+- 警告：协程下代码执行顺序是乱序的，请求级的数据应该以协程ID隔离，但Laravel/Lumen中存在很多单例、静态属性，不同请求间的数据会相互影响，这是`不安全`的。比如数据库连接就是单例，同一个数据库连接共享同一个PDO资源，这在同步阻塞模式下是没问题的，但在异步协程下是不行的，每次查询需要创建不同的连接，维护不同的IO状态，这就需要用到连接池。
 
-- 启用协程，默认是关闭的。
-    
-    ```php
-    // 修改文件 `config/laravels.php`
-    [
-        //...
-        'swoole' => [
-            //...
-            'enable_coroutine' => true
-         ],
-    ]
-    ```
-
-- [协程客户端](https://wiki.swoole.com/#/coroutine_client/init)：需`Swoole>=2.0`。
-
-- [运行时协程](https://wiki.swoole.com/#/runtime)：需`Swoole>=4.1.0`，同时启用下面的配置。
-
-    ```php
-    // 修改文件 `config/laravels.php`
-    [
-        //...
-        'enable_coroutine_runtime' => true
-    ]
-    ```
+- `不要`使用协程，仅`自定义进程`中可使用协程。
 
 ## 自定义进程
 

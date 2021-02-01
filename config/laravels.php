@@ -59,19 +59,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Coroutine Runtime
-    |--------------------------------------------------------------------------
-    |
-    | This value represents whether the coroutine runtime is activated or not.
-    |
-    | https://www.swoole.co.uk/docs/modules/swoole-runtime-flags
-    |
-    */
-
-    'enable_coroutine_runtime' => false,
-
-    /*
-    |--------------------------------------------------------------------------
     | Server Name
     |--------------------------------------------------------------------------
     |

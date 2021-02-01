@@ -56,6 +56,9 @@ class Server
             $this->swoole = new $serverClass($ip, $port, SWOOLE_PROCESS, $socketType);
         }
 
+        // Disable Coroutine
+        $settings['enable_coroutine'] = false;
+
         $this->swoole->set($settings);
 
         $this->bindBaseEvents();
@@ -64,6 +67,9 @@ class Server
         $this->bindWebSocketEvents();
         $this->bindPortEvents();
         $this->bindSwooleTables();
+
+        // Disable Hook
+        class_exists('Swoole\Coroutine') && \Swoole\Coroutine::set(['hook_flags' => false]);
     }
 
     protected function bindBaseEvents()
@@ -257,15 +263,8 @@ class Server
 
     public function onWorkerStart(HttpServer $server, $workerId)
     {
-        if ($workerId >= $server->setting['worker_num']) {
-            $process = 'task worker';
-        } else {
-            $process = 'worker';
-            if (!empty($this->conf['enable_coroutine_runtime'])) {
-                \Swoole\Runtime::enableCoroutine();
-            }
-        }
-        $this->setProcessTitle(sprintf('%s laravels: %s process %d', $this->conf['process_prefix'], $process, $workerId));
+        $processName = $workerId >= $server->setting['worker_num'] ? 'task worker' : 'worker';
+        $this->setProcessTitle(sprintf('%s laravels: %s process %d', $this->conf['process_prefix'], $processName, $workerId));
 
         if (function_exists('opcache_reset')) {
             opcache_reset();
@@ -275,6 +274,9 @@ class Server
         }
 
         clearstatcache();
+
+        // Disable Hook
+        class_exists('Swoole\Runtime') && \Swoole\Runtime::enableCoroutine(false);
     }
 
     public function onWorkerStop(HttpServer $server, $workerId)
