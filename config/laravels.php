@@ -292,7 +292,6 @@ return [
         'task_tmpdir'        => @is_writable('/dev/shm/') ? '/dev/shm' : '/tmp',
         'max_request'        => env('LARAVELS_MAX_REQUEST', 100000),
         'open_tcp_nodelay'   => true,
-        'tcp_fastopen'       => true,
         'pid_file'           => storage_path('laravels.pid'),
         'log_level'          => 4,
         'log_file'           => storage_path(sprintf('logs/swoole-%s.log', date('Y-m'))),
