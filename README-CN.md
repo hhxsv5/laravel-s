@@ -87,9 +87,11 @@ Table of Contents
 
 - 简单，开箱即用
 
-## 基准点
+## Benchmark
 
-- [谁是最快的Web框架？](https://github.com/the-benchmarker/web-frameworks)
+- [Which is the fastest ?](https://github.com/the-benchmarker/web-frameworks)
+
+- [Web Framework Benchmarks](https://www.techempower.com/benchmarks/)
 
 ## 要求
 
