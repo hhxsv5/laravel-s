@@ -2,6 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Components\Apollo;
 
+use Hhxsv5\LaravelS\Console\Portal;
 use Hhxsv5\LaravelS\Swoole\Coroutine\Context;
 use Hhxsv5\LaravelS\Swoole\Process\CustomProcessInterface;
 use Swoole\Coroutine;
@@ -36,7 +37,7 @@ class Process implements CustomProcessInterface
         self::$apollo->startWatchNotification(function (array $notifications) use ($process, $filename) {
             $configs = self::$apollo->pullAllAndSave($filename);
             app('log')->info('[ApolloProcess] Pull all configurations', $configs);
-            $process->exec(PHP_BINARY, [base_path('bin/laravels'), 'reload']);
+            Portal::runLaravelSCommand(base_path(), 'reload');
             if (Context::inCoroutine()) {
                 Coroutine::sleep(5);
             } else {
