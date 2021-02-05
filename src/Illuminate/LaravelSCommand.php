@@ -185,6 +185,11 @@ EOS;
             return $ret;
         }
 
+        // Fixed $_ENV['APP_ENV']
+        if (isset($_SERVER['APP_ENV'])) {
+            $_ENV['APP_ENV'] = $_SERVER['APP_ENV'];
+        }
+
         $laravelConf = [
             'root_path'           => $svrConf['laravel_base_path'],
             'static_path'         => $svrConf['swoole']['document_root'],
