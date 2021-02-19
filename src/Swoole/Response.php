@@ -48,9 +48,12 @@ abstract class Response implements ResponseInterface
             if (in_array($name, $trailers, true)) {
                 continue;
             }
-
-            foreach ($values as $value) {
-                $this->swooleResponse->header($name, $value);
+            if (version_compare(SWOOLE_VERSION, '4.6.0', '>=')) {
+                $this->swooleResponse->header($name, $values);
+            } else {
+                foreach ($values as $value) {
+                    $this->swooleResponse->header($name, $value);
+                }
             }
         }
     }
