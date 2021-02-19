@@ -103,7 +103,7 @@ EOS;
             ],
             [
                 'Swoole',
-                swoole_version(),
+                SWOOLE_VERSION,
             ],
             [
                 'LaravelS',
@@ -251,7 +251,7 @@ EOS;
 
     protected function preCheck(array $svrConf)
     {
-        if (!empty($svrConf['enable_gzip']) && version_compare(swoole_version(), '4.1.0', '>=')) {
+        if (!empty($svrConf['enable_gzip']) && version_compare(SWOOLE_VERSION, '4.1.0', '>=')) {
             $this->error('enable_gzip is DEPRECATED since Swoole 4.1.0, set http_compression of Swoole instead, http_compression is disabled by default.');
             $this->info('If there is a proxy server like Nginx, suggest that enable gzip in Nginx and disable gzip in Swoole, to avoid the repeated gzip compression for response.');
             return 1;

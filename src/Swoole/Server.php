@@ -243,7 +243,7 @@ class Server
     {
         $this->setProcessTitle(sprintf('%s laravels: master process', $this->conf['process_prefix']));
 
-        if (version_compare(swoole_version(), '1.9.5', '<')) {
+        if (version_compare(SWOOLE_VERSION, '1.9.5', '<')) {
             file_put_contents($this->conf['swoole']['pid_file'], $server->master_pid);
         }
     }

@@ -58,7 +58,7 @@ class StaticResponse extends Response
                 unlink($path);
             }
         } else {
-            if (version_compare(swoole_version(), '1.7.21', '<')) {
+            if (version_compare(SWOOLE_VERSION, '1.7.21', '<')) {
                 throw new \RuntimeException('sendfile() require Swoole >= 1.7.21');
             }
             $this->swooleResponse->sendfile($path);
