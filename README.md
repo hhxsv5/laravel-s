@@ -130,6 +130,12 @@ php artisan laravels publish
 
 4.Change `config/laravels.php`: listen_ip, listen_port, refer [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
 
+5.Performance tuning
+
+- [Adjust kernel parameters](https://wiki.swoole.com/#/other/sysctl?id=%e5%86%85%e6%a0%b8%e5%8f%82%e6%95%b0%e8%b0%83%e6%95%b4)
+
+- [Number of Workers](https://www.swoole.co.uk/docs/modules/swoole-server/configuration#worker_num): LaravelS uses Swoole's `Synchronous IO` mode, so the larger the `worker_num` setting, the better the concurrency performance, but it will also cause more memory usage and process switching overhead, so incremental pressure testing is needed to get the best` worker_num`.
+
 ## Run
 > `Please read the notices carefully before running`, [Important notices](https://github.com/hhxsv5/laravel-s#important-notices)(IMPORTANT).
 
