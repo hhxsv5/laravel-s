@@ -136,6 +136,8 @@ php artisan laravels publish
 
 - [Number of Workers](https://www.swoole.co.uk/docs/modules/swoole-server/configuration#worker_num): LaravelS uses Swoole's `Synchronous IO` mode, so the larger the `worker_num` setting, the better the concurrency performance, but it will also cause more memory usage and process switching overhead, so incremental pressure testing is needed to get the best` worker_num`.
 
+- [Number of Task Workers](https://www.swoole.co.uk/docs/modules/swoole-server/configuration#task_worker_num)
+
 ## Run
 > `Please read the notices carefully before running`, [Important notices](https://github.com/hhxsv5/laravel-s#important-notices)(IMPORTANT).
 

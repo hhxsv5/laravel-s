@@ -141,6 +141,8 @@ php artisan laravels publish
 
 - [Worker数量](https://wiki.swoole.com/#/server/setting?id=worker_num)：LaravelS使用Swoole的`同步IO`模式，故`worker_num`设置的越大并发性能越好，但也会造成更多的内存占用和进程切换开销，故需进行增量压测得出最佳的`worker_num`。
 
+- [Task Worker数量](https://wiki.swoole.com/#/server/setting?id=task_worker_num)
+
 
 ## 运行
 > `在运行之前，请先仔细阅读：`[注意事项](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)(这非常重要)。
