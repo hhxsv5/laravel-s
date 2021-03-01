@@ -89,9 +89,9 @@ Table of Contents
 
 ## Benchmark
 
-- [Which is the fastest ?](https://github.com/the-benchmarker/web-frameworks)
+- [Which is the fastest web framework?](https://github.com/the-benchmarker/web-frameworks)
 
-- [Web Framework Benchmarks](https://www.techempower.com/benchmarks/)
+- [TechEmpower Framework Benchmarks](https://www.techempower.com/benchmarks/)
 
 ## 要求
 
