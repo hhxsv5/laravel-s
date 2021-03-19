@@ -1274,96 +1274,108 @@ Resources:
 
 ## 注意事项
 
-- `单例问题`
-    - 传统FPM下，单例模式的对象的生命周期仅在每次请求中，请求开始=>实例化单例=>请求结束后=>单例对象资源回收。
+### 单例问题
 
-    - Swoole Server下，所有单例对象会常驻于内存，这个时候单例对象的生命周期与FPM不同，请求开始=>实例化单例=>请求结束=>单例对象依旧保留，需要开发者自己维护单例的状态。
+- 传统FPM下，单例模式的对象的生命周期仅在每次请求中，请求开始=>实例化单例=>请求结束后=>单例对象资源回收。
+
+- Swoole Server下，所有单例对象会常驻于内存，这个时候单例对象的生命周期与FPM不同，请求开始=>实例化单例=>请求结束=>单例对象依旧保留，需要开发者自己维护单例的状态。
+
+- 常见的解决方案：
+
+    1. 写一个`XxxCleaner`清理器类来清理单例对象状态，此类需实现接口`Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface`，然后注册到`laravels.php`的`cleaners`中。
     
-    - 常见的解决方案：
+    2. 用一个`中间件`来`重置`单例对象的状态。
 
-        1. 写一个`XxxCleaner`清理器类来清理单例对象状态，此类需实现接口`Hhxsv5\LaravelS\Illuminate\Cleaners\CleanerInterface`，然后注册到`laravels.php`的`cleaners`中。
-        
-        2. 用一个`中间件`来`重置`单例对象的状态。
+    3. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md#register_providers)。
 
-        3. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md#register_providers)。
+### 清理器
+> [设置清理器](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md#cleaners)。
 
-    - LaravelS 已经内置了一些[清理器](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md#cleaners)。
+### 常见问题
+> [常见问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md)：一揽子的已知问题和解决方案。
 
-- [常见问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md)：一揽子的已知问题和解决方案。
+### 调试方式
 
-- 调试方式：记录日志、[Laravel Dump Server](https://github.com/beyondcode/laravel-dump-server)（Laravel 5.7已默认集成）
+- 记录日志；如想要在控制台输出，可使用`stderr`，Log::channel('stderr')->debug('debug message')。
 
-- 应通过`Illuminate\Http\Request`对象来获取请求信息，$_ENV是可读取的，$_SERVER是部分可读的，`不能使用`$_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST、$_SESSION、$GLOBALS。
+- [Laravel Dump Server](https://github.com/beyondcode/laravel-dump-server)（Laravel 5.7已默认集成）。
 
-    ```php
-    public function form(\Illuminate\Http\Request $request)
-    {
-        $name = $request->input('name');
-        $all = $request->all();
-        $sessionId = $request->cookie('sessionId');
-        $photo = $request->file('photo');
-        // 调用getContent()来获取原始的POST body，而不能用file_get_contents('php://input')
-        $rawContent = $request->getContent();
-        //...
-    }
-    ```
+### 读取请求
+应通过`Illuminate\Http\Request`对象来读取请求信息，$_ENV是可读取的，$_SERVER是部分可读的，`不能使用`$_GET、$_POST、$_FILES、$_COOKIE、$_REQUEST、$_SESSION、$GLOBALS。
 
-- 推荐通过返回`Illuminate\Http\Response`对象来响应请求，兼容echo、vardump()、print_r()，`不能使用`函数 dd()、exit()、die()、header()、setcookie()、http_response_code()。
+```php
+public function form(\Illuminate\Http\Request $request)
+{
+    $name = $request->input('name');
+    $all = $request->all();
+    $sessionId = $request->cookie('sessionId');
+    $photo = $request->file('photo');
+    // 调用getContent()来获取原始的POST body，而不能用file_get_contents('php://input')
+    $rawContent = $request->getContent();
+    //...
+}
+```
 
-    ```php
-    public function json()
-    {
-        return response()->json(['time' => time()])->header('header1', 'value1')->withCookie('c1', 'v1');
-    }
-    ```
+### 输出响应
+推荐通过返回`Illuminate\Http\Response`对象来响应请求，兼容echo、vardump()、print_r()，`不能使用`函数 dd()、exit()、die()、header()、setcookie()、http_response_code()。
 
-- 各种`单例的连接`将被常驻内存，建议开启`持久连接`。
-    1. 数据库连接，连接断开后会自动重连
-    
-    ```php
-    // config/database.php
-    'connections' => [
-        'my_conn' => [
-            'driver'    => 'mysql',
-            'host'      => env('DB_MY_CONN_HOST', 'localhost'),
-            'port'      => env('DB_MY_CONN_PORT', 3306),
-            'database'  => env('DB_MY_CONN_DATABASE', 'forge'),
-            'username'  => env('DB_MY_CONN_USERNAME', 'forge'),
-            'password'  => env('DB_MY_CONN_PASSWORD', ''),
-            'charset'   => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix'    => '',
-            'strict'    => false,
-            'options'   => [
-                // 开启持久连接
-                \PDO::ATTR_PERSISTENT => true,
-            ],
+```php
+public function json()
+{
+    return response()->json(['time' => time()])->header('header1', 'value1')->withCookie('c1', 'v1');
+}
+```
+
+### 持久连接
+`单例的连接`将被常驻内存，建议开启`持久连接`，获得更好的性能。
+1. 数据库连接，连接断开后会自动重连
+
+```php
+// config/database.php
+'connections' => [
+    'my_conn' => [
+        'driver'    => 'mysql',
+        'host'      => env('DB_MY_CONN_HOST', 'localhost'),
+        'port'      => env('DB_MY_CONN_PORT', 3306),
+        'database'  => env('DB_MY_CONN_DATABASE', 'forge'),
+        'username'  => env('DB_MY_CONN_USERNAME', 'forge'),
+        'password'  => env('DB_MY_CONN_PASSWORD', ''),
+        'charset'   => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix'    => '',
+        'strict'    => false,
+        'options'   => [
+            // 开启持久连接
+            \PDO::ATTR_PERSISTENT => true,
         ],
-        //...
     ],
     //...
-    ```
+],
+//...
+```
 
-    2. Redis连接，连接断开后`不会立即`自动重连，会抛出一个关于连接断开的异常，下次会自动重连。需确保每次操作Redis前正确的`SELECT DB`。
-    
-    ```php
-    // config/database.php
-    'redis' => [
-            'client' => env('REDIS_CLIENT', 'phpredis'), // 推荐使用phpredis，以获得更好的性能
-            'default' => [
-                'host'       => env('REDIS_HOST', 'localhost'),
-                'password'   => env('REDIS_PASSWORD', null),
-                'port'       => env('REDIS_PORT', 6379),
-                'database'   => 0,
-                'persistent' => true, // 开启持久连接
-            ],
+2. Redis连接，连接断开后`不会立即`自动重连，会抛出一个关于连接断开的异常，下次会自动重连。需确保每次操作Redis前正确的`SELECT DB`。
+
+```php
+// config/database.php
+'redis' => [
+        'client' => env('REDIS_CLIENT', 'phpredis'), // 推荐使用phpredis，以获得更好的性能
+        'default' => [
+            'host'       => env('REDIS_HOST', 'localhost'),
+            'password'   => env('REDIS_PASSWORD', null),
+            'port'       => env('REDIS_PORT', 6379),
+            'database'   => 0,
+            'persistent' => true, // 开启持久连接
         ],
-    //...
-    ```
+    ],
+//...
+```
 
-- 你声明的全局、静态变量必须手动清理或重置。
+### 关于内存泄露
 
-- 无限追加元素到静态或全局变量中，将导致内存溢出。
+- 避免使用全局变量，如一定要，请手动清理或重置。
+
+- 无限追加元素到全局变量、静态变量、单例，将导致内存溢出。
 
     ```php
     class Test
