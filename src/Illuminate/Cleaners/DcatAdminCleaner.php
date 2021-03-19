@@ -10,13 +10,13 @@ class DcatAdminCleaner extends BaseCleaner
         'admin.app',
         'admin.asset',
         'admin.color',
-//        'admin.sections',
+        'admin.sections',
         'admin.extend',
         'admin.extend.update',
         'admin.extend.version',
         'admin.navbar',
-//        'admin.menu',
-//        'admin.context',
+        'admin.menu',
+        'admin.context',
         'admin.web-uploader',
     ];
 
