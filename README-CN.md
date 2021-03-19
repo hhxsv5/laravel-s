@@ -1349,9 +1349,7 @@ public function json()
             \PDO::ATTR_PERSISTENT => true,
         ],
     ],
-    //...
 ],
-//...
 ```
 
 2. Redis连接，连接断开后`不会立即`自动重连，会抛出一个关于连接断开的异常，下次会自动重连。需确保每次操作Redis前正确的`SELECT DB`。
@@ -1359,16 +1357,15 @@ public function json()
 ```php
 // config/database.php
 'redis' => [
-        'client' => env('REDIS_CLIENT', 'phpredis'), // 推荐使用phpredis，以获得更好的性能
-        'default' => [
-            'host'       => env('REDIS_HOST', 'localhost'),
-            'password'   => env('REDIS_PASSWORD', null),
-            'port'       => env('REDIS_PORT', 6379),
-            'database'   => 0,
-            'persistent' => true, // 开启持久连接
-        ],
+    'client' => env('REDIS_CLIENT', 'phpredis'), // 推荐使用phpredis，以获得更好的性能
+    'default' => [
+        'host'       => env('REDIS_HOST', 'localhost'),
+        'password'   => env('REDIS_PASSWORD', null),
+        'port'       => env('REDIS_PORT', 6379),
+        'database'   => 0,
+        'persistent' => true, // 开启持久连接
     ],
-//...
+],
 ```
 
 ### 关于内存泄露
@@ -1420,9 +1417,11 @@ public function json()
     5. 如果始终没法解决，[max_request](https://wiki.swoole.com/#/server/setting?id=max_request)是最后兜底的方案。
 
 
-- [Linux内核参数调整](https://wiki.swoole.com/wiki/page/p-server/sysctl.html)
+### Linux内核参数调整
+> [Linux内核参数调整](https://wiki.swoole.com/#/other/sysctl?id=%e5%86%85%e6%a0%b8%e5%8f%82%e6%95%b0%e8%b0%83%e6%95%b4)
 
-- [压力测试](https://wiki.swoole.com/wiki/page/62.html)
+### 压力测试
+> [压力测试](https://wiki.swoole.com/wiki/page/62.html)
 
 ## 用户与案例
 

@@ -1334,9 +1334,7 @@ public function json()
             \PDO::ATTR_PERSISTENT => true,
         ],
     ],
-    //...
 ],
-//...
 ```
 
 2. Redis connection, it `won't` reconnect automatically `immediately` after disconnect, and will throw an exception about lost connection, reconnect next time. You need to make sure that `SELECT DB` correctly before operating Redis every time.
@@ -1344,16 +1342,15 @@ public function json()
 ```php
 // config/database.php
 'redis' => [
-        'client' => env('REDIS_CLIENT', 'phpredis'), // It is recommended to use phpredis for better performance.
-        'default' => [
-            'host'       => env('REDIS_HOST', 'localhost'),
-            'password'   => env('REDIS_PASSWORD', null),
-            'port'       => env('REDIS_PORT', 6379),
-            'database'   => 0,
-            'persistent' => true, // Enable persistent connection
-        ],
+    'client' => env('REDIS_CLIENT', 'phpredis'), // It is recommended to use phpredis for better performance.
+    'default' => [
+        'host'       => env('REDIS_HOST', 'localhost'),
+        'password'   => env('REDIS_PASSWORD', null),
+        'port'       => env('REDIS_PORT', 6379),
+        'database'   => 0,
+        'persistent' => true, // Enable persistent connection
     ],
-//...
+],
 ```
 
 ### About memory leaks
@@ -1404,9 +1401,11 @@ public function json()
 
     5. If you still can't solve it, [max_request](https://www.swoole.co.uk/docs/modules/swoole-server/configuration#max_request) is the last guarantee.
 
-- [Linux kernel parameter adjustment](https://wiki.swoole.com/wiki/page/p-server/sysctl.html)
+### Linux kernel parameter adjustment
+> [Linux kernel parameter adjustment](https://wiki.swoole.com/#/other/sysctl?id=%e5%86%85%e6%a0%b8%e5%8f%82%e6%95%b0%e8%b0%83%e6%95%b4)
 
-- [Pressure test](https://wiki.swoole.com/wiki/page/62.html)
+### Pressure test
+> [Pressure test](https://wiki.swoole.com/wiki/page/62.html)
 
 ## Alternatives
 
