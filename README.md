@@ -1377,7 +1377,7 @@ public function json()
 
 - Memory leak detection method
 
-    1. Modify `config/laravels.php`, change `worker_num` to `1`;
+    1. Modify `config/laravels.php`: `worker_num=1, max_request=1000000`, remember to change it back after test;
 
     2. Add routing `/debug-memory-leak` without `route middleware` to observe the memory changes of the `Worker` process;
 

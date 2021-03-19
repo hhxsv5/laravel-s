@@ -1392,7 +1392,7 @@ public function json()
 
 - 内存泄露的检测方法
 
-    1. 修改`config/laravels.php`，将`worker_num`改为`1`；
+    1. 修改`config/laravels.php`：`worker_num=1, max_request=1000000`，测试完成后记得改回去；
 
     2. 增加路由`/debug-memory-leak`，不设置任何`路由中间件`，用于观察`Worker`进程的内存变化情况；
 
