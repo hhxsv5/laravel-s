@@ -1398,7 +1398,7 @@ public function json()
 
     ```php
     Route::get('/debug-memory-leak', function () {
-        static $previous = 0;
+        global $previous;
         $current = memory_get_usage();
         $stats = [
             'prev_mem' => $previous,
