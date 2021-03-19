@@ -1397,7 +1397,7 @@ public function json()
 
     3. Start `LaravelS` and request `/debug-memory-leak` until `diff_mem` is less than or equal to zero; if `diff_mem` is always greater than zero, it means that there may be a memory leak in `Global Middleware` or `Laravel Framework`;
     
-    4. After completing `Step 3`, alternately request the business api and `/debug-memory-leak` (you can also use `ab`/`wrk` to test the business api), and observe if `diff_mem` is less than or equal to zero, congratulations There is no memory leak; if `diff_mem` is always greater than zero, then there is a memory leak.
+    4. After completing `Step 3`, alternately request the business route and `/debug-memory-leak` (it is better to use `ab`/`wrk` to request a large number of business route). The initial increase in memory is normal. After a large number of requests for the business route, if `diff_mem` is less than or equal to zero, congratulations, there is no memory leak; if `diff_mem` is always greater than zero, it means that there is a memory leak.
 
     5. If you still can't solve it, [max_request](https://www.swoole.co.uk/docs/modules/swoole-server/configuration#max_request) is the last guarantee.
 
