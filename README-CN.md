@@ -1412,7 +1412,7 @@ public function json()
 
     3. 启动`LaravelS`，请求`/debug-memory-leak`，直到`diff_mem`小于或等于零；如果`diff_mem`一直大于零，说明`全局中间件`或`Laravel框架`可能存在内存泄露；
     
-    4. 完成`步骤3`后，交替请求业务路由与`/debug-memory-leak`（最好使用`ab`/`wrk`大量的请求业务路由），刚开始出现的内存增涨是正常现象。业务接口经过大量请求后，如果`diff_mem`小于或等于零，恭喜你没有内存泄露；如果`diff_mem`一直大于零，则说明存在内存泄露。
+    4. 完成`步骤3`后，交替请求业务路由与`/debug-memory-leak`（最好使用`ab`/`wrk`大量的请求业务路由），刚开始出现的内存增涨是正常现象。业务路由经过大量请求后，如果`diff_mem`小于或等于零，恭喜你没有内存泄露；如果`diff_mem`一直大于零，则说明存在内存泄露。
 
     5. 如果始终没法解决，[max_request](https://wiki.swoole.com/#/server/setting?id=max_request)是最后兜底的方案。
 
