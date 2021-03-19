@@ -1379,6 +1379,31 @@ Resources:
     }
     ```
 
+- 内存泄露的检测方法
+
+    1. 修改`config/laravels.php`，将`worker_num`改为`1`；
+
+    2. 增加路由`/debug-memory-leak`，不设置任何`路由中间件`，用于观察`Worker`进程的内存变化情况；
+
+    ```php
+    Route::get('/debug-memory-leak', function () {
+        static $previous = 0;
+        $current = memory_get_usage();
+        $stats = [
+            'prev_mem' => $previous,
+            'curr_mem' => $current,
+            'diff_mem' => $current - $previous,
+        ];
+        $previous = $current;
+        return $stats;
+    });
+    ```
+
+    3. 启动`LaravelS`，请求`/debug-memory-leak`，直到`diff_mem`小于或等于零；如果`diff_mem`一直大于零，说明`全局中间件`或`Laravel框架`可能存在内存泄露；
+    
+    4. 完成`步骤3`后，交替请求业务接口与`/debug-memory-leak`（也可使用`ab`/`wrk`来测试业务接口），观察如果`diff_mem`小于或等于零，恭喜你没有内存泄露；如果`diff_mem`一直大于零，则说明存在内存泄露。
+
+
 - [Linux内核参数调整](https://wiki.swoole.com/wiki/page/p-server/sysctl.html)
 
 - [压力测试](https://wiki.swoole.com/wiki/page/62.html)

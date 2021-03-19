@@ -1366,6 +1366,30 @@ Resources:
     }
     ```
 
+- Memory leak detection method
+
+    1. Modify `config/laravels.php`, change `worker_num` to `1`;
+
+    2. Add routing `/debug-memory-leak` without `route middleware` to observe the memory changes of the `Worker` process;
+
+    ```php
+    Route::get('/debug-memory-leak', function () {
+        static $previous = 0;
+        $current = memory_get_usage();
+        $stats = [
+            'prev_mem' => $previous,
+            'curr_mem' => $current,
+            'diff_mem' => $current - $previous,
+        ];
+        $previous = $current;
+        return $stats;
+    });
+    ```
+
+    3. Start `LaravelS` and request `/debug-memory-leak` until `diff_mem` is less than or equal to zero; if `diff_mem` is always greater than zero, it means that there may be a memory leak in `Global Middleware` or `Laravel Framework`;
+    
+    4. After completing `Step 3`, alternately request the business api and `/debug-memory-leak` (you can also use `ab`/`wrk` to test the business api), and observe if `diff_mem` is less than or equal to zero, congratulations There is no memory leak; if `diff_mem` is always greater than zero, then there is a memory leak.
+
 - [Linux kernel parameter adjustment](https://wiki.swoole.com/wiki/page/p-server/sysctl.html)
 
 - [Pressure test](https://wiki.swoole.com/wiki/page/62.html)
