@@ -1304,7 +1304,8 @@ Resources:
     ```
 
 - The various `singleton connections` will be `memory resident`, recommend to enable `persistent connection`.
-1. Database connection, it `will` reconnect automatically `immediately` after disconnect.
+    1. Database connection, it `will` reconnect automatically `immediately` after disconnect.
+    
     ```php
     // config/database.php
     //...
@@ -1330,7 +1331,8 @@ Resources:
     //...
     ```
 
-2. Redis connection, it `won't` reconnect automatically `immediately` after disconnect, and will throw an exception about lost connection, reconnect next time. You need to make sure that `SELECT DB` correctly before operating Redis every time.
+    2. Redis connection, it `won't` reconnect automatically `immediately` after disconnect, and will throw an exception about lost connection, reconnect next time. You need to make sure that `SELECT DB` correctly before operating Redis every time.
+    
     ```php
     // config/database.php
     'redis' => [
@@ -1389,6 +1391,8 @@ Resources:
     3. Start `LaravelS` and request `/debug-memory-leak` until `diff_mem` is less than or equal to zero; if `diff_mem` is always greater than zero, it means that there may be a memory leak in `Global Middleware` or `Laravel Framework`;
     
     4. After completing `Step 3`, alternately request the business api and `/debug-memory-leak` (you can also use `ab`/`wrk` to test the business api), and observe if `diff_mem` is less than or equal to zero, congratulations There is no memory leak; if `diff_mem` is always greater than zero, then there is a memory leak.
+
+    5. If you still can't solve it, [max_request](https://www.swoole.co.uk/docs/modules/swoole-server/configuration#max_request) is the last guarantee.
 
 - [Linux kernel parameter adjustment](https://wiki.swoole.com/wiki/page/p-server/sysctl.html)
 

@@ -1318,7 +1318,8 @@ Resources:
     ```
 
 - 各种`单例的连接`将被常驻内存，建议开启`持久连接`。
-1. 数据库连接，连接断开后会自动重连
+    1. 数据库连接，连接断开后会自动重连
+    
     ```php
     // config/database.php
     'connections' => [
@@ -1343,7 +1344,8 @@ Resources:
     //...
     ```
 
-2. Redis连接，连接断开后`不会立即`自动重连，会抛出一个关于连接断开的异常，下次会自动重连。需确保每次操作Redis前正确的`SELECT DB`。
+    2. Redis连接，连接断开后`不会立即`自动重连，会抛出一个关于连接断开的异常，下次会自动重连。需确保每次操作Redis前正确的`SELECT DB`。
+    
     ```php
     // config/database.php
     'redis' => [
@@ -1402,6 +1404,8 @@ Resources:
     3. 启动`LaravelS`，请求`/debug-memory-leak`，直到`diff_mem`小于或等于零；如果`diff_mem`一直大于零，说明`全局中间件`或`Laravel框架`可能存在内存泄露；
     
     4. 完成`步骤3`后，交替请求业务接口与`/debug-memory-leak`（也可使用`ab`/`wrk`来测试业务接口），观察如果`diff_mem`小于或等于零，恭喜你没有内存泄露；如果`diff_mem`一直大于零，则说明存在内存泄露。
+
+    5. 如果始终没法解决，[max_request](https://wiki.swoole.com/#/server/setting?id=max_request)是最后兜底的方案。
 
 
 - [Linux内核参数调整](https://wiki.swoole.com/wiki/page/p-server/sysctl.html)
