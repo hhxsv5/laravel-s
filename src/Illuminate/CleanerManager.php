@@ -8,7 +8,6 @@ use Hhxsv5\LaravelS\Illuminate\Cleaners\ConfigCleaner;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\ContainerCleaner;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\CookieCleaner;
 use Hhxsv5\LaravelS\Illuminate\Cleaners\RequestCleaner;
-use Hhxsv5\LaravelS\Illuminate\Cleaners\UrlCleaner;
 use Illuminate\Container\Container;
 
 class CleanerManager
@@ -31,7 +30,6 @@ class CleanerManager
      */
     protected $cleaners = [
         ContainerCleaner::class,
-        UrlCleaner::class,
         ConfigCleaner::class,
         CookieCleaner::class,
         RequestCleaner::class,
