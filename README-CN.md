@@ -139,7 +139,7 @@ php artisan laravels publish
 
 - [调整内核参数](https://wiki.swoole.com/#/other/sysctl?id=%e5%86%85%e6%a0%b8%e5%8f%82%e6%95%b0%e8%b0%83%e6%95%b4)
 
-- [Worker数量](https://wiki.swoole.com/#/server/setting?id=worker_num)：LaravelS使用Swoole的`同步IO`模式，故`worker_num`设置的越大并发性能越好，但也会造成更多的内存占用和进程切换开销，故需进行增量压测得出最佳的`worker_num`。
+- [Worker数量](https://wiki.swoole.com/#/server/setting?id=worker_num)：LaravelS 使用 Swoole 的`同步IO`模式，`worker_num`设置的越大并发性能越好，但会造成更多的内存占用和进程切换开销。如果`1`个请求耗时`100ms`，为了提供`1000QPS`的并发能力，至少配置`100`个Worker进程，计算方法：worker_num = 1000QPS/(1s/1ms) = 100，故需进行增量压测计算出最佳的`worker_num`。
 
 - [Task Worker数量](https://wiki.swoole.com/#/server/setting?id=task_worker_num)
 
