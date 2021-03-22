@@ -134,7 +134,7 @@ php artisan laravels publish
 
 - [Adjust kernel parameters](https://wiki.swoole.com/#/other/sysctl?id=%e5%86%85%e6%a0%b8%e5%8f%82%e6%95%b0%e8%b0%83%e6%95%b4)
 
-- [Number of Workers](https://www.swoole.co.uk/docs/modules/swoole-server/configuration#worker_num): LaravelS uses Swoole's `Synchronous IO` mode, the larger the `worker_num` setting, the better the concurrency performance, but it will cause more memory usage and process switching overhead. If one request takes 100ms, in order to provide 1000QPS concurrency, at least 100 worker processes must be configured. The calculation method is: worker_num = 1000QPS/(1s/1ms) = 100, so incremental pressure testing is needed to calculate the best` worker_num`.
+- [Number of Workers](https://www.swoole.co.uk/docs/modules/swoole-server/configuration#worker_num): LaravelS uses Swoole's `Synchronous IO` mode, the larger the `worker_num` setting, the better the concurrency performance, but it will cause more memory usage and process switching overhead. If one request takes 100ms, in order to provide 1000QPS concurrency, at least 100 Worker processes need to be configured. The calculation method is: worker_num = 1000QPS/(1s/1ms) = 100, so incremental pressure testing is needed to calculate the best` worker_num`.
 
 - [Number of Task Workers](https://www.swoole.co.uk/docs/modules/swoole-server/configuration#task_worker_num)
 
