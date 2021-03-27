@@ -12,6 +12,8 @@
 *Please `Watch` this repository to get the latest updates.*
 
 [![Latest Release](https://img.shields.io/github/v/release/hhxsv5/laravel-s.svg)](https://github.com/hhxsv5/laravel-s/releases)
+[![PHP Version](https://img.shields.io/packagist/php-v/hhxsv5/laravel-s)](https://www.php.net/)
+[![Swoole Version](https://img.shields.io/badge/swoole-%3E=1.7.19-flat.svg)](https://github.com/swoole/swoole-src)
 [![Total Downloads](https://img.shields.io/packagist/dt/hhxsv5/laravel-s)](https://packagist.org/packages/hhxsv5/laravel-s/stats)
 [![License](https://img.shields.io/github/license/hhxsv5/laravel-s)](https://github.com/hhxsv5/laravel-s/blob/master/LICENSE)
 [![Build Status](https://travis-ci.com/hhxsv5/laravel-s.svg?branch=master)](https://travis-ci.com/hhxsv5/laravel-s)
@@ -89,9 +91,9 @@ Table of Contents
 
 | Dependency | Requirement |
 | -------- | -------- |
-| [PHP](https://secure.php.net/manual/en/install.php) | `>= 5.5.9` `Recommend PHP7+` |
-| [Swoole](https://www.swoole.co.uk/) | `>= 1.7.19` `No longer support PHP5 since 2.0.12` `Recommend 4.2.3+` |
-| [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` `Recommend 5.6+` |
+| [PHP](https://secure.php.net/) | `>= 5.5.9` `Recommend PHP7+` |
+| [Swoole](https://www.swoole.co.uk/) | `>= 1.7.19` `No longer support PHP5 since 2.0.12` `Recommend 4.5.0+` |
+| [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` `Recommend 8.0+` |
 
 ## Install
 
