@@ -294,7 +294,7 @@ LoadModule deflate_module /yourpath/modules/mod_deflate.so
     RewriteEngine On
     RewriteCond %{DOCUMENT_ROOT}%{REQUEST_FILENAME} !-d
     RewriteCond %{DOCUMENT_ROOT}%{REQUEST_FILENAME} !-f
-    RewriteRule ^/(.*)$ balancer://laravels/%{REQUEST_URI} [P,L]
+    RewriteRule ^/(.*)$ balancer://laravels%{REQUEST_URI} [P,L]
 
     ErrorLog ${APACHE_LOG_DIR}/www.laravels.com.error.log
     CustomLog ${APACHE_LOG_DIR}/www.laravels.com.access.log combined
