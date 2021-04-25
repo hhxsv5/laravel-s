@@ -99,7 +99,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | With this set, Swoole Server will place the header "Scheme", used by
-    | laravel to define routes though the application. This is important if
+    | laravel to define routes through the application. This is important if
     | you are using Swoole alone (not using nginx/apache proxy).
     |
     */
