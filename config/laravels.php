@@ -95,6 +95,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | HTTP Force SSL
+    |--------------------------------------------------------------------------
+    |
+    | With this set, Swoole Server will place the header "Scheme", used by
+    | laravel to define routes though the application. This is important if
+    | you are using Swoole alone (not using nginx/apache proxy).
+    |
+    */
+    'http_force_ssl' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Inotify Reload
     |--------------------------------------------------------------------------
     |
