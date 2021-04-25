@@ -103,7 +103,7 @@ return [
     | you are using Swoole alone (not using nginx/apache proxy).
     |
     */
-    'http_force_ssl' => true,
+    'http_force_ssl' => env('LARAVELS_HTTP_FORCE_SSL', false),
 
     /*
     |--------------------------------------------------------------------------
