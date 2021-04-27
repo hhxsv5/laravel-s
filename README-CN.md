@@ -180,7 +180,7 @@ php artisan laravels publish
 
 ```
 [program:laravel-s-test]
-directory=/var/wwww/laravel-s-test
+directory=/var/www/laravel-s-test
 command=/usr/local/bin/php bin/laravels start -i
 numprocs=1
 autostart=true
