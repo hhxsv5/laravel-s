@@ -99,6 +99,13 @@
 ],
 ```
 
+```php
+// Need to configure the following cleaners if you use the package "tightenco/ziggy" in your project to solve "Ziggy is not defined"
+'cleaners' => [
+    Hhxsv5\LaravelS\Illuminate\Cleaners\ZiggyCleaner::class,
+],
+```
+
 ## register_providers
 > `array` The `Service Provider` list, will be re-registered `each request`, and run method `boot()` if it exists. Usually, be used to clear the `Service Provider` which registers `Singleton` instances.
 
