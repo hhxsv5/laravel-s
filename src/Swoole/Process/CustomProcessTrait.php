@@ -57,25 +57,25 @@ trait CustomProcessTrait
                     });
                 }
 
-                $coroutineAvailable = class_exists('Swoole\Coroutine');
-                $coroutineRuntimeAvailable = class_exists('Swoole\Runtime');
-                $runProcess = function () use ($name, $processClass, $restartInterval, $swoole, $worker, $coroutineAvailable, $coroutineRuntimeAvailable) {
-                    $coroutineRuntimeAvailable && \Swoole\Runtime::enableCoroutine();
-                    $this->callWithCatchException([$processClass, 'callback'], [$swoole, $worker]);
-                    // Avoid frequent process creation
-                    if ($coroutineAvailable) {
-                        \Swoole\Coroutine::sleep($restartInterval);
-                        swoole_event_exit();
-                    } else {
-                        sleep($restartInterval);
-                    }
-                };
-                $coroutineAvailable ? \Swoole\Coroutine::create($runProcess) : $runProcess();
+                if (class_exists('Swoole\Runtime')) {
+                    \Swoole\Runtime::enableCoroutine();
+                }
+
+                $this->callWithCatchException([$processClass, 'callback'], [$swoole, $worker]);
+
+                // Avoid frequent process creation
+                if (class_exists('Swoole\Coroutine')) {
+                    \Swoole\Coroutine::sleep($restartInterval);
+                } else {
+                    sleep($restartInterval);
+                }
             };
 
             $redirect = isset($item['redirect']) ? $item['redirect'] : false;
             $pipe = isset($item['pipe']) ? $item['pipe'] : 0;
-            $process = new Process($callback, $redirect, $pipe);
+            $process = version_compare(SWOOLE_VERSION, '4.3.0', '>=')
+                ? new Process($callback, $redirect, $pipe, class_exists('Swoole\Coroutine'))
+                : new Process($callback, $redirect, $pipe);
             if (isset($item['queue'])) {
                 if (empty($item['queue'])) {
                     $process->useQueue();
