@@ -90,20 +90,25 @@ trait CustomProcessTrait
         return $processList;
     }
 
-    public function makeProcess($callback, $item)
+    /**
+     * @param callable $callback
+     * @param array $processConfig process config from config/laravels.php
+     * @return Process
+     */
+    public function makeProcess(callable $callback, array $processConfig)
     {
-        $redirect = isset($item['redirect']) ? $item['redirect'] : false;
-        $pipe = isset($item['pipe']) ? $item['pipe'] : 0;
+        $redirect = isset($processConfig['redirect']) ? $processConfig['redirect'] : false;
+        $pipe = isset($processConfig['pipe']) ? $processConfig['pipe'] : 0;
         $process = version_compare(SWOOLE_VERSION, '4.3.0', '>=')
             ? new Process($callback, $redirect, $pipe, class_exists('Swoole\Coroutine'))
             : new Process($callback, $redirect, $pipe);
-        if (isset($item['queue'])) {
-            if (empty($item['queue'])) {
+        if (isset($processConfig['queue'])) {
+            if (empty($processConfig['queue'])) {
                 $process->useQueue();
             } else {
-                $msgKey = isset($item['msg_key']) ? $item['msg_key'] : 0;
-                $mode = isset($item['mode']) ? $item['mode'] : 2;
-                $capacity = isset($item['capacity']) ? $item['capacity'] : -1;
+                $msgKey = isset($processConfig['msg_key']) ? $processConfig['msg_key'] : 0;
+                $mode = isset($processConfig['mode']) ? $processConfig['mode'] : 2;
+                $capacity = isset($processConfig['capacity']) ? $processConfig['capacity'] : -1;
                 $process->useQueue($msgKey, $mode, $capacity);
             }
         }
