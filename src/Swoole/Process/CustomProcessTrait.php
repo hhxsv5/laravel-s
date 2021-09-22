@@ -71,24 +71,43 @@ trait CustomProcessTrait
                 }
             };
 
-            $redirect = isset($item['redirect']) ? $item['redirect'] : false;
-            $pipe = isset($item['pipe']) ? $item['pipe'] : 0;
-            $process = version_compare(SWOOLE_VERSION, '4.3.0', '>=')
-                ? new Process($callback, $redirect, $pipe, class_exists('Swoole\Coroutine'))
-                : new Process($callback, $redirect, $pipe);
-            if (isset($item['queue'])) {
-                if (empty($item['queue'])) {
-                    $process->useQueue();
-                } else {
-                    $msgKey = isset($item['msg_key']) ? $item['msg_key'] : 0;
-                    $mode = isset($item['mode']) ? $item['mode'] : 2;
-                    $capacity = isset($item['capacity']) ? $item['capacity'] : -1;
-                    $process->useQueue($msgKey, $mode, $capacity);
+            // for multiple processes
+            if (isset($item['num']) && $item['num'] > 1) {
+                for ($i = 0; $i < $item['num']; $i++) {
+                    $process = $this->makeProcess($callback, $item);
+                    $swoole->addProcess($process);
+                    $processList[$name . $i] = $process;
                 }
+
+                return $processList;
             }
+
+            // for single process
+            $process = $this->makeProcess($callback, $item);
             $swoole->addProcess($process);
             $processList[$name] = $process;
         }
         return $processList;
+    }
+
+    public function makeProcess($callback, $item)
+    {
+        $redirect = isset($item['redirect']) ? $item['redirect'] : false;
+        $pipe = isset($item['pipe']) ? $item['pipe'] : 0;
+        $process = version_compare(SWOOLE_VERSION, '4.3.0', '>=')
+            ? new Process($callback, $redirect, $pipe, class_exists('Swoole\Coroutine'))
+            : new Process($callback, $redirect, $pipe);
+        if (isset($item['queue'])) {
+            if (empty($item['queue'])) {
+                $process->useQueue();
+            } else {
+                $msgKey = isset($item['msg_key']) ? $item['msg_key'] : 0;
+                $mode = isset($item['mode']) ? $item['mode'] : 2;
+                $capacity = isset($item['capacity']) ? $item['capacity'] : -1;
+                $process->useQueue($msgKey, $mode, $capacity);
+            }
+        }
+
+        return $process;
     }
 }
