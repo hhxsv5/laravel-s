@@ -1051,7 +1051,6 @@ To make our main server support more protocols not just Http and WebSocket, we b
             'redirect' => false, // Whether redirect stdin/stdout, true or false
             'pipe'     => 0,     // The type of pipeline, 0: no pipeline 1: SOCK_STREAM 2: SOCK_DGRAM
             'enable'   => true,  // Whether to enable, default true
-            //'num'    => 3   // To create multiple processes of this class, default is 1
             //'queue'    => [ // Enable message queue as inter-process communication, configure empty array means use default parameters
             //    'msg_key'  => 0,    // The key of the message queue. Default: ftok(__FILE__, 1).
             //    'mode'     => 2,    // Communication mode, default is 2, which means contention mode
