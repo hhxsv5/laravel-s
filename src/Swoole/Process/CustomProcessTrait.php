@@ -79,7 +79,7 @@ trait CustomProcessTrait
                     $processList[$name . $i] = $process;
                 }
 
-                return $processList;
+                continue;
             }
 
             // for single process
