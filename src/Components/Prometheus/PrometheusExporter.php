@@ -95,7 +95,7 @@ class PrometheusExporter
     public function getSwooleMetrics()
     {
         $swooleStats = app('swoole')->stats();
-        return [
+        $metrics = [
             [
                 'name'  => 'swoole_connection_num',
                 'help'  => '',
@@ -115,24 +115,41 @@ class PrometheusExporter
                 'value' => $swooleStats['idle_worker_num'],
             ],
             [
-                'name'  => 'swoole_task_worker_num',
-                'help'  => '',
-                'type'  => 'gauge',
-                'value' => $swooleStats['task_worker_num'],
-            ],
-            [
-                'name'  => 'swoole_tasking_num',
-                'help'  => '',
-                'type'  => 'gauge',
-                'value' => $swooleStats['tasking_num'],
-            ],
-            [
                 'name'  => 'swoole_request_count',
                 'help'  => '',
                 'type'  => 'gauge',
                 'value' => $swooleStats['request_count'],
             ],
         ];
+        if (isset($swooleStats['task_idle_worker_num'])) {
+            $metrics[] = [
+                'name'  => 'swoole_task_idle_worker_num',
+                'help'  => '',
+                'type'  => 'gauge',
+                'value' => $swooleStats['task_idle_worker_num'],
+            ];
+            $metrics[] = [
+                'name'  => 'swoole_task_worker_num',
+                'help'  => '',
+                'type'  => 'gauge',
+                'value' => $swooleStats['task_worker_num'],
+            ];
+            $metrics[] = [
+                'name'  => 'swoole_tasking_num',
+                'help'  => '',
+                'type'  => 'gauge',
+                'value' => $swooleStats['tasking_num'],
+            ];
+        }
+        if (isset($swooleStats['coroutine_num'])) {
+            $metrics[] = [
+                'name'  => 'swoole_coroutine_num',
+                'help'  => '',
+                'type'  => 'gauge',
+                'value' => $swooleStats['coroutine_num'],
+            ];
+        }
+        return $metrics;
     }
 
     public function getApcuMetrics()
