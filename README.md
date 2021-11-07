@@ -1148,17 +1148,17 @@ To make our main server support more protocols not just Http and WebSocket, we b
 1. Require extension [APCu](https://pecl.php.net/package/apcu), please install it by `pecl install apcu`.
 
 2. Copy the configuration file `prometheus.php` to the `config` directory of your project. Modify the configuration as appropriate.
-```bash
-# Execute commands in the project root directory
-cp vendor/hhxsv5/laravel-s/config/prometheus.php config/
-```
-If your project is `Lumen`, you also need to manually load the configuration `$app->configure('prometheus');` in `bootstrap/app.php`.
+    ```bash
+    # Execute commands in the project root directory
+    cp vendor/hhxsv5/laravel-s/config/prometheus.php config/
+    ```
+    If your project is `Lumen`, you also need to manually load the configuration `$app->configure('prometheus');` in `bootstrap/app.php`.
 
 3. Configure `global` middleware: `Hhxsv5\LaravelS\Components\Prometheus\PrometheusMiddleware`.
 
-4.Register ServiceProvider: `Hhxsv5\LaravelS\Components\Prometheus\PrometheusServiceProvider`.
+4. Register ServiceProvider: `Hhxsv5\LaravelS\Components\Prometheus\PrometheusServiceProvider`.
 
-4. Create the route to output metrics.
+5. Create the route to output metrics.
 ```php
 use Hhxsv5\LaravelS\Components\Prometheus\PrometheusExporter;
 
@@ -1168,7 +1168,7 @@ Route::get('/actuator/prometheus', function () {
 });
 ```
 
-5. Complete the configuration of Prometheus and start it.
+6. Complete the configuration of Prometheus and start it.
 ```yml
 global:
   scrape_interval: 5s
@@ -1185,7 +1185,7 @@ scrape_configs:
     - 127.0.0.1:5200 # The ip and port of the monitored service
 ```
 
-6. Start Grafana, import [Panel json](https://github.com/hhxsv5/laravel-s/tree/master/src/Components/Prometheus/laravels-grafana-panel.json).
+7. Start Grafana, import [Panel json](https://github.com/hhxsv5/laravel-s/tree/master/src/Components/Prometheus/laravels-grafana-panel.json).
 
 ## Other features
 

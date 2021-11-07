@@ -1162,17 +1162,17 @@ class WebSocketService implements WebSocketHandlerInterface
 1. 依赖[APCu](https://pecl.php.net/package/apcu)扩展，请先安装它 `pecl install apcu`。
 
 2. 拷贝配置文件`prometheus.php`到你的工程`config`目录。视情况修改配置。
-```bash
-# 项目根目录下执行命令
-cp vendor/hhxsv5/laravel-s/config/prometheus.php config/
-```
-如果是`Lumen`工程，还需要在`bootstrap/app.php`中手动加载配置`$app->configure('prometheus');`。
+    ```bash
+    # 项目根目录下执行命令
+    cp vendor/hhxsv5/laravel-s/config/prometheus.php config/
+    ```
+    如果是`Lumen`工程，还需要在`bootstrap/app.php`中手动加载配置`$app->configure('prometheus');`。
 
 3. 配置`全局`中间件：`Hhxsv5\LaravelS\Components\Prometheus\PrometheusMiddleware`。
 
 4. 注册ServiceProvider：`Hhxsv5\LaravelS\Components\Prometheus\PrometheusServiceProvider`。
 
-4. 创建路由，输出监控指标数据。
+5. 创建路由，输出监控指标数据。
 ```php
 use Hhxsv5\LaravelS\Components\Prometheus\PrometheusExporter;
 
@@ -1182,7 +1182,7 @@ Route::get('/actuator/prometheus', function () {
 });
 ```
 
-5. 完成Prometheus的配置，启动Prometheus。
+6. 完成Prometheus的配置，启动Prometheus。
 ```yml
 global:
   scrape_interval: 5s
@@ -1199,7 +1199,7 @@ scrape_configs:
     - 127.0.0.1:5200 # 被监控服务的ip与端口
 ```
 
-6. 启动Grafana，导入[Panel json](https://github.com/hhxsv5/laravel-s/tree/master/src/Components/Prometheus/laravels-grafana-panel.json)。
+7. 启动Grafana，导入[Panel json](https://github.com/hhxsv5/laravel-s/tree/master/src/Components/Prometheus/laravels-grafana-panel.json)。
 
 ## 其他特性
 
