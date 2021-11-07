@@ -74,7 +74,7 @@ class PrometheusExporter
                 if (isset($this->routesByUses[$uses])) {
                     $uri = $this->routesByUses[$uses]['uri'];
                 }
-            } else { // Laravel
+            } elseif ($route instanceof \Illuminate\Routing\Route) { // Laravel
                 /**@var \Illuminate\Routing\Route $route */
                 $uri = $route->getUri();
             }
