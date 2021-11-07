@@ -1154,7 +1154,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ```
     If your project is `Lumen`, you also need to manually load the configuration `$app->configure('prometheus');` in `bootstrap/app.php`.
 
-3. Configure `global` middleware: `Hhxsv5\LaravelS\Components\Prometheus\PrometheusMiddleware`.
+3. Configure `global` middleware: `Hhxsv5\LaravelS\Components\Prometheus\PrometheusMiddleware`. In order to count the request time consumption as accurately as possible, PrometheusMiddleware must be the `first` global middleware, which needs to be placed in front of other middleware.
 
 4. Register ServiceProvider: `Hhxsv5\LaravelS\Components\Prometheus\PrometheusServiceProvider`.
 

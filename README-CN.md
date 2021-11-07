@@ -1168,7 +1168,7 @@ class WebSocketService implements WebSocketHandlerInterface
     ```
     如果是`Lumen`工程，还需要在`bootstrap/app.php`中手动加载配置`$app->configure('prometheus');`。
 
-3. 配置`全局`中间件：`Hhxsv5\LaravelS\Components\Prometheus\PrometheusMiddleware`。
+3. 配置`全局`中间件：`Hhxsv5\LaravelS\Components\Prometheus\PrometheusMiddleware`。为了尽可能精确地统计请求耗时，PrometheusMiddleware必须作为`第一个`全局中间件，需要放在其他中间件的前面。
 
 4. 注册ServiceProvider：`Hhxsv5\LaravelS\Components\Prometheus\PrometheusServiceProvider`。
 
