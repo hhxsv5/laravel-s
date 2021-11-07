@@ -68,6 +68,7 @@ class PrometheusExporter
         $routeKey = $method . $path;
         $uri = $path;
         if (!isset($this->routes[$routeKey])) {
+            // TODO: [1,[{"Closure":[]}],{"id":"1xx"}]
             $route = $request->route();
             if (is_array($route)) { // Lumen
                 $uses = $route[1]['uses'];

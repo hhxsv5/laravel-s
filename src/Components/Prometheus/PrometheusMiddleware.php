@@ -23,7 +23,12 @@ class PrometheusMiddleware
     public function handle($request, Closure $next)
     {
         $response = $next($request);
-        $this->prometheusExporter->observeRequest($request, $response);
-        return $response;
+        try {
+            $this->prometheusExporter->observeRequest($request, $response);
+        } catch (\Exception $e) {
+            app('log')->error('PrometheusMiddleware: failed to observe request', ['exception' => $e]);
+        } finally {
+            return $response;
+        }
     }
 }
