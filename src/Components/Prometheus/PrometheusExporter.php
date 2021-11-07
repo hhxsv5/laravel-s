@@ -50,7 +50,7 @@ class PrometheusExporter
         $hostName = current(swoole_get_local_ip()) ?: gethostname();
         $appName = config('app.name', 'LaravelS');
         $port = config('laravels.listen_port');
-        $this->instanceId = sprintf('%s-%s-%d', $appName, $hostName, $port);
+        $this->instanceId = sprintf('%s:%d', $hostName, $port);
         $this->appName = $appName;
     }
 
