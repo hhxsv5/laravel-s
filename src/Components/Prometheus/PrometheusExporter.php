@@ -219,7 +219,7 @@ class PrometheusExporter
 
     public function render()
     {
-        $defaultLabels = ['application' => $this->appName, 'instance' => $this->instanceId];
+        $defaultLabels = ['application' => $this->appName, 'instance_id' => $this->instanceId];
         $metrics = array_merge($this->getSystemLoadAvgMetrics(), $this->getSwooleMetrics(), $this->getApcuMetrics());
         $lines = [];
         foreach ($metrics as $metric) {
