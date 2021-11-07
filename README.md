@@ -1159,31 +1159,31 @@ To make our main server support more protocols not just Http and WebSocket, we b
 4. Register ServiceProvider: `Hhxsv5\LaravelS\Components\Prometheus\PrometheusServiceProvider`.
 
 5. Create the route to output metrics.
-```php
-use Hhxsv5\LaravelS\Components\Prometheus\PrometheusExporter;
+    ```php
+    use Hhxsv5\LaravelS\Components\Prometheus\PrometheusExporter;
 
-Route::get('/actuator/prometheus', function () {
-    $result = app(PrometheusExporter::class)->render();
-    return response($result, 200, ['Content-Type' => PrometheusExporter::REDNER_MIME_TYPE]);
-});
-```
+    Route::get('/actuator/prometheus', function () {
+        $result = app(PrometheusExporter::class)->render();
+        return response($result, 200, ['Content-Type' => PrometheusExporter::REDNER_MIME_TYPE]);
+    });
+    ```
 
 6. Complete the configuration of Prometheus and start it.
-```yml
-global:
-  scrape_interval: 5s
-  scrape_timeout: 5s
-  evaluation_interval: 30s
-scrape_configs:
-- job_name: swoole-test
-  honor_timestamps: true
-  metrics_path: /actuator/prometheus
-  scheme: http
-  follow_redirects: true
-  static_configs:
-  - targets:
-    - 127.0.0.1:5200 # The ip and port of the monitored service
-```
+    ```yml
+    global:
+      scrape_interval: 5s
+      scrape_timeout: 5s
+      evaluation_interval: 30s
+    scrape_configs:
+    - job_name: swoole-test
+      honor_timestamps: true
+      metrics_path: /actuator/prometheus
+      scheme: http
+      follow_redirects: true
+      static_configs:
+      - targets:
+        - 127.0.0.1:5200 # The ip and port of the monitored service
+    ```
 
 7. Start Grafana, import [Panel json](https://github.com/hhxsv5/laravel-s/tree/master/src/Components/Prometheus/laravels-grafana-panel.json).
 

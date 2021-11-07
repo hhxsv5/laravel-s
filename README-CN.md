@@ -1173,31 +1173,31 @@ class WebSocketService implements WebSocketHandlerInterface
 4. 注册ServiceProvider：`Hhxsv5\LaravelS\Components\Prometheus\PrometheusServiceProvider`。
 
 5. 创建路由，输出监控指标数据。
-```php
-use Hhxsv5\LaravelS\Components\Prometheus\PrometheusExporter;
+    ```php
+    use Hhxsv5\LaravelS\Components\Prometheus\PrometheusExporter;
 
-Route::get('/actuator/prometheus', function () {
-    $result = app(PrometheusExporter::class)->render();
-    return response($result, 200, ['Content-Type' => PrometheusExporter::REDNER_MIME_TYPE]);
-});
-```
+    Route::get('/actuator/prometheus', function () {
+        $result = app(PrometheusExporter::class)->render();
+        return response($result, 200, ['Content-Type' => PrometheusExporter::REDNER_MIME_TYPE]);
+    });
+    ```
 
 6. 完成Prometheus的配置，启动Prometheus。
-```yml
-global:
-  scrape_interval: 5s
-  scrape_timeout: 5s
-  evaluation_interval: 30s
-scrape_configs:
-- job_name: swoole-test
-  honor_timestamps: true
-  metrics_path: /actuator/prometheus
-  scheme: http
-  follow_redirects: true
-  static_configs:
-  - targets:
-    - 127.0.0.1:5200 # 被监控服务的ip与端口
-```
+    ```yml
+    global:
+      scrape_interval: 5s
+      scrape_timeout: 5s
+      evaluation_interval: 30s
+    scrape_configs:
+    - job_name: swoole-test
+      honor_timestamps: true
+      metrics_path: /actuator/prometheus
+      scheme: http
+      follow_redirects: true
+      static_configs:
+      - targets:
+        - 127.0.0.1:5200 # 被监控服务的ip与端口
+    ```
 
 7. 启动Grafana，导入[Panel json](https://github.com/hhxsv5/laravel-s/tree/master/src/Components/Prometheus/laravels-grafana-panel.json)。
 
