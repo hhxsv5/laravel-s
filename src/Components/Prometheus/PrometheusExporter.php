@@ -22,16 +22,35 @@ class PrometheusExporter
     public function __construct(array $config)
     {
         $this->config = $config;
-        $this->routes = app('router')->getRoutes();
+        $routes = app('router')->getRoutes();
+        if (is_array($routes)) { // Lumen
+            // ['GET/'=>['method'=>'GET','uri'=>'/','action'=>['uses'=>'', 'middleware'=>[]]]]
+            // ['GET/'=>['method'=>'GET','uri'=>'/','action'=>[Closure]]
+            $this->routes = $routes;
+        } else { // Laravel
+            /**@var  \Illuminate\Routing\RouteCollection $routes */
+            $allRoutesRef = (new \ReflectionObject($routes))->getProperty('allRoutes');
+            $allRoutesRef->setAccessible(true);
+            $allRoutes = $allRoutesRef->getValue($routes);
+            foreach ($allRoutes as $methodUri => $route) {
+                /**@var \Illuminate\Routing\Route $route */
+                $uri = '/' . $route->getUri();
+                $action = $route->getAction();
+                foreach ($route->getMethods() as $method) {
+                    $this->routes[$method . $uri] = ['method' => $method, 'uri' => $uri, 'action' => $action];
+                }
+            }
+        }
         foreach ($this->routes as $route) {
-            if (isset($route['action']['uses'])) {
+            /**@var \Illuminate\Routing\Route $route */
+            if (isset($route['action']['uses']) && is_string($route['action']['uses'])) {
                 $this->routesByUses[$route['action']['uses']] = $route;
             }
         }
         $hostName = current(swoole_get_local_ip()) ?: gethostname();
-        $appName = config('app.name');
+        $appName = config('app.name', 'LaravelS');
         $port = config('laravels.listen_port');
-        $this->instanceId = sprintf('%s:%s:%d', $hostName, $appName, $port);
+        $this->instanceId = sprintf('%s-%s-%d', $appName, $hostName, $port);
         $this->appName = $appName;
     }
 
@@ -47,14 +66,17 @@ class PrometheusExporter
         $method = $request->getMethod();
         $path = $request->getPathInfo();
         $routeKey = $method . $path;
-        if (isset($this->routes[$routeKey])) {
-            $uri = $path;
-        } else {
+        $uri = $path;
+        if (!isset($this->routes[$routeKey])) {
             $route = $request->route();
-            if (isset($route[1]['uses'], $this->routesByUses[$route[1]['uses']])) {
-                $uri = $this->routesByUses[$route[1]['uses']]['uri'];
-            } else {
-                $uri = $path;
+            if (is_array($route)) { // Lumen
+                $uses = $route[1]['uses'];
+                if (isset($this->routesByUses[$uses])) {
+                    $uri = $this->routesByUses[$uses]['uri'];
+                }
+            } else { // Laravel
+                /**@var \Illuminate\Routing\Route $route */
+                $uri = $route->getUri();
             }
         }
 
