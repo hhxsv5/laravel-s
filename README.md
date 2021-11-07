@@ -46,6 +46,7 @@ Table of Contents
 * [Custom process](#custom-process)
 * [Common components](#common-components)
     * [Apollo](#apollo)
+    * [Prometheus](#prometheus)
 * [Other features](#other-features)
     * [Configure Swoole events](#configure-swoole-events)
     * [Serverless](#serverless)
@@ -1140,6 +1141,51 @@ To make our main server support more protocols not just Http and WebSocket, we b
 | apollo-client-ip | IP of current instance, can also be used for grayscale publishing | Local intranet IP | --apollo-client-ip=10.2.1.83 |
 | apollo-pull-timeout | Timeout time(seconds) when pulling configuration | 5 | --apollo-pull-timeout=5 |
 | apollo-backup-old-env | Whether to backup the old configuration file when updating the configuration file `.env` | false | --apollo-backup-old-env |
+
+### Prometheus
+> Support Prometheus monitoring and alarm, Grafana visually view monitoring metrics. Please refer to [Docker Compose](https://github.com/hhxsv5/docker) for the environment construction of Prometheus and Grafana.
+
+1. Require extension [APCu](https://pecl.php.net/package/apcu), please install it by `pecl install apcu`.
+
+2. Copy the configuration file `prometheus.php` to the `config` directory of your project. Modify the configuration as appropriate.
+```bash
+# Execute commands in the project root directory
+cp vendor/hhxsv5/laravel-s/config/prometheus.php config/
+```
+If your project is `Lumen`, you also need to manually load the configuration `$app->configure('prometheus');` in `bootstrap/app.php`.
+
+3. Configure `global` middleware: `Hhxsv5\LaravelS\Components\Prometheus\PrometheusMiddleware`.
+
+4.Register ServiceProvider: `Hhxsv5\LaravelS\Components\Prometheus\PrometheusServiceProvider`.
+
+4. Create the route to output metrics.
+```php
+use Hhxsv5\LaravelS\Components\Prometheus\PrometheusExporter;
+
+Route::get('/actuator/prometheus', function () {
+    $result = app(PrometheusExporter::class)->render();
+    return response($result, 200, ['Content-Type' => PrometheusExporter::REDNER_MIME_TYPE]);
+});
+```
+
+5. Complete the configuration of Prometheus and start it.
+```yml
+global:
+  scrape_interval: 5s
+  scrape_timeout: 5s
+  evaluation_interval: 30s
+scrape_configs:
+- job_name: swoole-test
+  honor_timestamps: true
+  metrics_path: /actuator/prometheus
+  scheme: http
+  follow_redirects: true
+  static_configs:
+  - targets:
+    - 127.0.0.1:5200 # The ip and port of the monitored service
+```
+
+6. Start Grafana, import [Panel json](https://github.com/hhxsv5/laravel-s/tree/master/src/Components/Prometheus/laravels-grafana-panel.json).
 
 ## Other features
 
