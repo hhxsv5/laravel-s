@@ -1159,7 +1159,7 @@ class WebSocketService implements WebSocketHandlerInterface
 ### Prometheus
 > 支持Prometheus监控与告警，Grafana可视化查看监控指标。请参考[Docker Compose](https://github.com/hhxsv5/docker)完成Prometheus与Grafana的环境搭建。
 
-1. 依赖[APCu](https://pecl.php.net/package/apcu)扩展，请先安装它 `pecl install apcu`。
+1. 依赖[APCu >= 5.0.0](https://pecl.php.net/package/apcu)扩展，请先安装它 `pecl install apcu`。
 
 2. 拷贝配置文件`prometheus.php`到你的工程`config`目录。视情况修改配置。
     ```bash

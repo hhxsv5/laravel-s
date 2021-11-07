@@ -1145,7 +1145,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 ### Prometheus
 > Support Prometheus monitoring and alarm, Grafana visually view monitoring metrics. Please refer to [Docker Compose](https://github.com/hhxsv5/docker) for the environment construction of Prometheus and Grafana.
 
-1. Require extension [APCu](https://pecl.php.net/package/apcu), please install it by `pecl install apcu`.
+1. Require extension [APCu >= 5.0.0](https://pecl.php.net/package/apcu), please install it by `pecl install apcu`.
 
 2. Copy the configuration file `prometheus.php` to the `config` directory of your project. Modify the configuration as appropriate.
     ```bash

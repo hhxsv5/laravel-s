@@ -94,62 +94,67 @@ class PrometheusExporter
 
     public function getSwooleMetrics()
     {
-        $swooleStats = app('swoole')->stats();
-        $metrics = [
+        /**@var \Swoole\Http\Server $swoole */
+        $swoole = app('swoole');
+        $stats = $swoole->stats();
+        // Get worker_num/task_worker_num from setting for the old Swoole.
+        $setting = $swoole->setting;
+        if (!isset($stats['worker_num'])) {
+            $stats['worker_num'] = $setting['worker_num'];
+        }
+        if (!isset($stats['task_worker_num'])) {
+            $stats['task_worker_num'] = isset($setting['task_worker_num']) ? $setting['task_worker_num'] : 0;
+        }
+        return [
             [
                 'name'  => 'swoole_connection_num',
                 'help'  => '',
                 'type'  => 'gauge',
-                'value' => $swooleStats['connection_num'],
-            ],
-            [
-                'name'  => 'swoole_worker_num',
-                'help'  => '',
-                'type'  => 'gauge',
-                'value' => $swooleStats['worker_num'],
-            ],
-            [
-                'name'  => 'swoole_idle_worker_num',
-                'help'  => '',
-                'type'  => 'gauge',
-                'value' => $swooleStats['idle_worker_num'],
+                'value' => $stats['connection_num'],
             ],
             [
                 'name'  => 'swoole_request_count',
                 'help'  => '',
                 'type'  => 'gauge',
-                'value' => $swooleStats['request_count'],
+                'value' => $stats['request_count'],
             ],
-        ];
-        if (isset($swooleStats['task_idle_worker_num'])) {
-            $metrics[] = [
-                'name'  => 'swoole_task_idle_worker_num',
+            [
+                'name'  => 'swoole_worker_num',
                 'help'  => '',
                 'type'  => 'gauge',
-                'value' => $swooleStats['task_idle_worker_num'],
-            ];
-            $metrics[] = [
+                'value' => $stats['worker_num'],
+            ],
+            [
+                'name'  => 'swoole_idle_worker_num',
+                'help'  => '',
+                'type'  => 'gauge',
+                'value' => isset($stats['idle_worker_num']) ? $stats['idle_worker_num'] : 0,
+            ],
+            [
                 'name'  => 'swoole_task_worker_num',
                 'help'  => '',
                 'type'  => 'gauge',
-                'value' => $swooleStats['task_worker_num'],
-            ];
-            $metrics[] = [
+                'value' => $stats['task_worker_num'],
+            ],
+            [
+                'name'  => 'swoole_task_idle_worker_num',
+                'help'  => '',
+                'type'  => 'gauge',
+                'value' => isset($stats['task_idle_worker_num']) ? $stats['task_idle_worker_num'] : 0,
+            ],
+            [
                 'name'  => 'swoole_tasking_num',
                 'help'  => '',
                 'type'  => 'gauge',
-                'value' => $swooleStats['tasking_num'],
-            ];
-        }
-        if (isset($swooleStats['coroutine_num'])) {
-            $metrics[] = [
+                'value' => $stats['tasking_num'],
+            ],
+            [
                 'name'  => 'swoole_coroutine_num',
                 'help'  => '',
                 'type'  => 'gauge',
-                'value' => $swooleStats['coroutine_num'],
-            ];
-        }
-        return $metrics;
+                'value' => isset($stats['coroutine_num']) ? $stats['coroutine_num'] : 0,
+            ],
+        ];
     }
 
     public function getApcuMetrics()
