@@ -19,7 +19,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 1,
-  "iteration": 1636337435293,
+  "iteration": 1636438610858,
   "links": [],
   "panels": [
     {
@@ -69,25 +69,25 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(system_load_average_1m{application=\"$application\",instance_id=~\"$instance\"}) by (application, instance_id)",
+          "expr": "sum(system_load_average_1m{application=\"$application\",instance=~\"$instance\"}) by (application, instance)",
           "interval": "",
-          "legendFormat": "{{application}}-{{instance_id}} 1分钟",
+          "legendFormat": "{{application}}-{{instance}} 1m",
           "refId": "A"
         },
         {
           "exemplar": true,
-          "expr": "sum(system_load_average_5m{application=\"$application\",instance_id=~\"$instance\"}) by (application, instance_id)",
+          "expr": "sum(system_load_average_5m{application=\"$application\",instance=~\"$instance\"}) by (application, instance)",
           "hide": false,
           "interval": "",
-          "legendFormat": "{{application}}-{{instance_id}} 5分钟",
+          "legendFormat": "{{application}}-{{instance}} 5m",
           "refId": "B"
         },
         {
           "exemplar": true,
-          "expr": "sum(system_load_average_15m{application=\"$application\",instance_id=~\"$instance\"}) by (application, instance_id)",
+          "expr": "sum(system_load_average_15m{application=\"$application\",instance=~\"$instance\"}) by (application, instance)",
           "hide": false,
           "interval": "",
-          "legendFormat": "{{application}}-{{instance_id}} 15分钟",
+          "legendFormat": "{{application}}-{{instance}} 15m",
           "refId": "C"
         }
       ],
@@ -95,7 +95,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "平均负载",
+      "title": "Load Average",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -181,9 +181,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "swoole_connection_num{application=\"$application\",instance_id=~\"$instance\"}",
+          "expr": "swoole_connection_num{application=\"$application\",instance=~\"$instance\"}",
           "interval": "",
-          "legendFormat": "{{application}}-{{instance_id}}",
+          "legendFormat": "{{application}}-{{instance}}",
           "refId": "A"
         }
       ],
@@ -191,7 +191,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "连接统计",
+      "title": "Connection Num",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -307,7 +307,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "总RPS",
+      "title": "Total RPS",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -417,7 +417,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "RPS排行榜",
+      "title": "Top RPS",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -503,18 +503,18 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "swoole_worker_num{application=\"$application\",instance_id=~\"$instance\"}",
+          "expr": "swoole_worker_num{application=\"$application\",instance=~\"$instance\"}",
           "hide": false,
           "interval": "",
-          "legendFormat": "{{application}}-{{instance_id}}-Worker总数",
+          "legendFormat": "{{application}}-{{instance}} Total",
           "refId": "A"
         },
         {
           "exemplar": true,
-          "expr": "swoole_idle_worker_num{application=\"$application\",instance_id=~\"$instance\"}",
+          "expr": "swoole_idle_worker_num{application=\"$application\",instance=~\"$instance\"}",
           "hide": false,
           "interval": "",
-          "legendFormat": "{{application}}-{{instance_id}}-空闲Worker数",
+          "legendFormat": "{{application}}-{{instance}} Idle",
           "refId": "B"
         }
       ],
@@ -522,7 +522,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Worker统计",
+      "title": "Worker Num",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -609,25 +609,25 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "swoole_task_worker_num{application=\"$application\",instance_id=~\"$instance\"}",
+          "expr": "swoole_task_worker_num{application=\"$application\",instance=~\"$instance\"}",
           "interval": "",
-          "legendFormat": "{{application}}-{{instance_id}}-Worker总数",
+          "legendFormat": "{{application}}-{{instance}} Total",
           "refId": "A"
         },
         {
           "exemplar": true,
-          "expr": "swoole_task_idle_worker_num{application=\"$application\",instance_id=~\"$instance\"}",
+          "expr": "swoole_task_idle_worker_num{application=\"$application\",instance=~\"$instance\"}",
           "hide": false,
           "interval": "",
-          "legendFormat": "{{application}}-{{instance_id}}-空闲Worker数",
+          "legendFormat": "{{application}}-{{instance}} Idle",
           "refId": "B"
         },
         {
           "exemplar": true,
-          "expr": "swoole_tasking_num{application=\"$application\",instance_id=~\"$instance\"}",
+          "expr": "swoole_tasking_num{application=\"$application\",instance=~\"$instance\"}",
           "hide": false,
           "interval": "",
-          "legendFormat": "{{application}}-{{instance_id}}-排队任务数",
+          "legendFormat": "{{application}}-{{instance}} Tasking",
           "refId": "C"
         }
       ],
@@ -635,7 +635,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Task Worker统计",
+      "title": "Task Worker Num",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -735,7 +735,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "5XX统计",
+      "title": "Total 5xx",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -780,6 +780,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
+      "description": "",
       "fieldConfig": {
         "defaults": {},
         "overrides": []
@@ -833,7 +834,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "5XX错误率",
+      "title": "5xx Percentage",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -936,7 +937,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "耗时排行榜",
+      "title": "Top Duration",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -1022,20 +1023,20 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(apcu_seg_size{application=\"$application\",instance_id=~\"$instance\"}) by (application, instance_id)",
+          "expr": "sum(apcu_seg_size{application=\"$application\",instance=~\"$instance\"}) by (application, instance)",
           "instant": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{application}}-{{instance_id}} 总共",
+          "legendFormat": "{{application}}-{{instance}} Total",
           "refId": "A"
         },
         {
           "exemplar": true,
-          "expr": "sum(apcu_avail_mem{application=\"$application\",instance_id=~\"$instance\"}) by (application, instance_id)",
+          "expr": "sum(apcu_avail_mem{application=\"$application\",instance=~\"$instance\"}) by (application, instance)",
           "hide": false,
           "instant": false,
           "interval": "",
-          "legendFormat": "{{application}}-{{instance_id}} 可用",
+          "legendFormat": "{{application}}-{{instance}} Available",
           "refId": "B"
         }
       ],
@@ -1043,7 +1044,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "APCu内存",
+      "title": "APCu Memory",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1147,7 +1148,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "请求量排行榜(Bottom)",
+      "title": "Bottom Requests",
       "tooltip": {
         "shared": false,
         "sort": 2,
@@ -1251,7 +1252,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "请求量排行榜(TOP)",
+      "title": "Top Requests",
       "tooltip": {
         "shared": false,
         "sort": 2,
@@ -1342,7 +1343,7 @@
           ]
         },
         "datasource": null,
-        "definition": "label_values(swoole_connection_num{application=\"$application\"},instance_id)",
+        "definition": "label_values(swoole_connection_num{application=\"$application\"},instance)",
         "description": null,
         "error": null,
         "hide": 0,
@@ -1352,7 +1353,7 @@
         "name": "instance",
         "options": [],
         "query": {
-          "query": "label_values(swoole_connection_num{application=\"$application\"},instance_id)",
+          "query": "label_values(swoole_connection_num{application=\"$application\"},instance)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
@@ -1368,12 +1369,12 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "LaravelS Service Monitor",
   "uid": "GHNOMaF7z",
-  "version": 197
+  "version": 226
 }
