@@ -19,7 +19,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 1,
-  "iteration": 1636438610858,
+  "iteration": 1636440202723,
   "links": [],
   "panels": [
     {
@@ -1313,7 +1313,7 @@
         "error": null,
         "hide": 0,
         "includeAll": false,
-        "label": "application",
+        "label": "Application",
         "multi": false,
         "name": "application",
         "options": [],
@@ -1348,7 +1348,7 @@
         "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": "instance",
+        "label": "Instance",
         "multi": true,
         "name": "instance",
         "options": [],
@@ -1376,5 +1376,5 @@
   "timezone": "",
   "title": "LaravelS Service Monitor",
   "uid": "GHNOMaF7z",
-  "version": 226
+  "version": 227
 }
