@@ -10,6 +10,7 @@ class ContainerCleaner extends BaseCleaner
     private $properties = [
         // Property => Initial value
         'reboundCallbacks' => [],
+        'currentRoute'     => [], // For Lumen: fixed wrong $request->route()
     ];
 
     private $cleanProperties = [
