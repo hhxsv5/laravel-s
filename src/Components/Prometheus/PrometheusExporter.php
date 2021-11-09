@@ -13,7 +13,6 @@ class PrometheusExporter
     private $routes;
     private $routesByUses = [];
     private $appName;
-    private $instanceId;
 
     private static $secondsMetrics = [
         'http_server_requests_seconds_sum' => 'http_server_requests_seconds_sum',
@@ -47,11 +46,7 @@ class PrometheusExporter
                 $this->routesByUses[$route['action']['uses']] = $route;
             }
         }
-        $hostName = current(swoole_get_local_ip()) ?: gethostname();
-        $appName = config('app.name', 'LaravelS');
-        $port = config('laravels.listen_port');
-        $this->instanceId = sprintf('%s:%d', $hostName, $port);
-        $this->appName = $appName;
+        $this->appName = config('app.name', 'LaravelS');
     }
 
     public function observeRequest(Request $request, Response $response)
@@ -219,7 +214,7 @@ class PrometheusExporter
 
     public function render()
     {
-        $defaultLabels = ['application' => $this->appName, 'instance_id' => $this->instanceId];
+        $defaultLabels = ['application' => $this->appName];
         $metrics = array_merge($this->getSystemLoadAvgMetrics(), $this->getSwooleMetrics(), $this->getApcuMetrics());
         $lines = [];
         foreach ($metrics as $metric) {
