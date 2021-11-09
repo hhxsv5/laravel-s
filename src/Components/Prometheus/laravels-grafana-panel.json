@@ -19,7 +19,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 1,
-  "iteration": 1636440202723,
+  "iteration": 1636457037832,
   "links": [],
   "panels": [
     {
@@ -401,16 +401,6 @@
           "interval": "1",
           "legendFormat": "{{application}}-{{method}}-{{uri}}",
           "refId": "A"
-        },
-        {
-          "exemplar": true,
-          "expr": "sum(irate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application)",
-          "format": "time_series",
-          "hide": false,
-          "instant": false,
-          "interval": "1",
-          "legendFormat": "{{application}}",
-          "refId": "B"
         }
       ],
       "thresholds": [],
@@ -1369,12 +1359,12 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-2h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "LaravelS Service Monitor",
   "uid": "GHNOMaF7z",
-  "version": 227
+  "version": 230
 }
