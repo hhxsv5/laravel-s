@@ -125,6 +125,12 @@ class PrometheusExporter
         }
         return [
             [
+                'name'  => 'swoole_start_time',
+                'help'  => '',
+                'type'  => 'gauge',
+                'value' => $stats['start_time'],
+            ],
+            [
                 'name'  => 'swoole_connection_num',
                 'help'  => '',
                 'type'  => 'gauge',
