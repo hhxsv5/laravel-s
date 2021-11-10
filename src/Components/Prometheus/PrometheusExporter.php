@@ -10,8 +10,6 @@ class PrometheusExporter
     const REDNER_MIME_TYPE = 'text/plain; version=0.0.4';
 
     private $config;
-    private $routes;
-    private $routesByUses = [];
     private $appName;
 
     private static $secondsMetrics = [
@@ -21,31 +19,6 @@ class PrometheusExporter
     public function __construct(array $config)
     {
         $this->config = $config;
-        $routes = app('router')->getRoutes();
-        if (is_array($routes)) { // Lumen
-            // ['GET/'=>['method'=>'GET','uri'=>'/','action'=>['uses'=>'', 'middleware'=>[]]]]
-            // ['GET/'=>['method'=>'GET','uri'=>'/','action'=>[Closure]]
-            $this->routes = $routes;
-        } else { // Laravel
-            /**@var  \Illuminate\Routing\RouteCollection $routes */
-            $allRoutesRef = (new \ReflectionObject($routes))->getProperty('allRoutes');
-            $allRoutesRef->setAccessible(true);
-            $allRoutes = $allRoutesRef->getValue($routes);
-            foreach ($allRoutes as $methodUri => $route) {
-                /**@var \Illuminate\Routing\Route $route */
-                $uri = '/' . $route->getUri();
-                $action = $route->getAction();
-                foreach ($route->getMethods() as $method) {
-                    $this->routes[$method . $uri] = ['method' => $method, 'uri' => $uri, 'action' => $action];
-                }
-            }
-        }
-        foreach ($this->routes as $route) {
-            /**@var \Illuminate\Routing\Route $route */
-            if (isset($route['action']['uses']) && is_string($route['action']['uses'])) {
-                $this->routesByUses[$route['action']['uses']] = $route;
-            }
-        }
         $this->appName = config('app.name', 'LaravelS');
     }
 
@@ -58,25 +31,11 @@ class PrometheusExporter
             return;
         }
 
-        $method = $request->getMethod();
-        $path = $request->getPathInfo();
-        $routeKey = $method . $path;
-        $uri = $path;
-        if (!isset($this->routes[$routeKey])) {
-            // TODO: [1,[{"Closure":[]}],{"id":"1xx"}]
-            $route = $request->route();
-            if (is_array($route)) { // Lumen
-                $uses = $route[1]['uses'];
-                if (isset($this->routesByUses[$uses])) {
-                    $uri = $this->routesByUses[$uses]['uri'];
-                }
-            } elseif ($route instanceof \Illuminate\Routing\Route) { // Laravel
-                /**@var \Illuminate\Routing\Route $route */
-                $uri = $route->getUri();
-            }
-        }
-
-        $labels = http_build_query(['method' => $method, 'uri' => $uri, 'status' => $status]);
+        $labels = http_build_query([
+            'method' => $request->getMethod(),
+            'uri'    => $request->getPathInfo(),
+            'status' => $status,
+        ]);
         // prefix+metric_name+metric_type+metric_labels
         $countKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'http_server_requests_seconds_count', 'summary', $labels]);
         $sumKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'http_server_requests_seconds_sum', 'summary', $labels]);
