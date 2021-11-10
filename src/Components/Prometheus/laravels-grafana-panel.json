@@ -19,7 +19,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 2,
-  "iteration": 1636546613879,
+  "iteration": 1636553102593,
   "links": [],
   "panels": [
     {
@@ -89,6 +89,14 @@
           "interval": "",
           "legendFormat": "{{application}}-{{instance}} 15m",
           "refId": "C"
+        },
+        {
+          "exemplar": true,
+          "expr": "swoole_cpu_num{application=\"$application\",instance=~\"$instance\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{application}}-{{instance}} CPU",
+          "refId": "D"
         }
       ],
       "thresholds": [],
@@ -1429,7 +1437,6 @@
         "allValue": "",
         "current": {
           "selected": true,
-          "tags": [],
           "text": [
             "All"
           ],
@@ -1471,5 +1478,5 @@
   "timezone": "",
   "title": "LaravelS Service Monitor",
   "uid": "GHNOMaF7z",
-  "version": 13
+  "version": 15
 }
