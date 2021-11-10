@@ -38,7 +38,7 @@ class Client
         if (isset($settings['client_ip'])) {
             $this->clientIp = $settings['client_ip'];
         } else {
-            $this->clientIp = current(swoole_get_local_ip()) ?: null;
+            $this->clientIp = current(swoole_get_local_ip()) ?: gethostname();
         }
         if (isset($settings['pull_timeout'])) {
             $this->pullTimeout = (int)$settings['pull_timeout'];

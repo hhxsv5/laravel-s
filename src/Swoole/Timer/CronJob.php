@@ -110,7 +110,7 @@ abstract class CronJob implements CronJobInterface
 
     protected static function getCurrentInstanceId()
     {
-        return sprintf('%s:%d', current(swoole_get_local_ip()) ?: config('laravels.listen_ip'), config('laravels.listen_port'));
+        return sprintf('%s:%d', current(swoole_get_local_ip()) ?: gethostname(), config('laravels.listen_port'));
     }
 
     public static function isGlobalTimerAlive()
