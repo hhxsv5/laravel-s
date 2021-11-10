@@ -82,6 +82,12 @@ class PrometheusExporter
         }
         return [
             [
+                'name'  => 'swoole_cpu_num',
+                'help'  => '',
+                'type'  => 'gauge',
+                'value' => swoole_cpu_num(),
+            ],
+            [
                 'name'  => 'swoole_start_time',
                 'help'  => '',
                 'type'  => 'gauge',
