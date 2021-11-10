@@ -19,7 +19,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 2,
-  "iteration": 1636524379226,
+  "iteration": 1636540260025,
   "links": [],
   "panels": [
     {
@@ -1333,7 +1333,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "time()-swoole_start_time{application=\"$application\",instance=\"$instance\"}",
+          "expr": "time()-swoole_start_time{application=\"$application\",instance=~\"$instance\"}",
           "format": "time_series",
           "instant": true,
           "interval": "1",
@@ -1426,10 +1426,9 @@
         "useTags": false
       },
       {
-        "allValue": "",
+        "allValue": ".*",
         "current": {
-          "selected": true,
-          "tags": [],
+          "selected": false,
           "text": [
             "All"
           ],
@@ -1471,5 +1470,5 @@
   "timezone": "",
   "title": "LaravelS Service Monitor",
   "uid": "GHNOMaF7z",
-  "version": 6
+  "version": 11
 }
