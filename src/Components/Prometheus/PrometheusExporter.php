@@ -10,7 +10,6 @@ class PrometheusExporter
     const REDNER_MIME_TYPE = 'text/plain; version=0.0.4';
 
     private $config;
-    private $appName;
 
     private static $secondsMetrics = [
         'http_server_requests_seconds_sum' => 'http_server_requests_seconds_sum',
@@ -19,7 +18,6 @@ class PrometheusExporter
     public function __construct(array $config)
     {
         $this->config = $config;
-        $this->appName = config('app.name', 'LaravelS');
     }
 
     public function observeRequest(Request $request, Response $response)
@@ -179,7 +177,7 @@ class PrometheusExporter
 
     public function render()
     {
-        $defaultLabels = ['application' => $this->appName];
+        $defaultLabels = ['application' => $this->config['application']];
         $metrics = array_merge($this->getSystemLoadAvgMetrics(), $this->getSwooleMetrics(), $this->getApcuMetrics());
         $lines = [];
         foreach ($metrics as $metric) {
