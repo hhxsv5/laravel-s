@@ -11,8 +11,8 @@ class PrometheusExporter
 
     private $config;
 
-    private static $secondsMetrics = [
-        'http_server_requests_seconds_sum' => 'http_server_requests_seconds_sum',
+    private static $requestTimeMetricUnitMap = [
+        'http_server_requests_seconds_sum' => 1000000, // to μs
     ];
 
     public function __construct(array $config)
@@ -38,8 +38,8 @@ class PrometheusExporter
         $countKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'http_server_requests_seconds_count', 'summary', $labels]);
         $sumKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'http_server_requests_seconds_sum', 'summary', $labels]);
         apcu_inc($countKey, 1, $success, $this->config['apcu_key_max_age']);
-        // $cost to ms
-        apcu_inc($sumKey, round($cost * 1000), $success, $this->config['apcu_key_max_age']);
+        // $cost to us
+        apcu_inc($sumKey, round($cost * self::$requestTimeMetricUnitMap['http_server_requests_seconds_sum']), $success, $this->config['apcu_key_max_age']);
     }
 
     public function getSystemLoadAvgMetrics()
@@ -173,7 +173,7 @@ class PrometheusExporter
                 'name'   => $parts[1],
                 'help'   => '',
                 'type'   => $parts[2],
-                'value'  => isset(self::$secondsMetrics[$parts[1]]) ? $value / 1000 : $value,
+                'value'  => isset(self::$requestTimeMetricUnitMap[$parts[1]]) ? $value / self::$requestTimeMetricUnitMap[$parts[1]] : $value,
                 'labels' => $labels,
             ];
         }
