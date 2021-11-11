@@ -12,7 +12,7 @@ class PrometheusExporter
     private $config;
 
     private static $requestTimeMetricUnitMap = [
-        'http_server_requests_seconds_sum' => 1000, // to ms
+        'http_server_requests_seconds_sum' => 1000000, // to μs
     ];
 
     public function __construct(array $config)
