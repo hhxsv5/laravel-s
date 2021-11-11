@@ -35,10 +35,10 @@ return [
     | The max age(seconds) of apcu keys.
     |--------------------------------------------------------------------------
     |
-    | It's TTL of apcu keys. Default 600.
+    | It's TTL of apcu keys. Default 86400.
     |
     */
-    'apcu_key_max_age'   => env('PROMETHEUS_APCU_KEY_MAX_AGE', 600),
+    'apcu_key_max_age'   => env('PROMETHEUS_APCU_KEY_MAX_AGE', 86400),
 
     /*
     |--------------------------------------------------------------------------
