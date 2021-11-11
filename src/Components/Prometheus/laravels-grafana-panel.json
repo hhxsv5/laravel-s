@@ -19,7 +19,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 2,
-  "iteration": 1636553102593,
+  "iteration": 1636624756267,
   "links": [],
   "panels": [
     {
@@ -144,7 +144,7 @@
     },
     {
       "aliasColors": {},
-      "bars": false,
+      "bars": true,
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
@@ -161,17 +161,20 @@
         "y": 0
       },
       "hiddenSeries": false,
-      "id": 20,
+      "id": 23,
+      "interval": null,
       "legend": {
-        "avg": true,
+        "alignAsTable": false,
+        "avg": false,
         "current": true,
-        "max": true,
-        "min": true,
+        "max": false,
+        "min": false,
+        "rightSide": false,
         "show": true,
         "total": false,
         "values": true
       },
-      "lines": true,
+      "lines": false,
       "linewidth": 1,
       "nullPointMode": "null",
       "options": {
@@ -189,8 +192,11 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "swoole_connection_num{application=\"$application\",instance=~\"$instance\"}",
-          "interval": "",
+          "expr": "time()-swoole_start_time{application=\"$application\",instance=~\"$instance\"}",
+          "format": "time_series",
+          "instant": true,
+          "interval": "1",
+          "intervalFactor": 1,
           "legendFormat": "{{application}}-{{instance}}",
           "refId": "A"
         }
@@ -199,24 +205,26 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Connection Num",
+      "title": "Up Time",
       "tooltip": {
-        "shared": true,
-        "sort": 0,
+        "shared": false,
+        "sort": 2,
         "value_type": "individual"
       },
       "type": "graph",
       "xaxis": {
         "buckets": null,
-        "mode": "time",
+        "mode": "series",
         "name": null,
-        "show": true,
-        "values": []
+        "show": false,
+        "values": [
+          "current"
+        ]
       },
       "yaxes": [
         {
-          "$$hashKey": "object:1328",
-          "format": "short",
+          "$$hashKey": "object:568",
+          "format": "dtdhms",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -224,7 +232,7 @@
           "show": true
         },
         {
-          "$$hashKey": "object:1329",
+          "$$hashKey": "object:569",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -993,12 +1001,12 @@
         "y": 32
       },
       "hiddenSeries": false,
-      "id": 19,
+      "id": 20,
       "legend": {
-        "avg": false,
+        "avg": true,
         "current": true,
-        "max": false,
-        "min": false,
+        "max": true,
+        "min": true,
         "show": true,
         "total": false,
         "values": true
@@ -1021,28 +1029,17 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(apcu_seg_size{application=\"$application\",instance=~\"$instance\"}) by (application, instance)",
-          "instant": false,
+          "expr": "swoole_connection_num{application=\"$application\",instance=~\"$instance\"}",
           "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "{{application}}-{{instance}} Total",
+          "legendFormat": "{{application}}-{{instance}}",
           "refId": "A"
-        },
-        {
-          "exemplar": true,
-          "expr": "sum(apcu_avail_mem{application=\"$application\",instance=~\"$instance\"}) by (application, instance)",
-          "hide": false,
-          "instant": false,
-          "interval": "",
-          "legendFormat": "{{application}}-{{instance}} Available",
-          "refId": "B"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "APCu Memory",
+      "title": "Connection Num",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1059,8 +1056,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:1328",
-          "decimals": 2,
-          "format": "bytes",
+          "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -1293,6 +1289,114 @@
     },
     {
       "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 48
+      },
+      "hiddenSeries": false,
+      "id": 19,
+      "legend": {
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.11",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum(apcu_seg_size{application=\"$application\",instance=~\"$instance\"}) by (application, instance)",
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{application}}-{{instance}} Total",
+          "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(apcu_avail_mem{application=\"$application\",instance=~\"$instance\"}) by (application, instance)",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "{{application}}-{{instance}} Available",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "APCu Memory",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1328",
+          "decimals": 2,
+          "format": "bytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1329",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
       "bars": true,
       "dashLength": 10,
       "dashes": false,
@@ -1310,7 +1414,7 @@
         "y": 49
       },
       "hiddenSeries": false,
-      "id": 23,
+      "id": 24,
       "interval": null,
       "legend": {
         "alignAsTable": false,
@@ -1341,7 +1445,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "time()-swoole_start_time{application=\"$application\",instance=~\"$instance\"}",
+          "expr": "swoole_request_count{application=\"$application\",instance=~\"$instance\"}",
           "format": "time_series",
           "instant": true,
           "interval": "1",
@@ -1354,7 +1458,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Up Time",
+      "title": "Total Requests",
       "tooltip": {
         "shared": false,
         "sort": 2,
@@ -1373,7 +1477,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:568",
-          "format": "dtdhms",
+          "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -1437,6 +1541,7 @@
         "allValue": "",
         "current": {
           "selected": true,
+          "tags": [],
           "text": [
             "All"
           ],
@@ -1478,5 +1583,5 @@
   "timezone": "",
   "title": "LaravelS Service Monitor",
   "uid": "GHNOMaF7z",
-  "version": 15
+  "version": 21
 }
