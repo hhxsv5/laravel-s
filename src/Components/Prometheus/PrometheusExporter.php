@@ -12,7 +12,7 @@ class PrometheusExporter
     private $config;
 
     private static $requestTimeMetricUnitMap = [
-        'http_server_requests_seconds_sum' => 1000000, // to μs
+        'http_server_requests_seconds_sum' => 1000, // to ms
     ];
 
     public function __construct(array $config)
@@ -38,7 +38,6 @@ class PrometheusExporter
         $countKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'http_server_requests_seconds_count', 'summary', $labels]);
         $sumKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'http_server_requests_seconds_sum', 'summary', $labels]);
         apcu_inc($countKey, 1, $success, $this->config['apcu_key_max_age']);
-        // $cost to us
         apcu_inc($sumKey, round($cost * self::$requestTimeMetricUnitMap['http_server_requests_seconds_sum']), $success, $this->config['apcu_key_max_age']);
     }
 
