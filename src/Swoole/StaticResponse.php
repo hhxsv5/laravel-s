@@ -19,7 +19,9 @@ class StaticResponse extends Response
     public function sendContent()
     {
         $file = $this->laravelResponse->getFile();
-        $this->swooleResponse->header('Content-Type', $file->getMimeType());
+        if (!$this->laravelResponse->headers->has('Content-Type')) {
+            $this->swooleResponse->header('Content-Type', $file->getMimeType());
+        }
         if ($this->laravelResponse->getStatusCode() == BinaryFileResponse::HTTP_NOT_MODIFIED) {
             $this->swooleResponse->end();
             return;
