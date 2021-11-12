@@ -1182,9 +1182,7 @@ class WebSocketService implements WebSocketHandlerInterface
     });
     ```
 
-6. 配置并打开`.env`文件里的开关: `PROMETHEUS_OBSERVE_REQUEST=true`。
-
-7. 完成Prometheus的配置，启动Prometheus。
+6. 完成Prometheus的配置，启动Prometheus。
     ```yml
     global:
       scrape_interval: 5s

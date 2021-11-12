@@ -1168,9 +1168,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
     });
     ```
 
-6. Configure and turn on the switch in the `.env` file: `PROMETHEUS_OBSERVE_REQUEST=true`.
-
-7. Complete the configuration of Prometheus and start it.
+6. Complete the configuration of Prometheus and start it.
     ```yml
     global:
       scrape_interval: 5s
