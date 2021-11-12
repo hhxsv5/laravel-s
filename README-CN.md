@@ -1182,7 +1182,9 @@ class WebSocketService implements WebSocketHandlerInterface
     });
     ```
 
-6. 完成Prometheus的配置，启动Prometheus。
+6. 配置并打开`.env`文件里的开关: `PROMETHEUS_OBSERVE_REQUEST=true`。
+
+7. 完成Prometheus的配置，启动Prometheus。
     ```yml
     global:
       scrape_interval: 5s
@@ -1199,7 +1201,8 @@ class WebSocketService implements WebSocketHandlerInterface
         - 127.0.0.1:5200 # 被监控服务的ip与端口
     ```
 
-7. 启动Grafana，导入[Panel json](https://github.com/hhxsv5/laravel-s/tree/master/src/Components/Prometheus/laravels-grafana-panel.json)。
+8. 启动Grafana，导入[Panel json](https://github.com/hhxsv5/laravel-s/tree/master/grafana-dashboard.json)。
+<img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/master/grafana-dashboard.png" height="800px" alt="Grafana Dashboard">
 
 ## 其他特性
 

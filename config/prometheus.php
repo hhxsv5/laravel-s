@@ -4,11 +4,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Whether to observe the request and count request to APCu
+    |--------------------------------------------------------------------------
+    | Default false.
+    */
+    'observe_request'    => env('PROMETHEUS_OBSERVE_REQUEST', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | The name of the application
     |--------------------------------------------------------------------------
-    | APP_NAME is used by default
+    | Default APP_NAME.
     */
-    'application'        => env('APP_NAME', 'Laravel'),
+    'application'        => env('PROMETHEUS_APP_NAME', env('APP_NAME', 'Laravel')),
 
     /*
     |--------------------------------------------------------------------------
@@ -35,7 +43,7 @@ return [
     | The max age(seconds) of apcu keys.
     |--------------------------------------------------------------------------
     |
-    | It's TTL of apcu keys. Default 86400.
+    | It's TTL of apcu keys. Default 86400s(1 day).
     |
     */
     'apcu_key_max_age'   => env('PROMETHEUS_APCU_KEY_MAX_AGE', 86400),

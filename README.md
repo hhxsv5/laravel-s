@@ -1168,7 +1168,9 @@ To make our main server support more protocols not just Http and WebSocket, we b
     });
     ```
 
-6. Complete the configuration of Prometheus and start it.
+6. Configure and turn on the switch in the `.env` file: `PROMETHEUS_OBSERVE_REQUEST=true`.
+
+7. Complete the configuration of Prometheus and start it.
     ```yml
     global:
       scrape_interval: 5s
@@ -1185,7 +1187,8 @@ To make our main server support more protocols not just Http and WebSocket, we b
         - 127.0.0.1:5200 # The ip and port of the monitored service
     ```
 
-7. Start Grafana, import [Panel json](https://github.com/hhxsv5/laravel-s/tree/master/src/Components/Prometheus/laravels-grafana-panel.json).
+8. Start Grafana, import [Panel json](https://github.com/hhxsv5/laravel-s/tree/master/grafana-dashboard.json).
+<img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/master/grafana-dashboard.png" height="800px" alt="Grafana Dashboard">
 
 ## Other features
 
