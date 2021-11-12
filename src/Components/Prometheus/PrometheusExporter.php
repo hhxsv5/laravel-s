@@ -22,6 +22,10 @@ class PrometheusExporter
 
     public function observeRequest(Request $request, Response $response)
     {
+        if (!$this->config['observe_request']) {
+            return;
+        }
+
         $cost = microtime(true) - $request->server('REQUEST_TIME_FLOAT');
         $status = $response->getStatusCode();
         if (isset($this->config['ignored_http_codes'][$status])) {

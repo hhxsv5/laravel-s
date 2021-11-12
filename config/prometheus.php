@@ -6,9 +6,9 @@ return [
     |--------------------------------------------------------------------------
     | Whether to observe the request and count request to APCu
     |--------------------------------------------------------------------------
-    | Default false.
+    | Default true.
     */
-    'observe_request'    => env('PROMETHEUS_OBSERVE_REQUEST', false),
+    'observe_request'    => env('PROMETHEUS_OBSERVE_REQUEST', true),
 
     /*
     |--------------------------------------------------------------------------
