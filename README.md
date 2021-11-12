@@ -1188,7 +1188,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ```
 
 8. Start Grafana, import [Panel json](https://github.com/hhxsv5/laravel-s/tree/master/grafana-dashboard.json).
-<img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/master/grafana-dashboard.png" height="800px" alt="Grafana Dashboard">
+    <img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/master/grafana-dashboard.png" height="800px" alt="Grafana Dashboard">
 
 ## Other features
 
