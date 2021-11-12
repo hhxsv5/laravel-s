@@ -1202,7 +1202,8 @@ class WebSocketService implements WebSocketHandlerInterface
     ```
 
 8. 启动Grafana，导入[Panel json](https://github.com/hhxsv5/laravel-s/tree/master/grafana-dashboard.json)。
-    <img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/master/grafana-dashboard.png" height="800px" alt="Grafana Dashboard">
+
+<img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/master/grafana-dashboard.png" height="800px" alt="Grafana Dashboard">
 
 ## 其他特性
 
