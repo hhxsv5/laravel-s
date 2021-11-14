@@ -19,7 +19,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 2,
-  "iteration": 1636624756267,
+  "iteration": 1636898741494,
   "links": [],
   "panels": [
     {
@@ -69,14 +69,15 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(system_load_average_1m{application=\"$application\",instance=~\"$instance\"}) by (application, instance)",
+          "expr": "system_load_average_1m{application=\"$application\",instance=~\"$instance\"}",
+          "hide": false,
           "interval": "",
           "legendFormat": "{{application}}-{{instance}} 1m",
           "refId": "A"
         },
         {
           "exemplar": true,
-          "expr": "sum(system_load_average_5m{application=\"$application\",instance=~\"$instance\"}) by (application, instance)",
+          "expr": "system_load_average_5m{application=\"$application\",instance=~\"$instance\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "{{application}}-{{instance}} 5m",
@@ -84,7 +85,7 @@
         },
         {
           "exemplar": true,
-          "expr": "sum(system_load_average_15m{application=\"$application\",instance=~\"$instance\"}) by (application, instance)",
+          "expr": "system_load_average_15m{application=\"$application\",instance=~\"$instance\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "{{application}}-{{instance}} 15m",
@@ -106,7 +107,7 @@
       "title": "Load Average",
       "tooltip": {
         "shared": true,
-        "sort": 0,
+        "sort": 2,
         "value_type": "individual"
       },
       "type": "graph",
@@ -144,7 +145,7 @@
     },
     {
       "aliasColors": {},
-      "bars": true,
+      "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
@@ -161,20 +162,17 @@
         "y": 0
       },
       "hiddenSeries": false,
-      "id": 23,
-      "interval": null,
+      "id": 25,
       "legend": {
-        "alignAsTable": false,
         "avg": false,
         "current": true,
         "max": false,
         "min": false,
-        "rightSide": false,
         "show": true,
         "total": false,
         "values": true
       },
-      "lines": false,
+      "lines": true,
       "linewidth": 1,
       "nullPointMode": "null",
       "options": {
@@ -192,39 +190,45 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "time()-swoole_start_time{application=\"$application\",instance=~\"$instance\"}",
-          "format": "time_series",
-          "instant": true,
-          "interval": "1",
-          "intervalFactor": 1,
-          "legendFormat": "{{application}}-{{instance}}",
+          "expr": "sum(swoole_worker_memory_usage{application=\"$application\",instance=~\"$instance\",worker_type=\"worker\"}) by (application, instance)",
+          "instant": false,
+          "interval": "",
+          "legendFormat": "{{application}}-{{instance}} Current Used",
           "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(swoole_worker_memory_real_usage{application=\"$application\",instance=~\"$instance\",worker_type=\"worker\"}) by (application, instance)",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "{{application}}-{{instance}} System Allocated",
+          "refId": "B"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Up Time",
+      "title": "Memory Usage(Worker)",
       "tooltip": {
-        "shared": false,
+        "shared": true,
         "sort": 2,
         "value_type": "individual"
       },
       "type": "graph",
       "xaxis": {
         "buckets": null,
-        "mode": "series",
+        "mode": "time",
         "name": null,
-        "show": false,
-        "values": [
-          "current"
-        ]
+        "show": true,
+        "values": []
       },
       "yaxes": [
         {
-          "$$hashKey": "object:568",
-          "format": "dtdhms",
+          "$$hashKey": "object:1328",
+          "decimals": 2,
+          "format": "bytes",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -232,7 +236,7 @@
           "show": true
         },
         {
-          "$$hashKey": "object:569",
+          "$$hashKey": "object:1329",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -317,6 +321,14 @@
           "interval": "1",
           "legendFormat": "{{application}}-Swoole",
           "refId": "C"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(irate(swoole_request_count{application=\"$application\"}[1m])) by (application)-sum(irate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application)",
+          "hide": false,
+          "interval": "1",
+          "legendFormat": "{{application}}-Not Included(404...)",
+          "refId": "D"
         }
       ],
       "thresholds": [],
@@ -481,6 +493,404 @@
         "y": 16
       },
       "hiddenSeries": false,
+      "id": 8,
+      "interval": null,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.11",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "topk(20, sum(irate(http_server_requests_seconds_count{application=\"$application\",status=~\"5..\"}[1m])) by (application, method, uri))",
+          "interval": "",
+          "legendFormat": "{{application}}-{{method}}-{{uri}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Total 5xx",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:74",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:75",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": 1
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "hiddenSeries": false,
+      "id": 10,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.11",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "topk(20, sum(irate(http_server_requests_seconds_count{application=\"$application\",status=~\"5..\"}[1m])) by (application, method, uri) / sum(irate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application, method, uri))",
+          "interval": "",
+          "legendFormat": "{{application}}-{{method}}-{{uri}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "5xx Percentage",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "min": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:242",
+          "format": "percentunit",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:243",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "hiddenSeries": false,
+      "id": 2,
+      "interval": null,
+      "legend": {
+        "alignAsTable": false,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.11",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "topk(20, sum(rate(http_server_requests_seconds_sum{application=\"$application\"}[1m])) by (application, method, uri)/sum(rate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application, method, uri))",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{application}}-{{method}}-{{uri}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Top Duration",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:24",
+          "format": "µs",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:25",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "hiddenSeries": false,
+      "id": 20,
+      "legend": {
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.11",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "swoole_connection_num{application=\"$application\",instance=~\"$instance\"}",
+          "interval": "",
+          "legendFormat": "{{application}}-{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Connection Num",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1328",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1329",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 33
+      },
+      "hiddenSeries": false,
       "id": 16,
       "legend": {
         "avg": false,
@@ -584,7 +994,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 16
+        "y": 33
       },
       "hiddenSeries": false,
       "id": 17,
@@ -696,118 +1106,15 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 24
+        "y": 41
       },
       "hiddenSeries": false,
-      "id": 8,
-      "interval": null,
+      "id": 26,
       "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": true,
-        "hideEmpty": false,
-        "hideZero": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.5.11",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "topk(20, sum(irate(http_server_requests_seconds_count{application=\"$application\",status=~\"5..\"}[1m])) by (application, method, uri))",
-          "interval": "",
-          "legendFormat": "{{application}}-{{method}}-{{uri}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Total 5xx",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:74",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:75",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": 1
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 24
-      },
-      "hiddenSeries": false,
-      "id": 10,
-      "legend": {
-        "alignAsTable": false,
         "avg": false,
         "current": true,
         "max": false,
         "min": false,
-        "rightSide": false,
         "show": true,
         "total": false,
         "values": true
@@ -830,219 +1137,30 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "topk(20, sum(irate(http_server_requests_seconds_count{application=\"$application\",status=~\"5..\"}[1m])) by (application, method, uri) / sum(irate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application, method, uri))",
+          "expr": "sum(swoole_worker_memory_usage{application=\"$application\",instance=~\"$instance\",worker_type=\"task\"}) by (application, instance)",
+          "instant": false,
           "interval": "",
-          "legendFormat": "{{application}}-{{method}}-{{uri}}",
+          "legendFormat": "{{application}}-{{instance}} Current Used",
           "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "5xx Percentage",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "min": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:242",
-          "format": "percentunit",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
         },
         {
-          "$$hashKey": "object:243",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 32
-      },
-      "hiddenSeries": false,
-      "id": 2,
-      "interval": null,
-      "legend": {
-        "alignAsTable": false,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.5.11",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
           "exemplar": true,
-          "expr": "topk(20, sum(rate(http_server_requests_seconds_sum{application=\"$application\"}[1m])) by (application, method, uri)/sum(rate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application, method, uri))",
-          "format": "time_series",
+          "expr": "sum(swoole_worker_memory_real_usage{application=\"$application\",instance=~\"$instance\",worker_type=\"task\"}) by (application, instance)",
           "hide": false,
           "instant": false,
           "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "{{application}}-{{method}}-{{uri}}",
-          "refId": "A"
+          "legendFormat": "{{application}}-{{instance}} System Allocated",
+          "refId": "B"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Top Duration",
+      "title": "Memory Usage(Task Worker)",
       "tooltip": {
         "shared": true,
         "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:24",
-          "format": "s",
-          "label": "",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:25",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 32
-      },
-      "hiddenSeries": false,
-      "id": 20,
-      "legend": {
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.5.11",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "swoole_connection_num{application=\"$application\",instance=~\"$instance\"}",
-          "interval": "",
-          "legendFormat": "{{application}}-{{instance}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Connection Num",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
         "value_type": "individual"
       },
       "type": "graph",
@@ -1056,6 +1174,244 @@
       "yaxes": [
         {
           "$$hashKey": "object:1328",
+          "decimals": 2,
+          "format": "bytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1329",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 41
+      },
+      "hiddenSeries": false,
+      "id": 19,
+      "legend": {
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.11",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "apcu_seg_size{application=\"$application\",instance=~\"$instance\"}",
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{application}}-{{instance}} Total",
+          "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "apcu_avail_mem{application=\"$application\",instance=~\"$instance\"}",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "{{application}}-{{instance}} Available",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "APCu Memory",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1328",
+          "decimals": 2,
+          "format": "bytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1329",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 49
+      },
+      "hiddenSeries": false,
+      "id": 28,
+      "legend": {
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.11",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum(swoole_worker_gc_runs{application=\"$application\",instance=~\"$instance\",worker_type=\"worker\"}) by (application, instance)",
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{application}}-{{instance}}  Runs",
+          "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(swoole_worker_gc_collected{application=\"$application\",instance=~\"$instance\",worker_type=\"worker\"}) by (application, instance)",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{application}}-{{instance}}  Collected",
+          "refId": "B"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(swoole_worker_gc_threshold{application=\"$application\",instance=~\"$instance\",worker_type=\"worker\"}) by (application, instance)",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{application}}-{{instance}}  Threshold",
+          "refId": "C"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(swoole_worker_gc_roots{application=\"$application\",instance=~\"$instance\",worker_type=\"worker\"}) by (application, instance)",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{application}}-{{instance}}  Roots",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "GC Status(Worker)",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1328",
+          "decimals": 2,
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -1065,6 +1421,239 @@
         },
         {
           "$$hashKey": "object:1329",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 49
+      },
+      "hiddenSeries": false,
+      "id": 27,
+      "legend": {
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.11",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum(swoole_worker_gc_runs{application=\"$application\",instance=~\"$instance\",worker_type=\"task\"}) by (application, instance)",
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{application}}-{{instance}}  Runs",
+          "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(swoole_worker_gc_collected{application=\"$application\",instance=~\"$instance\",worker_type=\"task\"}) by (application, instance)",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{application}}-{{instance}}  Collected",
+          "refId": "B"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(swoole_worker_gc_threshold{application=\"$application\",instance=~\"$instance\",worker_type=\"task\"}) by (application, instance)",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{application}}-{{instance}}  Threshold",
+          "refId": "C"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(swoole_worker_gc_roots{application=\"$application\",instance=~\"$instance\",worker_type=\"task\"}) by (application, instance)",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{application}}-{{instance}}  Roots",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "GC Status(Task Worker)",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1328",
+          "decimals": 2,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1329",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 57
+      },
+      "hiddenSeries": false,
+      "id": 12,
+      "interval": null,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.11",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "topk(10, sum(http_server_requests_seconds_count{application=\"$application\"}) by (application, method, uri))",
+          "format": "time_series",
+          "instant": true,
+          "interval": "1",
+          "intervalFactor": 1,
+          "legendFormat": "{{application}}-{{method}}-{{uri}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Top Requests",
+      "tooltip": {
+        "shared": false,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "series",
+        "name": null,
+        "show": false,
+        "values": [
+          "current"
+        ]
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:568",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:569",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -1095,7 +1684,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 40
+        "y": 57
       },
       "hiddenSeries": false,
       "id": 22,
@@ -1199,219 +1788,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 41
-      },
-      "hiddenSeries": false,
-      "id": 12,
-      "interval": null,
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": true,
-        "max": false,
-        "min": false,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": false,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.5.11",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "topk(10, sum(http_server_requests_seconds_count{application=\"$application\"}) by (application, method, uri))",
-          "format": "time_series",
-          "instant": true,
-          "interval": "1",
-          "intervalFactor": 1,
-          "legendFormat": "{{application}}-{{method}}-{{uri}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Top Requests",
-      "tooltip": {
-        "shared": false,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "series",
-        "name": null,
-        "show": false,
-        "values": [
-          "current"
-        ]
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:568",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:569",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 48
-      },
-      "hiddenSeries": false,
-      "id": 19,
-      "legend": {
-        "avg": false,
-        "current": true,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.5.11",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "sum(apcu_seg_size{application=\"$application\",instance=~\"$instance\"}) by (application, instance)",
-          "instant": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "{{application}}-{{instance}} Total",
-          "refId": "A"
-        },
-        {
-          "exemplar": true,
-          "expr": "sum(apcu_avail_mem{application=\"$application\",instance=~\"$instance\"}) by (application, instance)",
-          "hide": false,
-          "instant": false,
-          "interval": "",
-          "legendFormat": "{{application}}-{{instance}} Available",
-          "refId": "B"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "APCu Memory",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1328",
-          "decimals": 2,
-          "format": "bytes",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1329",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 49
+        "y": 65
       },
       "hiddenSeries": false,
       "id": 24,
@@ -1498,6 +1875,110 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 65
+      },
+      "hiddenSeries": false,
+      "id": 23,
+      "interval": null,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.11",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "time()-swoole_start_time{application=\"$application\",instance=~\"$instance\"}",
+          "format": "time_series",
+          "instant": true,
+          "interval": "1",
+          "intervalFactor": 1,
+          "legendFormat": "{{application}}-{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Up Time",
+      "tooltip": {
+        "shared": false,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "series",
+        "name": null,
+        "show": false,
+        "values": [
+          "current"
+        ]
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:568",
+          "format": "dtdhms",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:569",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "refresh": "5s",
@@ -1510,8 +1991,8 @@
         "allValue": "''",
         "current": {
           "selected": false,
-          "text": "LaravelS",
-          "value": "LaravelS"
+          "text": "Lumen8",
+          "value": "Lumen8"
         },
         "datasource": null,
         "definition": "label_values(application)",
@@ -1540,8 +2021,7 @@
       {
         "allValue": "",
         "current": {
-          "selected": true,
-          "tags": [],
+          "selected": false,
           "text": [
             "All"
           ],
@@ -1583,5 +2063,5 @@
   "timezone": "",
   "title": "LaravelS Service Monitor",
   "uid": "GHNOMaF7z",
-  "version": 21
+  "version": 64
 }

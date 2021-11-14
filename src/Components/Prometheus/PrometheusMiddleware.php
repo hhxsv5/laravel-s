@@ -3,14 +3,15 @@
 namespace Hhxsv5\LaravelS\Components\Prometheus;
 
 use Closure;
+use Hhxsv5\LaravelS\Components\Prometheus\Collectors\HttpRequestCollector;
 
 class PrometheusMiddleware
 {
-    private $prometheusExporter;
+    private $collector;
 
-    public function __construct(PrometheusExporter $prometheusExporter)
+    public function __construct(HttpRequestCollector $collector)
     {
-        $this->prometheusExporter = $prometheusExporter;
+        $this->collector = $collector;
     }
 
     /**
@@ -24,9 +25,9 @@ class PrometheusMiddleware
     {
         $response = $next($request);
         try {
-            $this->prometheusExporter->observeRequest($request, $response);
+            $this->collector->collect([$request, $response]);
         } catch (\Exception $e) {
-            app('log')->error('PrometheusMiddleware: failed to observe request', ['exception' => $e]);
+            app('log')->error('PrometheusMiddleware: failed to collect request metrics.', ['exception' => $e]);
         } finally {
             return $response;
         }

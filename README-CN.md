@@ -1172,7 +1172,19 @@ class WebSocketService implements WebSocketHandlerInterface
 
 4. 注册ServiceProvider：`Hhxsv5\LaravelS\Components\Prometheus\PrometheusServiceProvider`。
 
-5. 创建路由，输出监控指标数据。
+5. 在`config/laravels.php`中配置Prometheus进程，用于定时采集Worker的指标。
+    ```php
+    'processes' => [
+        'prometheus' => [
+            'class'    => Hhxsv5\LaravelS\Components\Prometheus\PrometheusCollectorProcess::class,
+            'redirect' => false,
+            'pipe'     => 0,
+            'enable'   => true,
+        ],
+    ],
+    ```
+
+6. 创建路由，输出监控指标数据。
     ```php
     use Hhxsv5\LaravelS\Components\Prometheus\PrometheusExporter;
 
@@ -1182,7 +1194,7 @@ class WebSocketService implements WebSocketHandlerInterface
     });
     ```
 
-6. 完成Prometheus的配置，启动Prometheus。
+7. 完成Prometheus的配置，启动Prometheus。
     ```yml
     global:
       scrape_interval: 5s
@@ -1199,7 +1211,7 @@ class WebSocketService implements WebSocketHandlerInterface
         - 127.0.0.1:5200 # 被监控服务的ip与端口
     ```
 
-8. 启动Grafana，导入[Panel json](https://github.com/hhxsv5/laravel-s/tree/master/grafana-dashboard.json)。
+8. 启动Grafana，然后导入[panel json](https://github.com/hhxsv5/laravel-s/tree/master/grafana-dashboard.json)。
 
 <img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/master/grafana-dashboard.png" height="800px" alt="Grafana Dashboard">
 

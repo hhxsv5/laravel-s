@@ -2,47 +2,15 @@
 
 namespace Hhxsv5\LaravelS\Components\Prometheus;
 
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-
 class PrometheusExporter
 {
     const REDNER_MIME_TYPE = 'text/plain; version=0.0.4';
 
     private $config;
 
-    private static $requestTimeMetricUnitMap = [
-        'http_server_requests_seconds_sum' => 1000000, // to μs
-    ];
-
     public function __construct(array $config)
     {
         $this->config = $config;
-    }
-
-    public function observeRequest(Request $request, Response $response)
-    {
-        if (!$this->config['observe_request']) {
-            return;
-        }
-
-        $cost = microtime(true) - $request->server('REQUEST_TIME_FLOAT');
-        $status = $response->getStatusCode();
-        if (isset($this->config['ignored_http_codes'][$status])) {
-            // Ignore the requests.
-            return;
-        }
-
-        $labels = http_build_query([
-            'method' => $request->getMethod(),
-            'uri'    => $request->getPathInfo(),
-            'status' => $status,
-        ]);
-        // prefix+metric_name+metric_type+metric_labels
-        $countKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'http_server_requests_seconds_count', 'summary', $labels]);
-        $sumKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'http_server_requests_seconds_sum', 'summary', $labels]);
-        apcu_inc($countKey, 1, $success, $this->config['apcu_key_max_age']);
-        apcu_inc($sumKey, round($cost * self::$requestTimeMetricUnitMap['http_server_requests_seconds_sum']), $success, $this->config['apcu_key_max_age']);
     }
 
     public function getSystemLoadAvgMetrics()
@@ -176,7 +144,7 @@ class PrometheusExporter
                 'name'   => $parts[1],
                 'help'   => '',
                 'type'   => $parts[2],
-                'value'  => isset(self::$requestTimeMetricUnitMap[$parts[1]]) ? $value / self::$requestTimeMetricUnitMap[$parts[1]] : $value,
+                'value'  => $value,
                 'labels' => $labels,
             ];
         }

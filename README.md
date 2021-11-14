@@ -1158,7 +1158,19 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 4. Register ServiceProvider: `Hhxsv5\LaravelS\Components\Prometheus\PrometheusServiceProvider`.
 
-5. Create the route to output metrics.
+5. Configure the Prometheus process in `config/laravels.php` to collect Worker's indicators regularly.
+    ```php
+    'processes' => [
+        'prometheus' => [
+            'class'    => Hhxsv5\LaravelS\Components\Prometheus\PrometheusCollectorProcess::class,
+            'redirect' => false,
+            'pipe'     => 0,
+            'enable'   => true,
+        ],
+    ],
+    ```
+
+6. Create the route to output metrics.
     ```php
     use Hhxsv5\LaravelS\Components\Prometheus\PrometheusExporter;
 
@@ -1168,7 +1180,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
     });
     ```
 
-6. Complete the configuration of Prometheus and start it.
+7. Complete the configuration of Prometheus and start it.
     ```yml
     global:
       scrape_interval: 5s
@@ -1185,7 +1197,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
         - 127.0.0.1:5200 # The ip and port of the monitored service
     ```
 
-8. Start Grafana, import [Panel json](https://github.com/hhxsv5/laravel-s/tree/master/grafana-dashboard.json).
+8. Start Grafana, then import [panel json](https://github.com/hhxsv5/laravel-s/tree/master/grafana-dashboard.json).
 
 <img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/master/grafana-dashboard.png" height="800px" alt="Grafana Dashboard">
 
