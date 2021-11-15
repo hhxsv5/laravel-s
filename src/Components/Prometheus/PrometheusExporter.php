@@ -33,16 +33,27 @@ class PrometheusExporter
         foreach (new \APCuIterator('/^' . $this->config['apcu_key_prefix'] . $this->config['apcu_key_separator'] . '/') as $item) {
             $parts = explode($this->config['apcu_key_separator'], $item['key']);
             parse_str($parts[3], $labels);
-            $metrics[] = [
-                'name'   => $parts[1],
-                'help'   => '',
-                'type'   => $parts[2],
-                'value'  => $item['value'],
-                'labels' => $labels,
-            ];
+            if (is_array($item['value'])) {
+                foreach ($item['value'] as $metric) {
+                    $metrics[] = [
+                        'name'   => $metric['name'],
+                        'help'   => '',
+                        'type'   => $metric['type'],
+                        'value'  => $metric['value'],
+                        'labels' => $labels,
+                    ];
+                }
+            } else {
+                $metrics[] = [
+                    'name'   => $parts[1],
+                    'help'   => '',
+                    'type'   => $parts[2],
+                    'value'  => $item['value'],
+                    'labels' => $labels,
+                ];
+            }
         }
         return $metrics;
-
     }
 
     public function render()

@@ -16,24 +16,49 @@ class SwooleProcessCollector extends PrometheusCollector
             'worker_type' => $swoole->taskworker ? 'task' : 'worker',
         ]);
 
-        // Memory usage
-        // Key Format: prefix+metric_name+metric_type+metric_labels
-        $memoryKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'swoole_worker_memory_usage', 'gauge', $labels]);
-        $realMemoryKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'swoole_worker_memory_real_usage', 'gauge', $labels]);
-        apcu_store($memoryKey, memory_get_usage(), $this->config['apcu_key_max_age']);
-        apcu_store($realMemoryKey, memory_get_usage(true), $this->config['apcu_key_max_age']);
+        // Memory Usage
+        $metrics = [
+            [
+                'name'  => 'swoole_worker_memory_usage',
+                'type'  => 'gauge',
+                'value' => memory_get_usage(),
+            ],
+            [
+                'name'  => 'swoole_worker_memory_real_usage',
+                'type'  => 'gauge',
+                'value' => memory_get_usage(true),
+            ],
+        ];
+        $memoryKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], '', '', $labels]);
+        apcu_store($memoryKey, $metrics, $this->config['apcu_key_max_age']);
 
         // GC Status
         if (PHP_VERSION_ID >= 70300) {
-            $gcRunsKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'swoole_worker_gc_runs', 'gauge', $labels]);
-            $gcCollectedKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'swoole_worker_gc_collected', 'gauge', $labels]);
-            $gcThreshold = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'swoole_worker_gc_threshold', 'gauge', $labels]);
-            $gcRootsKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'swoole_worker_gc_roots', 'gauge', $labels]);
             $gcStatus = gc_status();
-            apcu_store($gcRunsKey, $gcStatus['runs'], $this->config['apcu_key_max_age']);
-            apcu_store($gcCollectedKey, $gcStatus['collected'], $this->config['apcu_key_max_age']);
-            apcu_store($gcThreshold, $gcStatus['threshold'], $this->config['apcu_key_max_age']);
-            apcu_store($gcRootsKey, $gcStatus['roots'], $this->config['apcu_key_max_age']);
+            $metrics = [
+                [
+                    'name'  => 'swoole_worker_gc_runs',
+                    'type'  => 'gauge',
+                    'value' => $gcStatus['runs'],
+                ],
+                [
+                    'name'  => 'swoole_worker_gc_collected',
+                    'type'  => 'gauge',
+                    'value' => $gcStatus['collected'],
+                ],
+                [
+                    'name'  => 'swoole_worker_gc_threshold',
+                    'type'  => 'gauge',
+                    'value' => $gcStatus['threshold'],
+                ],
+                [
+                    'name'  => 'swoole_worker_gc_roots',
+                    'type'  => 'gauge',
+                    'value' => $gcStatus['roots'],
+                ],
+            ];
+            $gcKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], '', '', $labels]);
+            apcu_store($gcKey, $metrics, $this->config['apcu_key_max_age']);
         }
     }
 }

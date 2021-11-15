@@ -12,26 +12,21 @@ class SystemCollector extends PrometheusCollector
         $metrics = [
             [
                 'name'  => 'system_load_average_1m',
-                'help'  => '',
                 'type'  => 'gauge',
                 'value' => $load[0],
             ],
             [
                 'name'  => 'system_load_average_5m',
-                'help'  => '',
                 'type'  => 'gauge',
                 'value' => $load[1],
             ],
             [
                 'name'  => 'system_load_average_15m',
-                'help'  => '',
                 'type'  => 'gauge',
                 'value' => $load[2],
             ],
         ];
-        foreach ($metrics as $metric) {
-            $key = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], $metric['name'], $metric['type'], '']);
-            apcu_store($key, $metric['value'], $this->config['apcu_key_max_age']);
-        }
+        $key = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], '', '', '']);
+        apcu_store($key, $metrics, $this->config['apcu_key_max_age']);
     }
 }

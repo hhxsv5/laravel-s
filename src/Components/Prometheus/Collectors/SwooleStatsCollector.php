@@ -66,9 +66,7 @@ class SwooleStatsCollector extends PrometheusCollector
                 'value' => $stats['tasking_num'],
             ],
         ];
-        foreach ($metrics as $metric) {
-            $key = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], $metric['name'], $metric['type'], '']);
-            apcu_store($key, $metric['value'], $this->config['apcu_key_max_age']);
-        }
+        $key = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], '', '', '']);
+        apcu_store($key, $metrics, $this->config['apcu_key_max_age']);
     }
 }
