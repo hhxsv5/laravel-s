@@ -111,7 +111,7 @@
         {
           "exemplar": true,
           "expr": "sum(irate(swoole_request_count{application=\"$application\"}[1m])) by (application)-sum(irate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application)",
-          "hide": false,
+          "hide": true,
           "interval": "1",
           "legendFormat": "{{application}}-Not Included(404...)",
           "refId": "D"
@@ -2105,5 +2105,5 @@
   "timezone": "",
   "title": "LaravelS Service Monitor",
   "uid": "GHNOMaF7z",
-  "version": 72
+  "version": 74
 }

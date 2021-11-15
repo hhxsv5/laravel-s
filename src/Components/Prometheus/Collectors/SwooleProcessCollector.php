@@ -16,12 +16,14 @@ class SwooleProcessCollector extends PrometheusCollector
             'worker_type' => $swoole->taskworker ? 'task' : 'worker',
         ]);
 
+        // Memory usage
         // Key Format: prefix+metric_name+metric_type+metric_labels
         $memoryKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'swoole_worker_memory_usage', 'gauge', $labels]);
         $realMemoryKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'swoole_worker_memory_real_usage', 'gauge', $labels]);
         apcu_store($memoryKey, memory_get_usage(), $this->config['apcu_key_max_age']);
         apcu_store($realMemoryKey, memory_get_usage(true), $this->config['apcu_key_max_age']);
 
+        // GC Status
         if (PHP_VERSION_ID >= 70300) {
             $gcRunsKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'swoole_worker_gc_runs', 'gauge', $labels]);
             $gcCollectedKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'swoole_worker_gc_collected', 'gauge', $labels]);
