@@ -17,7 +17,7 @@ class SwooleProcessCollector extends PrometheusCollector
         ]);
 
         // Memory Usage
-        $metrics = [
+        $memoryMetrics = [
             [
                 'name'  => 'swoole_worker_memory_usage',
                 'type'  => 'gauge',
@@ -29,13 +29,12 @@ class SwooleProcessCollector extends PrometheusCollector
                 'value' => memory_get_usage(true),
             ],
         ];
-        $memoryKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], '', '', $labels]);
-        apcu_store($memoryKey, $metrics, $this->config['apcu_key_max_age']);
 
         // GC Status
+        $gcMetrics = [];
         if (PHP_VERSION_ID >= 70300) {
             $gcStatus = gc_status();
-            $metrics = [
+            $gcMetrics = [
                 [
                     'name'  => 'swoole_worker_gc_runs',
                     'type'  => 'gauge',
@@ -57,8 +56,8 @@ class SwooleProcessCollector extends PrometheusCollector
                     'value' => $gcStatus['roots'],
                 ],
             ];
-            $gcKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], '', '', $labels]);
-            apcu_store($gcKey, $metrics, $this->config['apcu_key_max_age']);
         }
+        $apcuKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], '', '', $labels]);
+        apcu_store($apcuKey, array_merge($memoryMetrics, $gcMetrics), $this->config['apcu_key_max_age']);
     }
 }
