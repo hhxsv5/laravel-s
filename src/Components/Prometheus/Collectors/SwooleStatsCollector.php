@@ -66,7 +66,7 @@ class SwooleStatsCollector extends PrometheusCollector
                 'value' => $stats['tasking_num'],
             ],
         ];
-        $key = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], '', '', '']);
+        $key = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'swoole_stats', '', '']);
         apcu_store($key, $metrics, $this->config['apcu_key_max_age']);
     }
 }

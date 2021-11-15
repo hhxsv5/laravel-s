@@ -26,7 +26,7 @@ class SystemCollector extends PrometheusCollector
                 'value' => $load[2],
             ],
         ];
-        $key = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], '', '', '']);
+        $key = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'system_stats', '', '']);
         apcu_store($key, $metrics, $this->config['apcu_key_max_age']);
     }
 }

@@ -57,7 +57,7 @@ class SwooleProcessCollector extends PrometheusCollector
                 ],
             ];
         }
-        $apcuKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], '', '', $labels]);
+        $apcuKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'swoole_process_stats', '', $labels]);
         apcu_store($apcuKey, array_merge($memoryMetrics, $gcMetrics), $this->config['apcu_key_max_age']);
     }
 }
