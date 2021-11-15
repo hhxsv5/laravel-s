@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Components\Prometheus;
 
-use Hhxsv5\LaravelS\Components\Prometheus\Collectors\SwooleWorkerCollector;
+use Hhxsv5\LaravelS\Components\Prometheus\Collectors\SwooleProcessCollector;
 use Hhxsv5\LaravelS\Swoole\Process\CustomProcessInterface;
 use Swoole\Http\Server;
 use Swoole\Process;
@@ -15,7 +15,7 @@ class PrometheusCollectorProcess implements CustomProcessInterface
     public static function callback(Server $swoole, Process $process)
     {
         /**@var \Hhxsv5\LaravelS\Components\Prometheus\PrometheusCollector $collector */
-        $collector = app(SwooleWorkerCollector::class);
+        $collector = app(SwooleProcessCollector::class);
         $workerNum = $swoole->setting['worker_num'];
         $taskWorkerNum = isset($swoole->setting['task_worker_num']) ? $swoole->setting['task_worker_num'] : 0;
         $totalNum = $workerNum + $taskWorkerNum - 1;

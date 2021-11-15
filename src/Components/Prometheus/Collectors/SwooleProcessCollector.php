@@ -4,7 +4,7 @@ namespace Hhxsv5\LaravelS\Components\Prometheus\Collectors;
 
 use Hhxsv5\LaravelS\Components\Prometheus\PrometheusCollector;
 
-class SwooleWorkerCollector extends PrometheusCollector
+class SwooleProcessCollector extends PrometheusCollector
 {
     public function collect(array $params = [])
     {

@@ -3,7 +3,7 @@
 namespace Hhxsv5\LaravelS\Components\Prometheus;
 
 use Hhxsv5\LaravelS\Components\Prometheus\Collectors\HttpRequestCollector;
-use Hhxsv5\LaravelS\Components\Prometheus\Collectors\SwooleWorkerCollector;
+use Hhxsv5\LaravelS\Components\Prometheus\Collectors\SwooleProcessCollector;
 use Illuminate\Support\ServiceProvider;
 
 class PrometheusServiceProvider extends ServiceProvider
@@ -25,8 +25,8 @@ class PrometheusServiceProvider extends ServiceProvider
         $this->app->singleton(HttpRequestCollector::class, function ($app) {
             return new HttpRequestCollector($app['config']->get('prometheus'));
         });
-        $this->app->singleton(SwooleWorkerCollector::class, function ($app) {
-            return new SwooleWorkerCollector($app['config']->get('prometheus'));
+        $this->app->singleton(SwooleProcessCollector::class, function ($app) {
+            return new SwooleProcessCollector($app['config']->get('prometheus'));
         });
         $this->app->singleton(PrometheusExporter::class, function ($app) {
             return new PrometheusExporter($app['config']->get('prometheus'));
@@ -35,6 +35,6 @@ class PrometheusServiceProvider extends ServiceProvider
 
     public function provides()
     {
-        return [HttpRequestCollector::class, SwooleWorkerCollector::class, PrometheusExporter::class];
+        return [HttpRequestCollector::class, SwooleProcessCollector::class, PrometheusExporter::class];
     }
 }
