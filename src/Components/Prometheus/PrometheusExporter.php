@@ -58,7 +58,6 @@ class PrometheusExporter
             $labels = ['{'];
             $allLabels = array_merge($defaultLabels, $metricLabels);
             foreach ($allLabels as $key => $value) {
-                $value = addslashes($value);
                 $labels[] = "{$key}=\"{$value}\",";
             }
             $labels[] = '}';
