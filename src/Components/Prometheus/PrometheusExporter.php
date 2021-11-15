@@ -31,18 +31,13 @@ class PrometheusExporter
             ],
         ];
         foreach (new \APCuIterator('/^' . $this->config['apcu_key_prefix'] . $this->config['apcu_key_separator'] . '/') as $item) {
-            $value = apcu_fetch($item['key'], $success);
-            if (!$success) {
-                continue;
-            }
-
             $parts = explode($this->config['apcu_key_separator'], $item['key']);
             parse_str($parts[3], $labels);
             $metrics[] = [
                 'name'   => $parts[1],
                 'help'   => '',
                 'type'   => $parts[2],
-                'value'  => $value,
+                'value'  => $item['value'],
                 'labels' => $labels,
             ];
         }
