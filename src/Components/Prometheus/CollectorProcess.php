@@ -14,6 +14,18 @@ class CollectorProcess implements CustomProcessInterface
 {
     private static $timerId;
 
+    public static function getDefinition()
+    {
+        return [
+            'prometheus' => [
+                'class'    => static::class,
+                'redirect' => false,
+                'pipe'     => 0,
+                'enable'   => (bool)config('prometheus.enable', true),
+            ],
+        ];
+    }
+
     public static function callback(Server $swoole, Process $process)
     {
         /**@var SwooleProcessCollector $processCollector */

@@ -11,7 +11,7 @@ class HttpRequestCollector extends MetricCollector
         /**@var \Illuminate\Http\Request $request */
         /**@var \Illuminate\Http\Response $response */
         list($request, $response) = $params;
-        if (!$this->config['observe_request']) {
+        if (!$this->config['enable']) {
             return;
         }
 

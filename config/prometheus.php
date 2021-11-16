@@ -4,11 +4,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Whether to observe the request and count request to APCu
+    | Whether to enable Prometheus collector
     |--------------------------------------------------------------------------
     | Default true.
     */
-    'observe_request'          => env('PROMETHEUS_OBSERVE_REQUEST', true),
+    'enable'                   => env('PROMETHEUS_ENABLE', true),
 
     /*
     |--------------------------------------------------------------------------
