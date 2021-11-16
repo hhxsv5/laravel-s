@@ -6,9 +6,9 @@ use Hhxsv5\LaravelS\Components\Prometheus\Collectors\HttpRequestCollector;
 use Hhxsv5\LaravelS\Components\Prometheus\Collectors\SwooleProcessCollector;
 use Hhxsv5\LaravelS\Components\Prometheus\Collectors\SwooleStatsCollector;
 use Hhxsv5\LaravelS\Components\Prometheus\Collectors\SystemCollector;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
-class PrometheusServiceProvider extends ServiceProvider
+class ServiceProvider extends BaseServiceProvider
 {
     protected $defer = true;
 
