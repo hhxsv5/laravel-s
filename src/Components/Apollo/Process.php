@@ -18,7 +18,7 @@ class Process implements CustomProcessInterface
     {
         return [
             'apollo' => [
-                'class'    => self::class,
+                'class'    => static::class,
                 'redirect' => false,
                 'pipe'     => 0,
                 'enable'   => (bool)getenv('ENABLE_APOLLO'),
