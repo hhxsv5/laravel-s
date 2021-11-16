@@ -1154,15 +1154,15 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ```
     If your project is `Lumen`, you also need to manually load the configuration `$app->configure('prometheus');` in `bootstrap/app.php`.
 
-3. Configure `global` middleware: `Hhxsv5\LaravelS\Components\Prometheus\PrometheusMiddleware`. In order to count the request time consumption as accurately as possible, PrometheusMiddleware must be the `first` global middleware, which needs to be placed in front of other middleware.
+3. Configure `global` middleware: `Hhxsv5\LaravelS\Components\Prometheus\RequestMiddleware`. In order to count the request time consumption as accurately as possible, RequestMiddleware must be the `first` global middleware, which needs to be placed in front of other middleware.
 
-4. Register ServiceProvider: `Hhxsv5\LaravelS\Components\Prometheus\PrometheusServiceProvider`.
+4. Register ServiceProvider: `Hhxsv5\LaravelS\Components\Prometheus\ServiceProvider`.
 
 5. Configure the Prometheus process in `config/laravels.php` to collect Worker's indicators regularly.
     ```php
     'processes' => [
         'prometheus' => [
-            'class'    => Hhxsv5\LaravelS\Components\Prometheus\PrometheusCollectorProcess::class,
+            'class'    => Hhxsv5\LaravelS\Components\Prometheus\CollectorProcess::class,
             'redirect' => false,
             'pipe'     => 0,
             'enable'   => true,
@@ -1172,11 +1172,11 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 6. Create the route to output metrics.
     ```php
-    use Hhxsv5\LaravelS\Components\Prometheus\PrometheusExporter;
+    use Hhxsv5\LaravelS\Components\Prometheus\Exporter;
 
     Route::get('/actuator/prometheus', function () {
-        $result = app(PrometheusExporter::class)->render();
-        return response($result, 200, ['Content-Type' => PrometheusExporter::REDNER_MIME_TYPE]);
+        $result = app(Exporter::class)->render();
+        return response($result, 200, ['Content-Type' => Exporter::REDNER_MIME_TYPE]);
     });
     ```
 
@@ -1187,7 +1187,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
       scrape_timeout: 5s
       evaluation_interval: 30s
     scrape_configs:
-    - job_name: swoole-test
+    - job_name: laravel-s-test
       honor_timestamps: true
       metrics_path: /actuator/prometheus
       scheme: http

@@ -1168,15 +1168,15 @@ class WebSocketService implements WebSocketHandlerInterface
     ```
     如果是`Lumen`工程，还需要在`bootstrap/app.php`中手动加载配置`$app->configure('prometheus');`。
 
-3. 配置`全局`中间件：`Hhxsv5\LaravelS\Components\Prometheus\PrometheusMiddleware`。为了尽可能精确地统计请求耗时，PrometheusMiddleware必须作为`第一个`全局中间件，需要放在其他中间件的前面。
+3. 配置`全局`中间件：`Hhxsv5\LaravelS\Components\Prometheus\RequestMiddleware`。为了尽可能精确地统计请求耗时，RequestMiddleware必须作为`第一个`全局中间件，需要放在其他中间件的前面。
 
-4. 注册ServiceProvider：`Hhxsv5\LaravelS\Components\Prometheus\PrometheusServiceProvider`。
+4. 注册ServiceProvider：`Hhxsv5\LaravelS\Components\Prometheus\ServiceProvider`。
 
 5. 在`config/laravels.php`中配置Prometheus进程，用于定时采集Worker的指标。
     ```php
     'processes' => [
         'prometheus' => [
-            'class'    => Hhxsv5\LaravelS\Components\Prometheus\PrometheusCollectorProcess::class,
+            'class'    => Hhxsv5\LaravelS\Components\Prometheus\CollectorProcess::class,
             'redirect' => false,
             'pipe'     => 0,
             'enable'   => true,
@@ -1186,11 +1186,11 @@ class WebSocketService implements WebSocketHandlerInterface
 
 6. 创建路由，输出监控指标数据。
     ```php
-    use Hhxsv5\LaravelS\Components\Prometheus\PrometheusExporter;
+    use Hhxsv5\LaravelS\Components\Prometheus\Exporter;
 
     Route::get('/actuator/prometheus', function () {
-        $result = app(PrometheusExporter::class)->render();
-        return response($result, 200, ['Content-Type' => PrometheusExporter::REDNER_MIME_TYPE]);
+        $result = app(Exporter::class)->render();
+        return response($result, 200, ['Content-Type' => Exporter::REDNER_MIME_TYPE]);
     });
     ```
 
@@ -1201,7 +1201,7 @@ class WebSocketService implements WebSocketHandlerInterface
       scrape_timeout: 5s
       evaluation_interval: 30s
     scrape_configs:
-    - job_name: swoole-test
+    - job_name: laravel-s-test
       honor_timestamps: true
       metrics_path: /actuator/prometheus
       scheme: http
