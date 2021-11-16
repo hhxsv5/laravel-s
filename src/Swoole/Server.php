@@ -294,7 +294,10 @@ class Server
         if ($message instanceof BaseTask) {
             $this->onTask($server, null, $srcWorkerId, $message);
         } elseif ($message instanceof PrometheusCollectorInterface) {
-            $message->collect();
+            $message->collect([
+                'worker_id'   => $server->worker_id,
+                'worker_type' => $server->taskworker ? 'task' : 'worker',
+            ]);
         }
     }
 

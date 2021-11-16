@@ -8,12 +8,10 @@ class SwooleProcessCollector extends PrometheusCollector
 {
     public function collect(array $params = [])
     {
-        /**@var \Swoole\Http\Server $swoole */
-        $swoole = app('swoole');
         // Worker Memory Stats
         $labels = http_build_query([
-            'worker_id'   => $swoole->worker_id,
-            'worker_type' => $swoole->taskworker ? 'task' : 'worker',
+            'worker_id'   => $params['worker_id'],
+            'worker_type' => $params['worker_type'],
         ]);
 
         // Memory Usage
