@@ -1,10 +1,11 @@
 <?php
 
-namespace Hhxsv5\LaravelS\Swoole\Timer;
+namespace Hhxsv5\LaravelS\Components\Prometheus;
 
 use Hhxsv5\LaravelS\Components\Prometheus\Collectors\SwooleProcessCollector;
+use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
 
-class PrometheusTimerProcessMetricsCronJob extends CronJob
+class TimerProcessMetricsCronJob extends CronJob
 {
     public function interval()
     {
@@ -21,8 +22,8 @@ class PrometheusTimerProcessMetricsCronJob extends CronJob
         /**@var SwooleProcessCollector $processCollector */
         $processCollector = app(SwooleProcessCollector::class);
         $processCollector->collect([
-            'worker_id'   => 'timer',
-            'worker_type' => 'timer',
+            'process_id'   => 'timer',
+            'process_type' => 'timer',
         ]);
     }
 }

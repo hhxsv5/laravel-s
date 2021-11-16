@@ -2,7 +2,8 @@
 
 namespace Hhxsv5\LaravelS\Illuminate;
 
-use Hhxsv5\LaravelS\Components\Prometheus\PrometheusCollectorProcess;
+use Hhxsv5\LaravelS\Components\Prometheus\CollectorProcess;
+use Hhxsv5\LaravelS\Components\Prometheus\TimerProcessMetricsCronJob;
 use Hhxsv5\LaravelS\Swoole\Timer\PrometheusTimerProcessMetricsCronJob;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
@@ -244,10 +245,10 @@ EOS;
         }
 
         // Configure PrometheusTimerProcessMetricsCronJob automatically
-        if (isset($this->conf['processes'])) {
+        if (isset($svrConf['processes'])) {
             foreach ($svrConf['processes'] as $process) {
-                if ($process['class'] === PrometheusCollectorProcess::class && (!isset($process['enable']) || $process['enable'])) {
-                    $svrConf['timer']['jobs'][] = PrometheusTimerProcessMetricsCronJob::class;
+                if ($process['class'] === CollectorProcess::class && (!isset($process['enable']) || $process['enable'])) {
+                    $svrConf['timer']['jobs'][] = TimerProcessMetricsCronJob::class;
                     break;
                 }
             }

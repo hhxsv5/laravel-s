@@ -36,13 +36,13 @@ class PrometheusServiceProvider extends ServiceProvider
         $this->app->singleton(SystemCollector::class, function ($app) {
             return new SystemCollector($app['config']->get('prometheus'));
         });
-        $this->app->singleton(PrometheusExporter::class, function ($app) {
-            return new PrometheusExporter($app['config']->get('prometheus'));
+        $this->app->singleton(Exporter::class, function ($app) {
+            return new Exporter($app['config']->get('prometheus'));
         });
     }
 
     public function provides()
     {
-        return [HttpRequestCollector::class, SwooleProcessCollector::class, SwooleStatsCollector::class, SystemCollector::class, PrometheusExporter::class];
+        return [HttpRequestCollector::class, SwooleProcessCollector::class, SwooleStatsCollector::class, SystemCollector::class, Exporter::class];
     }
 }

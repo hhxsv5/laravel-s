@@ -10,7 +10,7 @@ use Swoole\Http\Server;
 use Swoole\Process;
 use Swoole\Timer;
 
-class PrometheusCollectorProcess implements CustomProcessInterface
+class CollectorProcess implements CustomProcessInterface
 {
     private static $timerId;
 

@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Components\Prometheus;
 
-class PrometheusExporter
+class Exporter
 {
     const REDNER_MIME_TYPE = 'text/plain; version=0.0.4';
 

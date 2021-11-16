@@ -2,27 +2,27 @@
 
 namespace Hhxsv5\LaravelS\Components\Prometheus\Collectors;
 
-use Hhxsv5\LaravelS\Components\Prometheus\PrometheusCollector;
+use Hhxsv5\LaravelS\Components\MetricCollector;
 
-class SwooleProcessCollector extends PrometheusCollector
+class SwooleProcessCollector extends MetricCollector
 {
     public function collect(array $params = [])
     {
         // Worker Memory Stats
         $labels = http_build_query([
-            'worker_id'   => $params['worker_id'],
-            'worker_type' => $params['worker_type'],
+            'process_id'   => $params['process_id'],
+            'process_type' => $params['process_type'],
         ]);
 
         // Memory Usage
         $memoryMetrics = [
             [
-                'name'  => 'swoole_worker_memory_usage',
+                'name'  => 'swoole_process_memory_usage',
                 'type'  => 'gauge',
                 'value' => memory_get_usage(),
             ],
             [
-                'name'  => 'swoole_worker_memory_real_usage',
+                'name'  => 'swoole_process_memory_real_usage',
                 'type'  => 'gauge',
                 'value' => memory_get_usage(true),
             ],
@@ -34,22 +34,22 @@ class SwooleProcessCollector extends PrometheusCollector
             $gcStatus = gc_status();
             $gcMetrics = [
                 [
-                    'name'  => 'swoole_worker_gc_runs',
+                    'name'  => 'swoole_process_gc_runs',
                     'type'  => 'gauge',
                     'value' => $gcStatus['runs'],
                 ],
                 [
-                    'name'  => 'swoole_worker_gc_collected',
+                    'name'  => 'swoole_process_gc_collected',
                     'type'  => 'gauge',
                     'value' => $gcStatus['collected'],
                 ],
                 [
-                    'name'  => 'swoole_worker_gc_threshold',
+                    'name'  => 'swoole_process_gc_threshold',
                     'type'  => 'gauge',
                     'value' => $gcStatus['threshold'],
                 ],
                 [
-                    'name'  => 'swoole_worker_gc_roots',
+                    'name'  => 'swoole_process_gc_roots',
                     'type'  => 'gauge',
                     'value' => $gcStatus['roots'],
                 ],

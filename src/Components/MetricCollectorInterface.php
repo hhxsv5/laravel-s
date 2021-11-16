@@ -1,8 +1,8 @@
 <?php
 
-namespace Hhxsv5\LaravelS\Components\Prometheus;
+namespace Hhxsv5\LaravelS\Components;
 
-interface PrometheusCollectorInterface
+interface MetricCollectorInterface
 {
     /**
      * Collect the metrics

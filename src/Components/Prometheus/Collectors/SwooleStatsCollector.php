@@ -2,9 +2,9 @@
 
 namespace Hhxsv5\LaravelS\Components\Prometheus\Collectors;
 
-use Hhxsv5\LaravelS\Components\Prometheus\PrometheusCollector;
+use Hhxsv5\LaravelS\Components\MetricCollector;
 
-class SwooleStatsCollector extends PrometheusCollector
+class SwooleStatsCollector extends MetricCollector
 {
     public function collect(array $params = [])
     {

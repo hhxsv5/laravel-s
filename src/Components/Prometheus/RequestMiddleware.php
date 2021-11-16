@@ -5,7 +5,7 @@ namespace Hhxsv5\LaravelS\Components\Prometheus;
 use Closure;
 use Hhxsv5\LaravelS\Components\Prometheus\Collectors\HttpRequestCollector;
 
-class PrometheusMiddleware
+class RequestMiddleware
 {
     private $collector;
 

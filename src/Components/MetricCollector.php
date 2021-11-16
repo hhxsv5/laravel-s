@@ -1,8 +1,8 @@
 <?php
 
-namespace Hhxsv5\LaravelS\Components\Prometheus;
+namespace Hhxsv5\LaravelS\Components;
 
-abstract class PrometheusCollector implements PrometheusCollectorInterface
+abstract class MetricCollector implements MetricCollectorInterface
 {
     protected $config;
 

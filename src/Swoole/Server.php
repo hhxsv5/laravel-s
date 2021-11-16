@@ -2,7 +2,7 @@
 
 namespace Hhxsv5\LaravelS\Swoole;
 
-use Hhxsv5\LaravelS\Components\Prometheus\PrometheusCollectorInterface;
+use Hhxsv5\LaravelS\Components\MetricCollectorInterface;
 use Hhxsv5\LaravelS\Illuminate\LogTrait;
 use Hhxsv5\LaravelS\Swoole\Process\ProcessTitleTrait;
 use Hhxsv5\LaravelS\Swoole\Socket\PortInterface;
@@ -293,10 +293,10 @@ class Server
     {
         if ($message instanceof BaseTask) {
             $this->onTask($server, null, $srcWorkerId, $message);
-        } elseif ($message instanceof PrometheusCollectorInterface) {
+        } elseif ($message instanceof MetricCollectorInterface) {
             $message->collect([
-                'worker_id'   => $server->worker_id,
-                'worker_type' => $server->taskworker ? 'task' : 'worker',
+                'process_id'   => $server->worker_id,
+                'process_type' => $server->taskworker ? 'task' : 'worker',
             ]);
         }
     }
