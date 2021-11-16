@@ -245,7 +245,7 @@ EOS;
         }
 
         // Configure PrometheusTimerProcessMetricsCronJob automatically
-        if (isset($svrConf['processes'])) {
+        if (isset($svrConf['processes']) && !empty($svrConf['timer']['enable'])) {
             foreach ($svrConf['processes'] as $process) {
                 if ($process['class'] === CollectorProcess::class && (!isset($process['enable']) || $process['enable'])) {
                     $svrConf['timer']['jobs'][] = TimerProcessMetricsCronJob::class;
