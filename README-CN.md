@@ -1168,11 +1168,11 @@ class WebSocketService implements WebSocketHandlerInterface
     ```
     如果是`Lumen`工程，还需要在`bootstrap/app.php`中手动加载配置`$app->configure('prometheus');`。
 
-3. 配置`全局`中间件：`Hhxsv5\LaravelS\Components\Prometheus\RequestMiddleware`。为了尽可能精确地统计请求耗时，RequestMiddleware必须作为`第一个`全局中间件，需要放在其他中间件的前面。
+3. 配置`全局`中间件：`Hhxsv5\LaravelS\Components\Prometheus\RequestMiddleware::class`。为了尽可能精确地统计请求耗时，`RequestMiddleware`必须作为`第一个`全局中间件，需要放在其他中间件的前面。
 
-4. 注册ServiceProvider：`Hhxsv5\LaravelS\Components\Prometheus\ServiceProvider`。
+4. 注册 ServiceProvider：`Hhxsv5\LaravelS\Components\Prometheus\ServiceProvider::class`。
 
-5. 在`config/laravels.php`中配置Prometheus进程，用于定时采集Worker的指标。
+5. 在`config/laravels.php`中配置 CollectorProcess 进程，用于定时采集 Swoole Worker/Task/Timer 进程的指标。
     ```php
     'processes' => Hhxsv5\LaravelS\Components\Prometheus\CollectorProcess::getDefinition(),
     ```

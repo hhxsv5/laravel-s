@@ -1154,11 +1154,11 @@ To make our main server support more protocols not just Http and WebSocket, we b
     ```
     If your project is `Lumen`, you also need to manually load the configuration `$app->configure('prometheus');` in `bootstrap/app.php`.
 
-3. Configure `global` middleware: `Hhxsv5\LaravelS\Components\Prometheus\RequestMiddleware`. In order to count the request time consumption as accurately as possible, RequestMiddleware must be the `first` global middleware, which needs to be placed in front of other middleware.
+3. Configure `global` middleware: `Hhxsv5\LaravelS\Components\Prometheus\RequestMiddleware::class`. In order to count the request time consumption as accurately as possible, `RequestMiddleware` must be the `first` global middleware, which needs to be placed in front of other middleware.
 
-4. Register ServiceProvider: `Hhxsv5\LaravelS\Components\Prometheus\ServiceProvider`.
+4. Register ServiceProvider: `Hhxsv5\LaravelS\Components\Prometheus\ServiceProvider::class`.
 
-5. Configure the Prometheus process in `config/laravels.php` to collect Worker's indicators regularly.
+5. Configure the CollectorProcess in `config/laravels.php` to collect the metrics of Swoole Worker/Task/Timer processes regularly.
     ```php
     'processes' => Hhxsv5\LaravelS\Components\Prometheus\CollectorProcess::getDefinition(),
     ```
