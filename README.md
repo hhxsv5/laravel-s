@@ -1160,14 +1160,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
 
 5. Configure the Prometheus process in `config/laravels.php` to collect Worker's indicators regularly.
     ```php
-    'processes' => [
-        'prometheus' => [
-            'class'    => Hhxsv5\LaravelS\Components\Prometheus\CollectorProcess::class,
-            'redirect' => false,
-            'pipe'     => 0,
-            'enable'   => true,
-        ],
-    ],
+    'processes' => Hhxsv5\LaravelS\Components\Prometheus\CollectorProcess::getDefinition(),
     ```
 
 6. Create the route to output metrics.

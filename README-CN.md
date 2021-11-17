@@ -1174,14 +1174,7 @@ class WebSocketService implements WebSocketHandlerInterface
 
 5. 在`config/laravels.php`中配置Prometheus进程，用于定时采集Worker的指标。
     ```php
-    'processes' => [
-        'prometheus' => [
-            'class'    => Hhxsv5\LaravelS\Components\Prometheus\CollectorProcess::class,
-            'redirect' => false,
-            'pipe'     => 0,
-            'enable'   => true,
-        ],
-    ],
+    'processes' => Hhxsv5\LaravelS\Components\Prometheus\CollectorProcess::getDefinition(),
     ```
 
 6. 创建路由，输出监控指标数据。
