@@ -46,6 +46,13 @@ class ServiceProvider extends BaseServiceProvider
 
     public function provides()
     {
-        return [HttpRequestCollector::class, SwooleProcessCollector::class, SwooleStatsCollector::class, SystemCollector::class, Exporter::class];
+        return [
+            RequestMiddleware::class,
+            HttpRequestCollector::class,
+            SwooleProcessCollector::class,
+            SwooleStatsCollector::class,
+            SystemCollector::class,
+            Exporter::class,
+        ];
     }
 }
