@@ -24,6 +24,9 @@ class ServiceProvider extends BaseServiceProvider
         $this->mergeConfigFrom(
             __DIR__ . '/../../../config/prometheus.php', 'prometheus'
         );
+        $this->app->singleton(RequestMiddleware::class, function ($app) {
+            return new RequestMiddleware($app->make(HttpRequestCollector::class));
+        });
         $this->app->singleton(HttpRequestCollector::class, function ($app) {
             return new HttpRequestCollector($app['config']->get('prometheus'));
         });
