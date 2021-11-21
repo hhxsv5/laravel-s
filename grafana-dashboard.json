@@ -19,7 +19,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 2,
-  "iteration": 1637060656196,
+  "iteration": 1637483131743,
   "links": [],
   "panels": [
     {
@@ -1991,7 +1991,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:1328",
-          "decimals": 2,
+          "decimals": null,
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -2120,7 +2120,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:1328",
-          "decimals": 2,
+          "decimals": null,
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -2249,7 +2249,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:1328",
-          "decimals": 2,
+          "decimals": null,
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -2355,5 +2355,5 @@
   "timezone": "",
   "title": "LaravelS Service Monitor",
   "uid": "GHNOMaF7z",
-  "version": 108
+  "version": 113
 }
