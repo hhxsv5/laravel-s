@@ -19,7 +19,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 2,
-  "iteration": 1637483131743,
+  "iteration": 1637487643327,
   "links": [],
   "panels": [
     {
@@ -86,7 +86,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(irate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application, method)",
+          "expr": "sum(rate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application, method)",
           "hide": false,
           "interval": "1",
           "legendFormat": "{{application}}-{{method}}",
@@ -94,7 +94,7 @@
         },
         {
           "exemplar": true,
-          "expr": "sum(irate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application)",
+          "expr": "sum(rate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application)",
           "hide": false,
           "interval": "1",
           "legendFormat": "{{application}}",
@@ -102,7 +102,7 @@
         },
         {
           "exemplar": true,
-          "expr": "sum(irate(swoole_request_count{application=\"$application\"}[1m])) by (application)",
+          "expr": "sum(rate(swoole_request_count{application=\"$application\"}[1m])) by (application)",
           "hide": false,
           "interval": "1",
           "legendFormat": "{{application}}-Swoole",
@@ -110,7 +110,7 @@
         },
         {
           "exemplar": true,
-          "expr": "sum(irate(swoole_request_count{application=\"$application\"}[1m])) by (application)-sum(irate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application)",
+          "expr": "sum(rate(swoole_request_count{application=\"$application\"}[1m])) by (application)-sum(rate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application)",
           "hide": true,
           "interval": "1",
           "legendFormat": "{{application}}-Not Included(404...)",
@@ -208,7 +208,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "topk(20, sum(irate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application, method, uri))",
+          "expr": "topk(20, sum(rate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application, method, uri))",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -311,7 +311,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "topk(20, sum(irate(http_server_requests_seconds_count{application=\"$application\",status=~\"5..\"}[1m])) by (application, method, uri))",
+          "expr": "topk(20, sum(rate(http_server_requests_seconds_count{application=\"$application\",status=~\"5..\"}[1m])) by (application, method, uri))",
           "interval": "",
           "legendFormat": "{{application}}-{{method}}-{{uri}}",
           "refId": "A"
@@ -410,7 +410,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "topk(20, sum(irate(http_server_requests_seconds_count{application=\"$application\",status=~\"5..\"}[1m])) by (application, method, uri) / sum(irate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application, method, uri))",
+          "expr": "topk(20, sum(rate(http_server_requests_seconds_count{application=\"$application\",status=~\"5..\"}[1m])) by (application, method, uri) / sum(rate(http_server_requests_seconds_count{application=\"$application\"}[1m])) by (application, method, uri))",
           "interval": "",
           "legendFormat": "{{application}}-{{method}}-{{uri}}",
           "refId": "A"
@@ -2355,5 +2355,5 @@
   "timezone": "",
   "title": "LaravelS Service Monitor",
   "uid": "GHNOMaF7z",
-  "version": 113
+  "version": 123
 }
