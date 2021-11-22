@@ -16,12 +16,13 @@ class HttpRequestCollector extends MetricCollector
         /**@var \Illuminate\Http\Response $response */
         list($request, $response) = $params;
 
-        $cost = microtime(true) - $request->server('REQUEST_TIME_FLOAT');
         $status = $response->getStatusCode();
         if (isset($this->config['ignored_http_codes'][$status])) {
             // Ignore the requests.
             return;
         }
+
+        $cost = microtime(true) - $request->server('REQUEST_TIME_FLOAT');
 
         // Http Request Stats
         $requestLabels = http_build_query([
