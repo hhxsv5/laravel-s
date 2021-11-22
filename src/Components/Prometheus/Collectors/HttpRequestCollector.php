@@ -8,12 +8,13 @@ class HttpRequestCollector extends MetricCollector
 {
     public function collect(array $params = [])
     {
-        /**@var \Illuminate\Http\Request $request */
-        /**@var \Illuminate\Http\Response $response */
-        list($request, $response) = $params;
         if (!$this->config['enable']) {
             return;
         }
+
+        /**@var \Illuminate\Http\Request $request */
+        /**@var \Illuminate\Http\Response $response */
+        list($request, $response) = $params;
 
         $cost = microtime(true) - $request->server('REQUEST_TIME_FLOAT');
         $status = $response->getStatusCode();
