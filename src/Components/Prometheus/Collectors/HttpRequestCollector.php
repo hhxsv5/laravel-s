@@ -89,18 +89,7 @@ class HttpRequestCollector extends MetricCollector
 
         $route = $request->route();
         if ($route instanceof \Illuminate\Routing\Route) { // Laravel
-            $action = $route->getAction();
-            if (is_string($action['uses'])) { // Uses
-                $key = $method . $action['uses'];
-                if (isset($this->routesByUses[$key])) {
-                    $uri = $this->routesByUses[$key];
-                }
-            } elseif ($action['uses'] instanceof Closure) {  // Closure
-                $key = $method . spl_object_hash($action['uses']);
-                if (isset($this->routesByClosure[$key])) {
-                    $uri = $this->routesByClosure[$key];
-                }
-            }
+            $uri = $route->uri();
         } elseif (is_array($route)) { // Lumen
             if (isset($route[1]['uses'])) {
                 $key = $method . $route[1]['uses'];
