@@ -1201,7 +1201,19 @@ class WebSocketService implements WebSocketHandlerInterface
       follow_redirects: true
       static_configs:
       - targets:
-        - 127.0.0.1:5200 # 被监控服务的ip与端口
+        - 127.0.0.1:5200 # The ip and port of the monitored service
+    # Dynamically discovered using one of the supported service-discovery mechanisms
+    # https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config
+    # - job_name: laravels-eureka
+    #   honor_timestamps: true
+    #   scrape_interval: 5s
+    #   metrics_path: /actuator/prometheus
+    #   scheme: http
+    #   follow_redirects: true
+      # eureka_sd_configs:
+      # - server: http://127.0.0.1:8080/eureka
+      #   follow_redirects: true
+      #   refresh_interval: 5s
     ```
 
 8. 启动Grafana，然后导入[panel json](https://github.com/hhxsv5/laravel-s/tree/master/grafana-dashboard.json)。
