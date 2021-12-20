@@ -292,7 +292,8 @@ class Server
     public function onPipeMessage(HttpServer $server, $srcWorkerId, $message)
     {
         if ($message instanceof BaseTask) {
-            $this->onTask($server, null, $srcWorkerId, $message);
+            $server->task($message);
+            // $this->onTask($server, null, $srcWorkerId, $message);
         } elseif ($message instanceof MetricCollectorInterface) {
             $message->collect([
                 'process_id'   => $server->worker_id,

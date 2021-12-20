@@ -71,36 +71,27 @@ abstract class BaseTask
      */
     protected function task($task)
     {
-        $deliver = function () use ($task) {
-            /**@var \Swoole\Http\Server $swoole */
-            $swoole = app('swoole');
-            // The worker_id of timer process is -1
-            if ($swoole->worker_id === -1 || $swoole->taskworker) {
-                $taskWorkerNum = isset($swoole->setting['task_worker_num']) ? (int)$swoole->setting['task_worker_num'] : 0;
-                if ($taskWorkerNum < 2) {
-                    throw new \InvalidArgumentException('LaravelS: async task needs to set task_worker_num >= 2');
+        static $dispatch;
+        if (!$dispatch) {
+            $dispatch = static function ($task) {
+                /**@var \Swoole\Http\Server $swoole */
+                $swoole = app('swoole');
+                // The worker_id of timer process is -1
+                if ($swoole->worker_id === -1 || $swoole->taskworker) {
+                    $workerNum = isset($swoole->setting['worker_num']) ? $swoole->setting['worker_num'] : 0;
+                    $availableId = mt_rand(0, $workerNum - 1);
+                    return $swoole->sendMessage($task, $availableId);
                 }
-                $workerNum = isset($swoole->setting['worker_num']) ? $swoole->setting['worker_num'] : 0;
-                $totalNum = $workerNum + $taskWorkerNum;
-
-                $getAvailableId = function ($startId, $endId, $excludeId) {
-                    $ids = range($startId, $endId);
-                    $ids = array_flip($ids);
-                    unset($ids[$excludeId]);
-                    return array_rand($ids);
-                };
-                $availableId = $getAvailableId($workerNum, $totalNum - 1, $swoole->worker_id);
-                return $swoole->sendMessage($task, $availableId);
-            } else {
                 $taskId = $swoole->task($task);
                 return $taskId !== false;
-            }
-        };
-        if ($this->delay > 0) {
-            Timer::after($this->delay * 1000, $deliver);
-            return true;
-        } else {
-            return $deliver();
+            };
         }
+
+        if ($this->delay > 0) {
+            Timer::after($this->delay * 1000, $dispatch);
+            return true;
+        }
+
+        return $dispatch($task);
     }
 }
