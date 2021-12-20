@@ -67,7 +67,7 @@ abstract class BaseTask
     /**
      * Deliver a task
      * @param mixed $task The task object
-     * @return bool|mixed
+     * @return bool
      */
     protected function task($task)
     {
