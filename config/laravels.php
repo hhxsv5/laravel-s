@@ -283,7 +283,7 @@ return [
 
     'swoole' => [
         'daemonize'          => env('LARAVELS_DAEMONIZE', false),
-        'dispatch_mode'      => env('LARAVELS_DISPATCH_MODE', 2),
+        'dispatch_mode'      => env('LARAVELS_DISPATCH_MODE', 3),
         'reactor_num'        => env('LARAVELS_REACTOR_NUM', function_exists('swoole_cpu_num') ? swoole_cpu_num() : 8),
         'worker_num'         => env('LARAVELS_WORKER_NUM', function_exists('swoole_cpu_num') ? swoole_cpu_num() * 4 : 8),
         //'task_worker_num'    => env('LARAVELS_TASK_WORKER_NUM', function_exists('swoole_cpu_num') ? swoole_cpu_num() * 4 : 8),
