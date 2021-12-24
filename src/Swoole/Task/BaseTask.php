@@ -88,7 +88,7 @@ abstract class BaseTask
         }
 
         if ($this->delay > 0) {
-            Timer::after($this->delay * 1000, $dispatch);
+            Timer::after($this->delay * 1000, $dispatch, $task);
             return true;
         }
 
