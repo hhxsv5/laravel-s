@@ -311,11 +311,14 @@ EOS;
             $phpCmd = sprintf('%s -c "%s"', PHP_BINARY, $iniFile);
         }
 
-        $checkSwooleCmd = $phpCmd . ' --ri swoole';
-        $checkOutput = (string)shell_exec($checkSwooleCmd);
-        if (stripos($checkOutput, 'enabled') === false) {
+        $checkSwooleCmd = $phpCmd.' --ri swoole';
+        $checkOpenSwooleCmd = $phpCmd.' --ri openswoole';
+        // Short-circuit, if Swoole is found Loaded already. If not, check for Open-Swoole as well.
+        if (stripos((string)shell_exec($checkSwooleCmd), 'enabled') === false
+          && stripos((string)shell_exec($checkOpenSwooleCmd), 'enabled') === false) {
             $phpCmd .= ' -d "extension=swoole"';
         }
+        
         return trim($phpCmd . ' ' . $subCmd);
     }
 
