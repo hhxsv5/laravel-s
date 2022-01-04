@@ -102,8 +102,8 @@ EOS;
 
     public function start()
     {
-        if (!extension_loaded('swoole')) {
-            $this->error('LaravelS requires swoole extension, try to `pecl install swoole` and `php --ri swoole`.');
+        if (!extension_loaded('swoole') && !extension_loaded('openswoole')) {
+            $this->error('LaravelS requires swoole / openswoole extension, try to `pecl install swoole` and `php --ri swoole` OR `pecl install openswoole` and `php --ri openswoole`.');
             return 1;
         }
 
