@@ -102,8 +102,8 @@ EOS;
 
     public function start()
     {
-        if (!extension_loaded('swoole')) {
-            $this->error('LaravelS requires swoole extension, try to `pecl install swoole` and `php --ri swoole`.');
+        if (!extension_loaded('swoole') && !extension_loaded('openswoole')) {
+            $this->error('LaravelS requires swoole / openswoole extension, try to `pecl install swoole` and `php --ri swoole` OR `pecl install openswoole` and `php --ri openswoole`.');
             return 1;
         }
 
@@ -311,11 +311,14 @@ EOS;
             $phpCmd = sprintf('%s -c "%s"', PHP_BINARY, $iniFile);
         }
 
-        $checkSwooleCmd = $phpCmd . ' --ri swoole';
-        $checkOutput = (string)shell_exec($checkSwooleCmd);
-        if (stripos($checkOutput, 'enabled') === false) {
+        $checkSwooleCmd = $phpCmd.' --ri swoole';
+        $checkOpenSwooleCmd = $phpCmd.' --ri openswoole';
+        // Short-circuit, if Swoole is found Loaded already. If not, check for Open-Swoole as well.
+        if (stripos((string)shell_exec($checkSwooleCmd), 'enabled') === false
+          && stripos((string)shell_exec($checkOpenSwooleCmd), 'enabled') === false) {
             $phpCmd .= ' -d "extension=swoole"';
         }
+        
         return trim($phpCmd . ' ' . $subCmd);
     }
 
