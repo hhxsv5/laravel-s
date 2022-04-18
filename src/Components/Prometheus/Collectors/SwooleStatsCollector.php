@@ -63,7 +63,7 @@ class SwooleStatsCollector extends MetricCollector
             [
                 'name'  => 'swoole_tasking_num',
                 'type'  => 'gauge',
-                'value' => $stats['tasking_num'],
+                'value' => isset($stats['tasking_num']) ? $stats['tasking_num'] : 0,
             ],
         ];
         $key = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'swoole_stats', '', '']);
