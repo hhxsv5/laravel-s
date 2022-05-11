@@ -1,4 +1,4 @@
-<p align="center"><img src="logo.svg" alt="LaravelS Logo" height="50"></p>
+<p align="center"><img src="logo.svg" alt="LaravelS Logo" height="100"></p>
 
 🚀 LaravelS 是 Swoole 和 Laravel/Lumen 之间`开箱即用的适配器`。
 
