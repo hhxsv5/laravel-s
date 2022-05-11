@@ -1,4 +1,4 @@
-<p align="center"><img src="logo.svg" alt="LaravelS Logo" height="100"></p>
+<p align="center"><img src="logo.svg" alt="LaravelS Logo" height="80"></p>
 
 🚀 LaravelS is `an out-of-the-box adapter` between Swoole and Laravel/Lumen.
 
