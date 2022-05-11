@@ -1,15 +1,6 @@
-```
- _                               _  _____ 
-| |                             | |/ ____|
-| |     __ _ _ __ __ ___   _____| | (___  
-| |    / _` | '__/ _` \ \ / / _ \ |\___ \ 
-| |___| (_| | | | (_| |\ V /  __/ |____) |
-|______\__,_|_|  \__,_| \_/ \___|_|_____/ 
-                                           
-```
-> 🚀 LaravelS 是 Swoole 和 Laravel/Lumen 之间`开箱即用的适配器`。
+<p align="center"><img src="logo.svg" alt="LaravelS Logo" height="50"></p>
 
-*请`Watch`此仓库，以获得最新的更新。*
+🚀 LaravelS 是 Swoole 和 Laravel/Lumen 之间`开箱即用的适配器`。
 
 [![Latest Version](https://img.shields.io/github/release/hhxsv5/laravel-s.svg)](https://github.com/hhxsv5/laravel-s/releases)
 [![PHP Version](https://img.shields.io/packagist/php-v/hhxsv5/laravel-s)](https://www.php.net/)
@@ -20,6 +11,8 @@
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 
 **[English Documentation](https://github.com/hhxsv5/laravel-s/blob/master/README.md)**
+
+*请`Watch`此仓库，以获得最新的更新。*
 
 **QQ交流群**
 - 群1：`698480528` [![点击加群](https://pub.idqqimg.com/wpa/images/group.png "点击加群")](//shang.qq.com/wpa/qunwpa?idkey=f949191c8f413a3ecc5fbce661e57d379740ba92172bd50b02d23a5ab36cc7d6)

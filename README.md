@@ -1,15 +1,6 @@
-```
- _                               _  _____ 
-| |                             | |/ ____|
-| |     __ _ _ __ __ ___   _____| | (___  
-| |    / _` | '__/ _` \ \ / / _ \ |\___ \ 
-| |___| (_| | | | (_| |\ V /  __/ |____) |
-|______\__,_|_|  \__,_| \_/ \___|_|_____/ 
-                                           
-```
-> 🚀 LaravelS is `an out-of-the-box adapter` between Swoole and Laravel/Lumen.
+<p align="center"><img src="logo.svg" alt="LaravelS Logo" height="50"></p>
 
-*Please `Watch` this repository to get the latest updates.*
+🚀 LaravelS is `an out-of-the-box adapter` between Swoole and Laravel/Lumen.
 
 [![Latest Release](https://img.shields.io/github/v/release/hhxsv5/laravel-s.svg)](https://github.com/hhxsv5/laravel-s/releases)
 [![PHP Version](https://img.shields.io/packagist/php-v/hhxsv5/laravel-s)](https://www.php.net/)
@@ -20,6 +11,8 @@
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 
 **[中文文档](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md)**
+
+*Please `Watch` this repository to get the latest updates.*
 
 Table of Contents
 =================
