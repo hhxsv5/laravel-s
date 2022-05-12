@@ -4,7 +4,7 @@
         <a href="https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md">中文文档</a> |
         <a href="https://github.com/hhxsv5/laravel-s/blob/master/README.md">English Docs</a>
     </p>
-    <p>🚀 LaravelS 是 Laravel/Lumen 和 Swoole 之间`开箱即用的适配器`</p>
+    <p>🚀 LaravelS 是 Laravel/Lumen 和 Swoole 之间开箱即用的适配器</p>
     <p>
         <a href="https://github.com/hhxsv5/laravel-s/releases">
             <img src="https://img.shields.io/github/release/hhxsv5/laravel-s.svg" alt="Latest Version">
