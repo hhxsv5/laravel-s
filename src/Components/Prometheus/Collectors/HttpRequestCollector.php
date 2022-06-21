@@ -76,6 +76,21 @@ class HttpRequestCollector extends MetricCollector
         $sumKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'http_server_requests_seconds_sum', 'summary', $requestLabels]);
         apcu_inc($countKey, 1, $success, $this->config['apcu_key_max_age']);
         apcu_inc($sumKey, round($cost * 1000000), $success, $this->config['apcu_key_max_age']); // Time unit: μs
+
+
+        // UA Stats
+        $requestLabels = http_build_query([
+            'ua' => $request->headers->get('User-Agent', ''),
+        ]);
+        $uaKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'http_server_requests_ua_count', 'summary', $requestLabels]);
+        apcu_inc($uaKey, 1, $success, $this->config['apcu_key_max_age']);
+
+        // IP Stats
+        $requestLabels = http_build_query([
+            'ip' => $request->getClientIp(),
+        ]);
+        $ipKey = implode($this->config['apcu_key_separator'], [$this->config['apcu_key_prefix'], 'http_server_requests_ip_count', 'summary', $requestLabels]);
+        apcu_inc($ipKey, 1, $success, $this->config['apcu_key_max_age']);
     }
 
     protected function findRouteUri(Request $request)
