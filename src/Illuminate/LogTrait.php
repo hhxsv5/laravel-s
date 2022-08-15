@@ -31,17 +31,17 @@ trait LogTrait
         if ($outputStyle) {
             switch (strtoupper($type)) {
                 case 'INFO':
-                    $outputStyle->writeln("<info>$msg</info>");
+                    $outputStyle->writeln("<info>{$msg}</info>");
                     break;
                 case 'WARNING':
                     if (!$outputStyle->getFormatter()->hasStyle('warning')) {
                         $style = new OutputFormatterStyle('yellow');
                         $outputStyle->getFormatter()->setStyle('warning', $style);
                     }
-                    $outputStyle->writeln("<warning>$msg</warning>");
+                    $outputStyle->writeln("<warning>{$msg}</warning>");
                     break;
                 case 'ERROR':
-                    $outputStyle->writeln("<error>$msg</error>");
+                    $outputStyle->writeln("<error>{$msg}</error>");
                     break;
                 case 'TRACE':
                 default:
@@ -84,6 +84,6 @@ trait LogTrait
                 $this->logException($e);
             }
         } while ($try < $tries);
-        return false;
+        return null;
     }
 }

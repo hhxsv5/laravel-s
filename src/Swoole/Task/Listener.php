@@ -4,16 +4,10 @@ namespace Hhxsv5\LaravelS\Swoole\Task;
 
 abstract class Listener
 {
-    protected $event;
-
-    public function __construct(Event $event)
-    {
-        $this->event = $event;
-    }
-
     /**
      * The logic of handling event
-     * @return void
+     * @param Event $event
+     * @return mixed
      */
-    abstract public function handle();
+    abstract public function handle(Event $event);
 }

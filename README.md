@@ -540,24 +540,20 @@ class TestEvent extends Event
 
 2.Create listener class.
 ```php
-use Hhxsv5\LaravelS\Swoole\Task\Task;
+use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 class TestListener1 extends Listener
 {
-    /**
-     * @var TestEvent
-     */
-    protected $event;
-    
-    public function handle()
+    public function handle(Event $event)
     {
-        \Log::info(__CLASS__ . ':handle start', [$this->event->getData()]);
+        \Log::info(__CLASS__ . ':handle start', [$event->getData()]);
         sleep(2);// Simulate the slow codes
         // Deliver task in CronJob, but NOT support callback finish() of task.
         // Note: Modify task_ipc_mode to 1 or 2 in config/laravels.php, see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
         $ret = Task::deliver(new TestTask('task data'));
         var_dump($ret);
         // The exceptions thrown here will be caught by the upper layer and recorded in the Swoole log. Developers need to try/catch manually.
+        // return false; // Stop propagating this event to subsequent listeners
     }
 }
 ```

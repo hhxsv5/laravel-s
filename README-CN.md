@@ -549,24 +549,20 @@ class TestEvent extends Event
 2.创建监听器类。
 
 ```php
-use Hhxsv5\LaravelS\Swoole\Task\Task;
+use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 class TestListener1 extends Listener
 {
-    /**
-     * @var TestEvent
-     */
-    protected $event;
-    
-    public function handle()
+    public function handle(Event $event)
     {
-        \Log::info(__CLASS__ . ':handle start', [$this->event->getData()]);
+        \Log::info(__CLASS__ . ':handle start', [$event->getData()]);
         sleep(2);// 模拟一些慢速的事件处理
         // 监听器中也可以投递Task，但不支持Task的finish()回调。
         // 注意：config/laravels.php中修改配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/#/server/setting?id=task_ipc_mode
         $ret = Task::deliver(new TestTask('task data'));
         var_dump($ret);
         // 此处抛出的异常会被上层捕获并记录到Swoole日志，开发者需要手动try/catch
+        // return false; // 停止将事件传播到后面的监听器
     }
 }
 ```

@@ -365,15 +365,19 @@ class Server
         $listenerClasses = $event->getListeners();
         foreach ($listenerClasses as $listenerClass) {
             /**@var Listener $listener */
-            $listener = new $listenerClass($event);
+            $listener = new $listenerClass();
             if (!($listener instanceof Listener)) {
                 throw new \InvalidArgumentException(sprintf('%s must extend the abstract class %s', $listenerClass, Listener::class));
             }
-            $this->callWithCatchException(function () use ($listener) {
-                $listener->handle();
+
+            $result = $this->callWithCatchException(function () use ($listener, $event) {
+                return $listener->handle($event);
             }, [], $event->getTries());
+
+            if ($result === false) { // Stop propagating this event to subsequent listeners
+                break;
+            }
         }
-        return true;
     }
 
     protected function handleTask(Task $task)
