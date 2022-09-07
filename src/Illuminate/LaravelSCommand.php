@@ -222,7 +222,7 @@ EOS;
             $svrConf['laravel_base_path'] = base_path();
         }
         if (empty($svrConf['process_prefix'])) {
-            $svrConf['process_prefix'] = $svrConf['laravel_base_path'];
+            $svrConf['process_prefix'] = trim(config('app.name', '') . ' ' . $svrConf['laravel_base_path']);
         }
         if ($this->option('ignore')) {
             $svrConf['ignore_check_pid'] = true;
