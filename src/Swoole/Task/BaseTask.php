@@ -19,6 +19,11 @@ abstract class BaseTask
     protected $tries = 1;
 
     /**
+     * @var bool For MultiTaskWait or not.
+     */
+    protected $forMultiTask = false;
+
+    /**
      * Delay in seconds, null means no delay.
      * @param int $delay
      * @return $this
@@ -66,10 +71,10 @@ abstract class BaseTask
 
     /**
      * Deliver a task
-     * @param mixed $task The task object
+     * @param self $task The task object
      * @return bool
      */
-    protected function task($task)
+    protected static function deliver(self $task)
     {
         static $dispatch;
         if (!$dispatch) {
@@ -87,11 +92,27 @@ abstract class BaseTask
             };
         }
 
-        if ($this->delay > 0) {
-            Timer::after($this->delay * 1000, $dispatch, $task);
+        if ($task->getDelay() > 0) {
+            Timer::after($task->getDelay() * 1000, $dispatch, $task);
             return true;
         }
 
         return $dispatch($task);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForMultiTask()
+    {
+        return $this->forMultiTask;
+    }
+
+    /**
+     * @param bool $forMultiTask
+     */
+    public function setForMultiTask($forMultiTask)
+    {
+        $this->forMultiTask = $forMultiTask;
     }
 }

@@ -30,6 +30,6 @@ abstract class Event extends BaseTask
      */
     public static function fire(self $event)
     {
-        return $event->task($event);
+        return parent::deliver($event);
     }
 }

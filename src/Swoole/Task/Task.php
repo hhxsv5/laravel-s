@@ -10,17 +10,17 @@ abstract class Task extends BaseTask
 
     /**
      * The logic of handling task
-     * @return void
+     * @return mixed
      */
     abstract public function handle();
 
     /**
      * Deliver a task
-     * @param Task $task The task object
+     * @param self $task The task object
      * @return bool
      */
-    public static function deliver(self $task)
+    public static function deliver(BaseTask $task)
     {
-        return $task->task($task);
+        return parent::deliver($task);
     }
 }

@@ -9,6 +9,7 @@ use Hhxsv5\LaravelS\Swoole\Socket\PortInterface;
 use Hhxsv5\LaravelS\Swoole\Task\BaseTask;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
+use Hhxsv5\LaravelS\Swoole\Task\MultiTaskWait;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
@@ -294,6 +295,8 @@ class Server
         if ($message instanceof BaseTask) {
             $server->task($message);
             // $this->onTask($server, null, $srcWorkerId, $message);
+        } elseif ($message instanceof MultiTaskWait) {
+            $server->taskWaitMulti($message->getTasks(), $message->getTimeout());
         } elseif ($message instanceof MetricCollectorInterface) {
             $message->collect([
                 'process_id'   => $server->worker_id,
@@ -342,19 +345,24 @@ class Server
         $response->end();
     }
 
-    public function onTask(HttpServer $server, $taskId, $srcWorkerId, $data)
+    public function onTask(HttpServer $server, $taskId, $srcWorkerId, $task)
     {
-        if ($data instanceof Event) {
-            $this->handleEvent($data);
-        } elseif ($data instanceof Task) {
-            if ($this->handleTask($data) && method_exists($data, 'finish')) {
-                return $data;
+        if ($task instanceof Event) {
+            $this->handleEvent($task);
+        } elseif ($task instanceof Task) {
+            if ($task->isForMultiTask()) {
+                $this->handleTask($task, $handleResult);
+                return $handleResult;
+            }
+            if ($this->handleTask($task) && method_exists($task, 'finish')) {
+                return $task;
             }
         }
     }
 
     public function onFinish(HttpServer $server, $taskId, $data)
     {
+        // Note: MultiTaskWait doesn't support the onFinish() callback.
         if ($data instanceof Task) {
             $data->finish();
         }
@@ -380,10 +388,10 @@ class Server
         }
     }
 
-    protected function handleTask(Task $task)
+    protected function handleTask(Task $task, &$handleResult = null)
     {
-        return $this->callWithCatchException(function () use ($task) {
-            $task->handle();
+        return $this->callWithCatchException(function () use ($task, &$handleResult) {
+            $handleResult = $task->handle();
             return true;
         }, [], $task->getTries());
     }
