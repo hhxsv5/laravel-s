@@ -135,7 +135,7 @@ EOS;
             [
                 'Main HTTP',
                 '<info>On</info>',
-                $this->getApplication()->getName(),
+                $this->isLumen() ? 'Lumen Router' : 'Laravel Router',
                 sprintf('%s://%s', $ssl ? 'https' : 'http', $listenAt),
             ],
         ];
