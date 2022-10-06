@@ -4,7 +4,6 @@ namespace Hhxsv5\LaravelS\Illuminate;
 
 use Hhxsv5\LaravelS\Components\Prometheus\CollectorProcess;
 use Hhxsv5\LaravelS\Components\Prometheus\TimerProcessMetricsCronJob;
-use Hhxsv5\LaravelS\Swoole\Timer\PrometheusTimerProcessMetricsCronJob;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 
@@ -244,7 +243,7 @@ EOS;
             $svrConf['timer']['max_wait_time'] = 5;
         }
 
-        // Configure PrometheusTimerProcessMetricsCronJob automatically
+        // Configure TimerProcessMetricsCronJob automatically
         if (isset($svrConf['processes']) && !empty($svrConf['timer']['enable'])) {
             foreach ($svrConf['processes'] as $process) {
                 if ($process['class'] === CollectorProcess::class && (!isset($process['enable']) || $process['enable'])) {
