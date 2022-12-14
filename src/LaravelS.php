@@ -189,7 +189,6 @@ class LaravelS extends Server
     public function onRequest(SwooleRequest $swooleRequest, SwooleResponse $swooleResponse)
     {
         try {
-            parent::onRequest($swooleRequest, $swooleResponse);
             $laravelRequest = $this->convertRequest($this->laravel, $swooleRequest);
             $this->laravel->bindRequest($laravelRequest);
             $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
