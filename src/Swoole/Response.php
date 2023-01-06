@@ -98,6 +98,10 @@ abstract class Response implements ResponseInterface
 
     public function send($gzip = false)
     {
+        if (!empty($this->swooleResponse->isEnded)) {
+            // For calling Swoole\Http\Response->end() in Laravel
+            return;
+        }
         $this->sendStatusCode();
         $this->sendHeaders();
         $this->sendCookies();

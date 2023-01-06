@@ -191,6 +191,7 @@ class LaravelS extends Server
         try {
             $laravelRequest = $this->convertRequest($this->laravel, $swooleRequest);
             $this->laravel->bindRequest($laravelRequest);
+            $this->laravel->bindSwooleResponse($swooleResponse);
             $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
             $handleStaticSuccess = false;
             if ($this->conf['handle_static']) {
