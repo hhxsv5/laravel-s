@@ -17,7 +17,7 @@ build:
         php:
           version: 7.3.0
           pecl_extensions:
-            - swoole
+            - swoole-4.6.0
       dependencies:
         before:
           - composer install
