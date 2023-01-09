@@ -11,7 +11,7 @@ class LaravelScheduleJob extends CronJob
 
     public function interval()
     {
-        return 60 * 1000;// Run every 1 minute
+        return 60 * 1000; // Run every 1 minute
     }
 
     public function isImmediate()

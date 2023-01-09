@@ -116,7 +116,7 @@ abstract class CronJob implements CronJobInterface
     public static function isGlobalTimerAlive()
     {
         /**@var \Redis|\RedisCluster|\Predis\Client $redis */
-        $redis = app('redis')->client(); // Fix exists() always returns false for some older version of Laravel, see https://github.com/illuminate/redis/commit/62ff6a06a9c91902d3baa7feda20bab5e807606f
+        $redis = app('redis')->client(); // Fix exists() always returns false on cluster for some older version of Laravel, see https://github.com/illuminate/redis/commit/62ff6a06a9c91902d3baa7feda20bab5e807606f
         return (bool)$redis->exists(self::getGlobalTimerCacheKey());
     }
 
