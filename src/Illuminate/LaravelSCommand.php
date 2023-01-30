@@ -104,7 +104,7 @@ EOS;
                 PHP_VERSION,
             ],
             [
-                'Swoole',
+                extension_loaded('openswoole') ? 'Open Swoole' : 'Swoole',
                 SWOOLE_VERSION,
             ],
             [
