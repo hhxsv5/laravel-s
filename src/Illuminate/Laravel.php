@@ -168,10 +168,10 @@ class Laravel
     public function handleStatic(IlluminateRequest $request)
     {
         $uri = $request->getRequestUri();
-        if (isset(self::$staticBlackList[$uri])) {
+        $uri = (string)str_replace("\0", '', urldecode($uri));
+        if (isset(self::$staticBlackList[$uri]) || strpos($uri, '/../') !== false) {
             return false;
         }
-        $uri = (string)str_replace("\0", '', urldecode($uri));
 
         $requestFile = $this->conf['static_path'] . $uri;
         if (is_file($requestFile)) {
