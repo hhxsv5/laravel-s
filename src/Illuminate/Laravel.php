@@ -169,7 +169,7 @@ class Laravel
     {
         $uri = $request->getRequestUri();
         $uri = (string)str_replace("\0", '', urldecode($uri));
-        if (isset(self::$staticBlackList[$uri]) || strpos($uri, '/../') !== false) {
+        if (isset(self::$staticBlackList[$uri]) || strpos($uri, '/..') !== false) {
             return false;
         }
 
