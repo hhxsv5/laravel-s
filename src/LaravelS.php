@@ -71,7 +71,7 @@ class LaravelS extends Server
         }
     }
 
-    protected function beforeWebSocketHandShake(SwooleRequest $request, SwooleResponse $response)
+    protected function beforeWebSocketHandShake(SwooleRequest $request)
     {
         // Start Laravel's lifetime, then support session ...middleware.
         $laravelRequest = $this->convertRequest($this->laravel, $request);
@@ -92,7 +92,7 @@ class LaravelS extends Server
     protected function triggerWebSocketEvent($event, array $params)
     {
         if ($event === 'onHandShake') {
-            $this->beforeWebSocketHandShake($params[0], $params[1]);
+            $this->beforeWebSocketHandShake($params[0]);
             $params[1]->header('Server', $this->conf['server']);
         }
 
@@ -116,7 +116,7 @@ class LaravelS extends Server
     {
         switch ($event) {
             case 'onHandShake':
-                $this->beforeWebSocketHandShake($params[0], $params[1]);
+                $this->beforeWebSocketHandShake($params[0]);
             case 'onRequest':
                 $params[1]->header('Server', $this->conf['server']);
                 break;
