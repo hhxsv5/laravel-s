@@ -270,7 +270,7 @@ return [
 
     /*
    |--------------------------------------------------------------------------
-   | Expose Swoole Http Response Object
+   | Expose Swoole\Http\Response Object
    |--------------------------------------------------------------------------
    |
    | Whether to expose the `Swoole\Http\Response` object for direct response with this object,
