@@ -6,6 +6,7 @@ use Illuminate\Container\Container;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Http\Request as IlluminateRequest;
+use Swoole\Http\Response as SwooleResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -235,6 +236,11 @@ class Laravel
         $this->currentApp->singleton('swoole', function () use ($swoole) {
             return $swoole;
         });
+    }
+
+    public function bindSwooleHttpResponse(SwooleResponse $response)
+    {
+        $this->currentApp->instance('swoole-http-response', $response);
     }
 
     public function saveSession()
