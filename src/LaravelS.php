@@ -71,11 +71,14 @@ class LaravelS extends Server
         }
     }
 
-    protected function beforeWebSocketHandShake(SwooleRequest $request)
+    protected function beforeWebSocketHandShake(SwooleRequest $request, SwooleResponse $response)
     {
         // Start Laravel's lifetime, then support session ...middleware.
         $laravelRequest = $this->convertRequest($this->laravel, $request);
         $this->laravel->bindRequest($laravelRequest);
+        if (!empty($this->conf['expose_swoole_http_response'])) {
+            $this->laravel->bindSwooleHttpResponse($response);
+        }
         $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
         $this->laravel->cleanProviders();
         $laravelResponse = $this->laravel->handleDynamic($laravelRequest);
@@ -92,7 +95,7 @@ class LaravelS extends Server
     protected function triggerWebSocketEvent($event, array $params)
     {
         if ($event === 'onHandShake') {
-            $this->beforeWebSocketHandShake($params[0]);
+            $this->beforeWebSocketHandShake($params[0], $params[1]);
             $params[1]->header('Server', $this->conf['server']);
         }
 
@@ -116,7 +119,7 @@ class LaravelS extends Server
     {
         switch ($event) {
             case 'onHandShake':
-                $this->beforeWebSocketHandShake($params[0]);
+                $this->beforeWebSocketHandShake($params[0], $params[1]);
             case 'onRequest':
                 $params[1]->header('Server', $this->conf['server']);
                 break;
@@ -191,7 +194,9 @@ class LaravelS extends Server
         try {
             $laravelRequest = $this->convertRequest($this->laravel, $swooleRequest);
             $this->laravel->bindRequest($laravelRequest);
-            $this->laravel->bindSwooleResponse($swooleResponse);
+            if (!empty($this->conf['expose_swoole_http_response'])) {
+                $this->laravel->bindSwooleHttpResponse($swooleResponse);
+            }
             $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
             $handleStaticSuccess = false;
             if ($this->conf['handle_static']) {
@@ -251,6 +256,12 @@ class LaravelS extends Server
         $laravelResponse = $laravel->handleDynamic($laravelRequest);
         $laravelResponse->headers->set('Server', $this->conf['server'], true);
         $laravel->fireEvent('laravels.generated_response', [$laravelRequest, $laravelResponse]);
+        if (!empty($swooleResponse->isEnded)) {
+            // For using Swoole\Http\Response object in Laravel
+            $laravel->clean();
+            return true;
+        }
+
         if ($laravelResponse instanceof BinaryFileResponse) {
             $response = new StaticResponse($swooleResponse, $laravelResponse);
         } else {

@@ -120,5 +120,8 @@
 ## destroy_controllers
 > `array` Automatically destroy the controllers after each request to solve the problem of the singleton controllers, refer [Demo](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md#singleton-controller).
 
+## expose_swoole_http_response
+> `bool` Whether to expose the `Swoole\Http\Response` object for direct response with this object, such as calling its write(), sendfile() and other methods, but Laravel after-middleware may not work properly, default `false`.
+
 ## swoole
 > `array` Swoole's `original` configuration items, refer [Swoole Server Configuration](https://www.swoole.co.uk/docs/modules/swoole-server/configuration).

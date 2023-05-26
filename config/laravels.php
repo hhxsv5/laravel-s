@@ -259,7 +259,7 @@ return [
     | Automatically destroy the controllers after each request to solve
     | the problem of the singleton controllers.
     |
-    | https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md#singleton-controller
+    | https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#destroy_controllers
     |
     */
 
@@ -267,6 +267,20 @@ return [
         'enable'        => false,
         'excluded_list' => [],
     ],
+
+    /*
+   |--------------------------------------------------------------------------
+   | Expose Swoole Http Response Object
+   |--------------------------------------------------------------------------
+   |
+   | Whether to expose the `Swoole\Http\Response` object for direct response with this object,
+   | such as calling its write(), sendfile() and other methods, but Laravel after-middleware may not work properly.
+   |
+   | https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#expose_swoole_http_response
+   |
+   */
+
+    'expose_swoole_http_response' => false,
 
     /*
     |--------------------------------------------------------------------------

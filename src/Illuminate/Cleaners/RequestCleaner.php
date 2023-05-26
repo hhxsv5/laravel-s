@@ -8,10 +8,9 @@ class RequestCleaner extends BaseCleaner
 {
     public function clean()
     {
-        $this->currentApp->forgetInstance('url');
+        unset($this->currentApp['url'], $this->currentApp['request'], $this->currentApp['swoole-http-response']);
         Facade::clearResolvedInstance('url');
-        
-        $this->currentApp->forgetInstance('request');
         Facade::clearResolvedInstance('request');
+        Facade::clearResolvedInstance('swoole-http-response');
     }
 }

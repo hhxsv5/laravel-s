@@ -238,9 +238,9 @@ class Laravel
         });
     }
 
-    public function bindSwooleResponse(SwooleResponse $response)
+    public function bindSwooleHttpResponse(SwooleResponse $response)
     {
-        $this->currentApp->instance('swoole-response', $response);
+        $this->currentApp->instance('swoole-http-response', $response);
     }
 
     public function saveSession()

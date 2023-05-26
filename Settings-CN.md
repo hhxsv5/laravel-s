@@ -120,5 +120,8 @@
 ## destroy_controllers
 > `array` 每次请求后自动销毁控制器，解决单例控制器的问题，参考[示例](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md#%E5%8D%95%E4%BE%8B%E6%8E%A7%E5%88%B6%E5%99%A8)。
 
+## expose_swoole_http_response
+> `bool` 是否暴露`Swoole\Http\Response`对象，用于用此对象直接响应，比如调用它的write()、sendfile()等方法，但Laravel后置中间件可能不会正常工作，默认`false`。
+
 ## swoole
 > `array` Swoole的`原始`配置项，请参考[Swoole服务器配置项](https://wiki.swoole.com/#/server/setting)。
