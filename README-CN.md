@@ -1505,9 +1505,7 @@ public function json()
     
     <img src="https://user-images.githubusercontent.com/7278743/72538652-19bad000-38b9-11ea-844a-8f66a2c76185.jpeg" height="300px" alt="果酱社区">
 
-- [Pool-X](https://pool-x.io/?r=vHR6yH&c=pool-x)：可以交易锁定资产的新一代POS矿池。
-
-- [KuCoin](https://www.kucoin.io/ucenter/signup?rcode=vHR6yH)：全球化第一的交易所。
+- [KuCoin](https://www.kucoin.com/r/rf/QBSADJ41)：TOP5的加密货币交易所。
 
 - [医联](https://www.medlinker.com/)：WEB站、M站、APP、小程序的账户体系服务。
     
@@ -1583,6 +1581,8 @@ public function json()
 | *勇 | 66.66 |
 | 果酱社区 | 1076 |
 | *乾 | 18.88 |
+| *奥 | 8.88 |
+| 双木 | 20 |
 
 ## License
 

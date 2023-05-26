@@ -97,7 +97,7 @@ abstract class CronJob implements CronJobInterface
 
     public static function getGlobalTimerLock()
     {
-        /**@var \Illuminate\Redis\Connections\PhpRedisConnection $redis */
+        /**@var \Illuminate\Redis\RedisManager $redis */
         $redis = app('redis');
 
         $key = self::getGlobalTimerCacheKey();
@@ -115,14 +115,14 @@ abstract class CronJob implements CronJobInterface
 
     public static function isGlobalTimerAlive()
     {
-        /**@var \Illuminate\Redis\Connections\PhpRedisConnection $redis */
-        $redis = app('redis');
+        /**@var \Redis|\RedisCluster|\Predis\Client $redis */
+        $redis = app('redis')->client(); // Fix: Redis exists() always returns false on cluster mode for some older versions of Laravel/Lumen, see https://github.com/illuminate/redis/commit/62ff6a06a9c91902d3baa7feda20bab5e807606f
         return (bool)$redis->exists(self::getGlobalTimerCacheKey());
     }
 
     public static function isCurrentTimerAlive()
     {
-        /**@var \Illuminate\Redis\Connections\PhpRedisConnection $redis */
+        /**@var \Illuminate\Redis\RedisManager $redis */
         $redis = app('redis');
         $key = self::getGlobalTimerCacheKey();
         $instanceId = $redis->get($key);
@@ -131,7 +131,7 @@ abstract class CronJob implements CronJobInterface
 
     public static function renewGlobalTimerLock($expire)
     {
-        /**@var \Illuminate\Redis\Connections\PhpRedisConnection $redis */
+        /**@var \Illuminate\Redis\RedisManager $redis */
         $redis = app('redis');
         return (bool)$redis->expire(self::getGlobalTimerCacheKey(), $expire);
     }

@@ -5,7 +5,7 @@ filter:
     - tests/*
 build:
   environment:
-    php: 7.4.0
+    php: 7.3.0
   nodes:
     analysis:
       tests:
@@ -15,9 +15,9 @@ build:
     my-tests:
       environment:
         php:
-          version: 7.4.0
+          version: 7.3.0
           pecl_extensions:
-            - swoole
+            - swoole-4.6.0
       dependencies:
         before:
           - composer install
