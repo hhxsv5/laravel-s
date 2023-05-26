@@ -64,6 +64,7 @@ Table of Contents
 * [Other features](#other-features)
     * [Configure Swoole events](#configure-swoole-events)
     * [Serverless](#serverless)
+    * [Use Swoole\Http\Response](https://github.com/hhxsv5/laravel-s/blob/feature/custom-swoole-response/Settings.md#expose_swoole_http_response)
 * [Important notices](#important-notices)
 * [Users and cases](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E7%94%A8%E6%88%B7%E4%B8%8E%E6%A1%88%E4%BE%8B)
 * [Alternatives](#alternatives)
