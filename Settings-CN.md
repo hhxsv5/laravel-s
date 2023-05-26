@@ -123,5 +123,16 @@
 ## expose_swoole_http_response
 > `bool` 是否暴露`Swoole\Http\Response`对象，用于用此对象直接响应，比如调用它的write()、sendfile()等方法，但Laravel后置中间件可能不会正常工作，默认`false`。
 
+```php
+// 将expose_swoole_http_response设置为true
+$router->get('/custom-swoole-response', function () use ($router) {
+    /**@var \Swoole\Http\Response $swooleResponse */
+    $swooleResponse = app('swoole-http-response');
+    $swooleResponse->end('swoole response');
+    $swooleResponse->isEnded = true; // 必须将isEnded设置为true，表示直接使用底层的Swoole\Http\Response对象来处理响应，从而会响应"swoole response"而不是"laravel response"
+    return 'laravel response';
+});
+```
+
 ## swoole
 > `array` Swoole的`原始`配置项，请参考[Swoole服务器配置项](https://wiki.swoole.com/#/server/setting)。

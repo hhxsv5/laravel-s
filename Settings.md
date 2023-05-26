@@ -123,5 +123,16 @@
 ## expose_swoole_http_response
 > `bool` Whether to expose the `Swoole\Http\Response` object for direct response with this object, such as calling its write(), sendfile() and other methods, but Laravel after-middleware may not work properly, default `false`.
 
+```php
+// Set expose_swoole_http_response to true
+$router->get('/custom-swoole-response', function () use ($router) {
+    /**@var \Swoole\Http\Response $swooleResponse */
+    $swooleResponse = app('swoole-http-response');
+    $swooleResponse->end('swoole response');
+    $swooleResponse->isEnded = true; // isEnded must be set to true, indicating that the underlying Swoole\Http\Response object is directly used to process the response, so the response content is "swoole response" instead of "laravel response".
+    return 'laravel response';
+});
+```
+
 ## swoole
 > `array` Swoole's `original` configuration items, refer [Swoole Server Configuration](https://www.swoole.co.uk/docs/modules/swoole-server/configuration).

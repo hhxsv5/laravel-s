@@ -76,9 +76,6 @@ class LaravelS extends Server
         // Start Laravel's lifetime, then support session ...middleware.
         $laravelRequest = $this->convertRequest($this->laravel, $request);
         $this->laravel->bindRequest($laravelRequest);
-        if (!empty($this->conf['expose_swoole_http_response'])) {
-            $this->laravel->bindSwooleHttpResponse($response);
-        }
         $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
         $this->laravel->cleanProviders();
         $laravelResponse = $this->laravel->handleDynamic($laravelRequest);
@@ -194,9 +191,6 @@ class LaravelS extends Server
         try {
             $laravelRequest = $this->convertRequest($this->laravel, $swooleRequest);
             $this->laravel->bindRequest($laravelRequest);
-            if (!empty($this->conf['expose_swoole_http_response'])) {
-                $this->laravel->bindSwooleHttpResponse($swooleResponse);
-            }
             $this->laravel->fireEvent('laravels.received_request', [$laravelRequest]);
             $handleStaticSuccess = false;
             if ($this->conf['handle_static']) {
@@ -204,6 +198,9 @@ class LaravelS extends Server
                 $handleStaticSuccess = $this->handleStaticResource($this->laravel, $laravelRequest, $swooleResponse);
             }
             if (!$handleStaticSuccess) {
+                if (!empty($this->conf['expose_swoole_http_response'])) {
+                    $this->laravel->bindSwooleHttpResponse($swooleResponse);
+                }
                 $this->handleDynamicResource($this->laravel, $laravelRequest, $swooleResponse);
             }
         } catch (\Exception $e) {
