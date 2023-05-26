@@ -198,9 +198,6 @@ class LaravelS extends Server
                 $handleStaticSuccess = $this->handleStaticResource($this->laravel, $laravelRequest, $swooleResponse);
             }
             if (!$handleStaticSuccess) {
-                if (!empty($this->conf['expose_swoole_http_response'])) {
-                    $this->laravel->bindSwooleHttpResponse($swooleResponse);
-                }
                 $this->handleDynamicResource($this->laravel, $laravelRequest, $swooleResponse);
             }
         } catch (\Exception $e) {
@@ -253,12 +250,6 @@ class LaravelS extends Server
         $laravelResponse = $laravel->handleDynamic($laravelRequest);
         $laravelResponse->headers->set('Server', $this->conf['server'], true);
         $laravel->fireEvent('laravels.generated_response', [$laravelRequest, $laravelResponse]);
-        if (!empty($swooleResponse->isEnded)) {
-            // For using Swoole\Http\Response object in Laravel
-            $laravel->clean();
-            return true;
-        }
-
         if ($laravelResponse instanceof BinaryFileResponse) {
             $response = new StaticResponse($swooleResponse, $laravelResponse);
         } else {

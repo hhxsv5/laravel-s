@@ -67,7 +67,6 @@
 * [其他特性](#其他特性)
     * [配置Swoole事件](#配置Swoole事件)
     * [Serverless](#serverless)
-    * [使用Swoole\Http\Response](https://github.com/hhxsv5/laravel-s/blob/feature/custom-swoole-response/Settings-CN.md#expose_swoole_http_response)
 * [注意事项](#注意事项)
 * [用户与案例](#用户与案例)
 * [其他选择](#其他选择)
