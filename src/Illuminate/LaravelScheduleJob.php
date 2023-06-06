@@ -21,6 +21,6 @@ class LaravelScheduleJob extends CronJob
 
     public function run()
     {
-        Portal::runArtisanCommand(base_path(), 'schedule:run >> /dev/null 2>&1');
+        Portal::runArtisanCommand(base_path(), 'schedule:run >> /dev/null 2>&1 &');
     }
 }
