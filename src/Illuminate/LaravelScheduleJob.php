@@ -2,8 +2,8 @@
 
 namespace Hhxsv5\LaravelS\Illuminate;
 
+use Hhxsv5\LaravelS\Console\Portal;
 use Hhxsv5\LaravelS\Swoole\Timer\CronJob;
-use Illuminate\Contracts\Console\Kernel;
 
 class LaravelScheduleJob extends CronJob
 {
@@ -21,6 +21,6 @@ class LaravelScheduleJob extends CronJob
 
     public function run()
     {
-        app(Kernel::class)->call('schedule:run');
+        Portal::runArtisanCommand(base_path(), 'schedule:run >> /dev/null 2>&1');
     }
 }

@@ -350,7 +350,7 @@ EOS;
 
     public static function runCommand($cmd, $input = null)
     {
-        $fp = popen($cmd, 'w');
+        $fp = popen($cmd, 'wb');
         if ($fp === false) {
             return false;
         }
