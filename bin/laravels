@@ -144,7 +144,7 @@ class Psr4Autoloader
     }
 }
 
-$basePath = dirname(__DIR__) . '/';
+$basePath = dirname(__DIR__);
 $loader = new Psr4Autoloader();
 $loader->register();
 
