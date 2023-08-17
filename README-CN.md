@@ -1035,7 +1035,7 @@ class WebSocketService implements WebSocketHandlerInterface
             while (!self::$quit) {
                 \Log::info('Test process: running');
                 // sleep(1); // Swoole < 2.1
-                Coroutine::sleep(1); // Swoole>=2.1 已自动为callback()方法创建了协程并启用了协程Runtime。
+                Coroutine::sleep(1); // Swoole>=2.1 已自动为callback()方法创建了协程并启用了协程Runtime，注意所使用的组件与协程兼容性，不兼容时可仅开启部分协程，如：\Swoole\Runtime::enableCoroutine(SWOOLE_HOOK_TCP | SWOOLE_HOOK_SLEEP | SWOOLE_HOOK_FILE);
                 // 自定义进程中也可以投递Task，但不支持Task的finish()回调。
                 // 注意：修改config/laravels.php，配置task_ipc_mode为1或2，参考 https://wiki.swoole.com/#/server/setting?id=task_ipc_mode
                 $ret = Task::deliver(new TestTask('task data'));

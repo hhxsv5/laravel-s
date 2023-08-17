@@ -1022,7 +1022,7 @@ To make our main server support more protocols not just Http and WebSocket, we b
             while (!self::$quit) {
                 \Log::info('Test process: running');
                 // sleep(1); // Swoole < 2.1
-                Coroutine::sleep(1); // Swoole>=2.1: Coroutine & Runtime will be automatically enabled for callback().
+                Coroutine::sleep(1); // Swoole>=2.1: Coroutine & Runtime will be automatically enabled for callback(). Pay attention to the compatibility between the components used and the coroutines. If they are not compatible, only some coroutines can be enabled, such as: \Swoole\Runtime::enableCoroutine(SWOOLE_HOOK_TCP | SWOOLE_HOOK_SLEEP | SWOOLE_HOOK_FILE);
                  // Deliver task in custom process, but NOT support callback finish() of task.
                 // Note: Modify task_ipc_mode to 1 or 2 in config/laravels.php, see https://www.swoole.co.uk/docs/modules/swoole-server/configuration
                 $ret = Task::deliver(new TestTask('task data'));
