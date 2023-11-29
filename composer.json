@@ -6,7 +6,7 @@
     "issues": "https://github.com/hhxsv5/laravel-s/issues",
     "source": "https://github.com/hhxsv5/laravel-s"
   },
-  "description": "🚀 LaravelS is an out-of-the-box adapter between Swoole and Laravel/Lumen.",
+  "description": "🚀 LaravelS is an out-of-the-box adapter between Laravel/Lumen and Swoole.",
   "keywords": [
     "laravels",
     "laravel-s",
