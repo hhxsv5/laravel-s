@@ -8,12 +8,12 @@ assignees: hhxsv5
 ---
 
 1. Your software version (Screenshot of your startup)
-    
-    | Software | Version |
-    | --------- | --------- |
-    | PHP | TODO |
-    | Swoole | TODO |
-    | Laravel/Lumen | TODO |
+
+   | Software | Version |
+   | --------- |---------|
+   | PHP | ? |
+   | Swoole | ? |
+   | Laravel/Lumen | ? |
 
 2. Detail description about this issue(error/log)
 
