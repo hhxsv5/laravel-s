@@ -18,7 +18,7 @@
         verbose="false">
     <testsuites>
         <testsuite name="laravel-s">
-            <directory phpVersion="7.1.0" phpVersionOperator=">=" suffix="Test.php">tests</directory>
+            <directory phpVersion="7.4.0" phpVersionOperator=">=" suffix="Test.php">tests</directory>
             <exclude>tests/TestCase.php</exclude>
         </testsuite>
     </testsuites>
