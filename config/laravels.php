@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'server' => env('LARAVELS_SERVER', 'LaravelS'),
+    'server' => env('LARAVELS_SERVER', ''),
 
     /*
     |--------------------------------------------------------------------------

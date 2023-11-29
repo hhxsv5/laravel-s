@@ -93,7 +93,9 @@ class LaravelS extends Server
     {
         if ($event === 'onHandShake') {
             $this->beforeWebSocketHandShake($params[0]);
-            $params[1]->header('Server', $this->conf['server']);
+            if (!empty($this->conf['server'])) {
+                $params[1]->header('Server', $this->conf['server']);
+            }
         }
 
         parent::triggerWebSocketEvent($event, $params);
@@ -118,7 +120,9 @@ class LaravelS extends Server
             case 'onHandShake':
                 $this->beforeWebSocketHandShake($params[0]);
             case 'onRequest':
-                $params[1]->header('Server', $this->conf['server']);
+                if (!empty($this->conf['server'])) {
+                    $params[1]->header('Server', $this->conf['server']);
+                }
                 break;
         }
 
@@ -236,7 +240,9 @@ class LaravelS extends Server
         if ($laravelResponse === false) {
             return false;
         }
-        $laravelResponse->headers->set('Server', $this->conf['server'], true);
+        if (!empty($this->conf['server'])) {
+            $laravelResponse->headers->set('Server', $this->conf['server'], true);
+        }
         $laravel->fireEvent('laravels.generated_response', [$laravelRequest, $laravelResponse]);
         $response = new StaticResponse($swooleResponse, $laravelResponse);
         $response->setChunkLimit($this->conf['swoole']['buffer_output_size']);
@@ -248,7 +254,9 @@ class LaravelS extends Server
     {
         $laravel->cleanProviders();
         $laravelResponse = $laravel->handleDynamic($laravelRequest);
-        $laravelResponse->headers->set('Server', $this->conf['server'], true);
+        if (!empty($this->conf['server'])) {
+            $laravelResponse->headers->set('Server', $this->conf['server'], true);
+        }
         $laravel->fireEvent('laravels.generated_response', [$laravelRequest, $laravelResponse]);
         if ($laravelResponse instanceof BinaryFileResponse) {
             $response = new StaticResponse($swooleResponse, $laravelResponse);
