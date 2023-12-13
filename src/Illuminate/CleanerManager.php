@@ -123,7 +123,7 @@ class CleanerManager
         $loadedProviders = $this->reflectionApp->loadedProviders();
 
         foreach ($this->providers as $provider) {
-            if (class_exists($provider, false)) {
+            if (class_exists($provider)) {
                 if ($this->config['is_lumen']) {
                     unset($loadedProviders[get_class(new $provider($this->currentApp))]);
                 }
