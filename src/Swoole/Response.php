@@ -91,7 +91,8 @@ abstract class Response implements ResponseInterface
                 $cookie->getPath(),
                 $cookie->getDomain(),
                 $cookie->isSecure(),
-                $cookie->isHttpOnly()
+                $cookie->isHttpOnly(),
+                $cookie->getSameSite()
             );
         }
     }
