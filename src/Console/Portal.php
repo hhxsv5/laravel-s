@@ -350,6 +350,9 @@ EOS;
 
     public static function runCommand($cmd, $input = null)
     {
+        if (!function_exists('popen')) {
+            throw new \Exception('Function popen is not exist, please enable it.');
+        }
         $fp = popen($cmd, 'wb');
         if ($fp === false) {
             return false;
