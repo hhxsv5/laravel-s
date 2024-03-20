@@ -153,6 +153,7 @@ class Client
             $configs[] = '# Namespace: ' . $config['namespaceName'];
             ksort($config['configurations']);
             foreach ($config['configurations'] as $key => $value) {
+                $key = preg_replace('/[^a-zA-Z0-9_.]/', '_', $key);
                 $configs[] = sprintf('%s=%s', $key, $value);
             }
         }
