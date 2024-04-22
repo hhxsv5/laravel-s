@@ -106,15 +106,15 @@ Table of Contents
 
 | Dependency | Requirement |
 | -------- | -------- |
-| [PHP](https://secure.php.net/) | `>= 5.5.9` `Recommend PHP7+` |
-| [Swoole](https://www.swoole.co.uk/) | `>= 1.7.19` `No longer support PHP5 since 2.0.12` `Recommend 4.5.0+` |
-| [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` `Recommend 8.0+` |
+| [PHP](https://secure.php.net/) | `>=5.5.9,<=7.4.33` `Recommend 7.4.33` |
+| [Swoole](https://www.swoole.co.uk/) | `>=1.7.19,<5.0.0` `No longer support PHP5 since 2.0.12` `Recommend 4.5.11` |
+| [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>=5.1,<9.0` `Recommend 8.x` |
 
 ## Install
 
 1.Require package via [Composer](https://getcomposer.org/)([packagist](https://packagist.org/packages/hhxsv5/laravel-s)).
 ```bash
-composer require "hhxsv5/laravel-s:~3.7.0" -vvv
+composer require "hhxsv5/laravel-s:~3.7.0"
 # Make sure that your composer.lock file is under the VCS
 ```
 
