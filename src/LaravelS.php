@@ -52,17 +52,17 @@ class LaravelS extends Server
 
         $timerConf = isset($this->conf['timer']) ? $this->conf['timer'] : [];
         $timerConf['process_prefix'] = $svrConf['process_prefix'];
-        $this->swoole->timerProcess = $this->addTimerProcess($this->swoole, $timerConf, $this->laravelConf);
+        $this->addTimerProcess($this->swoole, $timerConf, $this->laravelConf);
 
         $inotifyConf = isset($this->conf['inotify_reload']) ? $this->conf['inotify_reload'] : [];
         if (!isset($inotifyConf['watch_path'])) {
             $inotifyConf['watch_path'] = $this->laravelConf['root_path'];
         }
         $inotifyConf['process_prefix'] = $svrConf['process_prefix'];
-        $this->swoole->inotifyProcess = $this->addInotifyProcess($this->swoole, $inotifyConf, $this->laravelConf);
+        $this->addInotifyProcess($this->swoole, $inotifyConf, $this->laravelConf);
 
         $processes = isset($this->conf['processes']) ? $this->conf['processes'] : [];
-        $this->swoole->customProcesses = $this->addCustomProcesses($this->swoole, $svrConf['process_prefix'], $processes, $this->laravelConf);
+        $this->addCustomProcesses($this->swoole, $svrConf['process_prefix'], $processes, $this->laravelConf);
 
         // Fire ServerStart event
         if (isset($this->conf['event_handlers']['ServerStart'])) {
