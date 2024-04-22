@@ -22,6 +22,7 @@ use Illuminate\Http\Request as IlluminateRequest;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
 use Swoole\Http\Server as HttpServer;
+use Swoole\Process;
 use Swoole\Server\Port;
 use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -40,35 +41,43 @@ class LaravelS extends Server
     use InotifyTrait, LaravelTrait, LogTrait, ProcessTitleTrait, TimerTrait, CustomProcessTrait;
 
     /**@var array */
-    protected $laravelConf;
+    protected array $laravelConf;
 
     /**@var Laravel */
-    protected $laravel;
+    protected Laravel $laravel;
+
+    /**@var Process[] */
+    protected static array $customProcesses = [];
 
     public function __construct(array $svrConf, array $laravelConf)
     {
         parent::__construct($svrConf);
         $this->laravelConf = $laravelConf;
 
-        $timerConf = isset($this->conf['timer']) ? $this->conf['timer'] : [];
+        $timerConf = $this->conf['timer'] ?? [];
         $timerConf['process_prefix'] = $svrConf['process_prefix'];
-        $this->swoole->timerProcess = $this->addTimerProcess($this->swoole, $timerConf, $this->laravelConf);
+        $this->addTimerProcess($this->swoole, $timerConf, $this->laravelConf);
 
-        $inotifyConf = isset($this->conf['inotify_reload']) ? $this->conf['inotify_reload'] : [];
+        $inotifyConf = $this->conf['inotify_reload'] ?? [];
         if (!isset($inotifyConf['watch_path'])) {
             $inotifyConf['watch_path'] = $this->laravelConf['root_path'];
         }
         $inotifyConf['process_prefix'] = $svrConf['process_prefix'];
-        $this->swoole->inotifyProcess = $this->addInotifyProcess($this->swoole, $inotifyConf, $this->laravelConf);
+        $this->addInotifyProcess($this->swoole, $inotifyConf, $this->laravelConf);
 
-        $processes = isset($this->conf['processes']) ? $this->conf['processes'] : [];
-        $this->swoole->customProcesses = $this->addCustomProcesses($this->swoole, $svrConf['process_prefix'], $processes, $this->laravelConf);
+        $processes = $this->conf['processes'] ?? [];
+        static::$customProcesses = $this->addCustomProcesses($this->swoole, $svrConf['process_prefix'], $processes, $this->laravelConf);
 
         // Fire ServerStart event
         if (isset($this->conf['event_handlers']['ServerStart'])) {
             Laravel::autoload($this->laravelConf['root_path']);
             $this->fireEvent('ServerStart', ServerStartInterface::class, [$this->swoole]);
         }
+    }
+
+    public static function getCustomProcesses(): array
+    {
+        return static::$customProcesses;
     }
 
     protected function beforeWebSocketHandShake(SwooleRequest $request)

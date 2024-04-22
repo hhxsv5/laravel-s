@@ -110,15 +110,18 @@
 
 | 依赖 | 说明 |
 | -------- | -------- |
-| [PHP](https://www.php.net/) | `>= 5.5.9` `推荐PHP7+` |
-| [Swoole](https://www.swoole.com/) | `>= 1.7.19` `从2.0.12开始不再支持PHP5` `推荐4.5.0+` |
-| [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` `推荐8.0+` |
+| [PHP](https://www.php.net/) | `>= 5.5.9` `推荐7.4|8.2` |
+| [Swoole](https://www.swoole.com/) | `>= 1.7.19` `从2.0.12开始不再支持PHP5` `推荐4.5.11|5.1.1` |
+| [Laravel](https://laravel.com/)/[Lumen](https://lumen.laravel.com/) | `>= 5.1` `推荐10` |
 
 ## 安装
 
 1.通过[Composer](https://getcomposer.org/)安装([packagist](https://packagist.org/packages/hhxsv5/laravel-s))。有可能找不到`3.0`版本，解决方案移步[#81](https://github.com/hhxsv5/laravel-s/issues/81)。
 ```bash
-composer require "hhxsv5/laravel-s:~3.7.0" -vvv
+# PHP >=5.5.9,<=7.4.33
+composer require "hhxsv5/laravel-s:~3.7.0"
+# PHP >=8.2.0
+composer require "hhxsv5/laravel-s:~3.8.0"
 # 确保你的composer.lock文件是在版本控制中
 ```
 
@@ -1117,8 +1120,9 @@ class WebSocketService implements WebSocketHandlerInterface
     // app/Http/Controllers/TestController.php
     public function testProcessWrite()
     {
-        /**@var \Swoole\Process $process */
-        $process = app('swoole')->customProcesses['test'];
+        /**@var \Swoole\Process[] $process */
+        $customProcesses = \Hhxsv5\LaravelS\LaravelS::getCustomProcesses();
+        $process = $customProcesses['test'];
         $process->write('TestController: write data' . time());
         var_dump($process->read());
     }
