@@ -16,7 +16,7 @@ trait CustomProcessTrait
             unlink($pidfile);
         }
 
-        /**@var []CustomProcessInterface $processList */
+        /**@var []Process $processList */
         $processList = [];
         foreach ($processes as $name => $item) {
             if (empty($item['class'])) {
