@@ -114,7 +114,12 @@ Table of Contents
 
 1.Require package via [Composer](https://getcomposer.org/)([packagist](https://packagist.org/packages/hhxsv5/laravel-s)).
 ```bash
+# PHP >=8.2
 composer require "hhxsv5/laravel-s:~3.8.0"
+
+# PHP >=5.5.9,<=7.4.33
+# composer require "hhxsv5/laravel-s:~3.7.0"
+
 # Make sure that your composer.lock file is under the VCS
 ```
 
