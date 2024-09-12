@@ -99,9 +99,9 @@ trait CustomProcessTrait
             if (empty($config['queue'])) {
                 $process->useQueue();
             } else {
-                $msgKey = isset($config['msg_key']) ? $config['msg_key'] : 0;
-                $mode = isset($config['mode']) ? $config['mode'] : 2;
-                $capacity = isset($config['capacity']) ? $config['capacity'] : -1;
+                $msgKey = isset($config['queue']['msg_key']) ? $config['queue']['msg_key'] : 0;
+                $mode = isset($config['queue']['mode']) ? $config['queue']['mode'] : 2;
+                $capacity = isset($config['queue']['capacity']) ? $config['queue']['capacity'] : -1;
                 $process->useQueue($msgKey, $mode, $capacity);
             }
         }
