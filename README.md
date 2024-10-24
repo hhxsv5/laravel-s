@@ -19,7 +19,7 @@
             <img src="https://img.shields.io/packagist/dt/hhxsv5/laravel-s" alt="Total Downloads">
         </a>
         <a href="https://travis-ci.com/hhxsv5/laravel-s">
-            <img src="https://travis-ci.com/hhxsv5/laravel-s.svg?branch=PHP-8.x" alt="Build Status">
+            <img src="https://app.travis-ci.com/hhxsv5/laravel-s.svg?token=B9C1C7cNxkagG2WmwRnX&branch=PHP-8.x" alt="Build Status">
         </a>
         <a href="https://scrutinizer-ci.com/g/hhxsv5/laravel-s/">
             <img src="https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/code-intelligence.svg?b=PHP-8.x" alt="Code Intelligence Status">
