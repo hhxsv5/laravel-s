@@ -151,7 +151,7 @@ php artisan laravels publish
 # 二进制文件：bin/laravels bin/fswatch bin/inotify
 ```
 
-4.修改配置`config/laravels.php`：监听的IP、端口等，请参考[配置项](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
+4.修改配置`config/laravels.php`：监听的IP、端口等，请参考[配置项](https://github.com/hhxsv5/laravel-s/blob/PHP-8.x/Settings-CN.md)。
 
 5.性能调优
 
@@ -1232,9 +1232,9 @@ class WebSocketService implements WebSocketHandlerInterface
       #   refresh_interval: 5s
     ```
 
-8. 启动Grafana，然后导入[panel json](https://github.com/hhxsv5/laravel-s/tree/master/grafana-dashboard.json)。
+8. 启动Grafana，然后导入[panel json](https://github.com/hhxsv5/laravel-s/tree/PHP-8.x/grafana-dashboard.json)。
 
-<img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/master/grafana-dashboard.png" height="800px" alt="Grafana Dashboard">
+<img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/PHP-8.x/grafana-dashboard.png" height="800px" alt="Grafana Dashboard">
 
 ## 其他特性
 
@@ -1367,7 +1367,7 @@ Resources:
     
     2. 用一个`中间件`来`重置`单例对象的状态。
 
-    3. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md#register_providers)。
+    3. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/PHP-8.x/Settings-CN.md#register_providers)。
 
 ### 清理器
 > [设置清理器](https://github.com/hhxsv5/laravel-s/blob/PHP-8.x/Settings-CN.md#cleaners)。
@@ -1592,4 +1592,4 @@ public function json()
 
 ## License
 
-[MIT](https://github.com/hhxsv5/laravel-s/blob/master/LICENSE)
+[MIT](https://github.com/hhxsv5/laravel-s/blob/PHP-8.x/LICENSE)
