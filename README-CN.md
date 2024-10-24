@@ -13,7 +13,7 @@
             <img src="https://img.shields.io/packagist/php-v/hhxsv5/laravel-s" alt="PHP Version">
         </a>
         <a href="https://github.com/swoole/swoole-src">
-            <img src="https://img.shields.io/badge/swoole-%3E=1.7.19-flat.svg" alt="Swoole Version">
+            <img src="https://img.shields.io/badge/swoole-%3E=5.0.0-flat.svg" alt="Swoole Version">
         </a>
         <a href="https://packagist.org/packages/hhxsv5/laravel-s/stats">
             <img src="https://img.shields.io/packagist/dt/hhxsv5/laravel-s" alt="Total Downloads">
