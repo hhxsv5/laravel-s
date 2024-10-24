@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://github.com/hhxsv5/laravel-s/raw/master/logo.svg" alt="LaravelS Logo" height="80">
+    <img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/refs/heads/PHP-7.x/logo.svg" alt="LaravelS Logo" height="80">
      <p>
         <a href="https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md">中文文档</a> |
         <a href="https://github.com/hhxsv5/laravel-s/blob/master/README.md">English Docs</a>
