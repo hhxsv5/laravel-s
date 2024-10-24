@@ -1,8 +1,8 @@
 <div align="center">
     <img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/refs/heads/PHP-7.x/logo.svg" alt="LaravelS Logo" height="80">
      <p>
-        <a href="https://github.com/hhxsv5/laravel-s/blob/master/README.md">English Docs</a> |
-        <a href="https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md">中文文档</a>
+        <a href="https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README.md">English Docs</a> |
+        <a href="https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README-CN.md">中文文档</a>
     </p>
     <p>🚀 LaravelS is an out-of-the-box adapter between Laravel/Lumen and Swoole</p>
     <p>
@@ -19,12 +19,12 @@
             <img src="https://img.shields.io/packagist/dt/hhxsv5/laravel-s" alt="Total Downloads">
         </a>
         <a href="https://travis-ci.com/hhxsv5/laravel-s">
-            <img src="https://travis-ci.com/hhxsv5/laravel-s.svg?branch=master" alt="Build Status">
+            <img src="https://app.travis-ci.com/hhxsv5/laravel-s.svg?token=B9C1C7cNxkagG2WmwRnX&branch=PHP-7.x" alt="Build Status">
         </a>
         <a href="https://scrutinizer-ci.com/g/hhxsv5/laravel-s/">
-            <img src="https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/code-intelligence.svg?b=master" alt="Code Intelligence Status">
+            <img src="https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/code-intelligence.svg?b=PHP-7.x" alt="Code Intelligence Status">
         </a>
-        <a href="https://github.com/hhxsv5/laravel-s/blob/master/LICENSE">
+        <a href="https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/LICENSE">
             <img src="https://img.shields.io/github/license/hhxsv5/laravel-s" alt="License">
         </a>
     </p>
@@ -65,32 +65,32 @@ Table of Contents
     * [Configure Swoole events](#configure-swoole-events)
     * [Serverless](#serverless)
 * [Important notices](#important-notices)
-* [Users and cases](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E7%94%A8%E6%88%B7%E4%B8%8E%E6%A1%88%E4%BE%8B)
+* [Users and cases](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README-CN.md#%E7%94%A8%E6%88%B7%E4%B8%8E%E6%A1%88%E4%BE%8B)
 * [Alternatives](#alternatives)
 * [Sponsor](#sponsor)
 * [License](#license)
 
 ## Features
 
-- Built-in Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/master/README.md#enable-websocket-server) server
+- Built-in Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README.md#enable-websocket-server) server
 
-- [Multi-port mixed protocol](https://github.com/hhxsv5/laravel-s/blob/master/README.md#multi-port-mixed-protocol)
+- [Multi-port mixed protocol](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README.md#multi-port-mixed-protocol)
 
-- [Custom process](https://github.com/hhxsv5/laravel-s/blob/master/README.md#custom-process)
+- [Custom process](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README.md#custom-process)
 
 - Memory resident
 
-- [Asynchronous event listening](https://github.com/hhxsv5/laravel-s/blob/master/README.md#customized-asynchronous-events)
+- [Asynchronous event listening](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README.md#customized-asynchronous-events)
 
-- [Asynchronous task queue](https://github.com/hhxsv5/laravel-s/blob/master/README.md#asynchronous-task-queue)
+- [Asynchronous task queue](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README.md#asynchronous-task-queue)
 
-- [Millisecond cron job](https://github.com/hhxsv5/laravel-s/blob/master/README.md#millisecond-cron-job)
+- [Millisecond cron job](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README.md#millisecond-cron-job)
 
-- [Common Components](https://github.com/hhxsv5/laravel-s/blob/master/README.md#common-components)
+- [Common Components](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README.md#common-components)
 
 - Gracefully reload
 
-- [Automatically reload after modifying code](https://github.com/hhxsv5/laravel-s/blob/master/README.md#automatically-reload-after-modifying-code)
+- [Automatically reload after modifying code](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README.md#automatically-reload-after-modifying-code)
 
 - Support Laravel/Lumen both, good compatibility
 
@@ -147,7 +147,7 @@ php artisan laravels publish
 # Binary: bin/laravels bin/fswatch bin/inotify
 ```
 
-4.Change `config/laravels.php`: listen_ip, listen_port, refer [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md).
+4.Change `config/laravels.php`: listen_ip, listen_port, refer [Settings](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/Settings.md).
 
 5.Performance tuning
 
@@ -376,7 +376,7 @@ class WebSocketService implements WebSocketHandlerInterface
 ],
 // ...
 ```
-3.Use `SwooleTable` to bind FD & UserId, optional, [Swoole Table Demo](https://github.com/hhxsv5/laravel-s/blob/master/README.md#use-swooletable). Also you can use the other global storage services, like Redis/Memcached/MySQL, but be careful that FD will be possible conflicting between multiple `Swoole Servers`.
+3.Use `SwooleTable` to bind FD & UserId, optional, [Swoole Table Demo](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README.md#use-swooletable). Also you can use the other global storage services, like Redis/Memcached/MySQL, but be careful that FD will be possible conflicting between multiple `Swoole Servers`.
 
 4.Cooperate with Nginx (Recommended)
 > Refer [WebSocket Proxy](http://nginx.org/en/docs/http/websocket.html)
@@ -707,7 +707,7 @@ protected function schedule(Schedule $schedule)
 
     1.Install [inotify](http://pecl.php.net/package/inotify) extension.
 
-    2.Turn on the switch in [Settings](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#inotify_reloadenable).
+    2.Turn on the switch in [Settings](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/Settings.md#inotify_reloadenable).
 
     3.Notice: Modify the file only in `Linux` to receive the file change events. It's recommended to use the latest Docker. [Vagrant Solution](https://github.com/mhallin/vagrant-notify-forwarder).
 
@@ -1218,9 +1218,9 @@ To make our main server support more protocols not just Http and WebSocket, we b
       #   refresh_interval: 5s
     ```
 
-8. Start Grafana, then import [panel json](https://github.com/hhxsv5/laravel-s/tree/master/grafana-dashboard.json).
+8. Start Grafana, then import [panel json](https://github.com/hhxsv5/laravel-s/tree/PHP-7.x/grafana-dashboard.json).
 
-<img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/master/grafana-dashboard.png" height="800px" alt="Grafana Dashboard">
+<img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/PHP-7.x/grafana-dashboard.png" height="800px" alt="Grafana Dashboard">
 
 ## Other features
 
@@ -1352,13 +1352,13 @@ Resources:
 
     2. `Reset` status of singleton instances by `Middleware`.
 
-    1. Re-register `ServiceProvider`, add `XxxServiceProvider` into `register_providers` of file `laravels.php`. So that reinitialize singleton instances in every request [Refer](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#register_providers).
+    1. Re-register `ServiceProvider`, add `XxxServiceProvider` into `register_providers` of file `laravels.php`. So that reinitialize singleton instances in every request [Refer](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/Settings.md#register_providers).
 
 ### Cleaners
-> [Configuration cleaners](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#cleaners).
+> [Configuration cleaners](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/Settings.md#cleaners).
 
 ### Known issues
-> [Known issues](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues.md): a package of known issues and solutions.
+> [Known issues](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/KnownIssues.md): a package of known issues and solutions.
 
 ### Debugging method
 
@@ -1502,4 +1502,4 @@ public function json()
 
 ## License
 
-[MIT](https://github.com/hhxsv5/laravel-s/blob/master/LICENSE)
+[MIT](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/LICENSE)
