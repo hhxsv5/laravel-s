@@ -1366,7 +1366,7 @@ Resources:
     
     2. 用一个`中间件`来`重置`单例对象的状态。
 
-    3. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md#register_providers)。
+    3. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/Settings-CN.md#register_providers)。
 
 ### 清理器
 > [设置清理器](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/Settings-CN.md#cleaners)。
