@@ -18,7 +18,7 @@
         <a href="https://packagist.org/packages/hhxsv5/laravel-s/stats">
             <img src="https://img.shields.io/packagist/dt/hhxsv5/laravel-s" alt="Total Downloads">
         </a>
-        <a href="https://travis-ci.com/hhxsv5/laravel-s">
+        <a href="https://scrutinizer-ci.com/g/hhxsv5/laravel-s/">
             <img src="https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/build.png?b=PHP-7.x" alt="Build Status">
         </a>
         <a href="https://scrutinizer-ci.com/g/hhxsv5/laravel-s/">
