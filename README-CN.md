@@ -1,8 +1,8 @@
 <div align="center">
     <img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/refs/heads/PHP-7.x/logo.svg" alt="LaravelS Logo" height="80">
      <p>
-        <a href="https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md">中文文档</a> |
-        <a href="https://github.com/hhxsv5/laravel-s/blob/master/README.md">English Docs</a>
+        <a href="https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README-CN.md">中文文档</a> |
+        <a href="https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README.md">English Docs</a>
     </p>
     <p>🚀 LaravelS 是 Laravel/Lumen 和 Swoole 之间开箱即用的适配器</p>
     <p>
@@ -19,12 +19,12 @@
             <img src="https://img.shields.io/packagist/dt/hhxsv5/laravel-s" alt="Total Downloads">
         </a>
         <a href="https://travis-ci.com/hhxsv5/laravel-s">
-            <img src="https://travis-ci.com/hhxsv5/laravel-s.svg?branch=master" alt="Build Status">
+            <img src="https://travis-ci.com/hhxsv5/laravel-s.svg?branch=PHP-7.x" alt="Build Status">
         </a>
         <a href="https://scrutinizer-ci.com/g/hhxsv5/laravel-s/">
-            <img src="https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/code-intelligence.svg?b=master" alt="Code Intelligence Status">
+            <img src="https://scrutinizer-ci.com/g/hhxsv5/laravel-s/badges/code-intelligence.svg?b=PHP-7.x" alt="Code Intelligence Status">
         </a>
-        <a href="https://github.com/hhxsv5/laravel-s/blob/master/LICENSE">
+        <a href="https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/LICENSE">
             <img src="https://img.shields.io/github/license/hhxsv5/laravel-s" alt="License">
         </a>
     </p>
@@ -76,25 +76,25 @@
 
 ## 特性
 
-- 内置Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%90%AF%E7%94%A8websocket%E6%9C%8D%E5%8A%A1%E5%99%A8)服务器
+- 内置Http/[WebSocket](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README-CN.md#%E5%90%AF%E7%94%A8websocket%E6%9C%8D%E5%8A%A1%E5%99%A8)服务器
 
-- [多端口混合协议](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%A4%9A%E7%AB%AF%E5%8F%A3%E6%B7%B7%E5%90%88%E5%8D%8F%E8%AE%AE)
+- [多端口混合协议](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README-CN.md#%E5%A4%9A%E7%AB%AF%E5%8F%A3%E6%B7%B7%E5%90%88%E5%8D%8F%E8%AE%AE)
 
-- [自定义进程](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%9B%E7%A8%8B)
+- [自定义进程](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%9B%E7%A8%8B)
 
 - 常驻内存
 
-- [异步的事件监听](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E5%BC%82%E6%AD%A5%E4%BA%8B%E4%BB%B6)
+- [异步的事件监听](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README-CN.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E5%BC%82%E6%AD%A5%E4%BA%8B%E4%BB%B6)
 
-- [异步的任务队列](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%BC%82%E6%AD%A5%E7%9A%84%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97)
+- [异步的任务队列](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README-CN.md#%E5%BC%82%E6%AD%A5%E7%9A%84%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97)
 
-- [毫秒级定时任务](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E6%AF%AB%E7%A7%92%E7%BA%A7%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1)
+- [毫秒级定时任务](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README-CN.md#%E6%AF%AB%E7%A7%92%E7%BA%A7%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1)
 
-- [常用组件](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6)
+- [常用组件](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README-CN.md#%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6)
 
 - 平滑Reload
 
-- [修改代码后自动Reload](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E4%BF%AE%E6%94%B9%E4%BB%A3%E7%A0%81%E5%90%8E%E8%87%AA%E5%8A%A8reload)
+- [修改代码后自动Reload](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README-CN.md#%E4%BF%AE%E6%94%B9%E4%BB%A3%E7%A0%81%E5%90%8E%E8%87%AA%E5%8A%A8reload)
 
 - 同时支持Laravel与Lumen，兼容主流版本
 
@@ -151,7 +151,7 @@ php artisan laravels publish
 # 二进制文件：bin/laravels bin/fswatch bin/inotify
 ```
 
-4.修改配置`config/laravels.php`：监听的IP、端口等，请参考[配置项](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md)。
+4.修改配置`config/laravels.php`：监听的IP、端口等，请参考[配置项](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/Settings-CN.md)。
 
 5.性能调优
 
@@ -163,7 +163,7 @@ php artisan laravels publish
 
 
 ## 运行
-> `在运行之前，请先仔细阅读：`[注意事项](https://github.com/hhxsv5/laravel-s/blob/master/README-CN.md#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)(这非常重要)。
+> `在运行之前，请先仔细阅读：`[注意事项](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/README-CN.md#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)(这非常重要)。
 
 - 操作命令：`php bin/laravels {start|stop|restart|reload|info|help}`。
 
@@ -720,7 +720,7 @@ protected function schedule(Schedule $schedule)
 
     1.安装[inotify](http://pecl.php.net/package/inotify)扩展。
 
-    2.开启[配置项](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md#inotify_reloadenable)。
+    2.开启[配置项](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/Settings-CN.md#inotify_reloadenable)。
 
     3.注意：`inotify`只有在`Linux`内修改文件才能收到文件变更事件，建议使用最新版Docker，[Vagrant解决方案](https://github.com/mhallin/vagrant-notify-forwarder)。
 
@@ -1231,9 +1231,9 @@ class WebSocketService implements WebSocketHandlerInterface
       #   refresh_interval: 5s
     ```
 
-8. 启动Grafana，然后导入[panel json](https://github.com/hhxsv5/laravel-s/tree/master/grafana-dashboard.json)。
+8. 启动Grafana，然后导入[panel json](https://github.com/hhxsv5/laravel-s/tree/PHP-7.x/grafana-dashboard.json)。
 
-<img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/master/grafana-dashboard.png" height="800px" alt="Grafana Dashboard">
+<img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/PHP-7.x/grafana-dashboard.png" height="800px" alt="Grafana Dashboard">
 
 ## 其他特性
 
@@ -1369,10 +1369,10 @@ Resources:
     3. 如果是以`ServiceProvider`注册的单例对象，可添加该`ServiceProvider`到`laravels.php`的`register_providers`中，这样每次请求会重新注册该`ServiceProvider`，重新实例化单例对象，[参考](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md#register_providers)。
 
 ### 清理器
-> [设置清理器](https://github.com/hhxsv5/laravel-s/blob/master/Settings-CN.md#cleaners)。
+> [设置清理器](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/Settings-CN.md#cleaners)。
 
 ### 常见问题
-> [常见问题](https://github.com/hhxsv5/laravel-s/blob/master/KnownIssues-CN.md)：一揽子的已知问题和解决方案。
+> [常见问题](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/KnownIssues-CN.md)：一揽子的已知问题和解决方案。
 
 ### 调试方式
 
@@ -1547,7 +1547,7 @@ public function json()
 ## 赞助
 > 您的支持是我们坚持的最大动力。
 
-<img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/master/sponsor.png" height="300px" alt="赞助">
+<img src="https://raw.githubusercontent.com/hhxsv5/laravel-s/PHP-7.x/sponsor.png" height="300px" alt="赞助">
 
 ### 感谢
 
@@ -1591,4 +1591,4 @@ public function json()
 
 ## License
 
-[MIT](https://github.com/hhxsv5/laravel-s/blob/master/LICENSE)
+[MIT](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/LICENSE)
