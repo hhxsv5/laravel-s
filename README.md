@@ -1353,7 +1353,7 @@ Resources:
 
     2. `Reset` status of singleton instances by `Middleware`.
 
-    1. Re-register `ServiceProvider`, add `XxxServiceProvider` into `register_providers` of file `laravels.php`. So that reinitialize singleton instances in every request [Refer](https://github.com/hhxsv5/laravel-s/blob/master/Settings.md#register_providers).
+    1. Re-register `ServiceProvider`, add `XxxServiceProvider` into `register_providers` of file `laravels.php`. So that reinitialize singleton instances in every request [Refer](https://github.com/hhxsv5/laravel-s/blob/PHP-8.x/Settings.md#register_providers).
 
 ### Cleaners
 > [Configuration cleaners](https://github.com/hhxsv5/laravel-s/blob/PHP-8.x/Settings.md#cleaners).
