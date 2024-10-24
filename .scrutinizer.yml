@@ -5,7 +5,7 @@ filter:
     - tests/*
 build:
   environment:
-    php: 7.4.0
+    php: 8.2.0
   nodes:
     analysis:
       tests:
@@ -15,7 +15,7 @@ build:
     my-tests:
       environment:
         php:
-          version: 7.4.0
+          version: 8.2.0
           pecl_extensions:
             - swoole-4.8.13
       dependencies:
