@@ -86,10 +86,10 @@ abstract class Response implements ResponseInterface
             $setCookie = $hasIsRaw && $cookie->isRaw() ? 'rawcookie' : 'cookie';
             $this->swooleResponse->$setCookie(
                 $cookie->getName(),
-                $cookie->getValue(),
+                (string)$cookie->getValue(),
                 $cookie->getExpiresTime(),
                 $cookie->getPath(),
-                $cookie->getDomain(),
+                (string)$cookie->getDomain(),
                 $cookie->isSecure(),
                 $cookie->isHttpOnly()
             );
