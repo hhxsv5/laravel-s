@@ -25,6 +25,7 @@ use Swoole\Http\Server as HttpServer;
 use Swoole\Server\Port;
 use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Exception\SuspiciousOperationException;
 
 
 /**
@@ -215,7 +216,17 @@ class LaravelS extends Server
      */
     protected function handleException($e, SwooleResponse $response)
     {
-        $error = sprintf(
+        if ($e instanceof SuspiciousOperationException) {
+            try {
+                $response->status(400);
+                $response->end('Bad Request');
+            } catch (\Exception $e) {
+                $this->logException($e);
+            }
+            return;
+        }
+
+        $msg = sprintf(
             'onRequest: Uncaught exception "%s"([%d]%s) at %s:%s, %s%s',
             get_class($e),
             $e->getCode(),
@@ -225,10 +236,10 @@ class LaravelS extends Server
             PHP_EOL,
             $e->getTraceAsString()
         );
-        $this->error($error);
+        $this->error($msg);
         try {
             $response->status(500);
-            $response->end('Oops! An unexpected error occurred');
+            $response->end('Internal Server Error');
         } catch (\Exception $e) {
             $this->logException($e);
         }
