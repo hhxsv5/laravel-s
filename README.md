@@ -68,6 +68,7 @@ Table of Contents
 * [Users and cases](https://github.com/hhxsv5/laravel-s/blob/PHP-8.x/README-CN.md#%E7%94%A8%E6%88%B7%E4%B8%8E%E6%A1%88%E4%BE%8B)
 * [Alternatives](#alternatives)
 * [Sponsor](#sponsor)
+* [Star History](#star-history)
 * [License](#license)
 
 ## Features
