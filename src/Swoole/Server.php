@@ -10,6 +10,8 @@ use Hhxsv5\LaravelS\Swoole\Task\BaseTask;
 use Hhxsv5\LaravelS\Swoole\Task\Event;
 use Hhxsv5\LaravelS\Swoole\Task\Listener;
 use Hhxsv5\LaravelS\Swoole\Task\Task;
+use Hhxsv5\LaravelS\Swoole\Proxy\HttpServerProxy;
+use Hhxsv5\LaravelS\Swoole\Proxy\WebSocketServerProxy;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
 use Swoole\Http\Server as HttpServer;
@@ -22,10 +24,13 @@ class Server
     use LogTrait;
     use ProcessTitleTrait;
 
+    /** Suffix for dynamic table properties to avoid naming conflicts */
+    public const TABLE_PROPERTY_SUFFIX = 'Table';
+
     /**@var array */
     protected $conf;
 
-    /**@var HttpServer|WebSocketServer */
+    /**@var HttpServer|WebSocketServer|HttpServerProxy|WebSocketServerProxy */
     protected $swoole;
 
     /**@var bool */
@@ -50,7 +55,10 @@ class Server
         $settings = isset($conf['swoole']) ? $conf['swoole'] : [];
         $settings['enable_static_handler'] = !empty($conf['handle_static']);
 
-        $serverClass = $this->enableWebSocket ? WebSocketServer::class : HttpServer::class;
+        // Use proxy classes to support dynamic properties in PHP 8.2+
+        $serverClass = $this->enableWebSocket
+            ? WebSocketServerProxy::class
+            : HttpServerProxy::class;
         if (isset($settings['ssl_cert_file'], $settings['ssl_key_file'])) {
             $this->swoole = new $serverClass($ip, $port, SWOOLE_PROCESS, $socketType | SWOOLE_SSL);
         } else {
@@ -235,7 +243,7 @@ class Server
                 }
             }
             $t->create();
-            $name .= 'Table'; // Avoid naming conflicts
+            $name .= self::TABLE_PROPERTY_SUFFIX; // Avoid naming conflicts
             $this->swoole->{$name} = $t;
         }
     }
