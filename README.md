@@ -1501,6 +1501,10 @@ public function json()
 
 - [Gitee](https://gitee.com/hhxsv5/laravel-s?donate=true)
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=hhxsv5/laravel-s&type=date&legend=top-left)](https://www.star-history.com/#hhxsv5/laravel-s&type=date&legend=top-left)
+
 ## License
 
 [MIT](https://github.com/hhxsv5/laravel-s/blob/PHP-8.x/LICENSE)
