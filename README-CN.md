@@ -1589,6 +1589,10 @@ public function json()
 | *奥 | 8.88 |
 | 双木 | 20 |
 
+## Star历史
+
+[![Star History Chart](https://api.star-history.com/svg?repos=hhxsv5/laravel-s&type=date&legend=top-left)](https://www.star-history.com/#hhxsv5/laravel-s&type=date&legend=top-left)
+
 ## License
 
 [MIT](https://github.com/hhxsv5/laravel-s/blob/PHP-7.x/LICENSE)
