@@ -7,7 +7,7 @@
     <p>🚀 LaravelS 是 Laravel/Lumen 和 Swoole 之间开箱即用的适配器</p>
     <p>
         <a href="https://github.com/hhxsv5/laravel-s/releases">
-            <img src="https://img.shields.io/github/release/hhxsv5/laravel-s.svg" alt="Latest Version">
+            <img src="https://img.shields.io/github/v/release/hhxsv5/laravel-s?filter=v3.7.*" alt="Latest Version">
         </a>
         <a href="https://www.php.net/">
             <img src="https://img.shields.io/packagist/php-v/hhxsv5/laravel-s" alt="PHP Version">
