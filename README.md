@@ -7,7 +7,7 @@
     <p>🚀 LaravelS is an out-of-the-box adapter between Laravel/Lumen and Swoole</p>
     <p>
         <a href="https://github.com/hhxsv5/laravel-s/releases">
-            <img src="https://img.shields.io/github/v/release/hhxsv5/laravel-s?filter=v3.8.*" alt="Latest Version">
+            <img src="https://img.shields.io/github/v/release/hhxsv5/laravel-s" alt="Latest Version">
         </a>
         <a href="https://www.php.net/">
             <img src="https://img.shields.io/packagist/php-v/hhxsv5/laravel-s" alt="PHP Version">
