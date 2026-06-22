@@ -120,6 +120,46 @@ return [
         'log'           => true,
     ],
 
+    'chokidar_reload' => [
+        // Whether enable the chokidar Reload to reload all worker processes when your code is modified.
+        // chokidar Reload，用于当修改代码后实时Reload所有worker进程，依赖库node js 库 chokidar，
+        // 默认false，建议仅开发环境开启，修改监听数上限。
+        'enable'        => env('LARAVELS_CHOKIDAR_RELOAD', false),
+
+        // The file path that chokidar watches
+        // chokidar 监控的文件路径，默认有base_path()。
+        'watch_base_path'    => base_path(),
+        'watch_path_files'    => [
+            'app',
+            'bootstrap',
+            'config/**/*.php',
+            'database/**/*.php',
+            'public/**/*.php',
+            'resources/**/*.php',
+            'routes',
+            'composer.lock',
+            '.env',
+        ],
+
+        // chokidar 监控的参数。
+        'watch_options'    => [
+            //是否使用轮询方式监听文件变化。默认为 false，如果文件系统不支持事件监听，设置为 true 会强制使用轮询
+            'usePolling' => true,
+            //在使用轮询时，设置轮询的时间间隔（单位：毫秒）。默认值为 100
+            'interval' => 200,
+            //是否忽略首次读取文件时的事件（例如，文件刚开始时的“添加”或“变化”事件）。默认为 false，即不会忽略首次事件。
+            'ignoreInitial' => true,
+        ],
+
+        // The excluded/ignored directories that Inotify watches
+        // Inotify 监控时需要排除(或忽略)的目录，默认[]，示例：[base_path('vendor')]。
+        'excluded_dirs' => [base_path('vendor')],
+
+        // Whether output the reload log
+        // 是否输出Reload的日志，默认true。
+        'log'           => true,
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Swoole Event Handlers
