@@ -33,7 +33,7 @@ class Portal extends Command
         $this->basePath = $basePath;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('LaravelS console tool');
         $this->setHelp('LaravelS console tool');
