@@ -1593,7 +1593,7 @@ public function json()
 
 ## Star历史
 
-[![Star History Chart](https://api.star-history.com/svg?repos=hhxsv5/laravel-s&type=date&legend=top-left)](https://www.star-history.com/#hhxsv5/laravel-s&type=date&legend=top-left)
+[![Star History Chart](https://star-history.dera.page/svg?repos=hhxsv5/laravel-s&type=date&legend=top-left)](https://star-history.dera.page/#hhxsv5/laravel-s&type=date&legend=top-left)
 
 ## License
 
