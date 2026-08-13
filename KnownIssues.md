@@ -138,9 +138,14 @@ class TestController extends Controller
     'enable'        => true, // Enable automatic destruction controller
     'excluded_list' => [
         //\App\Http\Controllers\TestController::class, // The excluded list of destroyed controller classes
+        //'App\Http\Controllers\V2\*', // Support namespace prefix with wildcard, all controllers under this namespace will be excluded
     ],
 ],
 ```
+
+There are two ways to exclude controllers from being destroyed:
+1. Exact match: specify the full class name
+2. Prefix match: use wildcard (*) at the end of namespace, for example `App\Http\Controllers\V2\*` will exclude all controllers under this namespace
 
 ## Cannot call these functions
 

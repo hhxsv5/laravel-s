@@ -43,9 +43,15 @@ class CleanerManager
 
     /**
      * White list of controllers to be destroyed
-     * @var array
+     * @var array<string,bool>
      */
     protected $whiteListControllers = [];
+
+    /**
+     * White list of controller prefixes to be excluded
+     * @var array<string,bool>
+     */
+    protected $whiteListPrefixes = [];
 
     /**
      * @var array
@@ -152,12 +158,45 @@ class CleanerManager
     /**
      * Register white list of controllers for cleaning.
      *
-     * @param array providers
+     * @param array $controllers
      */
     protected function registerCleanControllerWhiteList(array $controllers = [])
     {
-        $controllers = array_unique($controllers);
-        $this->whiteListControllers = array_combine($controllers, $controllers);
+        $this->whiteListControllers = [];
+        $this->whiteListPrefixes = [];
+
+        foreach ($controllers as $controller) {
+            if (str_ends_with($controller, '*')) {
+                $prefix = substr($controller, 0, -1);
+                $this->whiteListPrefixes[$prefix] = true; // 使用关联数组
+            } else {
+                $this->whiteListControllers[$controller] = true; // 统一使用 true 作为值
+            }
+        }
+    }
+
+    /**
+     * Check if controller should be excluded from cleaning
+     *
+     * @param string $controllerClass
+     * @return bool
+     */
+    protected function shouldExcludeController(string $controllerClass): bool
+    {
+        // 1. 精确匹配检查（O(1)）
+        if (isset($this->whiteListControllers[$controllerClass])) {
+            return true;
+        }
+
+        // 2. 前缀匹配检查
+        // 使用关联数组后，可以优化前缀匹配的性能
+        foreach ($this->whiteListPrefixes as $prefix => $_) {
+            if (strncmp($controllerClass, $prefix, strlen($prefix)) === 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -180,7 +219,7 @@ class CleanerManager
         }
 
         if (isset($route->controller)) { // For Laravel 5.4+
-            if (empty($this->whiteListControllers) || !isset($this->whiteListControllers[get_class($route->controller)])) {
+            if (!$this->shouldExcludeController(get_class($route->controller))) {
                 unset($route->controller);
             }
         } else {
@@ -188,7 +227,8 @@ class CleanerManager
             if ($reflection->hasProperty('controller')) { // Laravel 5.3
                 $controller = $reflection->getProperty('controller');
                 $controller->setAccessible(true);
-                if (empty($this->whiteListControllers) || (($instance = $controller->getValue($route)) && !isset($this->whiteListControllers[get_class($instance)]))) {
+                $instance = $controller->getValue($route);
+                if ($instance && !$this->shouldExcludeController(get_class($instance))) {
                     $controller->setValue($route, null);
                 }
             }
