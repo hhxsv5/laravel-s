@@ -8,7 +8,6 @@ php:
   - 8.3
 
 before_script:
-  - pecl install --onlyreqdeps --nobuild swoole && cd "$(pecl config-get temp_dir)/swoole" && phpize && ./configure --enable-openssl && make -j$(nproc) && make -j$(nproc) install && cd -
   - composer install
 
 script: composer test

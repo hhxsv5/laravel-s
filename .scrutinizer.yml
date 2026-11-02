@@ -16,8 +16,6 @@ build:
       environment:
         php:
           version: 7.4.0
-          pecl_extensions:
-            - swoole-4.8.13
       dependencies:
         before:
           - composer install
@@ -27,7 +25,7 @@ build:
     coverage:
       tests:
         override:
-          - command: composer test
+          - command: composer test:coverage
             coverage:
               file: coverage/coverage.xml
               format: clover

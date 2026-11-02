@@ -3,3 +3,5 @@ vendor
 composer.lock
 *.sw[a-z]
 coverage
+.phpunit.cache
+.phpunit.result.cache

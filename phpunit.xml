@@ -1,43 +1,14 @@
-<phpunit
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.3/phpunit.xsd"
-        bootstrap="vendor/autoload.php"
-        colors="true"
-        convertErrorsToExceptions="true"
-        convertNoticesToExceptions="true"
-        convertWarningsToExceptions="true"
-        processIsolation="false"
-        stopOnError="false"
-        stopOnFailure="false"
-        stopOnIncomplete="false"
-        stopOnSkipped="false"
-        stopOnRisky="false"
-        timeoutForSmallTests="1"
-        timeoutForMediumTests="10"
-        timeoutForLargeTests="60"
-        verbose="false">
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
+         bootstrap="tests/bootstrap.php" colors="true"
+         failOnRisky="true" failOnWarning="true">
     <testsuites>
-        <testsuite name="laravel-s">
-            <directory phpVersion="7.4.0" phpVersionOperator=">=" suffix="Test.php">tests</directory>
-            <exclude>tests/TestCase.php</exclude>
+        <testsuite name="unit">
+            <directory suffix="Test.php">tests/Unit</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">tests</directory>
-        </whitelist>
-    </filter>
-    <php>
-        <const name="PHPUNIT" value="true"/>
-    </php>
-    <logging>
-        <log type="coverage-html" target="coverage/report" lowUpperBound="35"
-             highLowerBound="70"/>
-        <log type="coverage-clover" target="coverage/coverage.xml"/>
-        <log type="coverage-php" target="coverage/coverage.serialized"/>
-        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
-        <log type="junit" target="coverage/logfile.xml"/>
-        <log type="testdox-html" target="coverage/testdox.html"/>
-        <log type="testdox-text" target="coverage/testdox.txt"/>
-    </logging>
+    <coverage>
+        <include><directory suffix=".php">src</directory></include>
+    </coverage>
 </phpunit>
