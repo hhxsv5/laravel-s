@@ -63,7 +63,12 @@
   "prefer-stable": true,
   "minimum-stability": "dev",
   "require-dev": {
-    "phpunit/phpunit": ">=4.8.36"
+    "illuminate/config": "^10.0 || ^11.0 || ^12.0",
+    "illuminate/container": "^10.0 || ^11.0 || ^12.0",
+    "illuminate/cookie": "^10.0 || ^11.0 || ^12.0",
+    "illuminate/http": "^10.0 || ^11.0 || ^12.0",
+    "php-mock/php-mock-phpunit": "^2.10",
+    "phpunit/phpunit": "^10.5"
   },
   "autoload-dev": {
     "psr-4": {
@@ -71,6 +76,7 @@
     }
   },
   "scripts": {
-    "test": "./vendor/bin/phpunit -c phpunit.xml"
+    "test": "@php vendor/bin/phpunit -c phpunit.xml",
+    "test:coverage": "@test --coverage-html coverage/report --coverage-clover coverage/coverage.xml"
   }
 }
