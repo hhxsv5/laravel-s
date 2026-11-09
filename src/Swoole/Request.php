@@ -55,6 +55,14 @@ class Request
             }
         }
         $server = array_change_key_case($server, CASE_UPPER);
+
+        if (
+            config('laravels.http_force_ssl', false)
+            && !isset($server['REQUEST_SCHEME'])
+        ) {
+            $server['REQUEST_SCHEME'] = 'https';
+        }
+
         $_SERVER = array_merge($_SERVER, $server);
         if (isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] === 'https') {
             $_SERVER['HTTPS'] = 'on';
