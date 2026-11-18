@@ -12,6 +12,7 @@ use Hhxsv5\LaravelS\Swoole\Events\WorkerErrorInterface;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerStartInterface;
 use Hhxsv5\LaravelS\Swoole\Events\WorkerStopInterface;
 use Hhxsv5\LaravelS\Swoole\InotifyTrait;
+use Hhxsv5\LaravelS\Swoole\ChokidarWatchTrait;
 use Hhxsv5\LaravelS\Swoole\Process\CustomProcessTrait;
 use Hhxsv5\LaravelS\Swoole\Process\ProcessTitleTrait;
 use Hhxsv5\LaravelS\Swoole\Request;
@@ -38,7 +39,7 @@ class LaravelS extends Server
     /**
      * Fix conflicts of traits
      */
-    use InotifyTrait, LaravelTrait, LogTrait, ProcessTitleTrait, TimerTrait, CustomProcessTrait;
+    use InotifyTrait, ChokidarWatchTrait, LaravelTrait, LogTrait, ProcessTitleTrait, TimerTrait, CustomProcessTrait;
 
     /**@var array */
     protected $laravelConf;
@@ -61,6 +62,15 @@ class LaravelS extends Server
         }
         $inotifyConf['process_prefix'] = $svrConf['process_prefix'];
         $this->swoole->inotifyProcess = $this->addInotifyProcess($this->swoole, $inotifyConf, $this->laravelConf);
+
+        $chokidarConf = isset($this->conf['chokidar_reload']) ? $this->conf['chokidar_reload'] : [];
+        if (!empty($chokidarConf['enable'])) {
+            if (!isset($chokidarConf['watch_path'])) {
+                $chokidarConf['watch_path'] = $this->laravelConf['root_path'];
+            }
+            $chokidarConf['process_prefix'] = $svrConf['process_prefix'];
+            $this->swoole->chokidarProcess = $this->addChokidarWatchProcess($this->swoole, $chokidarConf, $this->laravelConf);
+        }
 
         $processes = isset($this->conf['processes']) ? $this->conf['processes'] : [];
         $this->swoole->customProcesses = $this->addCustomProcesses($this->swoole, $svrConf['process_prefix'], $processes, $this->laravelConf);
