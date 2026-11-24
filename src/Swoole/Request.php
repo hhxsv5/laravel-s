@@ -4,7 +4,6 @@ namespace Hhxsv5\LaravelS\Swoole;
 
 use Illuminate\Http\Request as IlluminateRequest;
 use Swoole\Http\Request as SwooleRequest;
-use Symfony\Component\HttpFoundation\ParameterBag;
 
 class Request
 {
@@ -82,7 +81,9 @@ class Request
             && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), ['PUT', 'DELETE', 'PATCH'])
         ) {
             parse_str($request->getContent(), $data);
-            $request->request = new ParameterBag($data);
+            // Fill the bag created by Symfony instead of assigning a new one:
+            // Request::$request is typed InputBag since Symfony 6, ParameterBag before.
+            $request->request->replace($data);
         }
 
         return $request;
