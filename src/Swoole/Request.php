@@ -81,8 +81,8 @@ class Request
             && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), ['PUT', 'DELETE', 'PATCH'])
         ) {
             parse_str($request->getContent(), $data);
-            // Fill the bag created by Symfony instead of assigning a new one:
-            // Request::$request is typed InputBag since Symfony 6, ParameterBag before.
+            // Fill the bag Symfony created instead of assigning a new one: Request::$request
+            // is a typed InputBag property since Symfony 7.0 (symfony/symfony#51069).
             $request->request->replace($data);
         }
 
