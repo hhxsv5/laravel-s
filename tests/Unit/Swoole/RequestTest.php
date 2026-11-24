@@ -81,10 +81,6 @@ class RequestTest extends TestCase
     #[DataProvider('formMethods')]
     public function testParsesFormBodyForNonPostMethods(string $method): void
     {
-        if ((new \ReflectionProperty(\Symfony\Component\HttpFoundation\Request::class, 'request'))->hasType()) {
-            $this->markTestSkipped('Known source compatibility issue: the adapter assigns ParameterBag to the typed InputBag property.');
-        }
-
         $source = $this->swooleRequest(['request_method' => $method],
             ['content-type' => 'application/x-www-form-urlencoded; charset=UTF-8'],
             'name=Alice+Smith&tags%5B%5D=a&tags%5B%5D=b');
@@ -93,6 +89,9 @@ class RequestTest extends TestCase
 
         $this->assertSame('Alice Smith', $request->input('name'));
         $this->assertSame(['a', 'b'], $request->input('tags'));
+        $this->assertSame(['name' => 'Alice Smith', 'tags' => ['a', 'b']], $request->request->all());
+        // The bag keeps the class Symfony uses for this version (InputBag on 6+, ParameterBag before).
+        $this->assertInstanceOf(get_class((new \Symfony\Component\HttpFoundation\Request())->request), $request->request);
     }
 
     public static function formMethods(): array

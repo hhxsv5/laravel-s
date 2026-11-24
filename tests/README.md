@@ -23,11 +23,9 @@ The tests do not start Swoole, access external HTTP services or require Redis
 or a Laravel application. Native Swoole server/coroutine behavior requires
 separate integration tests.
 
-The suite leaves `src` unchanged. Known defects remain recorded as skipped
-regression cases: header values containing colons are truncated, and non-POST
-form parsing assigns `ParameterBag` to a typed `InputBag` property on newer
-Symfony versions. The latter cases still run on versions with an untyped
-request property. Skipped cases are reported explicitly by PHPUnit.
+Known defects remain recorded as skipped
+regression cases: header values containing colons are truncated. Skipped cases
+are reported explicitly by PHPUnit.
 
 For coverage, enable Xdebug or PCOV and run:
 
