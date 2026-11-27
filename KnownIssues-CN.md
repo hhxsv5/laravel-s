@@ -141,9 +141,14 @@ class TestController extends Controller
     'enable'        => true, // 启用自动销毁控制器
     'excluded_list' => [
         //\App\Http\Controllers\TestController::class, // 排除销毁的控制器类列表
+        //'App\Http\Controllers\V2\*', // 支持使用通配符的命名空间前缀匹配，该命名空间下的所有控制器都会被排除
     ],
 ],
 ```
+
+有两种方式可以排除控制器不被销毁：
+1. 精确匹配：指定完整的类名
+2. 前缀匹配：在命名空间末尾使用通配符(*)，例如 `App\Http\Controllers\V2\*` 将排除该命名空间下的所有控制器
 
 ## 不能使用这些函数
 
