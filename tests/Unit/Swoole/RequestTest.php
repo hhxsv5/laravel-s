@@ -90,13 +90,51 @@ class RequestTest extends TestCase
         $this->assertSame('Alice Smith', $request->input('name'));
         $this->assertSame(['a', 'b'], $request->input('tags'));
         $this->assertSame(['name' => 'Alice Smith', 'tags' => ['a', 'b']], $request->request->all());
-        // The bag keeps the class Symfony uses for this version (InputBag on 6+, ParameterBag before).
+        // The bag keeps the class Symfony uses for this version.
         $this->assertInstanceOf(get_class((new \Symfony\Component\HttpFoundation\Request())->request), $request->request);
     }
 
     public static function formMethods(): array
     {
         return [['PUT'], ['PATCH'], ['DELETE']];
+    }
+
+    #[DataProvider('formMethods')]
+    public function testEmptyFormBodyClearsExistingBodyParameters(string $method): void
+    {
+        $source = $this->swooleRequest(['request_method' => $method],
+            ['content-type' => 'application/x-www-form-urlencoded']);
+        $source->post = ['stale' => 'value'];
+        $source->get = ['page' => '2'];
+
+        $request = (new Request($source))->toIlluminateRequest();
+
+        $this->assertSame([], $request->request->all());
+        $this->assertSame('2', $request->query('page'));
+    }
+
+    public function testPostFormUsesSwooleParsedInputAndMethodOverride(): void
+    {
+        $source = $this->swooleRequest(['request_method' => 'POST'],
+            ['content-type' => 'application/x-www-form-urlencoded'], 'name=raw');
+        $source->post = ['name' => 'parsed', '_method' => 'PATCH'];
+
+        $request = (new Request($source))->toIlluminateRequest();
+
+        $this->assertSame('PATCH', $request->getMethod());
+        $this->assertSame('parsed', $request->input('name'));
+        $this->assertSame('name=raw', $request->getContent());
+    }
+
+    public function testJsonPatchIsNotParsedAsFormData(): void
+    {
+        $source = $this->swooleRequest(['request_method' => 'PATCH'],
+            ['content-type' => 'application/json'], '{"name":"Alice","tags":["a","b"]}');
+
+        $request = (new Request($source))->toIlluminateRequest();
+
+        $this->assertSame('Alice', $request->input('name'));
+        $this->assertSame(['a', 'b'], $request->input('tags'));
     }
 
     public function testDefaultsMissingOptionalInputToEmptyBags(): void

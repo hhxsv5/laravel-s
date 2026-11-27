@@ -16,12 +16,15 @@ vendor/bin/phpunit --filter RequestTest
 
 The suite covers request conversion, response metadata and content delivery,
 request state cleaners, container reflection, task dispatch and validation,
-Apollo configuration pulls and saves, timer lock ownership, and the HTTP
+Apollo configuration pulls and saves, timer lock ownership, Swoole statistics
+collection, and the HTTP
 client's cURL path. Swoole request/response objects are PHPUnit mocks based
 on `swoole/ide-helper`; the HTTP tests mock cURL functions with `php-mock`.
 The tests do not start Swoole, access external HTTP services or require Redis
 or a Laravel application. Native Swoole server/coroutine behavior requires
 separate integration tests.
+This is not complete coverage: server lifecycle, coroutine behavior, other
+Prometheus collectors, and framework integration need further tests.
 
 Known defects remain recorded as skipped
 regression cases: header values containing colons are truncated. Skipped cases
