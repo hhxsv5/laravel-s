@@ -14,10 +14,12 @@ Run a single group with `vendor/bin/phpunit --filter RequestTest`. With Xdebug
 or PCOV enabled, run `composer test:coverage` for HTML and Clover reports.
 
 The tests cover HTTP request and response conversion, cleanup between requests,
-container reflection, task dispatch, Apollo configuration, timer locks, and
-the HTTP client's cURL path. Without Swoole, test-only HTTP classes provide mock
+container reflection, task dispatch, Apollo configuration, timer locks, Swoole
+statistics collection, and the HTTP client's cURL path. Without Swoole, test-only HTTP classes provide mock
 targets. The suite does not require Redis or an external HTTP service. Real
 Swoole server and coroutine behavior require separate integration tests.
+This is not complete coverage: server lifecycle, coroutine behavior, other
+Prometheus collectors, and framework integration need further tests.
 
 The header-value regression test is skipped when the existing parser truncates
 values at a colon. This known issue is reported by PHPUnit.
