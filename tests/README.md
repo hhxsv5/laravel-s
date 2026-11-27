@@ -20,6 +20,4 @@ targets. The suite does not require Redis or an external HTTP service. Real
 Swoole server and coroutine behavior require separate integration tests.
 
 The header-value regression test is skipped when the existing parser truncates
-values at a colon. On newer Symfony releases the non-POST form tests are also
-skipped when the request property is typed as InputBag. These known issues are
-reported by PHPUnit; the source remains unchanged.
+values at a colon. This known issue is reported by PHPUnit.
